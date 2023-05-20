@@ -1,0 +1,453 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Contributing Guide &#8212; TopoNetX latest documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="canonical" href="pyt-team.github.io/contributing/index.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="contributing-guide">
+<span id="contributing"></span><h1>Contributing Guide<a class="headerlink" href="#contributing-guide" title="Permalink to this heading">¶</a></h1>
+<p>This is an exhaustive guide to ease the contribution
+process for both novice and experienced contributors.</p>
+<p><a class="reference external" href="https://github.com/pyt-team/TopoNetX">TopoNetX</a> is a
+community effort, and everyone is welcome to contribute.</p>
+<section id="run-the-tests">
+<h2>Run the tests<a class="headerlink" href="#run-the-tests" title="Permalink to this heading">¶</a></h2>
+<p>TopoNetX tests can be run using <a class="reference external" href="https://docs.pytest.org/">pytest</a>.
+To run tests with <cite>pytest</cite>, first install the required packages:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Then run all tests using:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pytest<span class="w"> </span><span class="nb">test</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Optionally, run a particular test file using:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pytest<span class="w"> </span>test/algorithms/&lt;test_filename.py&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">¶</a></h3>
+</section>
+</section>
+<section id="test-driven-development">
+<h2>Test Driven Development<a class="headerlink" href="#test-driven-development" title="Permalink to this heading">¶</a></h2>
+<p>High-quality <a class="reference external" href="https://en.wikipedia.org/wiki/Unit_testing">unit testing</a>
+is a corner-stone of <cite>TopoNetX</cite> development process.</p>
+<p>The tests consist of classes appropriately named, located in the <cite>test`</cite>
+subdirectory, that check the validity of the algorithms and the
+different options of the code.</p>
+</section>
+<section id="tdd-with-pytest">
+<h2>TDD with pytest<a class="headerlink" href="#tdd-with-pytest" title="Permalink to this heading">¶</a></h2>
+<p>TopoNetX uses the <cite>pytest</cite> Python tool for testing different functions and features.
+Install the test requirements using:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>dev<span class="o">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>By convention all test functions should be located in files with file names
+that start with <cite>test_</cite>. For example a unit test that exercises the Python
+addition functionality can be written as follows:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># test_add.py</span>
+
+def<span class="w"> </span>add<span class="o">(</span>x,<span class="w"> </span>y<span class="o">)</span>:
+<span class="w">   </span><span class="k">return</span><span class="w"> </span>x<span class="w"> </span>+<span class="w"> </span>y
+
+def<span class="w"> </span>test_capital_case<span class="o">()</span>:
+<span class="w">   </span>assert<span class="w"> </span>add<span class="o">(</span><span class="m">4</span>,<span class="w"> </span><span class="m">5</span><span class="o">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">9</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Use an <cite>assert</cite> statement to check that the function under test returns
+the correct output. Then run the test using:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pytest<span class="w"> </span>test_add.py
+</pre></div>
+</div>
+</div></blockquote>
+<section id="workflow-of-a-contribution">
+<h3>Workflow of a contribution<a class="headerlink" href="#workflow-of-a-contribution" title="Permalink to this heading">¶</a></h3>
+<p>The best way to start contributing is by finding a part of the project that is more familiar to you.</p>
+<p>Alternatively, if everything is new to you and you would like to contribute while learning, look at some of the existing GitHub Issues.</p>
+</section>
+</section>
+<section id="making-changes">
+<span id="new-contributors"></span><h2>Making changes<a class="headerlink" href="#making-changes" title="Permalink to this heading">¶</a></h2>
+<p>The preferred way to contribute to toponetx is to fork the <a class="reference external" href="https://github.com/pyt-team/TopoNetX/">upstream
+repository</a> and submit a “pull request” (PR).</p>
+<p>Follow these steps before submitting a PR:</p>
+<ol class="arabic">
+<li><p>Synchronize your main branch with the upstream main branch:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+$<span class="w"> </span>git<span class="w"> </span>pull<span class="w"> </span>upstream<span class="w"> </span>main
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><div class="line-block">
+<div class="line">Create a feature branch to hold your development changes:</div>
+</div>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>&lt;branch-name&gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Make changes.</p></li>
+<li><p>When you’re done editing, add changed files using <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span></code> and then <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span></code>:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>add<span class="w"> </span>&lt;modified_files&gt;
+$<span class="w"> </span>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add my feature&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>to record your changes. Your commit message should respect the <a class="reference external" href="https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project">good
+commit messages guidelines</a>. (<a class="reference external" href="https://cbea.ms/git-commit/">How to Write a Git Commit Message</a> also provides good advice.)</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before commit, make sure you have run the <a class="reference external" href="https://github.com/psf/black">black</a> and
+<a class="reference external" href="https://github.com/PyCQA/flake8">flake8</a> tools for proper code formatting.</p>
+</div>
+<p>Then push the changes to your fork of <cite>TopoNextX</cite> with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>&lt;branch-name&gt;
+</pre></div>
+</div>
+</div></blockquote>
+<p>Use the <cite>-u</cite> flag if the branch does not exist yet remotely.</p>
+</li>
+<li><p>Follow <a class="reference external" href="https://help.github.com/articles/creating-a-pull-request-from-a-fork">these</a>
+instructions to create a pull request from your fork.</p></li>
+<li><p>Repeat 3. and 4. following the reviewers requests.</p></li>
+</ol>
+<p>It is often helpful to keep your local feature branch synchronized with the
+latest changes of the main toponetx repository. Bring remote changes locally:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>main
+$<span class="w"> </span>git<span class="w"> </span>pull<span class="w"> </span>upstream<span class="w"> </span>main
+</pre></div>
+</div>
+</div></blockquote>
+<p>And then merge them into your branch:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>&lt;branch-name&gt;
+$<span class="w"> </span>git<span class="w"> </span>merge<span class="w"> </span>main
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="pull-request-checklist">
+<h2>Pull Request Checklist<a class="headerlink" href="#pull-request-checklist" title="Permalink to this heading">¶</a></h2>
+<p>In order to ease the reviewing process, we recommend that your contribution
+complies with the following rules. The <strong>bolded</strong> ones are especially important:</p>
+<ol class="arabic">
+<li><p><strong>Give your pull request a helpful title.</strong> This summarises what your
+contribution does. This title will often become the commit message once
+merged so it should summarise your contribution for posterity. In some
+cases <cite>Fix &lt;ISSUE TITLE&gt;</cite> is enough. <cite>Fix #&lt;ISSUE NUMBER&gt;</cite> is never a
+good title.</p></li>
+<li><p><strong>Submit your code with associated unit tests</strong>. High-quality
+<a class="reference external" href="https://en.wikipedia.org/wiki/Unit_testing">unit testing</a>
+is a corner-stone of the toponetx development process.</p></li>
+<li><p><strong>Make sure your code passes all unit tests</strong>. First,
+run the tests related to your changes.</p></li>
+<li><p><strong>Make sure that your PR follows Python international style guidelines</strong>,
+<a class="reference external" href="https://www.python.org/dev/peps/pep-0008">PEP8</a>. The <cite>flake8</cite> package
+automatically checks for style violations when you
+submit your PR.</p>
+<p>To prevent adding commits which fail to adhere to the PEP8 guidelines, we
+include a <a class="reference external" href="https://pre-commit.com/">pre-commit</a> config, which immediately
+invokes flake8 on all files staged for commit when running <cite>git commit</cite>. To
+enable the hook, simply run <cite>pre-commit install</cite> after installing
+<cite>pre-commit</cite> either manually via <cite>pip</cite> or as part of the development requirements.</p>
+<p>Please avoid reformatting parts of the file that your pull request doesn’t
+change, as it distracts during code reviews.</p>
+</li>
+<li><p><strong>Make sure that your PR follows toponetx coding style and API</strong> (see <span class="xref std std-ref">coding-guidelines</span>). Ensuring style consistency throughout
+toponetx allows using tools to automatically parse the codebase,
+for example searching all instances where a given function is used,
+or use automatic find-and-replace during code’s refactorizations. It
+also speeds up the code review and acceptance of PR, as the maintainers
+do not spend time getting used to new conventions and coding preferences.</p></li>
+<li><p><strong>Make sure your code is properly documented</strong>, and <strong>make
+sure the documentation renders properly</strong>. To build the documentation, please
+see our <a class="reference internal" href="#contribute-documentation"><span class="std std-ref">Documentation</span></a> guidelines. The plugin
+flake8-docstrings automatically checks that your the documentation follows
+our guidelines when you submit a PR.</p></li>
+<li><p>Often pull requests resolve one or more other issues (or pull requests).
+If merging your pull request means that some other issues/PRs should
+be closed, you should <a class="reference external" href="https://github.com/blog/1506-closing-issues-via-pull-requests/">use keywords to create link to them</a>
+(e.g., <code class="docutils literal notranslate"><span class="pre">fixes</span> <span class="pre">#1234</span></code>; multiple issues/PRs are allowed as long as each
+one is preceded by a keyword). Upon merging, those issues/PRs will
+automatically be closed by GitHub. If your pull request is simply
+related to some other issues/PRs, create a link to them without using
+the keywords (e.g., <code class="docutils literal notranslate"><span class="pre">see</span> <span class="pre">also</span> <span class="pre">#1234</span></code>).</p></li>
+<li><p><strong>Each PR needs to be accepted by a core developer</strong> before being merged.</p></li>
+</ol>
+<section id="documentation">
+<span id="contribute-documentation"></span><h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading">¶</a></h3>
+<p>We are glad to accept any sort of documentation: function docstrings,
+reStructuredText documents (like this one), tutorials, etc. reStructuredText
+documents live in the source code repository under the <code class="docutils literal notranslate"><span class="pre">docs/</span></code> directory.</p>
+</section>
+</section>
+<section id="building-the-documentation">
+<h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this heading">¶</a></h2>
+<p>Building the documentation requires installing specific requirements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span><span class="p">[</span><span class="n">doc</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="writing-docstrings">
+<h2>Writing Docstrings<a class="headerlink" href="#writing-docstrings" title="Permalink to this heading">¶</a></h2>
+<p>A docstring is a well-formatted description of your function/class/module which includes
+its purpose, usage, and other information.</p>
+<p>There are different markdown languages/formats used for docstrings in Python. The most common
+three are reStructuredText, numpy, and google docstring styles. For toponet, we are
+using the numpy docstring standard.
+When writing up your docstrings, please review the <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">NumPy docstring guide</a>
+to understand the role and syntax of each section. Following this syntax is important not only for readability,
+it is also required for automated parsing for inclusion into our generated API Reference.</p>
+<p>You can look at these for any object by printing out the <code class="docutils literal notranslate"><span class="pre">__doc__</span></code> attribute.
+Try this out with the np.array class and the np.mean function to see good examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These are some of the most common elements for functions (and ones we’d like you to add where appropriate):</p>
+<ol class="arabic simple">
+<li><p>Summary - a one-line (here &lt;79 char) description of the object</p>
+<ol class="loweralpha simple">
+<li><p>Begins immediately after the first “”” with a capital letter, ends with a period</p></li>
+<li><p>If describing a function, use a verb with the imperative mood (e.g. <strong>Compute</strong> vs Computes)</p></li>
+<li><p>Use a verb which is as specific as possible, but default to Compute when uncertain (as opposed to Calculate or Evaluate, for example)</p></li>
+</ol>
+</li>
+<li><p>Description - a more informative multi-line description of the function</p>
+<ol class="loweralpha simple">
+<li><p>Separated from the summary line by a blank line</p></li>
+<li><p>Begins with a capital letter and ends with period</p></li>
+</ol>
+</li>
+<li><p>Parameters - a formatted list of arguments with type information and description</p>
+<ol class="loweralpha simple">
+<li><p>On the first line, state the parameter name, type, and shape when appropriate. The parameter name should be separated from the rest of the line by a <code class="docutils literal notranslate"><span class="pre">:</span></code> (with a space on either side). If a parameter is optional, write <code class="docutils literal notranslate"><span class="pre">Optional,</span> <span class="pre">default:</span> <span class="pre">default_value.</span></code> as a separate line in the description.</p></li>
+<li><p>On the next line, indent and write a summary of the parameter beginning with a capital letter and ending with a period.</p></li>
+<li><p>See <span class="xref std std-ref">docstring-examples</span>.</p></li>
+</ol>
+</li>
+<li><p>Returns (esp. for functions) - a formatted list of returned objects type information and description</p>
+<ol class="loweralpha simple">
+<li><p>The syntax here is the same as in the parameters section above.</p></li>
+<li><p>See <span class="xref std std-ref">docstring-examples</span>.</p></li>
+</ol>
+</li>
+</ol>
+<p>If documenting a class, you would also want to include an Attributes section.
+There are many other optional sections you can include which are very helpful.
+For example: Raises, See Also, Notes, Examples, References, etc.</p>
+<dl class="simple">
+<dt>N.B. Within Notes, you can</dt><dd><ul class="simple">
+<li><p>include LaTex code</p></li>
+<li><p>cite references in text using ids placed in References</p></li>
+</ul>
+</dd>
+</dl>
+<p id="docstring-examples">Here’s a generic docstring template:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">my_param_1</span><span class="p">,</span> <span class="n">my_param_2</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">):</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;Write a one-line summary for the method.</span>
+
+<span class="sd">   Write a description of the method, including &quot;big O&quot;</span>
+<span class="sd">   (:math:`O\left(g\left(n\right)\right)`) complexities.</span>
+
+<span class="sd">   Parameters</span>
+<span class="sd">   ----------</span>
+<span class="sd">   my_param_1 : array-like, shape=[..., dim]</span>
+<span class="sd">      Write a short description of parameter my_param_1.</span>
+<span class="sd">   my_param_2 : str, {&quot;vector&quot;, &quot;matrix&quot;}</span>
+<span class="sd">      Write a short description of parameter my_param_2.</span>
+<span class="sd">      Optional, default: &quot;vector&quot;.</span>
+
+<span class="sd">   Returns</span>
+<span class="sd">   -------</span>
+<span class="sd">   my_result : array-like, shape=[..., dim, dim]</span>
+<span class="sd">      Write a short description of the result returned by the method.</span>
+
+<span class="sd">   Notes</span>
+<span class="sd">   -----</span>
+<span class="sd">   If relevant, provide equations with (:math:)</span>
+<span class="sd">   describing computations performed in the method.</span>
+
+<span class="sd">   Example</span>
+<span class="sd">   -------</span>
+<span class="sd">   Provide code snippets showing how the method is used.</span>
+<span class="sd">   You can link to scripts of the examples/ directory.</span>
+
+<span class="sd">   Reference</span>
+<span class="sd">   ---------</span>
+<span class="sd">   If relevant, provide a reference with associated pdf or</span>
+<span class="sd">   wikipedia page.</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>And here’s a filled-in example from the Scikit-Learn project, modified to our syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">fit_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;Compute cluster centers and predict cluster index for each sample.</span>
+
+<span class="sd">   Convenience method; equivalent to calling fit(X) followed by</span>
+<span class="sd">   predict(X).</span>
+
+<span class="sd">   Parameters</span>
+<span class="sd">   ----------</span>
+<span class="sd">   X : {array-like, sparse_matrix} of shape=[..., n_features]</span>
+<span class="sd">      New data to transform.</span>
+<span class="sd">   y : Ignored</span>
+<span class="sd">      Not used, present here for API consistency by convention.</span>
+<span class="sd">   sample_weight : array-like, shape [...,], optional</span>
+<span class="sd">      The weights for each observation in X. If None, all observations</span>
+<span class="sd">      are assigned equal weight (default: None).</span>
+
+<span class="sd">   Returns</span>
+<span class="sd">   -------</span>
+<span class="sd">   labels : array, shape=[...,]</span>
+<span class="sd">      Index of the cluster each sample belongs to.</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+   <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="n">sample_weight</span><span class="p">)</span><span class="o">.</span><span class="n">labels_</span>
+</pre></div>
+</div>
+<p>In general, have the following in mind:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Use built-in Python types. (<code class="docutils literal notranslate"><span class="pre">bool</span></code> instead of <code class="docutils literal notranslate"><span class="pre">boolean</span></code>)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">[</span></code> for defining shapes: <code class="docutils literal notranslate"><span class="pre">array-like,</span> <span class="pre">shape=[...,</span> <span class="pre">dim]</span></code></p></li>
+<li><p>If a shape can vary, use a list-like notation:
+<code class="docutils literal notranslate"><span class="pre">array-like,</span> <span class="pre">shape=[dimension[:axis],</span> <span class="pre">n,</span> <span class="pre">dimension[axis:]]</span></code></p></li>
+<li><p>For strings with multiple options, use brackets:
+<code class="docutils literal notranslate"><span class="pre">input:</span> <span class="pre">str,</span> <span class="pre">{&quot;log&quot;,</span> <span class="pre">&quot;squared&quot;,</span> <span class="pre">&quot;multinomial&quot;}</span></code></p></li>
+<li><p>1D or 2D data can be a subset of
+<code class="docutils literal notranslate"><span class="pre">{array-like,</span> <span class="pre">ndarray,</span> <span class="pre">sparse</span> <span class="pre">matrix,</span> <span class="pre">dataframe}</span></code>. Note that
+<code class="docutils literal notranslate"><span class="pre">array-like</span></code> can also be a <code class="docutils literal notranslate"><span class="pre">list</span></code>, while <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> is explicitly
+only a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p></li>
+<li><p>Add “See Also” in docstrings for related classes/functions.
+“See Also” in docstrings should be one line per reference,
+with a colon and an explanation.</p></li>
+</ol>
+</div></blockquote>
+<p>For Class and Module Examples see the <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/blob/b194674c4/sklearn/ensemble/_weight_boosting.py#L285">scikit-learn _weight_boosting.py module</a>.
+The class AdaBoost has a great example using the elements we’ve discussed here.
+Of course, these examples are rather verbose, but they’re good for
+understanding the components.</p>
+<p>When editing reStructuredText (<code class="docutils literal notranslate"><span class="pre">.rst</span></code>) files, try to keep line length under
+80 characters (exceptions include links and tables).</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">TopoNetX</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022-2023, PyT-Team, Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="../_sources/contributing/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
