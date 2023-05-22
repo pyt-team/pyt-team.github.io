@@ -93,9 +93,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns True if the given element is a subset of the nodes in the simplex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the given element is a subset of the nodes.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
@@ -113,9 +111,7 @@
 
 <div class="viewcode-block" id="Simplex.construct_simplex_tree"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplex.Simplex.construct_simplex_tree">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">construct_simplex_tree</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a set of Simplex objects representing the faces of the simplex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return set of Simplex objects representing the faces.&quot;&quot;&quot;</span>
         <span class="n">faceset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">numnodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numnodes</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
@@ -127,9 +123,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a set of Simplex objects representing the boundary faces of the simplex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a set of Simplex objects representing the boundary faces.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_tree</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -137,26 +131,26 @@
             <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">faces</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Simplex.sign"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplex.Simplex.sign">[docs]</a>    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Calculate the sign of the simplex with respect to a given face.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the sign of the simplex with respect to a given face.</span>
 
-
-<span class="sd">        :param face: A face of the simplex.</span>
-<span class="sd">        :type face: Simplex</span>
-
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        face : Simplex</span>
+<span class="sd">            A face of the simplex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">faces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the set of faces of the simplex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the set of faces of the simplex.</span>
 
 <span class="sd">        If `construct_tree` is True, return the precomputed set of faces `_faces`.</span>
 <span class="sd">        Otherwise, construct the simplex tree and return the set of faces.</span>
 
-<span class="sd">        :return: The set of faces of the simplex.</span>
-<span class="sd">        :rtype: frozenset[Simplex]</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        _ : frozenset[Simplex]</span>
+<span class="sd">            The set of faces of the simplex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_tree</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_faces</span>
@@ -164,7 +158,8 @@
             <span class="k">return</span> <span class="n">Simplex</span><span class="o">.</span><span class="n">construct_simplex_tree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get item.</span>
+
 <span class="sd">        Get the value of the attribute associated with the simplex.</span>
 
 <span class="sd">        :param item: The name of the attribute.</span>
@@ -178,8 +173,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the value of an attribute associated with the simplex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of an attribute associated with the simplex.</span>
 
 <span class="sd">        :param key: The name of the attribute.</span>
 <span class="sd">        :type key: str</span>
@@ -188,8 +182,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the number of nodes in the simplex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the number of nodes in the simplex.</span>
 
 <span class="sd">        :return: The number of nodes in the simplex.</span>
 <span class="sd">        :rtype: int</span>
@@ -197,8 +190,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get an iterator over the nodes in the simplex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an iterator over the nodes in the simplex.</span>
 
 <span class="sd">        :return: An iterator over the nodes in the simplex.</span>
 <span class="sd">        :rtype: iter</span>
@@ -206,8 +198,7 @@
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get a string representation of the simplex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the simplex.</span>
 
 <span class="sd">        :return: A string representation of the simplex.</span>
 <span class="sd">        :rtype: str</span>
@@ -215,8 +206,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Simplex</span><span class="si">{</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get a string representation of the simplex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;String representation of the simplex.</span>
 
 <span class="sd">        :return: A string representation of the simplex.</span>
 <span class="sd">        :rtype: str</span>

@@ -61,9 +61,17 @@
 
 
 <span class="k">def</span> <span class="nf">_normalize</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    input f ascalar function on nodes of a graph</span>
-<span class="sd">    output a  normalized copy of f between [0,1].</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f : callable</span>
+<span class="sd">        A scalar function on nodes of a graph.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    f_normalized : callable</span>
+<span class="sd">        A normalized copy of f between [0,1].</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">minf</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
     <span class="n">maxf</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
@@ -79,24 +87,27 @@
 
 
 <div class="viewcode-block" id="hodge_laplacian_eigenvectors"><a class="viewcode-back" href="../../../api/algorithms.html#toponetx.algorithms.spectrum.hodge_laplacian_eigenvectors">[docs]</a><span class="k">def</span> <span class="nf">hodge_laplacian_eigenvectors</span><span class="p">(</span><span class="n">hodge_laplacian</span><span class="p">,</span> <span class="n">n_components</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Input</span>
-<span class="sd">    ======</span>
-<span class="sd">        hodge laplacian : scipy sparse matrix representing the hodge laplacian</span>
-<span class="sd">        n_components : int, the number of eigenvectors one needs to output, if</span>
-<span class="sd">            laplacian.shape[0]&lt;=10, then all eigenvectors will be returned</span>
-<span class="sd">    output:</span>
-<span class="sd">    =======</span>
-<span class="sd">        first k eigevals and eigenvec associated with the hodge laplacian matrix.</span>
-<span class="sd">    example</span>
-<span class="sd">    ========</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the first k eigenvectors of the hodge laplacian matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hodge laplacian : scipy sparse matrix</span>
+<span class="sd">        Hodge laplacian.</span>
+<span class="sd">    n_components : int</span>
+<span class="sd">        Number of eigenvectors one needs to output, if</span>
+<span class="sd">        laplacian.shape[0]&lt;=10, then all eigenvectors will be returned</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        First k eigevals and eigenvec associated with the hodge laplacian matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; SC = SimplicialComplex([[1,2,3],[2,3,5],[0,1]])</span>
 <span class="sd">    &gt;&gt;&gt; row,column,B1 = SC.incidence_matrix(1,index=True)</span>
 <span class="sd">    &gt;&gt;&gt; L1 = SC.hodge_laplacian_matrix(1)</span>
 <span class="sd">    &gt;&gt;&gt; vals,vecs = hodge_laplacian_eigenvectors(L1,2)</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">Diag</span> <span class="o">=</span> <span class="n">diags</span><span class="p">(</span><span class="n">hodge_laplacian</span><span class="o">.</span><span class="n">diagonal</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">Diag</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
         <span class="n">vals</span><span class="p">,</span> <span class="n">vect</span> <span class="o">=</span> <span class="n">sparse</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigs</span><span class="p">(</span>
@@ -122,19 +133,24 @@
 <div class="viewcode-block" id="set_hodge_laplacian_eigenvector_attrs"><a class="viewcode-back" href="../../../api/algorithms.html#toponetx.algorithms.spectrum.set_hodge_laplacian_eigenvector_attrs">[docs]</a><span class="k">def</span> <span class="nf">set_hodge_laplacian_eigenvector_attrs</span><span class="p">(</span>
     <span class="n">cmplex</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">laplacian_type</span><span class="o">=</span><span class="s2">&quot;hodge&quot;</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    input</span>
-<span class="sd">    =====</span>
-<span class="sd">        cmplex : a SimplialComplex/CellComplex object</span>
-<span class="sd">        dim : int, the dimension of the hodge laplacian to be computed</span>
-<span class="sd">        n_components : int, the number of eigenvectors to be computed</span>
-<span class="sd">        laplacian_type : str, type of hodge matrix to be computed,</span>
-<span class="sd">                        options : up, down, hodge</span>
-<span class="sd">        normalized: bool, normalize the eigenvector or not.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the hodge laplacian eigenvectors as simplex attributes.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cmplex : a SimplialComplex/CellComplex object</span>
+<span class="sd">        Complex.</span>
+<span class="sd">    dim : int</span>
+<span class="sd">        Dimension of the hodge laplacian to be computed.</span>
+<span class="sd">    n_components : int</span>
+<span class="sd">        The number of eigenvectors to be computed</span>
+<span class="sd">    laplacian_type : str</span>
+<span class="sd">        Rype of hodge matrix to be computed,</span>
+<span class="sd">        options : up, down, hodge</span>
+<span class="sd">    normalized : bool</span>
+<span class="sd">        Normalize the eigenvector or not.</span>
 
-<span class="sd">    example</span>
-<span class="sd">    ========</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; SC=SimplicialComplex([[1,2,3],[2,3,5],[0,1]])</span>
 <span class="sd">    &gt;&gt;&gt; SC = set_hodge_laplacian_eigenvector_attrs(SC,1,2,&quot;down&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; SC.get_simplex_attributes(&quot;0.th_eigen&quot;, 1)</span>
@@ -160,12 +176,13 @@
 
 
 <div class="viewcode-block" id="laplacian_beltrami_eigenvectors"><a class="viewcode-back" href="../../../api/algorithms.html#toponetx.algorithms.spectrum.laplacian_beltrami_eigenvectors">[docs]</a><span class="k">def</span> <span class="nf">laplacian_beltrami_eigenvectors</span><span class="p">(</span><span class="n">SC</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;fem&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the first k eigenvectors of the laplacian beltrami matrix.</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; SC = SimplicialComplex.load_mesh(&quot;path_to_mesh/bunny.obj&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; eigenvectors, eigenvalues = laplacian_beltrami_eigenvectors(SC)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="kn">import</span> <span class="nn">spharapy.spharabasis</span> <span class="k">as</span> <span class="nn">sb</span>
 
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">SC</span><span class="o">.</span><span class="n">to_spharapy</span><span class="p">()</span>
@@ -175,17 +192,19 @@
 
 
 <span class="k">def</span> <span class="nf">set_laplacian_beltrami_eigenvectors</span><span class="p">(</span><span class="n">cmplex</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    input</span>
-<span class="sd">    =====</span>
-<span class="sd">        cmplex : a SimplialComplex object</span>
-<span class="sd">    example</span>
-<span class="sd">    ========</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the laplacian beltrami eigenvectors as simplex attributes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cmplex : a SimplialComplex object</span>
+<span class="sd">        Complex.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; SC = SimplicialComplex.load_mesh(&quot;C:/Users/musta/OneDrive/Desktop/bunny.obj&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; set_laplacian_beltrami_eigenvectors(SC)</span>
 <span class="sd">    &gt;&gt;&gt; vec1 = SC.get_simplex_attributes(&quot;1.laplacian_beltrami_eigenvectors&quot;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">index</span> <span class="o">=</span> <span class="n">cmplex</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">vect</span><span class="p">,</span> <span class="n">vals</span> <span class="o">=</span> <span class="n">laplacian_beltrami_eigenvectors</span><span class="p">(</span><span class="n">cmplex</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vect</span><span class="p">)):</span>
@@ -193,11 +212,8 @@
         <span class="n">cmplex</span><span class="o">.</span><span class="n">set_simplex_attributes</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.laplacian_beltrami_eigenvectors&quot;</span><span class="p">)</span>
 
 
-<span class="c1"># ---------------- laplacian spectrum for various complexes ---------------#</span>
-
-
 <div class="viewcode-block" id="laplacian_spectrum"><a class="viewcode-back" href="../../../api/algorithms.html#toponetx.algorithms.spectrum.laplacian_spectrum">[docs]</a><span class="k">def</span> <span class="nf">laplacian_spectrum</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns eigenvalues of the Laplacian matrix</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return eigenvalues of the Laplacian matrix</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -241,8 +257,8 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    =======</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">            &gt;&gt;&gt; CX = CellComplex()</span>
 <span class="sd">            &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2)</span>
 <span class="sd">            &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2)</span>
@@ -252,7 +268,6 @@
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="n">laplacian_spectrum</span><span class="p">(</span><span class="n">CX</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">))</span></div>
 
 
