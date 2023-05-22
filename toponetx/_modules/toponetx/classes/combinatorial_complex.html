@@ -36,7 +36,8 @@
           <div class="body" role="main">
             
   <h1>Source code for toponetx.classes.combinatorial_complex</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Creation and manipulation of a combinatorial complex.&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Class for creation and manipulation of a combinatorial complex.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -110,15 +111,15 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    ---------</span>
-<span class="sd">    &gt;&gt;&gt; # define an empty Combinatorial Complex</span>
-<span class="sd">    &gt;&gt;&gt; CC = CombinatorialComplex()</span>
-<span class="sd">    &gt;&gt;&gt; # add cells using the add_cell method</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([1, 2], rank=1)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([3, 4], rank=1)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([1, 2, 4], rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([3, 4], rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([1,2,3,4,5,6,7], rank=3)</span>
+<span class="sd">        &gt;&gt;&gt; # define an empty Combinatorial Complex</span>
+<span class="sd">        &gt;&gt;&gt; CC = CombinatorialComplex()</span>
+<span class="sd">        &gt;&gt;&gt; # add cells using the add_cell method</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2], rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4], rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4,5,6,7], rank=3)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -131,7 +132,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">graph_based</span> <span class="o">=</span> <span class="n">graph_based</span>  <span class="c1"># rank 1 edges have cardinality equals to 1</span>
 
-        <span class="c1"># we define a combinatorial complex as the closure of a simplicial complex</span>
+        <span class="c1"># we define a combintorial complex as the closure of a simplicial complex</span>
         <span class="c1"># this gives fast insertion time because the condition x&lt;y implies rk(x)&lt;rk(x)</span>
         <span class="c1"># for a new to be inserted cell x can be checked only with</span>
         <span class="c1"># the maximal simplex that contains x</span>
@@ -373,17 +374,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">shape</span>
 
 <div class="viewcode-block" id="CombinatorialComplex.skeleton"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Skeleton&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ranks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ranks.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">allranks</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dimension.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">allranks</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -590,15 +588,12 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
     <span class="k">def</span> <span class="nf">_add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add one node as hyperedge.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge</span><span class="p">(</span><span class="n">hyperedge</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CombinatorialComplex.add_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.set_node_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.set_node_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set node attributes.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -612,7 +607,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
-            <span class="k">return</span></div>
+            <span class="k">return</span>
 
 <div class="viewcode-block" id="CombinatorialComplex.set_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.set_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set cell attributes.</span>
@@ -921,7 +916,7 @@
                         <span class="n">rr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aux_complex</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="s2">&quot;r&quot;</span><span class="p">]</span>
                         <span class="c1"># all supersets in a CC must have ranks that is larger than or equal to input ranked hyperedge</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">&quot;violation of the combinatorial complex condition : &quot;</span>
+                            <span class="s2">&quot;violation of the combintorial complex condition : &quot;</span>
                             <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;the hyperedge </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2"> in the complex has rank </span><span class="si">{</span><span class="n">rr</span><span class="si">}</span><span class="s2"> is smaller than </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">, the rank of the input hyperedge </span><span class="si">{</span><span class="n">hyperedge_</span><span class="si">}</span><span class="s2"> &quot;</span>
                         <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_aux_complex</span><span class="p">[</span><span class="n">hyperedge_</span><span class="p">][</span><span class="s2">&quot;r&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank</span>
@@ -1055,23 +1050,20 @@
 
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.get_incidence_structure_dict"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_incidence_structure_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get incidence structure dictionary.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span></div>
+    <span class="k">def</span> <span class="nf">get_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
 
-<div class="viewcode-block" id="CombinatorialComplex.get_adjacency_structure_dict"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_adjacency_structure_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_adjacency_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get adjacency structure dictionary.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span></div>
+    <span class="k">def</span> <span class="nf">get_adjacency_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
 
-<div class="viewcode-block" id="CombinatorialComplex.get_all_incidence_structure_dict"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_all_incidence_structure_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all incidence structure dictionary.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get_all_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">):</span>
             <span class="n">B0r</span> <span class="o">=</span> <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;B_0_&quot;</span> <span class="o">+</span> <span class="p">{</span><span class="n">r</span><span class="p">}]</span> <span class="o">=</span> <span class="n">B0r</span>
-        <span class="k">return</span> <span class="n">d</span></div>
+        <span class="k">return</span> <span class="n">d</span>
 
 <div class="viewcode-block" id="CombinatorialComplex.remove_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.remove_cells">[docs]</a>    <span class="k">def</span> <span class="nf">remove_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove cells from CC.</span>
