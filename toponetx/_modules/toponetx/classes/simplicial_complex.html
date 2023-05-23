@@ -389,7 +389,7 @@ document.write(`
 <span class="sd">        list of maximal simplices that define the simplicial complex</span>
 <span class="sd">    name : hashable, optional, default: None</span>
 <span class="sd">        If None then a placeholder &#39;&#39; will be inserted as name</span>
-<span class="sd">    mode : string, optional, default &#39;normal&#39;.</span>
+<span class="sd">    mode : str, optional, default &#39;normal&#39;.</span>
 <span class="sd">        computational mode, available options are &quot;normal&quot; or &quot;gudhi&quot;.</span>
 <span class="sd">        default is &#39;normal&#39;.</span>
 
@@ -407,10 +407,12 @@ document.write(`
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    # defining a simplicial complex using a set of maximal simplices.</span>
+<span class="sd">    Define a simplicial complex using a set of maximal simplices:</span>
+
 <span class="sd">    &gt;&gt;&gt; SC = SimplicialComplex([[1, 2, 3], [2, 3, 5], [0, 1]])</span>
 
-<span class="sd">    # compatabiltiy with networkx</span>
+<span class="sd">    TopoNetX is also compatible with NetworkX, allowing users to create a simplicial complex from a NetworkX graph:</span>
+
 <span class="sd">    &gt;&gt;&gt; G = Graph() # networkx G</span>
 <span class="sd">    &gt;&gt;&gt; G.add_edge(0, 1, weight=4)</span>
 <span class="sd">    &gt;&gt;&gt; G.add_edge(0, 3)</span>
@@ -553,7 +555,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : int</span>
+<span class="sd">        int</span>
 <span class="sd">            Total number of simplices in all dimensions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -816,10 +818,10 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplexView()</span>
-<span class="sd">        &gt;&gt;&gt; SC.insert_simplex ( (1,2,3,4),weight=1 )</span>
-<span class="sd">        &gt;&gt;&gt; c1=Simplex((1,2,3,4,5))</span>
+<span class="sd">        &gt;&gt;&gt; SC.insert_simplex((1, 2, 3, 4), weight=1)</span>
+<span class="sd">        &gt;&gt;&gt; c1=Simplex((1, 2, 3, 4, 5))</span>
 <span class="sd">        &gt;&gt;&gt; SC.insert_simplex(c1)</span>
-<span class="sd">        &gt;&gt;&gt; SC.remove_maximal_simplex((1,2,3,4,5))</span>
+<span class="sd">        &gt;&gt;&gt; SC.remove_maximal_simplex((1, 2, 3, 4, 5))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
@@ -936,7 +938,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : list of tuples(simplex).</span>
+<span class="sd">        list of tuples(simplex).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">entire_tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_boundaries</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_maximal_simplices_of_simplex</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
@@ -980,9 +982,8 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        None.</span>
 
-<span class="sd">        Example 1</span>
-<span class="sd">        ---------</span>
-
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        After computing some property of the simplex of a simplicial complex, you may want</span>
 <span class="sd">        to assign a simplex attribute to store the value of that property for</span>
 <span class="sd">        each simplex:</span>
@@ -997,10 +998,8 @@ document.write(`
 <span class="sd">        &#39;red&#39;</span>
 
 <span class="sd">        If you provide a dictionary of dictionaries as the second argument,</span>
-<span class="sd">        the entire dictionary will be used to update simplex attributes::</span>
+<span class="sd">        the entire dictionary will be used to update simplex attributes:</span>
 
-<span class="sd">        Example 2</span>
-<span class="sd">        ---------</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex()</span>
 <span class="sd">        &gt;&gt;&gt; SC.add_simplex([1, 3, 4])</span>
 <span class="sd">        &gt;&gt;&gt; SC.add_simplex([1, 2, 3])</span>
@@ -1038,7 +1037,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        name : string</span>
+<span class="sd">        name : str</span>
 <span class="sd">           Attribute name.</span>
 
 <span class="sd">        Returns</span>
@@ -1054,7 +1053,6 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; d = {(1): &#39;red&#39;, (2): &#39;blue&#39;, (3): &#39;black&#39;}</span>
 <span class="sd">        &gt;&gt;&gt; SC.set_simplex_attributes(d, name=&#39;color&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; SC.get_node_attributes(&#39;color&#39;)</span>
-<span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &#39;blue&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="nb">tuple</span><span class="p">(</span><span class="n">n</span><span class="p">):</span> <span class="bp">self</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">n</span><span class="p">]}</span></div>
@@ -1064,9 +1062,10 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        name : string</span>
+<span class="sd">        name : str</span>
 <span class="sd">           Attribute name</span>
-<span class="sd">        rank : integer rank of the cell</span>
+<span class="sd">        rank : int</span>
+<span class="sd">            rank of the cell</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1118,8 +1117,8 @@ document.write(`
 
 <span class="sd">        Getting the matrix that correpodnds to the boundary matrix of the input SC.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex()</span>
 <span class="sd">        &gt;&gt;&gt; SC.add_simplex([1, 2, 3, 4])</span>
 <span class="sd">        &gt;&gt;&gt; SC.add_simplex([1, 2, 4])</span>
@@ -1248,7 +1247,6 @@ document.write(`
                 <span class="k">return</span> <span class="n">column</span><span class="p">,</span> <span class="n">L_hodge</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">L_hodge</span>
-
         <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
             <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">L_hodge</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="o">@</span> <span class="n">B</span>
@@ -1258,7 +1256,6 @@ document.write(`
                 <span class="k">return</span> <span class="n">column</span><span class="p">,</span> <span class="n">L_hodge</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">L_hodge</span>
-
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Rank should be larger than 0 and &lt;= </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2"> (maximal dimension simplices), got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1269,7 +1266,7 @@ document.write(`
             <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">L_hodge</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.normalized_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.normalized_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">normalized_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the normalized hodge Laplacian matrix of G.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the normalized hodge Laplacian matrix of G.</span>
 
 <span class="sd">        The normalized hodge Laplacian is the matrix</span>
 
@@ -1283,20 +1280,19 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        rank : int</span>
 <span class="sd">            Rank of the hodge laplacian matrix</span>
-<span class="sd">        weight : string or None, optional (default=&#39;weight&#39;)</span>
+<span class="sd">        weight : str or None, optional (default=&#39;weight&#39;)</span>
 <span class="sd">            The edge data key used to compute each value in the matrix.</span>
 <span class="sd">            If None, then each edge has weight 1.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : Scipy sparse matrix</span>
+<span class="sd">        Scipy sparse matrix</span>
 <span class="sd">            The normalized hodge Laplacian matrix.</span>
 
-<span class="sd">        Example 1</span>
-<span class="sd">        ---------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([[1, 2, 3], [2, 3, 5], [0, 1]])</span>
-<span class="sd">        &gt;&gt;&gt; L1_norm = SC.normalized_laplacian_matrix(1)</span>
-<span class="sd">        &gt;&gt;&gt; L1_norm</span>
+<span class="sd">        &gt;&gt;&gt; SC.normalized_laplacian_matrix(1)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
         <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
@@ -1505,14 +1501,14 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        new simplicial Complex : SimplicialComplex</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Simplex((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Simplex((1, 2, 4))</span>
 <span class="sd">        &gt;&gt;&gt; c3 = Simplex((1, 2, 5))</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([c1, c2, c3])</span>
 <span class="sd">        &gt;&gt;&gt; SC1 = SC.restrict_to_simplices([c1, (2, 4)])</span>
-<span class="sd">        &gt;&gt;&gt; new_sc = SC1.simplices</span>
+<span class="sd">        &gt;&gt;&gt; SC1.simplices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rns</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cell_set</span><span class="p">:</span>
@@ -1532,20 +1528,20 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        node_set: iterable of hashables</span>
 <span class="sd">            References a subset of elements of self.nodes</span>
-
-<span class="sd">        name: string, optional, default: None</span>
+<span class="sd">        name: str, optional</span>
+<span class="sd">            The name of the new simplicial complex.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        new Simplicial Complex : SimplicialComplex</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Simplex((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Simplex((1, 2, 4))</span>
 <span class="sd">        &gt;&gt;&gt; c3 = Simplex((1, 2, 5))</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([c1, c2, c3])</span>
-<span class="sd">        &gt;&gt;&gt; new_sc = SC.restrict_to_nodes([1, 2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; SC.restrict_to_nodes([1, 2, 3, 4])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">simplices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">node_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">node_set</span><span class="p">)</span>
@@ -1562,8 +1558,8 @@ document.write(`
 <div class="viewcode-block" id="SimplicialComplex.get_all_maximal_simplices"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.get_all_maximal_simplices">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_maximal_simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all maximal simplices.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Simplex((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Simplex((1, 2, 4))</span>
 <span class="sd">        &gt;&gt;&gt; c3 = Simplex((2, 5))</span>
@@ -1613,8 +1609,8 @@ document.write(`
     <span class="k">def</span> <span class="nf">from_gudhi</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from gudhi.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; from gudhi import SimplexTree</span>
 <span class="sd">        &gt;&gt;&gt; tree = SimplexTree()</span>
 <span class="sd">        &gt;&gt;&gt; tree.insert([1,2,3,5])</span>
@@ -1628,8 +1624,8 @@ document.write(`
     <span class="k">def</span> <span class="nf">from_trimesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from trimesh.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import trimesh</span>
 <span class="sd">        &gt;&gt;&gt; mesh = trimesh.Trimesh(vertices=[[0, 0, 0], [0, 0, 1], [0, 1, 0]],</span>
 <span class="sd">                               faces=[[0, 1, 2]],</span>
@@ -1728,8 +1724,8 @@ document.write(`
 <div class="viewcode-block" id="SimplicialComplex.to_spharapy"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.to_spharapy">[docs]</a>    <span class="k">def</span> <span class="nf">to_spharapy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex_position_name</span><span class="o">=</span><span class="s2">&quot;position&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to sharapy.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import spharapy.trimesh as tm</span>
 <span class="sd">        &gt;&gt;&gt; import spharapy.spharabasis as sb</span>
 <span class="sd">        &gt;&gt;&gt; import spharapy.datasets as sd</span>
@@ -1791,10 +1787,11 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.Graph()  # or DiGraph, MultiGraph, MultiDiGraph, etc</span>
-<span class="sd">        &gt;&gt;&gt; G.add_edge(&#39;1&#39;, &#39;2&#39;, weight=2)</span>
-<span class="sd">        &gt;&gt;&gt; G.add_edge(&#39;3&#39;, &#39;4&#39;, weight=4)</span>
+<span class="sd">        &gt;&gt;&gt; G.add_edge(1, 2, weight=2)</span>
+<span class="sd">        &gt;&gt;&gt; G.add_edge(3, 4, weight=4)</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex.from_nx_graph(G)</span>
-<span class="sd">        &gt;&gt;&gt; SC[(&#39;1&#39;,&#39;2&#39;)][&#39;weight&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; SC[(1, 2)][&quot;weight&quot;]</span>
+<span class="sd">        2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">G</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
@@ -1824,15 +1821,15 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : SimplicialComplex</span>
-<span class="sd">        Simplicial complex closure of the hypergraph.</span>
+<span class="sd">        SimplicialComplex</span>
+<span class="sd">            Simplicial complex closure of the hypergraph.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import hypernetx as hnx</span>
-<span class="sd">        &gt;&gt;&gt; hg = hnx.Hypergraph( [ [1,2,3,4],[1,2,3] ], static=True)</span>
+<span class="sd">        &gt;&gt;&gt; hg = hnx.Hypergraph([[1, 2, 3, 4], [1, 2, 3]], static=True)</span>
 <span class="sd">        &gt;&gt;&gt; sc = SimplicialComplex.simplicial_closure_of_hypergraph(hg)</span>
-<span class="sd">        &gt;&gt;&gt; print(sc.simplices)</span>
+<span class="sd">        &gt;&gt;&gt; sc.simplices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">edges</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">edges</span>
         <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1843,8 +1840,8 @@ document.write(`
 <div class="viewcode-block" id="SimplicialComplex.to_cell_complex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.to_cell_complex">[docs]</a>    <span class="k">def</span> <span class="nf">to_cell_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a simplicial complex to a cell complex.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Simplex((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Simplex((1, 2, 4))</span>
 <span class="sd">        &gt;&gt;&gt; c3 = Simplex((2, 5))</span>
@@ -1858,8 +1855,8 @@ document.write(`
 <div class="viewcode-block" id="SimplicialComplex.to_hypergraph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.to_hypergraph">[docs]</a>    <span class="k">def</span> <span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a simplicial complex to a hyperG.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Simplex((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Simplex((1, 2, 4))</span>
 <span class="sd">        &gt;&gt;&gt; c3 = Simplex((2, 5))</span>
@@ -1881,13 +1878,11 @@ document.write(`
 <span class="sd">            when True returns DynamicCombinatorialComplex</span>
 <span class="sd">            when False returns CombinatorialComplex</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Simplex((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Simplex((1, 2, 3))</span>
-
 <span class="sd">        &gt;&gt;&gt; c3 = Simplex((1, 2, 4))</span>
-<span class="sd">        &gt;&gt;&gt; c4 = Simplex((2, 5))</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([c1, c2, c3])</span>
 <span class="sd">        &gt;&gt;&gt; CC = SC.to_combinatorial_complex()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
