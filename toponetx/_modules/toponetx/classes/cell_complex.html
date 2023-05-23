@@ -1126,9 +1126,9 @@ document.write(`
                 <span class="n">d_edges</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># cell</span>
                 <span class="n">d_cells</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_node_attributes</span><span class="p">(</span><span class="n">d_nodes</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_edge_attributes</span><span class="p">(</span><span class="n">d_edges</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span><span class="n">d_cells</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span><span class="n">d_nodes</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span><span class="n">d_edges</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span><span class="n">d_cells</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CellComplex.get_filtration"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_filtration">[docs]</a>    <span class="k">def</span> <span class="nf">get_filtration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get filtration.</span>
@@ -1144,113 +1144,23 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CX.get_filtration(&quot;f&quot;)</span>
 <span class="sd">        {0: 1, 1: 0, 2: 2, (0, 1): 1, (1, 2): 3}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">lst</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_attributes</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
-        <span class="p">]</span>
+        <span class="n">lst</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_attributes</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">d</span></div>
 
-<div class="viewcode-block" id="CellComplex.set_node_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.set_node_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set node attributes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        values : dic</span>
-<span class="sd">        name : str</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; d = {0: {&#39;color&#39;: &#39;red&#39;, &#39;attr2&#39;: 1 }, 1: {&#39;color&#39;: &#39;blue&#39;, &#39;attr2&#39;: 3}}</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_node_attributes(d)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># if `values` is a dict using `.items()` =&gt; {cell: value}</span>
-
-            <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-
-            <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-            <span class="k">return</span></div>
-
-<div class="viewcode-block" id="CellComplex.set_edge_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.set_edge_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_edge_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set edge attributes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        values : dic</span>
-<span class="sd">        name : str</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; d={ (0,1) : {&#39;color&#39;:&#39;red&#39;,&#39;attr2&#39;:1 },(1,2): {&#39;color&#39;:&#39;blue&#39;,&#39;attr2&#39;:3 } }</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_edge_attributes(d)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># if `values` is a dict using `.items()` =&gt; {edge: value}</span>
-
-            <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-            <span class="k">return</span></div>
-
-<div class="viewcode-block" id="CellComplex.get_edge_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_edge_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_edge_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get edge attributes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        name : string</span>
-<span class="sd">           Attribute name.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Dictionary of attributes keyed by edge.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">edge</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span>
-        <span class="p">}</span></div>
-
-<div class="viewcode-block" id="CellComplex.set_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.set_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.set_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.set_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set cell attributes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : TYPE</span>
 <span class="sd">            DESCRIPTION.</span>
+<span class="sd">        rank : int</span>
+<span class="sd">            0 for nodes, 1 for edges, 2 for 2-cells.</span>
+<span class="sd">            ranks &gt; 2 are currently not supported.</span>
 <span class="sd">        name : TYPE, optional</span>
 <span class="sd">            DESCRIPTION. The default is None.</span>
 
@@ -1269,12 +1179,12 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,4], rank=2,)</span>
 <span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,8], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d={(1,2,3,4):&#39;red&#39;,(1,2,4):&#39;blue&#39;}</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_cell_attributes(rank,name=&#39;color&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CX.set_cell_attributes(d,name=&#39;color&#39;,rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CX.cells[(1,2,3,4)][&#39;color&#39;]</span>
 <span class="sd">        &#39;red&#39;</span>
 
 <span class="sd">        If you provide a dictionary of dictionaries as the second argument,</span>
-<span class="sd">        the entire dictionary will be used to update edge attributes::</span>
+<span class="sd">        the entire dictionary will be used to update cell attributes::</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1294,88 +1204,61 @@ document.write(`
 <span class="sd">        If the dict contains cells that are not in `self.cells`, they are</span>
 <span class="sd">        silently ignored.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># if `values` is a dict using `.items()` =&gt; {cell: (key,value) } or {cell:value}</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">set_edge_attributes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># if `values` is a dict using `.items()` =&gt; {cell: (key,value) } or {cell:value}</span>
 
-            <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-                            <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span>
-                        <span class="p">):</span>  <span class="c1"># input cell has cell key</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                                <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span>
+                            <span class="p">):</span>  <span class="c1"># input cell has cell key</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">],</span> <span class="nb">list</span>
+                        <span class="p">):</span>  <span class="c1"># all cells with same key get same attrs</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">])):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">],</span> <span class="nb">list</span>
-                    <span class="p">):</span>  <span class="c1"># all cells with same key get same attrs</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">])):</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
 
-        <span class="k">else</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>
 
-            <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">try</span><span class="p">:</span>
 
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
-                            <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span>
-                        <span class="p">):</span>  <span class="c1"># input cell has cell key</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>  <span class="c1"># length of cell is 2</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
+                                <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span>
+                            <span class="p">):</span>  <span class="c1"># input cell has cell key</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>  <span class="c1"># length of cell is 2</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">],</span> <span class="nb">list</span>
+                        <span class="p">):</span>  <span class="c1"># all cells with same key get same attrs</span>
+                            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">])):</span>
+
+                                <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">],</span> <span class="nb">list</span>
-                    <span class="p">):</span>  <span class="c1"># all cells with same key get same attrs</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">])):</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-                            <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="k">pass</span>
-            <span class="k">return</span></div>
-
-<div class="viewcode-block" id="CellComplex.get_node_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_node_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        name : string</span>
-<span class="sd">           Attribute name.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Dictionary of attributes keyed by node.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; d={0: {&#39;color&#39;:&#39;red&#39;,&#39;attr2&#39;:1 },1: {&#39;color&#39;:&#39;blue&#39;,&#39;attr2&#39;:3 } }</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_node_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CX.get_node_attributes(&#39;color&#39;)</span>
-<span class="sd">        {0: &#39;red&#39;, 1: &#39;blue&#39;}</span>
-
-<span class="sd">        &gt;&gt;&gt; G = nx.Graph()</span>
-<span class="sd">        &gt;&gt;&gt; G.add_nodes_from([1, 2, 3], color=&quot;blue&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; nodes_color = CX.get_node_attributes(&#39;color&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; nodes_color[1]</span>
-<span class="sd">        &#39;blue&#39;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">node</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
-        <span class="p">}</span></div>
-
-<div class="viewcode-block" id="CellComplex.get_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.get_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from graph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1404,24 +1287,23 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; cell_color</span>
 <span class="sd">        &#39;{((1, 2, 3, 4), 0): &#39;red&#39;, (1, 2, 4): &#39;blue&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_attributes</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># multiple cells</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">])):</span>
-                            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">i</span><span class="p">]:</span>
-                                <span class="n">d</span><span class="p">[(</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">]:</span>
-                            <span class="n">d</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">get_edge_attributes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># multiple cells</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">])):</span>
+                        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">i</span><span class="p">]:</span>
+                            <span class="n">d</span><span class="p">[(</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">]:</span>
+                        <span class="n">d</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
 
-                <span class="k">return</span> <span class="n">d</span>
-            <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">d</span>
+        <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CellComplex.remove_equivalent_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.remove_equivalent_cells">[docs]</a>    <span class="k">def</span> <span class="nf">remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove equivalent cells.</span>
