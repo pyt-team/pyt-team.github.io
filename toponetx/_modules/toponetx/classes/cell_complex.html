@@ -1864,42 +1864,33 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">L_down</span></div>
 
-<div class="viewcode-block" id="CellComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute adjacency matrix for a given rank.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">up</span><span class="p">:</span>
-            <span class="n">rank</span> <span class="o">+=</span> <span class="mi">1</span>
-
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="n">lower_ind</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
-                <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">ind</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
+                <span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">up</span><span class="p">:</span>
-            <span class="n">incidence</span> <span class="o">=</span> <span class="n">incidence</span><span class="o">.</span><span class="n">T</span>
-            <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-                <span class="n">ind</span> <span class="o">=</span> <span class="n">lower_ind</span>
+        <span class="n">incidence</span> <span class="o">=</span> <span class="n">incidence</span><span class="o">.</span><span class="n">T</span>
 
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ind</span><span class="p">,</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">incidence</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">incidence</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute coadjacency matrix for a given rank.&quot;&quot;&quot;</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># this feature is not supported in this version</span>
-
-        <span class="n">ind</span><span class="p">,</span> <span class="n">L_down</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span>
-            <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-        <span class="n">L_down</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">signed</span><span class="p">:</span>
-            <span class="n">L_down</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">L_down</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ind</span><span class="p">,</span> <span class="n">L_down</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">L_down</span></div>
+            <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ind</span><span class="p">,</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">incidence</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">incidence</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CellComplex.k_hop_incidence_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.k_hop_incidence_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">k_hop_incidence_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute k-hop incidence matrix for a given rank.&quot;&quot;&quot;</span>
@@ -2148,7 +2139,7 @@ document.write(`
 <span class="sd">            components of CX.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
@@ -2156,7 +2147,7 @@ document.write(`
                     <span class="k">continue</span>
                 <span class="k">yield</span> <span class="p">{</span><span class="n">coldict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">A</span><span class="p">,</span> <span class="n">rowdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">A</span><span class="p">,</span> <span class="n">rowdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">return_singletons</span><span class="p">:</span>
@@ -2261,7 +2252,7 @@ document.write(`
 <span class="sd">        list of the diameters of the s-components and</span>
 <span class="sd">        list of the s-component nodes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2292,7 +2283,7 @@ document.write(`
 <span class="sd">        list of component : list</span>
 <span class="sd">            List of the cell uids in the s-cell component subgraphs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2329,7 +2320,7 @@ document.write(`
 <span class="sd">        nodes v_start, v_1, v_2, ... v_n-1, v_end such that consecutive nodes</span>
 <span class="sd">        are s-adjacent. If the graph is not connected, an error will be raised.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
@@ -2358,7 +2349,7 @@ document.write(`
 <span class="sd">        cells e_start, e_1, e_2, ... e_n-1, e_end such that consecutive cells</span>
 <span class="sd">        are s-adjacent. If the graph is not connected, an error will be raised.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
@@ -2398,7 +2389,7 @@ document.write(`
             <span class="n">source</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">uid</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">uid</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">rowdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">up</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">rowdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">rkey</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rowdict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2445,7 +2436,7 @@ document.write(`
             <span class="n">source</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">uid</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">uid</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">ckey</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">coldict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="k">try</span><span class="p">:</span>
