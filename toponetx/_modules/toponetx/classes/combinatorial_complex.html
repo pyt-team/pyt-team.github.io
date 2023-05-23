@@ -341,13 +341,16 @@ document.write(`
 <span class="kn">from</span> <span class="nn">toponetx.classes.simplex</span> <span class="kn">import</span> <span class="n">Simplex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.simplicial_complex</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
 <span class="kn">from</span> <span class="nn">toponetx.exception</span> <span class="kn">import</span> <span class="n">TopoNetXError</span>
-<span class="kn">from</span> <span class="nn">toponetx.utils.structure</span> <span class="kn">import</span> <span class="n">sparse_array_to_neighborhood_dict</span>
+<span class="kn">from</span> <span class="nn">toponetx.utils.structure</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">incidence_to_adjacency</span><span class="p">,</span>
+    <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CombinatorialComplex&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="CombinatorialComplex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex">[docs]</a><span class="k">class</span> <span class="nc">CombinatorialComplex</span><span class="p">(</span><span class="n">Complex</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for Combinatorial Complex.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class for Combinatorial Complex.</span>
 
 <span class="sd">    A Combinatorial Complex (CC) is a triple CC = (S, X, rk) where:</span>
 <span class="sd">    -  S is an abstract set of entities,</span>
@@ -709,12 +712,12 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        node : hashable</span>
 <span class="sd">            Identifier for the node.</span>
-<span class="sd">        rank : int, optional, default: 1</span>
+<span class="sd">        rank : positive integer, optional, default: 1</span>
 <span class="sd">            Smallest size of cell to consider in degree</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        int</span>
+<span class="sd">        _ : int</span>
 <span class="sd">            Number of cells of certain rank that contain node.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
@@ -865,8 +868,9 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        None.</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
+<span class="sd">        Example</span>
+<span class="sd">        ------</span>
+
 <span class="sd">        After computing some property of the cell of a combinatorial complex, you may want</span>
 <span class="sd">        to assign a cell attribute to store the value of that property for</span>
 <span class="sd">        each cell:</span>
@@ -881,8 +885,10 @@ document.write(`
 <span class="sd">        &#39;green&#39;</span>
 
 <span class="sd">        If you provide a dictionary of dictionaries as the second argument,</span>
-<span class="sd">        the entire dictionary will be used to update edge attributes:</span>
+<span class="sd">        the entire dictionary will be used to update edge attributes::</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
 <span class="sd">        &gt;&gt;&gt; CC = NestedCombinatorialComplex(G)</span>
 <span class="sd">        &gt;&gt;&gt; d = {(1, 2): {&#39;color&#39;: &#39;red&#39;,&#39;attr2&#39;: 1}, (0, 1): {&#39;color&#39;: &#39;blue&#39;, &#39;attr2&#39;: 3}}</span>
@@ -913,7 +919,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        name : str</span>
+<span class="sd">        name : string</span>
 <span class="sd">           Attribute name</span>
 
 <span class="sd">        Returns</span>
@@ -947,10 +953,9 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        name : str</span>
+<span class="sd">        name : string</span>
 <span class="sd">           Attribute name.</span>
-<span class="sd">        rank : int</span>
-<span class="sd">            rank of the k-cell</span>
+<span class="sd">        rank : integer rank of the k-cell</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1344,37 +1349,7 @@ document.write(`
             <span class="n">rank</span><span class="p">,</span> <span class="n">to_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="n">incidence_type</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
         <span class="p">)</span></div>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get adjacency matrix from boolean incidence matrix for s-metrics.</span>
-
-<span class="sd">        Self loops are not supported.</span>
-<span class="sd">        The adjacency matrix will define an s-linegraph.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        B : scipy.sparse.csr.csr_matrix</span>
-<span class="sd">            incidence matrix of 0&#39;s and 1&#39;s</span>
-<span class="sd">        s : int, list, optional, default : 1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-<span class="sd">        weight : bool, dict optional, default=True</span>
-<span class="sd">            If False all nonzero entries are 1.</span>
-<span class="sd">            Otherwise, weight will be as in product.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        A : scipy.sparse.csr.csr_matrix</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># currently weighting is not supported</span>
-
-        <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
-            <span class="n">A</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">&gt;=</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">A</span>
-
-<div class="viewcode-block" id="CombinatorialComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sparse weighted :term:`s-adjacency matrix`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1385,9 +1360,6 @@ document.write(`
 <span class="sd">            Minimum number of edges shared by neighbors with node.</span>
 <span class="sd">        index: boolean, optional, default: False</span>
 <span class="sd">            If True, will return a rowdict of row to node uid</span>
-<span class="sd">        weight: bool, default=True</span>
-<span class="sd">            If False all nonzero entries are 1.</span>
-<span class="sd">            If True adjacency matrix will depend on weighted incidence matrix,</span>
 <span class="sd">        index : book, default=False</span>
 <span class="sd">            indicate weather to return the indices of the adjacency matrix.</span>
 
@@ -1400,7 +1372,7 @@ document.write(`
 <span class="sd">        If index if False</span>
 <span class="sd">            adjacency_matrix : scipy.sparse.csr.csr_matrix</span>
 
-<span class="sd">        Examples</span>
+<span class="sd">        Example</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = Graph() # networkx graph</span>
 <span class="sd">        &gt;&gt;&gt; G.add_edge(0, 1)</span>
@@ -1420,13 +1392,12 @@ document.write(`
             <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
                 <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
             <span class="p">)</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># currently weighting is not supported</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">row</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.cell_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">cell_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.cell_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">cell_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the cell adjacency matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1444,24 +1415,24 @@ document.write(`
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
 
-            <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.node_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">node_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.node_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">node_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the node adjacency matrix.&quot;&quot;&quot;</span>
         <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
             <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coadjacency matrix.</span>
 
 <span class="sd">        The sparse weighted :term:`s-coadjacency matrix`</span>
@@ -1503,11 +1474,7 @@ document.write(`
             <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
                 <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;down&quot;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
             <span class="p">)</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Currently weighting is not supported</span>
-        <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
-            <span class="n">A</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">&gt;=</span> <span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">col</span>
         <span class="k">return</span> <span class="n">A</span></div>
@@ -1558,7 +1525,7 @@ document.write(`
 <span class="sd">        node_set: iterable of hashables</span>
 <span class="sd">            References a subset of elements of self.nodes</span>
 
-<span class="sd">        name: str, optional</span>
+<span class="sd">        name: string, optional, default: None</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1580,8 +1547,8 @@ document.write(`
 <span class="sd">        CC such that the edges of the graph are ranked 1</span>
 <span class="sd">        and the nodes are ranked 0.</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
+<span class="sd">        Example</span>
+<span class="sd">        ------</span>
 <span class="sd">        &gt;&gt;&gt; from networkx import Graph</span>
 <span class="sd">        &gt;&gt;&gt; G = Graph()</span>
 <span class="sd">        &gt;&gt;&gt; G.add_edge(0, 1)</span>
@@ -1601,8 +1568,8 @@ document.write(`
 <div class="viewcode-block" id="CombinatorialComplex.to_hypergraph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.to_hypergraph">[docs]</a>    <span class="k">def</span> <span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a combinatorial complex to a hypergraph.</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
 <span class="sd">        &gt;&gt;&gt; CC = CombinatorialComplex(cells=E)</span>
 <span class="sd">        &gt;&gt;&gt; HG = CC.to_hypergraph()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1631,15 +1598,15 @@ document.write(`
 <span class="sd">        such that every consecutive pair of nodes v(i),v(i+1)</span>
 <span class="sd">        share at least s cell.</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
 <span class="sd">        &gt;&gt;&gt; CC = CombinatorialComplex(cells=E)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span></div>
 
@@ -1950,7 +1917,7 @@ document.write(`
 <span class="sd">            a node in the CC</span>
 <span class="sd">        target : node.uid or node</span>
 <span class="sd">            a node in the CC</span>
-<span class="sd">        s : int</span>
+<span class="sd">        s : positive integer</span>
 <span class="sd">            the number of cells</span>
 
 <span class="sd">        Returns</span>
@@ -1981,9 +1948,11 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        source : cell.uid or cell</span>
 <span class="sd">            an cell in the combinatorial complex</span>
+
 <span class="sd">        target : cell.uid or cell</span>
 <span class="sd">            an cell in the combinatorial complex</span>
-<span class="sd">        s : int</span>
+
+<span class="sd">        s : positive integer</span>
 <span class="sd">            the number of intersections between pairwise consecutive cells</span>
 
 <span class="sd">        Returns</span>
