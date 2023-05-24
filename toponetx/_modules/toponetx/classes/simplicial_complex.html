@@ -335,7 +335,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span><span class="p">,</span> <span class="n">dok_matrix</span>
 
 <span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">NodeView</span><span class="p">,</span> <span class="n">SimplexView</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">SimplexView</span><span class="p">,</span> <span class="n">NodeView</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.simplex</span> <span class="kn">import</span> <span class="n">Simplex</span>
 <span class="kn">from</span> <span class="nn">toponetx.exception</span> <span class="kn">import</span> <span class="n">TopoNetXError</span>
 
@@ -1124,8 +1124,8 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; B1 = SC.incidence_matrix(1)</span>
 <span class="sd">        &gt;&gt;&gt; B2 = SC.incidence_matrix(2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input dimension d must be positive integer, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input dimension d must be larger than zero, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;input dimenion cannat be larger than the dimension of the complex, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1185,12 +1185,12 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="n">idx_faces</span><span class="p">,</span> <span class="n">idx_simplices</span><span class="p">,</span> <span class="n">boundary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
-                <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">)</span>
+                <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">T</span>
             <span class="k">return</span> <span class="n">idx_faces</span><span class="p">,</span> <span class="n">idx_simplices</span><span class="p">,</span> <span class="n">boundary</span><span class="o">.</span><span class="n">T</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
-                <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+                <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
             <span class="p">)</span><span class="o">.</span><span class="n">T</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.hodge_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.hodge_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">hodge_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
