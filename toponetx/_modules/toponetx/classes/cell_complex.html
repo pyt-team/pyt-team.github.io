@@ -772,7 +772,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        edge_set : an iterable of RankedEntities, optional, default: None</span>
+<span class="sd">        edge_set : an iterable of optional, default: None</span>
 <span class="sd">            If None, then return the number of edges in cell complex.</span>
 
 <span class="sd">        Returns</span>
@@ -781,7 +781,13 @@ document.write(`
 <span class="sd">            The number of edges in edge_set belonging to cell complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">edge_set</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">edge</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="k">if</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edge_set</span><span class="p">])</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">edge</span>
+                    <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
+                    <span class="k">if</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edge_set</span> <span class="ow">or</span> <span class="n">edge</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">edge_set</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span></div>
 
@@ -830,7 +836,7 @@ document.write(`
 <span class="sd">            List of neighbors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node is not in cell complex </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> is not in the complex.&quot;</span><span class="p">)</span>
             <span class="k">return</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">[</span><span class="n">node</span><span class="p">]</span></div>
@@ -1016,9 +1022,11 @@ document.write(`
                         <span class="bp">self</span><span class="o">.</span><span class="n">_insert_cell</span><span class="p">(</span><span class="n">Cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">regular</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_regular</span><span class="p">),</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span>
-                            <span class="s2">&quot;Invalid cycle condition, check if edges of the input cells are in the 1-skeleton.&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Invalid cycle condition for cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">. This input cell is not inserted, check if edges of the input cell are in the 1-skeleton.&quot;</span>
                         <span class="p">)</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; To ignore this check, set check_skeleton = False.&quot;</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span>
+                            <span class="s2">&quot;To ignore this check, set check_skeleton = False or check if the input cell is a valid 2d cell.&quot;</span>
+                        <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid input&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1385,13 +1393,15 @@ document.write(`
             <span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">warnings_dis</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;a cell must contain at least 2 edges, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;a 2d cell must contain at least 2 edges, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regular</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">warnings_dis</span><span class="p">:</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="s2">&quot;repeating nodes invalidates the 2-cell regular condition&quot;</span>
+                        <span class="s2">&quot;repeating nodes invalidates the 2-cell regularity condition&quot;</span>
                     <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">check_skeleton</span><span class="p">:</span>
@@ -1400,7 +1410,7 @@ document.write(`
                 <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">warnings_dis</span><span class="p">:</span>
                         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;edge </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> is not a part of the 1 skeleton of the cell complex&quot;</span><span class="p">,</span>
+                            <span class="sa">f</span><span class="s2">&quot;edge </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> is not a part of the 1-skeleton of the cell complex&quot;</span><span class="p">,</span>
                             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="k">return</span> <span class="kc">False</span>
@@ -1663,7 +1673,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        d : int, dimension of the up Laplacian matrix.</span>
+<span class="sd">        rank : int, dimension of the up Laplacian matrix.</span>
 <span class="sd">            Supported dimension are 0,1</span>
 <span class="sd">        signed : bool, is true return absolute value entry of the Laplacian matrix</span>
 <span class="sd">                       this is useful when one needs to obtain higher-order</span>
@@ -1731,7 +1741,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        d : int, dimension of the down Laplacian matrix.</span>
+<span class="sd">        rank : int, dimension of the down Laplacian matrix.</span>
 <span class="sd">            Supported dimension are 0,1</span>
 <span class="sd">        signed : bool, is true return absolute value entry of the Laplacian matrix</span>
 <span class="sd">                       this is useful when one needs to obtain higher-order</span>
@@ -1740,7 +1750,7 @@ document.write(`
 <span class="sd">                       typically positive.</span>
 <span class="sd">        weight : bool, default=False</span>
 <span class="sd">            If False all nonzero entries are 1.</span>
-<span class="sd">            If True and self.static all nonzero entries are filled by</span>
+<span class="sd">            If True and all nonzero entries are filled by</span>
 <span class="sd">            self.cells.cell_weight dictionary values.</span>
 <span class="sd">        index : boolean, optional, default False</span>
 <span class="sd">            list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix</span>
