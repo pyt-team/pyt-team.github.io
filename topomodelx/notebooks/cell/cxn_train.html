@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Tutorial: Set-up, create and train a convolutional CXN &#8212; TopoModelX latest documentation</title>
+    <title>Tutorial: Set-up, create and train a convolutional CCXN &#8212; TopoModelX latest documentation</title>
   
   
   
@@ -318,7 +318,7 @@ document.write(`
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">Tutorial: Set-up, create and train a convolutional CXN</li>
+    <li class="breadcrumb-item active" aria-current="page">Tutorial: Set-up, create and train a convolutional CCXN</li>
   </ul>
 </nav>
 </div>
@@ -335,9 +335,9 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="Tutorial:-Set-up,-create-and-train-a-convolutional-CXN">
-<h1>Tutorial: Set-up, create and train a convolutional CXN<a class="headerlink" href="#Tutorial:-Set-up,-create-and-train-a-convolutional-CXN" title="Permalink to this heading">#</a></h1>
-<p>In this notebook, we create and train a CXN network, originally proposed in the paper by Hajij et. al : Cell Complex Neural Networks (<a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">https://arxiv.org/pdf/2010.00743.pdf</a>). We will load a cell complex dataset (MUTAG, from the TUDataset) from the web and train the model to perform classification on this dataset.</p>
+  <section id="Tutorial:-Set-up,-create-and-train-a-convolutional-CCXN">
+<h1>Tutorial: Set-up, create and train a convolutional CCXN<a class="headerlink" href="#Tutorial:-Set-up,-create-and-train-a-convolutional-CCXN" title="Permalink to this heading">#</a></h1>
+<p>In this notebook, we create and train a CCXN network, originally proposed in the paper by Hajij et. al : Cell Complex Neural Networks (<a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">https://arxiv.org/pdf/2010.00743.pdf</a>). We will load a cell complex dataset (MUTAG, from the TUDataset) from the web and train the model to perform classification on this dataset.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [43]:
 </pre></div>
@@ -351,7 +351,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
 <span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.cxn_layer</span> <span class="kn">import</span> <span class="n">CXNLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.cxn_layer</span> <span class="kn">import</span> <span class="n">CCXNLayer</span>
 </pre></div>
 </div>
 </div>
@@ -428,7 +428,7 @@ cpu
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Permalink to this heading">#</a></h1>
-<p>Using the CXNLayer class, we create a neural network with stacked layers.</p>
+<p>Using the CCXNLayer class, we create a neural network with stacked layers.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [36]:
 </pre></div>
@@ -443,8 +443,8 @@ cpu
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [37]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CXN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convolutional CXN.</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CCXN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convolutional CCXN.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -457,7 +457,7 @@ cpu
 <span class="sd">    num_classes : int</span>
 <span class="sd">        Number of classes.</span>
 <span class="sd">    n_layers : int</span>
-<span class="sd">        Number of CXN layers.</span>
+<span class="sd">        Number of CCXN layers.</span>
 <span class="sd">    att : bool</span>
 <span class="sd">        Whether to use attention.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -467,7 +467,7 @@ cpu
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">CXNLayer</span><span class="p">(</span>
+                <span class="n">CCXNLayer</span><span class="p">(</span>
                     <span class="n">in_channels_0</span><span class="o">=</span><span class="n">in_ch_0</span><span class="p">,</span>
                     <span class="n">in_channels_1</span><span class="o">=</span><span class="n">in_ch_1</span><span class="p">,</span>
                     <span class="n">in_channels_2</span><span class="o">=</span><span class="n">in_ch_2</span><span class="p">,</span>
@@ -524,7 +524,7 @@ cpu
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [38]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CXN</span><span class="p">(</span><span class="n">in_ch_0</span><span class="p">,</span> <span class="n">in_ch_1</span><span class="p">,</span> <span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CCXN</span><span class="p">(</span><span class="n">in_ch_0</span><span class="p">,</span> <span class="n">in_ch_1</span><span class="p">,</span> <span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -617,7 +617,7 @@ Test_acc: 0.5000
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [41]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CXN</span><span class="p">(</span><span class="n">in_ch_0</span><span class="p">,</span> <span class="n">in_ch_1</span><span class="p">,</span> <span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CCXN</span><span class="p">(</span><span class="n">in_ch_0</span><span class="p">,</span> <span class="n">in_ch_1</span><span class="p">,</span> <span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -727,7 +727,7 @@ Test_acc: 0.5000
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Tutorial: Set-up, create and train a convolutional CXN</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Tutorial: Set-up, create and train a convolutional CCXN</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-data">Import data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures.">Define neighborhood structures.</a></li>
