@@ -429,7 +429,7 @@ Geometrical and Topological Representation Learning Workshop at ICLR 2022.
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjacency_0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/topomodelx/nn/simplicial/hsn_layer.html#HSNLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.hsn_layer.HSNLayer.forward" title="Permalink to this definition">#</a></dt>
 <dd><p>Forward pass.</p>
 <p>The forward pass was initially proposed in <a class="reference internal" href="#id5" id="id2"><span>[HRGZ22]</span></a>.
-Its equations are given in <a class="reference internal" href="#id11" id="id3"><span>[TNN23]</span></a> and graphically illustrated in <a class="reference internal" href="#id12" id="id4"><span>[PSHM23]</span></a>.</p>
+Its equations are given in <a class="reference internal" href="#tnn23" id="id3"><span>[TNN23]</span></a> and graphically illustrated in <a class="reference internal" href="#pshm23" id="id4"><span>[PSHM23]</span></a>.</p>
 <div class="math notranslate nohighlight">
 \[m_{{y \rightarrow z}}^{(0 \rightarrow 0)} = \sigma ((A_{\uparrow,0})_{xy} \cdot h^{t,(0)}_y \cdot \Theta^{t,(0)1})
 m_{z \rightarrow x}^{(0 \rightarrow 0)}  = (A_{\uparrow,0})_{xy} \cdot m_{y \rightarrow z}^{(0 \rightarrow 0)} \cdot \Theta^{t,(0)2}
@@ -449,12 +449,12 @@ Geometrical and Topological Representation Learning Workshop at ICLR 2022.
 <a class="reference external" href="https://openreview.net/pdf?id=Sc8glB-k6e9">https://openreview.net/pdf?id=Sc8glB-k6e9</a></p>
 </div>
 <div class="citation" id="tnn23" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>TNN23<span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">TNN23</a><span class="fn-bracket">]</span></span>
 <p>Equations of Topological Neural Networks.
 <a class="github reference external" href="https://github.com/awesome-tnns/awesome-tnns/">awesome-tnns/awesome-tnns</a></p>
 </div>
 <div class="citation" id="pshm23" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>PSHM23<span class="fn-bracket">]</span></span>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">PSHM23</a><span class="fn-bracket">]</span></span>
 <p>Papillon, Sanborn, Hajij, Miolane.
 Architectures of Topological Deep Learning: A Survey on Topological Neural Networks.
 (2023) <a class="reference external" href="https://arxiv.org/abs/2304.10031">https://arxiv.org/abs/2304.10031</a>.</p>
@@ -483,109 +483,8 @@ Architectures of Topological Deep Learning: A Survey on Topological Neural Netwo
 </dd></dl>
 
 </section>
-<section id="module-topomodelx.nn.cell.cxn_layer">
-<span id="cell-complex-neural-networks"></span><h2>Cell Complex Neural Networks<a class="headerlink" href="#module-topomodelx.nn.cell.cxn_layer" title="Permalink to this heading">#</a></h2>
-<p>Implementation of a simplified, convolutional version of CCXN layer from Hajij et. al: Cell Complex Neural Networks.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="topomodelx.nn.cell.cxn_layer.CCXNLayer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.cell.cxn_layer.</span></span><span class="sig-name descname"><span class="pre">CCXNLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">att</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/topomodelx/nn/cell/cxn_layer.html#CCXNLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.cxn_layer.CCXNLayer" title="Permalink to this definition">#</a></dt>
-<dd><p>Layer of a Convolutional Cell Complex Network (CCXN).</p>
-<p>Implementation of a simplified version of the CCXN layer proposed in <a class="reference internal" href="#id10" id="id6"><span>[HIZ20]</span></a>.</p>
-<p>This layer is composed of two convolutional layers:
-1. A convolutional layer sending messages from nodes to nodes.
-2. A convolutional layer sending messages from edges to faces.
-Optionally, attention mechanisms can be used.</p>
-<p class="rubric">Notes</p>
-<p>This is the architecture proposed for entire complex classification.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_channels_0</strong> (<em>int</em>) – Dimension of input features on nodes (0-cells).</p></li>
-<li><p><strong>in_channels_1</strong> (<em>int</em>) – Dimension of input features on edges (1-cells).</p></li>
-<li><p><strong>in_channels_2</strong> (<em>int</em>) – Dimension of input features on faces (2-cells).</p></li>
-<li><p><strong>att</strong> (<em>bool</em>) – Whether to use attention.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<div role="list" class="citation-list">
-<div class="citation" id="hiz20" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>HIZ20<span class="fn-bracket">]</span></span>
-<p>Hajij, Istvan, Zamzmi. Cell Complex Neural Networks.
-Topological Data Analysis and Beyond Workshop at NeurIPS 2020.
-<a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">https://arxiv.org/pdf/2010.00743.pdf</a></p>
-</div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="topomodelx.nn.cell.cxn_layer.CCXNLayer.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_0_to_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_1_to_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/topomodelx/nn/cell/cxn_layer.html#CCXNLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.cxn_layer.CCXNLayer.forward" title="Permalink to this definition">#</a></dt>
-<dd><p>Forward pass.</p>
-<p>The forward pass was initially proposed in <a class="reference internal" href="#id10" id="id7"><span>[HIZ20]</span></a>.
-Its equations are given in <a class="reference internal" href="#id11" id="id8"><span>[TNN23]</span></a> and graphically illustrated in <a class="reference internal" href="#id12" id="id9"><span>[PSHM23]</span></a>.</p>
-<p>The forward pass of this layer is composed of two steps.</p>
-<ol class="arabic simple">
-<li><p>The convolution from nodes to nodes is given by an adjacency message passing scheme (AMPS):</p></li>
-</ol>
-<div class="math notranslate nohighlight">
-\[m_{y \rightarrow \{z\} \rightarrow x}^{(0 \rightarrow 1 \rightarrow 0)}
-    = M_{\mathcal{L}_\uparrow}(h_x^{(0)}, h_y^{(0)}, \Theta^{(y \rightarrow x)})
-m_x^{(0 \rightarrow 1 \rightarrow 0)}
-    = \text{AGG}_{y \in \mathcal{L}_\uparrow(x)}(m_{y \rightarrow \{z\} \rightarrow x}^{0 \rightarrow 1 \rightarrow 0})$
-m_x^{(0)} = m_x^{(0 \rightarrow 1 \rightarrow 0)}
-h_x^{t+1,(0)} = U^{t}(h_x^{(0)}, m_x^{(0)})\]</div>
-<ol class="arabic simple" start="2">
-<li><p>The convolution from edges to faces is given by cohomology message passing scheme, using the coboundary neighborhood:</p></li>
-</ol>
-<div class="math notranslate nohighlight">
-\[m_{y \rightarrow x}^{(r' \rightarrow r)}
-    = M^t_{\mathcal{C}}(h_{x}^{t,(r)}, h_y^{t,(r')}, x, y)
-m_x^{(r' \rightarrow r)}
-    = \text{AGG}_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(r' \rightarrow r)}
-m_x^{(r)}
-    = m_x^{(r' \rightarrow r)}
-h_{x}^{t+1,(r)}
-    = U^{t,(r)}(h_{x}^{t,(r)}, m_{x}^{(r)})\]</div>
-<p class="rubric">References</p>
-<div role="list" class="citation-list">
-<div class="citation" id="id10" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>HIZ20<span class="fn-bracket">]</span></span>
-<p>Hajij, Istvan, Zamzmi. Cell Complex Neural Networks.
-Topological Data Analysis and Beyond Workshop at NeurIPS 2020.
-<a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">https://arxiv.org/pdf/2010.00743.pdf</a></p>
-</div>
-<div class="citation" id="id11" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>TNN23<span class="fn-bracket">]</span></span>
-<p>Equations of Topological Neural Networks.
-<a class="github reference external" href="https://github.com/awesome-tnns/awesome-tnns/">awesome-tnns/awesome-tnns</a></p>
-</div>
-<div class="citation" id="id12" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>PSHM23<span class="fn-bracket">]</span></span>
-<p>Papillon, Sanborn, Hajij, Miolane.
-Architectures of Topological Deep Learning: A Survey on Topological Neural Networks.
-(2023) <a class="reference external" href="https://arxiv.org/abs/2304.10031">https://arxiv.org/abs/2304.10031</a>.</p>
-</div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x_0</strong> (<em>torch.Tensor, shape=[n_0_cells, channels]</em>) – Input features on the nodes of the cell complex.</p></li>
-<li><p><strong>x_1</strong> (<em>torch.Tensor, shape=[n_1_cells, channels]</em>) – Input features on the edges of the cell complex.</p></li>
-<li><p><strong>neighborhood_0_to_0</strong> (<em>torch.sparse</em>) – shape=[n_0_cells, n_0_cells]
-Neighborhood matrix mapping nodes to nodes (A_0_up).</p></li>
-<li><p><strong>neighborhood_1_to_2</strong> (<em>torch.sparse</em>) – shape=[n_2_cells, n_1_cells]
-Neighborhood matrix mapping edges to faces (B_2^T).</p></li>
-<li><p><strong>x_2</strong> (<em>torch.Tensor, shape=[n_2_cells, channels]</em>) – Input features on the faces of the cell complex.
-Optional, only required if attention is used between edges and faces.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>_</strong> (<em>torch.Tensor, shape=[1, num_classes]</em>) – Output prediction on the entire cell complex.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+<section id="cell-complex-neural-networks">
+<h2>Cell Complex Neural Networks<a class="headerlink" href="#cell-complex-neural-networks" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -652,13 +551,7 @@ Optional, only required if attention is used between edges and faces.</p></li>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-topomodelx.nn.cell.cxn_layer">Cell Complex Neural Networks</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.cell.cxn_layer.CCXNLayer"><code class="docutils literal notranslate"><span class="pre">CCXNLayer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.cell.cxn_layer.CCXNLayer.forward"><code class="docutils literal notranslate"><span class="pre">CCXNLayer.forward()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-complex-neural-networks">Cell Complex Neural Networks</a></li>
 </ul>
   </nav></div>
 
