@@ -431,7 +431,7 @@ Geometrical and Topological Representation Learning Workshop at ICLR 2022.
 <p>The forward pass was initially proposed in <a class="reference internal" href="#id5" id="id2"><span>[HRGZ22]</span></a>.
 Its equations are given in <a class="reference internal" href="#id11" id="id3"><span>[TNN23]</span></a> and graphically illustrated in <a class="reference internal" href="#id12" id="id4"><span>[PSHM23]</span></a>.</p>
 <div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}🟥 m_{{y \rightarrow z}}^{(0 \rightarrow 0)} = \sigma ((A_{\uparrow,0})_{xy} \cdot h^{t,(0)}_y \cdot \Theta^{t,(0)1})\\🟥 m_{z \rightarrow x}^{(0 \rightarrow 0)}  = (A_{\uparrow,0})_{xy} \cdot m_{y \rightarrow z}^{(0 \rightarrow 0)} \cdot \Theta^{t,(0)2}\\🟥 m_{{y \rightarrow z}}^{(0 \rightarrow 1)}  = \sigma((B_1^T)_{zy} \cdot h_y^{t,(0)} \cdot \Theta^{t,(0 \rightarrow 1)})\\🟥 m_{z \rightarrow x)}^{(1 \rightarrow 0)}  = (B_1)_{xz} \cdot m_{z \rightarrow x}^{(0 \rightarrow 1)} \cdot \Theta^{t, (1 \rightarrow 0)}\\🟧 m_{x}^{(0 \rightarrow 0)}  = \sum_{z \in \mathcal{L}_\uparrow(x)} m_{z \rightarrow x}^{(0 \rightarrow 0)}\\🟧 m_{x}^{(1 \rightarrow 0)}  = \sum_{z \in \mathcal{C}(x)} m_{z \rightarrow x}^{(1 \rightarrow 0)}\\🟩 m_x^{(0)}  = m_x^{(0 \rightarrow 0)} + m_x^{(1 \rightarrow 0)}\\🟦 h_x^{t+1,(0)}  = I(m_x^{(0)})\end{aligned}\end{align} \]</div>
+\[ \begin{align}\begin{aligned}🟥 \quad m_{{y \rightarrow z}}^{(0 \rightarrow 0)} = \sigma ((A_{\uparrow,0})_{xy} \cdot h^{t,(0)}_y \cdot \Theta^{t,(0)1})\\🟥 \quad m_{z \rightarrow x}^{(0 \rightarrow 0)}  = (A_{\uparrow,0})_{xy} \cdot m_{y \rightarrow z}^{(0 \rightarrow 0)} \cdot \Theta^{t,(0)2}\\🟥 \quad m_{{y \rightarrow z}}^{(0 \rightarrow 1)}  = \sigma((B_1^T)_{zy} \cdot h_y^{t,(0)} \cdot \Theta^{t,(0 \rightarrow 1)})\\🟥 \quad m_{z \rightarrow x)}^{(1 \rightarrow 0)}  = (B_1)_{xz} \cdot m_{z \rightarrow x}^{(0 \rightarrow 1)} \cdot \Theta^{t, (1 \rightarrow 0)}\\🟧 \quad m_{x}^{(0 \rightarrow 0)}  = \sum_{z \in \mathcal{L}_\uparrow(x)} m_{z \rightarrow x}^{(0 \rightarrow 0)}\\🟧 \quad m_{x}^{(1 \rightarrow 0)}  = \sum_{z \in \mathcal{C}(x)} m_{z \rightarrow x}^{(1 \rightarrow 0)}\\🟩 \quad m_x^{(0)}  = m_x^{(0 \rightarrow 0)} + m_x^{(1 \rightarrow 0)}\\🟦 \quad h_x^{t+1,(0)}  = I(m_x^{(0)})\end{aligned}\end{align} \]</div>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
 <div class="citation" id="id5" role="doc-biblioentry">
@@ -520,21 +520,24 @@ Its equations are given in <a class="reference internal" href="#id11" id="id8"><
 <li><p>The convolution from nodes to nodes is given by an adjacency message passing scheme (AMPS):</p></li>
 </ol>
 <div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}\begin{align*}
-m_{y \rightarrow \{z\} \rightarrow x}^{(0 \rightarrow 1 \rightarrow 0)}
-    &amp;= M_{\mathcal{L}_\uparrow}(h_x^{(0)}, h_y^{(0)}, \Theta^{(y \rightarrow x)})\\m_x^{(0 \rightarrow 1 \rightarrow 0)}
-    &amp;= \text{AGG}_{y \in \mathcal{L}_\uparrow(x)}(m_{y \rightarrow \{z\} \rightarrow x}^{0 \rightarrow 1 \rightarrow 0})\\m_x^{(0)}
-    &amp;= m_x^{(0 \rightarrow 1 \rightarrow 0)}\\h_x^{t+1,(0)}
-    &amp;= U^{t}(h_x^{(0)}, m_x^{(0)})
-\end{align*}\end{aligned}\end{align} \]</div>
+\[\begin{split}\begin{align*}
+🟥 \quad m_{y \rightarrow \{z\} \rightarrow x}^{(0 \rightarrow 1 \rightarrow 0)}
+    &amp;= M_{\mathcal{L}_\uparrow}(h_x^{(0)}, h_y^{(0)}, \Theta^{(y \rightarrow x)})\\
+🟧 \quad m_x^{(0 \rightarrow 1 \rightarrow 0)}
+    &amp;= \text{AGG}_{y \in \mathcal{L}_\uparrow(x)}(m_{y \rightarrow \{z\} \rightarrow x}^{0 \rightarrow 1 \rightarrow 0})\\
+🟩 \quad m_x^{(0)}
+    &amp;= m_x^{(0 \rightarrow 1 \rightarrow 0)}\\
+🟦 \quad h_x^{t+1,(0)}
+    &amp;= U^{t}(h_x^{(0)}, m_x^{(0)})\\
+\end{align*}\end{split}\]</div>
 <ol class="arabic simple" start="2">
 <li><p>The convolution from edges to faces is given by cohomology message passing scheme, using the coboundary neighborhood:</p></li>
 </ol>
 <div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}m_{y \rightarrow x}^{(r' \rightarrow r)}
-    = M^t_{\mathcal{C}}(h_{x}^{t,(r)}, h_y^{t,(r')}, x, y)\\m_x^{(r' \rightarrow r)}
-    = \text{AGG}_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(r' \rightarrow r)}\\m_x^{(r)}
-    = m_x^{(r' \rightarrow r)}\\h_{x}^{t+1,(r)}
+\[ \begin{align}\begin{aligned}🟥 \quad m_{y \rightarrow x}^{(r' \rightarrow r)}
+    = M^t_{\mathcal{C}}(h_{x}^{t,(r)}, h_y^{t,(r')}, x, y)\\🟧 \quad m_x^{(r' \rightarrow r)}
+    = \text{AGG}_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(r' \rightarrow r)}\\🟩 \quad m_x^{(r)}
+    = m_x^{(r' \rightarrow r)}\\🟦 \quad h_{x}^{t+1,(r)}
     = U^{t,(r)}(h_{x}^{t,(r)}, m_{x}^{(r)})\end{aligned}\end{align} \]</div>
 <p class="rubric">References</p>
 <div role="list" class="citation-list">
