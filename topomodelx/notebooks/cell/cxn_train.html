@@ -337,7 +337,23 @@ document.write(`
                   
   <section id="Tutorial:-Set-up,-create-and-train-a-convolutional-CCXN">
 <h1>Tutorial: Set-up, create and train a convolutional CCXN<a class="headerlink" href="#Tutorial:-Set-up,-create-and-train-a-convolutional-CCXN" title="Permalink to this heading">#</a></h1>
-<p>In this notebook, we create and train a CCXN network, originally proposed in the paper by Hajij et. al : Cell Complex Neural Networks (<a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">https://arxiv.org/pdf/2010.00743.pdf</a>). We will load a cell complex dataset (MUTAG, from the TUDataset) from the web and train the model to perform classification on this dataset.</p>
+<p>In this notebook, we create and train a CCXN network, originally proposed in the paper by <a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">Hajij et. al : Cell Complex Neural Networks (2020)</a>.</p>
+<p>We will load a cell complex dataset (MUTAG, from the TUDataset) from the web and train the model to perform classification on this dataset.</p>
+<p>The equations of one layer of this neural network are given by:</p>
+<section id="1.-A-convolution-from-nodes-to-nodes-using-an-adjacency-message-passing-scheme-(AMPS):">
+<h2>1. A convolution from nodes to nodes using an adjacency message passing scheme (AMPS):<a class="headerlink" href="#1.-A-convolution-from-nodes-to-nodes-using-an-adjacency-message-passing-scheme-(AMPS):" title="Permalink to this heading">#</a></h2>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow \{z\} \rightarrow x}^{(0 \rightarrow 1 \rightarrow 0)} = M_{\mathcal{L}_\uparrow}^t(h_x^{t,(0)}, h_y^{t,(0)}, \Theta^{t,(y \rightarrow x)})\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(0 \rightarrow 1 \rightarrow 0)} = AGG_{y \in \mathcal{L}_\uparrow(x)}(m_{y \rightarrow \{z\} \rightarrow x}^{0 \rightarrow 1 \rightarrow 0})\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(0)} = m_x^{(0 \rightarrow 1 \rightarrow 0)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(0)} = U^{t}(h_x^{t,(0)}, m_x^{(0)})\)</span></p>
+</section>
+<section id="2.-A-convolution-from-edges-to-faces-using-a-cohomology-message-passing-scheme:">
+<h2>2. A convolution from edges to faces using a cohomology message passing scheme:<a class="headerlink" href="#2.-A-convolution-from-edges-to-faces-using-a-cohomology-message-passing-scheme:" title="Permalink to this heading">#</a></h2>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow x}^{(r' \rightarrow r)} = M^t_{\mathcal{C}}(h_{x}^{t,(r)}, h_y^{t,(r')}, x, y)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(r' \rightarrow r)} = AGG_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(r' \rightarrow r)}\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(r)} = m_x^{(r' \rightarrow r)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_{x}^{t+1,(r)} = U^{t,(r)}(h_{x}^{t,(r)}, m_{x}^{(r)})\)</span></p>
+<p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [43]:
 </pre></div>
@@ -375,10 +391,9 @@ cpu
 </pre></div></div>
 </div>
 </section>
+</section>
 <section id="Pre-processing">
 <h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Permalink to this heading">#</a></h1>
-<section id="Import-data">
-<h2>Import data<a class="headerlink" href="#Import-data" title="Permalink to this heading">#</a></h2>
 <p>The first step is to import the dataset, MUTAG, a benchmark dataset for graph classification. We then lift each graph into our domain of choice, a cell complex.</p>
 <p>We will also retrieve: - input signal on the nodes and edges for each of these cell complexes, as that will be what we feed the model in input - the binary label associated to the cell complex</p>
 <div class="nbinput nblast docutils container">
@@ -404,9 +419,6 @@ cpu
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Define-neighborhood-structures.">
-<h2>Define neighborhood structures.<a class="headerlink" href="#Define-neighborhood-structures." title="Permalink to this heading">#</a></h2>
 <p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on each simplicial complex. In the case of this architecture, we need the adjacency matrix <span class="math notranslate nohighlight">\(A_{\uparrow, 0}\)</span> and the coboundary matrix <span class="math notranslate nohighlight">\(B_2^T\)</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [35]:
@@ -424,7 +436,6 @@ cpu
 </pre></div>
 </div>
 </div>
-</section>
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Permalink to this heading">#</a></h1>
@@ -727,12 +738,12 @@ Test_acc: 0.5000
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Tutorial: Set-up, create and train a convolutional CCXN</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-data">Import data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures.">Define neighborhood structures.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Tutorial: Set-up, create and train a convolutional CCXN</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-A-convolution-from-nodes-to-nodes-using-an-adjacency-message-passing-scheme-(AMPS):">1. A convolution from nodes to nodes using an adjacency message passing scheme (AMPS):</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-A-convolution-from-edges-to-faces-using-a-cohomology-message-passing-scheme:">2. A convolution from edges to faces using a cohomology message passing scheme:</a></li>
 </ul>
 </li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
 </ul>
