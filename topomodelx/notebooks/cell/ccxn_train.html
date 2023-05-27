@@ -42,8 +42,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/cell/cxn_train';</script>
-    <link rel="canonical" href="pyt-team.github.io/notebooks/cell/cxn_train.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/cell/ccxn_train';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/cell/ccxn_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Train a Hypergraph Neural Network" href="../hypergraph/template_train.html" />
@@ -293,6 +293,8 @@ document.write(`
 
 
 
+
+
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/template_train.html">Train a Hypergraph Neural Network</a></li>
 
 
@@ -360,48 +362,58 @@ document.write(`
                   
   <section id="Train-a-Convolutional-Cell-Complex-Network-(CCXN)">
 <h1>Train a Convolutional Cell Complex Network (CCXN)<a class="headerlink" href="#Train-a-Convolutional-Cell-Complex-Network-(CCXN)" title="Permalink to this heading">#</a></h1>
-<p>In this notebook, we create and train a CCXN network, originally proposed in the paper by <a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">Hajij et. al : Cell Complex Neural Networks (2020)</a>.</p>
-<p>We will load a cell complex dataset (MUTAG, from the TUDataset) from the web and train the model to perform classification on this dataset.</p>
+<p>We create and train a simplified version of the CCXN originally proposed in <a class="reference external" href="https://arxiv.org/pdf/2010.00743.pdf">Hajij et. al : Cell Complex Neural Networks (2020)</a>.</p>
+<section id="The-Neural-Network:">
+<h2>The Neural Network:<a class="headerlink" href="#The-Neural-Network:" title="Permalink to this heading">#</a></h2>
 <p>The equations of one layer of this neural network are given by:</p>
-<section id="1.-A-convolution-from-nodes-to-nodes-using-an-adjacency-message-passing-scheme-(AMPS):">
-<h2>1. A convolution from nodes to nodes using an adjacency message passing scheme (AMPS):<a class="headerlink" href="#1.-A-convolution-from-nodes-to-nodes-using-an-adjacency-message-passing-scheme-(AMPS):" title="Permalink to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>A convolution from nodes to nodes using an adjacency message passing scheme (AMPS):</p></li>
+</ol>
 <p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow \{z\} \rightarrow x}^{(0 \rightarrow 1 \rightarrow 0)} = M_{\mathcal{L}_\uparrow}^t(h_x^{t,(0)}, h_y^{t,(0)}, \Theta^{t,(y \rightarrow x)})\)</span></p>
 <p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(0 \rightarrow 1 \rightarrow 0)} = AGG_{y \in \mathcal{L}_\uparrow(x)}(m_{y \rightarrow \{z\} \rightarrow x}^{0 \rightarrow 1 \rightarrow 0})\)</span></p>
 <p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(0)} = m_x^{(0 \rightarrow 1 \rightarrow 0)}\)</span></p>
 <p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(0)} = U^{t}(h_x^{t,(0)}, m_x^{(0)})\)</span></p>
-</section>
-<section id="2.-A-convolution-from-edges-to-faces-using-a-cohomology-message-passing-scheme:">
-<h2>2. A convolution from edges to faces using a cohomology message passing scheme:<a class="headerlink" href="#2.-A-convolution-from-edges-to-faces-using-a-cohomology-message-passing-scheme:" title="Permalink to this heading">#</a></h2>
+<ol class="arabic simple" start="2">
+<li><p>A convolution from edges to faces using a cohomology message passing scheme:</p></li>
+</ol>
 <p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow x}^{(r' \rightarrow r)} = M^t_{\mathcal{C}}(h_{x}^{t,(r)}, h_y^{t,(r')}, x, y)\)</span></p>
 <p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(r' \rightarrow r)} = AGG_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(r' \rightarrow r)}\)</span></p>
 <p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(r)} = m_x^{(r' \rightarrow r)}\)</span></p>
 <p>🟦 <span class="math notranslate nohighlight">\(\quad h_{x}^{t+1,(r)} = U^{t,(r)}(h_{x}^{t,(r)}, m_{x}^{(r)})\)</span></p>
 <p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
+</section>
+<section id="The-Task:">
+<h2>The Task:<a class="headerlink" href="#The-Task:" title="Permalink to this heading">#</a></h2>
+<p>We train this model to perform entire complex classification on <code class="docutils literal notranslate"><span class="pre">`MUTAG</span></code> from the TUDataset &lt;<a class="reference external" href="https://paperswithcode.com/dataset/mutag">https://paperswithcode.com/dataset/mutag</a>&gt;`__. This dataset contains: - 188 samples of chemical compounds represented as graphs, - with 7 discrete node features.</p>
+<p>The task is to predict the mutagenicity of each compound on Salmonella typhimurium.</p>
+</section>
+</section>
+<section id="Set-up">
+<h1>Set-up<a class="headerlink" href="#Set-up" title="Permalink to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.datasets</span> <span class="kn">import</span> <span class="n">TUDataset</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
-<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.cxn_layer</span> <span class="kn">import</span> <span class="n">CCXNLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.ccxn_layer</span> <span class="kn">import</span> <span class="n">CCXNLayer</span>
 </pre></div>
 </div>
 </div>
 <p>If GPU’s are available, we will make use of them. Otherwise, this will run on CPU.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -414,79 +426,118 @@ cpu
 </pre></div></div>
 </div>
 </section>
-</section>
 <section id="Pre-processing">
 <h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Permalink to this heading">#</a></h1>
-<p>The first step is to import the dataset, MUTAG, a benchmark dataset for graph classification. We then lift each graph into our domain of choice, a cell complex.</p>
-<p>We will also retrieve: - input signal on the nodes and edges for each of these cell complexes, as that will be what we feed the model in input - the binary label associated to the cell complex</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [34]:
+<p>We import a subset of MUTAG, a benchmark dataset for graph classification.</p>
+<p>We then lift each graph into our topological domain of choice, here: a cell complex.</p>
+<p>We also retrieve: - input signals <code class="docutils literal notranslate"><span class="pre">x_0</span></code> and <code class="docutils literal notranslate"><span class="pre">x_1</span></code> on the nodes (0-cells) and edges (1-cells) for each complex: these will be the model’s inputs, - a binary classification label <code class="docutils literal notranslate"><span class="pre">y</span></code> associated to the cell complex.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">TUDataset</span><span class="p">(</span>
     <span class="n">root</span><span class="o">=</span><span class="s2">&quot;/tmp/MUTAG&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MUTAG&quot;</span><span class="p">,</span> <span class="n">use_edge_attr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_node_attr</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span>
-<span class="n">cell_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">cc_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">x_0_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">x_1_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">y_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">graph</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-    <span class="n">cellcomplex</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
-    <span class="n">cell_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cellcomplex</span><span class="p">)</span>
-    <span class="n">x_0</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">x</span>  <span class="c1"># torch.chunk(graph.x, 2, dim=0)[1]</span>
-    <span class="n">x_1</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">edge_attr</span>  <span class="c1"># torch.chunk(graph.edge_attr, 2, dim=0)[1]</span>
-    <span class="n">x_0_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-    <span class="n">x_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+    <span class="n">cell_complex</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
+    <span class="n">cc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell_complex</span><span class="p">)</span>
+    <span class="n">x_0_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">edge_attr</span><span class="p">)</span>
     <span class="n">y_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+
+<span class="n">i_cc</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features on nodes for the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">th cell complex: </span><span class="si">{</span><span class="n">x_0_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features on edges for the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">th cell complex: </span><span class="si">{</span><span class="n">x_1_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label of </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">th cell complex: </span><span class="si">{</span><span class="n">y_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on each simplicial complex. In the case of this architecture, we need the adjacency matrix <span class="math notranslate nohighlight">\(A_{\uparrow, 0}\)</span> and the coboundary matrix <span class="math notranslate nohighlight">\(B_2^T\)</span>.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [35]:
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Features on nodes for the 0th cell complex: torch.Size([17, 7]).
+Features on edges for the 0th cell complex: torch.Size([38, 4]).
+Label of 0th cell complex: 1.
+</pre></div></div>
+</div>
+<p>Implementing the CCXN architecture will require to perform message passing along neighborhood structures of the cell complexes.</p>
+<p>Thus, now we retrieve these neighborhood structures (i.e. their representative matrices) that we will use to send messages.</p>
+<p>For the CCXN, we need the adjacency matrix <span class="math notranslate nohighlight">\(A_{\uparrow, 0}\)</span> and the coboundary matrix <span class="math notranslate nohighlight">\(B_2^T\)</span> of each cell complex.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [38]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_2_t_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">adjacency_0_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">cellcomplex</span> <span class="ow">in</span> <span class="n">cell_list</span><span class="p">:</span>
-    <span class="n">incidence_2_t</span> <span class="o">=</span> <span class="n">cellcomplex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">cellcomplex</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">cell_complex</span> <span class="ow">in</span> <span class="n">cc_list</span><span class="p">:</span>
+    <span class="n">incidence_2_t</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">incidence_2_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_2_t</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
     <span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adjacency_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
     <span class="n">incidence_2_t_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence_2_t</span><span class="p">)</span>
     <span class="n">adjacency_0_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">adjacency_0</span><span class="p">)</span>
+
+<span class="n">i_cc</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Incidence_2_t of the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">-th complex: </span><span class="si">{</span><span class="n">incidence_2_t_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adjacency of the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">-th complex: </span><span class="si">{</span><span class="n">adjacency_0_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Incidence_2_t of the 0-th complex: torch.Size([0, 38]).
+Adjacency of the 0-th complex: torch.Size([17, 17]).
+</pre></div></div>
 </div>
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Permalink to this heading">#</a></h1>
 <p>Using the CCXNLayer class, we create a neural network with stacked layers.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [36]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_ch_0</span> <span class="o">=</span> <span class="n">x_0_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">in_ch_1</span> <span class="o">=</span> <span class="n">x_1_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">in_ch_2</span> <span class="o">=</span> <span class="mi">5</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">in_channels_1</span> <span class="o">=</span> <span class="n">x_1_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">in_channels_2</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The dimension of input features on nodes, edges and faces are: </span><span class="si">{</span><span class="n">in_channels_0</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">in_channels_1</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">in_channels_2</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The dimension of input features on nodes, edges and faces are: 7, 4 and 5.
+</pre></div></div>
+</div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [43]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CCXN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convolutional CCXN.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CCXN.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    in_ch_0 : int</span>
+<span class="sd">    in_channels_0 : int</span>
 <span class="sd">        Dimension of input features on nodes.</span>
-<span class="sd">    in_ch_1 : int</span>
+<span class="sd">    in_channels_1 : int</span>
 <span class="sd">        Dimension of input features on edges.</span>
-<span class="sd">    in_ch_2 : int</span>
+<span class="sd">    in_channels_2 : int</span>
 <span class="sd">        Dimension of input features on faces.</span>
 <span class="sd">    num_classes : int</span>
 <span class="sd">        Number of classes.</span>
@@ -496,48 +547,51 @@ cpu
 <span class="sd">        Whether to use attention.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_ch_0</span><span class="p">,</span> <span class="n">in_ch_1</span><span class="p">,</span> <span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_channels_0</span><span class="p">,</span>
+        <span class="n">in_channels_1</span><span class="p">,</span>
+        <span class="n">in_channels_2</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="p">,</span>
+        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">att</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">CCXNLayer</span><span class="p">(</span>
-                    <span class="n">in_channels_0</span><span class="o">=</span><span class="n">in_ch_0</span><span class="p">,</span>
-                    <span class="n">in_channels_1</span><span class="o">=</span><span class="n">in_ch_1</span><span class="p">,</span>
-                    <span class="n">in_channels_2</span><span class="o">=</span><span class="n">in_ch_2</span><span class="p">,</span>
+                    <span class="n">in_channels_0</span><span class="o">=</span><span class="n">in_channels_0</span><span class="p">,</span>
+                    <span class="n">in_channels_1</span><span class="o">=</span><span class="n">in_channels_1</span><span class="p">,</span>
+                    <span class="n">in_channels_2</span><span class="o">=</span><span class="n">in_channels_2</span><span class="p">,</span>
                     <span class="n">att</span><span class="o">=</span><span class="n">att</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_ch_0</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_ch_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">neighborhood_0_to_0</span><span class="p">,</span> <span class="n">neighborhood_1_to_2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layers, then avg pooling.</span>
 
 <span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, in_ch_0]</span>
-<span class="sd">            Node features.</span>
-
-<span class="sd">        x_1 : tensor</span>
-<span class="sd">            shape = [n_edges, in_ch_1]</span>
-<span class="sd">            Edge features.</span>
-
-<span class="sd">        neighborhood_0_to_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_nodes]</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_0 : torch.Tensor, shape = [n_nodes, in_channels_0]</span>
+<span class="sd">            Input features on the nodes (0-cells).</span>
+<span class="sd">        x_1 : torch.Tensor, shape = [n_edges, in_channels_1]</span>
+<span class="sd">            Input features on the edges (1-cells).</span>
+<span class="sd">        neighborhood_0_to_0 : tensor, shape = [n_nodes, n_nodes]</span>
 <span class="sd">            Adjacency matrix of rank 0 (up).</span>
-
-<span class="sd">        neighborhood_1_to_2 : tensor</span>
-<span class="sd">            shape = [n_faces, n_edges]</span>
+<span class="sd">        neighborhood_1_to_2 : tensor, shape = [n_faces, n_edges]</span>
 <span class="sd">            Transpose of boundary matrix of rank 2.</span>
+<span class="sd">        x_2 : torch.Tensor, shape = [n_faces, in_channels_2]</span>
+<span class="sd">            Input features on the faces (2-cells).</span>
+<span class="sd">            Optional. Use for attention mechanism between edges and faces.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [1]</span>
+<span class="sd">        -------</span>
+<span class="sd">        _ : tensor, shape = [1]</span>
 <span class="sd">            Label assigned to whole complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
@@ -545,8 +599,9 @@ cpu
         <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
         <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
         <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -555,36 +610,37 @@ cpu
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Permalink to this heading">#</a></h1>
 <p>We specify the model, initialize loss, and specify an optimizer. We first try it without any attention mechanism.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [44]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CCXN</span><span class="p">(</span><span class="n">in_ch_0</span><span class="p">,</span> <span class="n">in_ch_1</span><span class="p">,</span> <span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CCXN</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>Split the dataset into train and test sets.</p>
+<p>We split the dataset into train and test sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [45]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0_train</span><span class="p">,</span> <span class="n">x_0_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_0_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">x_1_train</span><span class="p">,</span> <span class="n">x_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">x_0_train</span><span class="p">,</span> <span class="n">x_0_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_0_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">x_1_train</span><span class="p">,</span> <span class="n">x_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">incidence_2_t_train</span><span class="p">,</span> <span class="n">incidence_2_t_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
-    <span class="n">incidence_2_t_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">incidence_2_t_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
 <span class="n">adjacency_0_train</span><span class="p">,</span> <span class="n">adjacency_0_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
-    <span class="n">adjacency_0_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">adjacency_0_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
-<span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">y_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">y_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>The following cell performs the training, looping over the network for a low amount of epochs. We keep training minimal for the purpose of rapid testing.</p>
+<p>We train the CCXN using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [47]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
@@ -645,12 +701,17 @@ Epoch: 4 loss: nan Train_acc: 0.3750
 Test_acc: 0.5000
 </pre></div></div>
 </div>
+</section>
+<section id="Train-the-Neural-Network-with-Attention">
+<h1>Train the Neural Network with Attention<a class="headerlink" href="#Train-the-Neural-Network-with-Attention" title="Permalink to this heading">#</a></h1>
 <p>Now we create a new neural network, that uses the attention mechanism.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [48]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CCXN</span><span class="p">(</span><span class="n">in_ch_0</span><span class="p">,</span> <span class="n">in_ch_1</span><span class="p">,</span> <span class="n">in_ch_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CCXN</span><span class="p">(</span>
+    <span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
@@ -659,7 +720,7 @@ Test_acc: 0.5000
 </div>
 <p>We run the training for this neural network:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [49]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
@@ -778,20 +839,22 @@ Test_acc: 0.5000
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Convolutional Cell Complex Network (CCXN)</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-A-convolution-from-nodes-to-nodes-using-an-adjacency-message-passing-scheme-(AMPS):">1. A convolution from nodes to nodes using an adjacency message passing scheme (AMPS):</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-A-convolution-from-edges-to-faces-using-a-cohomology-message-passing-scheme:">2. A convolution from edges to faces using a cohomology message passing scheme:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#The-Neural-Network:">The Neural Network:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#The-Task:">The Task:</a></li>
 </ul>
 </li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Set-up">Set-up</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network-with-Attention">Train the Neural Network with Attention</a></li>
 </ul>
 
   </nav></div>
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../../_sources/notebooks/cell/cxn_train.ipynb.txt">
+    <a href="../../_sources/notebooks/cell/ccxn_train.ipynb.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
