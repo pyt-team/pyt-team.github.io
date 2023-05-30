@@ -302,7 +302,6 @@ document.write(`
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplicial High-Skip Network (HSN)</a></li>
 
 
-
 </ul>
 </div>
 </nav></div>
@@ -362,8 +361,7 @@ document.write(`
                   
   <section id="Train-a-Simplicial-High-Skip-Network-(HSN)">
 <h1>Train a Simplicial High-Skip Network (HSN)<a class="headerlink" href="#Train-a-Simplicial-High-Skip-Network-(HSN)" title="Permalink to this heading">#</a></h1>
-<p>In this notebook, we will create and train a High Skip Network in the simplicial complex domain, as proposed in the paper by <a class="reference external" href="https://openreview.net/pdf?id=Sc8glB-k6e9">Hajij et. al : High Skip Networks: A Higher Order Generalization of Skip Connections (2022)</a>.</p>
-<p>We train the model to perform binary node classification using the KarateClub benchmark dataset.</p>
+<p>We create and train a High Skip Network in the simplicial complex domain, as proposed in <a class="reference external" href="https://openreview.net/pdf?id=Sc8glB-k6e9">Hajij et. al : High Skip Networks: A Higher Order Generalization of Skip Connections (2022)</a>.</p>
 <p>The equations of one layer of this neural network are given by:</p>
 <p>🟥 <span class="math notranslate nohighlight">\(\quad m_{{y \rightarrow z}}^{(0 \rightarrow 0)} = \sigma ((A_{\uparrow,0})_{xy} \cdot h^{t,(0)}_y \cdot \Theta^{t,(0)1})\)</span> (level 1)</p>
 <p>🟥 <span class="math notranslate nohighlight">\(\quad m_{z \rightarrow x}^{(0 \rightarrow 0)} = (A_{\uparrow,0})_{xy} \cdot m_{y \rightarrow z}^{(0 \rightarrow 0)} \cdot \Theta^{t,(0)2}\)</span> (level 2)</p>
@@ -374,50 +372,105 @@ document.write(`
 <p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(0)} = m_x^{(0 \rightarrow 0)} + m_x^{(1 \rightarrow 0)}\)</span></p>
 <p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(0)} = I(m_x^{(0)})\)</span></p>
 <p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
+<p>We train the model to perform binary node classification using the <a class="reference external" href="https://en.wikipedia.org/wiki/Zachary%27s_karate_club">KarateClub benchmark dataset</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sklearn</span>
+<span class="kn">import</span> <span class="nn">toponetx</span> <span class="k">as</span> <span class="nn">tnx</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.datasets.karate</span> <span class="kn">import</span> <span class="n">KarateClub</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
-<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.hsn_layer</span> <span class="kn">import</span> <span class="n">HSNLayer</span>
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Pre-processing">
-<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Permalink to this heading">#</a></h1>
 <section id="Import-dataset">
 <h2>Import dataset<a class="headerlink" href="#Import-dataset" title="Permalink to this heading">#</a></h2>
-<p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to two different social groups. We will use these groups for the task of node-level binary classification.</p>
-<p>We must first lift our graph dataset into the simplicial complex domain.</p>
-<div class="nbinput nblast docutils container">
+<p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to four different social groups. Every node is labeled by one of four classes obtained via modularity-based clustering, following the “Semi-supervised Classification with Graph Convolutional Networks” paper by Kipf &amp; Welling 2016.</p>
+<p>We will use these groups for the task of node-level classification.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">KarateClub</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
+<span class="n">i_node</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The </span><span class="si">{</span><span class="n">i_node</span><span class="si">}</span><span class="s2">-th node:</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;- has feature: </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">i_node</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;- and label: </span><span class="si">{</span><span class="n">dataset</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">i_node</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Data(x=[34, 34], edge_index=[2, 156], y=[34], train_mask=[34])
+
+The 5-th node:
+- has feature: tensor([0., 0., 0., 0., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+        0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.])
+- and label: 3.
+</pre></div></div>
+</div>
+</section>
+<section id="Choose-Topological-Domain">
+<h2>Choose Topological Domain<a class="headerlink" href="#Choose-Topological-Domain" title="Permalink to this heading">#</a></h2>
+<p>To train a HSN, we must first lift our graph dataset into the simplicial complex domain.</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">KarateClub</span><span class="p">()</span>
-<span class="n">simplex</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simplicial_complex</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">graph_2_clique_complex</span><span class="p">(</span>
+    <span class="n">to_networkx</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">(),</span> <span class="n">max_dim</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">simplicial_complex</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Simplicial Complex with shape [34, 78, 45] and dimension 2
+</pre></div></div>
 </div>
 </section>
 <section id="Define-neighborhood-structures.">
 <h2>Define neighborhood structures.<a class="headerlink" href="#Define-neighborhood-structures." title="Permalink to this heading">#</a></h2>
-<p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on the domain. In this case, we need the boundary matrix (or incidence matrix) <span class="math notranslate nohighlight">\(B_1\)</span> and the adjacency matrix <span class="math notranslate nohighlight">\(A_{\uparrow,0}\)</span> on the nodes. For a santiy check, we show that the shape of the <span class="math notranslate nohighlight">\(B_1 = n_\text{nodes} \times n_\text{edges}\)</span> and <span class="math notranslate nohighlight">\(A_{\uparrow,0} = n_\text{nodes} \times n_\text{nodes}\)</span>. We also convert the neighborhood structures to torch tensors.</p>
-<div class="nbinput nblast docutils container">
+<p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messages on the domain.</p>
+<p>For the HSN model, we need the boundary matrix (or incidence matrix) <span class="math notranslate nohighlight">\(B_1\)</span> and the adjacency matrix <span class="math notranslate nohighlight">\(A_{\uparrow,0}\)</span> on the nodes.</p>
+<p>As a sanity check, we show that the shape of the <span class="math notranslate nohighlight">\(B_1 = n_\text{nodes} \times n_\text{edges}\)</span> and <span class="math notranslate nohighlight">\(A_{\uparrow,0} = n_\text{nodes} \times n_\text{nodes}\)</span>. We also convert the neighborhood structures to torch tensors.</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">simplicial_complex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">simplicial_complex</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
 <span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adjacency_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The incidence matrix B1 has shape: </span><span class="si">{</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The adjacency matrix A0 has shape: </span><span class="si">{</span><span class="n">adjacency_0</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The incidence matrix B1 has shape: torch.Size([34, 78]).
+The adjacency matrix A0 has shape: torch.Size([34, 34]).
+</pre></div></div>
 </div>
 </section>
 <section id="Import-signal">
@@ -427,7 +480,7 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_nodes</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_nodes</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">x</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">x_nodes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">channels_nodes</span> <span class="o">=</span> <span class="n">x_nodes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
@@ -442,56 +495,55 @@ torch.Size([34, 34])
 </pre></div></div>
 </div>
 </section>
-<section id="Define-binary-labels">
-<h2>Define binary labels<a class="headerlink" href="#Define-binary-labels" title="Permalink to this heading">#</a></h2>
-<p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
-<p>We convert the binary labels into one-hot encoder form, and keep the first four nodes’ true labels for the purpose of testing.</p>
-<div class="nbinput nblast docutils container">
+<section id="Define-classification-labels">
+<h2>Define classification labels<a class="headerlink" href="#Define-classification-labels" title="Permalink to this heading">#</a></h2>
+<p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, four social groups emerge. So we assign labels to the nodes indicating of which group they are a part.</p>
+<p>We convert the classification labels into one-hot encoder form, and keep the first four nodes’ true labels for the purpose of testing.</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-    <span class="p">[</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">1</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-        <span class="mi">0</span><span class="p">,</span>
-    <span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_true</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">y</span>
+<span class="n">y_true</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+tensor([1, 1, 1])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_true</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">sklearn</span><span class="o">.</span><span class="n">preprocessing</span><span class="o">.</span><span class="n">OneHotEncoder</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">y_true</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
 <span class="p">)</span>
-<span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">34</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="n">y_true</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="n">y_true</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">y</span>
-<span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">y_true</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+matrix([[0., 1., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 1., 0., 0.]])
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="o">-</span><span class="mi">30</span><span class="p">:]</span>
 
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
@@ -503,9 +555,9 @@ torch.Size([34, 34])
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Permalink to this heading">#</a></h1>
-<p>Using the HSNLayer class, we create a neural network with stacked layers. A linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
+<p>Using the HSNLayer class, we create a neural network with stacked layers. A linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 4\)</span>, so we can compare with our classification labels.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HSN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -514,13 +566,12 @@ torch.Size([34, 34])
 <span class="sd">    Parameters</span>
 <span class="sd">    ---------</span>
 <span class="sd">    channels : int</span>
-<span class="sd">        Dimension of features</span>
+<span class="sd">        Dimension of features.</span>
 <span class="sd">    n_layers : int</span>
-<span class="sd">        Amount of message passing layers.</span>
-
+<span class="sd">        Number of message passing layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
@@ -529,32 +580,25 @@ torch.Size([34, 34])
                     <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
 
 <span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, channels]</span>
+<span class="sd">        ---------=</span>
+<span class="sd">        x_0 : tensor, shape = [n_nodes, channels]</span>
 <span class="sd">            Node features.</span>
-
-<span class="sd">        incidence_1 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_edges]</span>
+<span class="sd">        incidence_1 : tensor, shape = [n_nodes, n_edges]</span>
 <span class="sd">            Boundary matrix of rank 1.</span>
-
-<span class="sd">        adjacency_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_nodes]</span>
+<span class="sd">        adjacency_0 : tensor, shape = [n_nodes, n_nodes]</span>
 <span class="sd">            Adjacency matrix (up) of rank 0.</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_nodes, 2]</span>
+<span class="sd">        -------</span>
+<span class="sd">        _ : tensor, shape = [n_nodes, 2]</span>
 <span class="sd">            One-hot labels assigned to nodes.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
             <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">)</span>
@@ -567,7 +611,7 @@ torch.Size([34, 34])
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Permalink to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">HSN</span><span class="p">(</span>
@@ -579,19 +623,27 @@ torch.Size([34, 34])
 </div>
 </div>
 <p>The following cell performs the training, looping over the network for a low number of epochs.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+<span class="k">for</span> <span class="n">i_epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 
     <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_nodes</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">)</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">binary_cross_entropy_with_logits</span><span class="p">(</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
         <span class="n">y_hat</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
     <span class="p">)</span>
     <span class="n">epoch_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
@@ -601,10 +653,10 @@ torch.Size([34, 34])
     <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_hat</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
     <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span> <span class="o">==</span> <span class="n">y_hat</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">i_epoch</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">i_epoch</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_nodes</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">)</span>
             <span class="n">y_pred_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">y_hat_test</span><span class="p">)</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
@@ -624,14 +676,1631 @@ torch.Size([34, 34])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 0.7148 Train_acc: 0.0000
-Epoch: 2 loss: 0.6821 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+Epoch: 0 loss: 1.4049 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
 Test_acc: 0.0000
-Epoch: 3 loss: 0.6521 Train_acc: 0.0000
-Epoch: 4 loss: 0.6535 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+Epoch: 1 loss: 1.2712 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+Epoch: 2 loss: 1.2115 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
 Test_acc: 0.0000
-Epoch: 5 loss: 0.6530 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+Epoch: 3 loss: 1.2176 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+Epoch: 4 loss: 1.2071 Train_acc: 0.0000
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([78, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([34, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 34])
+x_message.shape = torch.Size([34, 34])
+
+ x_source.shape = torch.Size([78, 34])
+self.weight.shape = torch.Size([34, 34])
+neighborhood.shape = torch.Size([34, 78])
+x_message.shape = torch.Size([78, 34])
+Test_acc: 0.0000
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 
@@ -682,12 +2351,12 @@ Epoch: 5 loss: 0.6530 Train_acc: 0.0000
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Simplicial High-Skip Network (HSN)</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Simplicial High-Skip Network (HSN)</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-dataset">Import dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Choose-Topological-Domain">Choose Topological Domain</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures.">Define neighborhood structures.</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-signal">Import signal</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-binary-labels">Define binary labels</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-classification-labels">Define classification labels</a></li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
