@@ -330,10 +330,12 @@ document.write(`
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span>
 <span class="kn">from</span> <span class="nn">hypernetx</span> <span class="kn">import</span> <span class="n">Hypergraph</span>
 <span class="kn">from</span> <span class="nn">hypernetx.classes.entity</span> <span class="kn">import</span> <span class="n">Entity</span>
 <span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">Graph</span>
@@ -342,7 +344,6 @@ document.write(`
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
 
 <span class="kn">from</span> <span class="nn">toponetx.classes.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.combinatorial_complex</span> <span class="kn">import</span> <span class="n">CombinatorialComplex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">CellView</span>
 <span class="kn">from</span> <span class="nn">toponetx.exception</span> <span class="kn">import</span> <span class="n">TopoNetXError</span>
@@ -1305,7 +1306,7 @@ document.write(`
 <span class="sd">            either contains cell -&gt; value (if `name` is specified)</span>
 <span class="sd">            or nested dict with cell -&gt; (attribute -&gt; value) (if `name == None`)</span>
 <span class="sd">            where cell is of `rank` (i.e., Hashable for nodes, 2-tuple for edges, tuple/list/Cell for 2-cells)</span>
-<span class="sd">        rank : int</span>
+<span class="sd">        rank : {0, 1, 2}</span>
 <span class="sd">            0 for nodes, 1 for edges, 2 for 2-cells.</span>
 <span class="sd">            ranks &gt; 2 are currently not supported.</span>
 <span class="sd">        name : str, optional</span>
@@ -1480,8 +1481,33 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_equivalent_cells</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CellComplex.is_insertable_cycle"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.is_insertable_cycle">[docs]</a>    <span class="k">def</span> <span class="nf">is_insertable_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">check_skeleton</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">warnings_dis</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if a cycle is insertable to the cell complex.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CellComplex.is_insertable_cycle"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.is_insertable_cycle">[docs]</a>    <span class="k">def</span> <span class="nf">is_insertable_cycle</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cell</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Cell</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+        <span class="n">check_skeleton</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">warnings_dis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if a cycle is insertable to the cell complex.</span>
+
+<span class="sd">        Checks regularity if this CellComplex is regular,</span>
+<span class="sd">        existence of required edges if `check_skeleton` is True,</span>
+<span class="sd">        and that the cell has a minimum length of 2.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cell : Cell | tuple | list</span>
+<span class="sd">            cell object or nodes representing the cell</span>
+<span class="sd">        check_skeleton : bool, default True</span>
+<span class="sd">            Whether to check that all edges induced by the cell are part of the underlying graph.</span>
+<span class="sd">            If False, missing edges will be ignored.</span>
+<span class="sd">        warnings_dis : bool, default False</span>
+<span class="sd">            Whether to print a warning with the reason why the cell is not insertable.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the cell can be inserted, otherwise False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1509,7 +1535,9 @@ document.write(`
                     <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="CellComplex.incidence_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.incidence_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.incidence_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.incidence_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Incidence matrix for the cx indexed by nodes x cells.</span>
 
 <span class="sd">        Parameters</span>
@@ -1528,15 +1556,10 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        incidence_matrix : scipy.sparse.csr.csr_matrix</span>
-
-<span class="sd">        row list : list</span>
-<span class="sd">            list of cells in the complex with the same</span>
-<span class="sd">            order of the row of the matrix</span>
-
-<span class="sd">        column list : list</span>
-<span class="sd">            list of cells in the complex with the same</span>
-<span class="sd">            order of the column of the matrix</span>
+<span class="sd">        scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</span>
+<span class="sd">            The indicendence matrix, if `index` is False, otherwise</span>
+<span class="sd">            lower (row) index dict, upper (col) index dict, incidence matrix</span>
+<span class="sd">            where the index dictionaries map from the entity (as `Hashable` or `tuple`) to the row or col index of the matrix</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1582,9 +1605,6 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; print(column)</span>
 <span class="sd">        &gt;&gt;&gt; print(B1.todense())</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
-        <span class="kn">import</span> <span class="nn">scipy.sparse</span>
-
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">lil_matrix</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">nodes</span><span class="p">)))</span>
             <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
@@ -1669,33 +1689,34 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only dimensions 0, 1 and 2 are supported, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.hodge_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.hodge_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">hodge_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.hodge_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.hodge_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">hodge_laplacian_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the hodge-laplacian matrix for the CX.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rank : int, dimension of the Laplacian matrix.</span>
-<span class="sd">            Supported dimension are 0, 1 and 2</span>
-<span class="sd">        signed : bool, is true return absolute value entry of the Laplacian matrix</span>
-<span class="sd">                       this is useful when one needs to obtain higher-order</span>
-<span class="sd">                       adjacency matrices from the hodge-laplacian</span>
-<span class="sd">                       typically higher-order adjacency matrices&#39; entries are</span>
-<span class="sd">                       typically positive.</span>
+<span class="sd">        rank : {0, 1, 2}</span>
+<span class="sd">            dimension of the Laplacian matrix.</span>
+<span class="sd">        signed : bool</span>
+<span class="sd">            If True return absolute value entry of the Laplacian matrix</span>
+<span class="sd">            this is useful when one needs to obtain higher-order</span>
+<span class="sd">            adjacency matrices from the hodge-laplacian</span>
+<span class="sd">            higher-order adjacency matrices&#39; entries are</span>
+<span class="sd">            typically positive.</span>
 <span class="sd">        weight : bool, default=False</span>
 <span class="sd">            If False all nonzero entries are 1.</span>
 <span class="sd">            If True and self.static all nonzero entries are filled by</span>
 <span class="sd">            self.cells.cell_weight dictionary values.</span>
-<span class="sd">        index : boolean, optional, default False</span>
-<span class="sd">                indicates wheather to return the indices that define the incidence matrix</span>
+<span class="sd">        index : boolean, default False</span>
+<span class="sd">            indicates wheather to return the indices that define the Laplacian matrix</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Laplacian : scipy.sparse.csr.csr_matrix</span>
-
-<span class="sd">        when index is true:</span>
-<span class="sd">            return also a list : list</span>
-<span class="sd">            list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix</span>
-<span class="sd">            depending on the input dimension</span>
+<span class="sd">        scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</span>
+<span class="sd">            The Laplacian matrix, if `index` is False, otherwise</span>
+<span class="sd">            lower (row) index dict, upper (col) index dict, Laplacian matrix</span>
+<span class="sd">            where the index dictionaries map from the entity (as `Hashable` or `tuple`) to the row or col index of the matrix</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1761,13 +1782,15 @@ document.write(`
                 <span class="sa">f</span><span class="s2">&quot;Rank should be larger than 0 and &lt;= </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">maxdim</span><span class="si">}</span><span class="s2"> (maximal dimension cells), got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.up_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.up_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">up_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.up_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.up_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">up_laplacian_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute up laplacian.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rank : int, dimension of the up Laplacian matrix.</span>
-<span class="sd">            Supported dimension are 0,1</span>
+<span class="sd">        rank : {0, 1}</span>
+<span class="sd">            dimension of the up Laplacian matrix.</span>
 <span class="sd">        signed : bool, is true return absolute value entry of the Laplacian matrix</span>
 <span class="sd">                       this is useful when one needs to obtain higher-order</span>
 <span class="sd">                       adjacency matrices from the hodge-laplacian</span>
@@ -1829,13 +1852,15 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">L_up</span></div>
 
-<div class="viewcode-block" id="CellComplex.down_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.down_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">down_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.down_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.down_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">down_laplacian_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute down laplacian.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rank : int, dimension of the down Laplacian matrix.</span>
-<span class="sd">            Supported dimension are 0,1</span>
+<span class="sd">        rank : {0, 1}</span>
+<span class="sd">            Dimension of the down Laplacian matrix.</span>
 <span class="sd">        signed : bool, is true return absolute value entry of the Laplacian matrix</span>
 <span class="sd">                       this is useful when one needs to obtain higher-order</span>
 <span class="sd">                       adjacency matrices from the hodge-laplacian</span>
@@ -1886,7 +1911,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">L_down</span></div>
 
-<div class="viewcode-block" id="CellComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute adjacency matrix for a given rank.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="n">ind</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
@@ -1902,7 +1927,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">incidence</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute coadjacency matrix for a given rank.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="n">_</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1914,16 +1939,23 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">incidence</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.restrict_to_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.restrict_to_cells">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">,</span> <span class="n">keep_edges</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.restrict_to_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.restrict_to_cells">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_cells</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cell_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Cell</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]],</span>
+        <span class="n">keep_edges</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct cell complex using a subset of the cells in cell complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cell_set: iterable of hashables or Cell</span>
-<span class="sd">            A subset of elements of the cell complex&#39;s cells (self.cells) and edges (self.edges)</span>
+<span class="sd">        cell_set: Iterable[Union[Cell, tuple]]</span>
+<span class="sd">            A subset of elements of the cell complex&#39;s cells (self.cells) and edges (self.edges).</span>
+<span class="sd">            Cells can be represented as Cell objects or tuples with length &gt; 2.</span>
 
 <span class="sd">        keep_edges: bool, default False</span>
 <span class="sd">            If False, discards edges not required by or included in `cell_set`</span>
+<span class="sd">            If True, all previous edges are kept.</span>
 
 <span class="sd">        name: str, optional</span>
 
@@ -1981,7 +2013,9 @@ document.write(`
 
         <span class="k">return</span> <span class="n">CX</span></div>
 
-<div class="viewcode-block" id="CellComplex.restrict_to_nodes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.restrict_to_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.restrict_to_nodes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.restrict_to_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict cell complex to nodes.</span>
 
 <span class="sd">        This constructs a new cell complex  by restricting the cells in the cell complex to</span>
@@ -2009,7 +2043,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CX.restrict_to_nodes([1, 2, 3, 0])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_G</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">node_set</span><span class="p">))</span>
-        <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">)</span>
+        <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">CX</span><span class="o">.</span><span class="n">is_insertable_cycle</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
@@ -2036,7 +2070,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CX= CX.to_combinatorial_complex()</span>
 <span class="sd">        &gt;&gt;&gt; CX.cells</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CellComplex.to_hypergraph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.to_hypergraph">[docs]</a>    <span class="k">def</span> <span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to hypergraph.</span>
@@ -2113,19 +2147,16 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CellComplex.remove_singletons"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.remove_singletons">[docs]</a>    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove singletons.</span>
+<div class="viewcode-block" id="CellComplex.clone"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CellComplex&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a clone of the CellComplex.&quot;&quot;&quot;</span>
+        <span class="n">_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CX</span></div>
 
-<span class="sd">        This constructs clone of cell complex with singleton cells removed.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        name: str, optional, default: None</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Cell Complex : CellComplex</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CellComplex.remove_singletons"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.remove_singletons">[docs]</a>    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CellComplex&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove singleton nodes (see `CellComplex.singletons()`).&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">singletons</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
