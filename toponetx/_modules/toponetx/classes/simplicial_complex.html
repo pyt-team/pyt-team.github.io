@@ -1499,8 +1499,8 @@ document.write(`
                 <span class="n">maximals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">maximals</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.from_spharpy"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_spharpy">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_spharpy</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.from_spharpy"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_spharpy">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_spharpy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from sharpy.</span>
 
 <span class="sd">        Examples</span>
@@ -1514,7 +1514,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex.from_spharpy(mesh)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertlist</span><span class="p">)</span>
-        <span class="n">SC</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">trilist</span><span class="p">)</span>
+        <span class="n">SC</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">trilist</span><span class="p">)</span>
 
         <span class="n">first_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">trilist</span><span class="p">)</span>
 
@@ -1532,8 +1532,8 @@ document.write(`
 
         <span class="k">return</span> <span class="n">SC</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.from_gudhi"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_gudhi">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_gudhi</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.from_gudhi"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_gudhi">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_gudhi</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tree</span><span class="p">:</span> <span class="n">SimplexTree</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from gudhi.</span>
 
 <span class="sd">        Examples</span>
@@ -1543,13 +1543,13 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; tree.insert([1,2,3,5])</span>
 <span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex.from_gudhi(tree)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">SC</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">()</span>
+        <span class="n">SC</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">simplex</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">get_skeleton</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">dimension</span><span class="p">()):</span>
             <span class="n">SC</span><span class="o">.</span><span class="n">add_simplex</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">SC</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.from_trimesh"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_trimesh">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_trimesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.from_trimesh"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_trimesh">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_trimesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from trimesh.</span>
 
 <span class="sd">        Examples</span>
@@ -1563,7 +1563,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; print(SC.simplices)</span>
 <span class="sd">        &gt;&gt;&gt; SC[(0)][&#39;position&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">SC</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
+        <span class="n">SC</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
         <span class="n">first_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
@@ -1583,8 +1583,8 @@ document.write(`
 
         <span class="k">return</span> <span class="n">SC</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.load_mesh"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.load_mesh">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load_mesh</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.load_mesh"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.load_mesh">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a mesh.</span>
 
 <span class="sd">        Parameters</span>
@@ -1615,7 +1615,7 @@ document.write(`
         <span class="kn">import</span> <span class="nn">trimesh</span>
 
         <span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load_mesh</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="n">process</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="o">.</span><span class="n">from_trimesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_trimesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.is_triangular_mesh"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.is_triangular_mesh">[docs]</a>    <span class="k">def</span> <span class="nf">is_triangular_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the simplicial complex is a triangular mesh.&quot;&quot;&quot;</span>
@@ -1708,8 +1708,8 @@ document.write(`
         <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_spharapy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">mesh</span><span class="o">.</span><span class="n">laplacianmatrix</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.from_nx_graph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_nx_graph">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_nx_graph</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.from_nx_graph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.from_nx_graph">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_nx_graph</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert from netwrokx graph.</span>
 
 <span class="sd">        Examples</span>
@@ -1721,7 +1721,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; SC[(1, 2)][&quot;weight&quot;]</span>
 <span class="sd">        2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">G</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">G</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.is_connected"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the simplicial complex is connected.</span>
@@ -1738,8 +1738,8 @@ document.write(`
             <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">node</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.simplicial_closure_of_hypergraph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.simplicial_closure_of_hypergraph">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">simplicial_closure_of_hypergraph</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.simplicial_closure_of_hypergraph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.simplicial_closure_of_hypergraph">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">simplicial_closure_of_hypergraph</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the simplicial complex closure of a hypergraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1764,7 +1764,7 @@ document.write(`
         <span class="n">lst</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
             <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="n">e</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.to_cell_complex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.to_cell_complex">[docs]</a>    <span class="k">def</span> <span class="nf">to_cell_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a simplicial complex to a cell complex.</span>
