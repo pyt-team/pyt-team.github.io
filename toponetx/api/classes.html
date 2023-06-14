@@ -857,6 +857,7 @@ dependeing on the input dimension</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">path_graph</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="mi">0</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="s1">&#39;attr2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="s1">&#39;attr2&#39;</span><span class="p">:</span> <span class="mi">3</span> <span class="p">}}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
@@ -869,6 +870,33 @@ dependeing on the input dimension</p></li>
 <span class="go">{((1, 2, 3, 4), 0): &#39;red&#39;, (1, 2, 4): &#39;blue&#39;}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.get_cell_data">
+<span class="sig-name descname"><span class="pre">get_cell_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.get_cell_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.get_cell_data" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieve data associated with a specific cell in the complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> (<em>str or tuple</em>) – The cell to retrieve data from.</p></li>
+<li><p><strong>rank</strong> (<em>int</em>) – The rank of the cell.</p></li>
+<li><p><strong>attr_name</strong> (<em>str, optional</em>) – The name of the attribute to retrieve. Default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>object</em> – The value associated with the specified cell and attribute.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>KeyError</strong> – If the specified cell or attribute is not found.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For rank 0 cells (nodes), the data is retrieved from the ‘nodes’ dictionary.</p></li>
+<li><p>For rank 1 cells (edges), the data is retrieved from the ‘edges’ dictionary.</p></li>
+<li><p>For rank 2 cells (other cells), the data is retrieved from the ‘cells’ dictionary.</p></li>
+</ul>
 </dd></dl>
 
 <dl class="py method">
@@ -1281,6 +1309,7 @@ permutation.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">path_graph</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cx</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cx</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -1368,7 +1397,7 @@ If True, all previous edges are kept.</p></li>
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.restrict_to_nodes">
 <span class="sig-name descname"><span class="pre">restrict_to_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Hashable</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.restrict_to_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.restrict_to_nodes" title="Permalink to this definition">#</a></dt>
 <dd><p>Restrict cell complex to nodes.</p>
-<p>This constructs a new cell complex  by restricting the cells in the cell complex to
+<p>This constructs a new cell complex by restricting the cells in the cell complex to
 the nodes referenced by node_set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1513,6 +1542,31 @@ silently ignored.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.set_cell_data">
+<span class="sig-name descname"><span class="pre">set_cell_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.set_cell_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.set_cell_data" title="Permalink to this definition">#</a></dt>
+<dd><p>Set data for a specific cell in the complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> (<em>str or tuple</em>) – The cell to set data for.</p></li>
+<li><p><strong>rank</strong> (<em>int</em>) – The rank of the cell.</p></li>
+<li><p><strong>attr_name</strong> (<em>str</em>) – The name of the attribute to set.</p></li>
+<li><p><strong>attr_value</strong> (<em>object</em>) – The value to set for the attribute.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If the specified cell is not found.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For rank 0 cells (nodes), the data is stored in the ‘nodes’ dictionary.</p></li>
+<li><p>For rank 1 cells (edges), the data is stored in the ‘edges’ dictionary.</p></li>
+<li><p>For rank 2 cells (other cells), the data is stored in the ‘cells’ dictionary.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.set_edge_attributes">
 <span class="sig-name descname"><span class="pre">set_edge_attributes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.set_edge_attributes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.set_edge_attributes" title="Permalink to this definition">#</a></dt>
 <dd><p>Set edge attributes.</p>
@@ -1650,6 +1704,11 @@ or nested dict with node -&gt; (attribute -&gt; value) (if <cite>name == None</c
 <p>A cell complex is a type of combinatorial complex.
 The rank of an element in a cell complex is its dimension, so vertices have rank 0,
 edges have rank 1, and faces have rank 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Combinatorial Complex</strong> (<em>CombinatorialComplex</em>)</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -3989,6 +4048,7 @@ depending on the input dimension</p></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.from_networkx_graph"><code class="docutils literal notranslate"><span class="pre">CellComplex.from_networkx_graph()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.from_trimesh"><code class="docutils literal notranslate"><span class="pre">CellComplex.from_trimesh()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.get_cell_attributes"><code class="docutils literal notranslate"><span class="pre">CellComplex.get_cell_attributes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.get_cell_data"><code class="docutils literal notranslate"><span class="pre">CellComplex.get_cell_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.get_edge_attributes"><code class="docutils literal notranslate"><span class="pre">CellComplex.get_edge_attributes()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.get_filtration"><code class="docutils literal notranslate"><span class="pre">CellComplex.get_filtration()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.get_node_attributes"><code class="docutils literal notranslate"><span class="pre">CellComplex.get_node_attributes()</span></code></a></li>
@@ -4018,6 +4078,7 @@ depending on the input dimension</p></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.s_components"><code class="docutils literal notranslate"><span class="pre">CellComplex.s_components()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.s_connected_components"><code class="docutils literal notranslate"><span class="pre">CellComplex.s_connected_components()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.set_cell_attributes"><code class="docutils literal notranslate"><span class="pre">CellComplex.set_cell_attributes()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.set_cell_data"><code class="docutils literal notranslate"><span class="pre">CellComplex.set_cell_data()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.set_edge_attributes"><code class="docutils literal notranslate"><span class="pre">CellComplex.set_edge_attributes()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.set_filtration"><code class="docutils literal notranslate"><span class="pre">CellComplex.set_filtration()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.set_node_attributes"><code class="docutils literal notranslate"><span class="pre">CellComplex.set_node_attributes()</span></code></a></li>
