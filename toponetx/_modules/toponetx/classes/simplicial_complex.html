@@ -796,9 +796,9 @@ document.write(`
                         <span class="k">continue</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">nodes</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">s</span><span class="p">][</span>
-                            <span class="s2">&quot;membership&quot;</span>
-                        <span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="p">{</span>
+                            <span class="n">simplex_</span>
+                        <span class="p">}</span>
                         <span class="k">if</span> <span class="p">(</span>
                             <span class="nb">len</span><span class="p">(</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">s</span><span class="p">][</span>
@@ -881,6 +881,32 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; SC.remove_maximal_simplex((1, 2, 3, 4, 5))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_maximal_simplex</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimplicialComplex.remove_nodes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.remove_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">remove_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the given nodes from the simplicial complex.</span>
+
+<span class="sd">        Any simplices that become invalid due to the removal of nodes are also removed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node_set : Iterable</span>
+<span class="sd">            The nodes to be removed from the simplicial complex.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([(1, 2), (2, 3), (3, 4)])</span>
+<span class="sd">        &gt;&gt;&gt; SC.remove_nodes([1])</span>
+<span class="sd">        &gt;&gt;&gt; SC.simplices</span>
+<span class="sd">        SimplexView([(2,), (3,), (4,), (2, 3), (3, 4)])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">removed_simplices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">node</span> <span class="ow">in</span> <span class="n">simplex</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_set</span><span class="p">):</span>
+                <span class="n">removed_simplices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
+
+        <span class="c1"># Delete the simplices from largest to smallest. This way they are maximal when they are deleted.</span>
+        <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">removed_simplices</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove_maximal_simplex</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.add_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add node to simplicial complex.&quot;&quot;&quot;</span>
