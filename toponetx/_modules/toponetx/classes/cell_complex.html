@@ -2149,7 +2149,7 @@ document.write(`
         <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+            <span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">CX</span></div>
 
 <div class="viewcode-block" id="CellComplex.to_combinatorial_complex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.to_combinatorial_complex">[docs]</a>    <span class="k">def</span> <span class="nf">to_combinatorial_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2166,19 +2166,20 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX= CX.to_combinatorial_complex()</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2,weight = 1)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2,weight = 4)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2,weight = 0)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_node(0,color=&#39;red&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CC= CX.to_combinatorial_complex()</span>
 <span class="sd">        &gt;&gt;&gt; CX.cells</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cc</span> <span class="o">=</span> <span class="n">CombinatorialComplex</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-            <span class="n">cc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">cc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
-            <span class="n">cc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">cc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="n">cc</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">cc</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">cc</span></div>
 
@@ -2188,7 +2189,7 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2,color=&#39;red&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; HG = CX.to_hypergraph()</span>
@@ -2198,14 +2199,22 @@ document.write(`
 
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-            <span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Entity</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">)),</span> <span class="n">elements</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">))</span>
+            <span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Entity</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">)),</span>
+                    <span class="n">elements</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span>
+                    <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
-            <span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Entity</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="p">)),</span> <span class="n">elements</span><span class="o">=</span><span class="n">cell</span><span class="p">))</span>
+            <span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Entity</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="p">)),</span> <span class="n">elements</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">)</span>
         <span class="n">E</span> <span class="o">=</span> <span class="n">EntitySet</span><span class="p">(</span><span class="s2">&quot;CX_to_HG&quot;</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="n">cells</span><span class="p">)</span>
         <span class="n">HG</span> <span class="o">=</span> <span class="n">Hypergraph</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
         <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Entity</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="p">[]))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Entity</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
         <span class="n">HG</span><span class="o">.</span><span class="n">_add_nodes_from</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">HG</span></div>
 
@@ -2231,8 +2240,6 @@ document.write(`
 <span class="sd">        such that every consecutive pair of nodes v(i),v(i+1)</span>
 <span class="sd">        share at least s cell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-
         <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CellComplex.singletons"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.singletons">[docs]</a>    <span class="k">def</span> <span class="nf">singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2242,8 +2249,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        singles : list</span>
-<span class="sd">            A list of cells uids.</span>
+<span class="sd">        new clone of the Cell Complex : Cellcomplex</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2258,7 +2264,22 @@ document.write(`
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="CellComplex.clone"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CellComplex&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a clone of the CellComplex.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a clone of the CellComplex.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        cell complex : CellComplex</span>
+<span class="sd">            A list of cells uids.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2,weight=5)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_node(0)</span>
+<span class="sd">        &gt;&gt;&gt; CX2 = CX.clone()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
