@@ -324,8 +324,6 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">hypernetx</span> <span class="kn">import</span> <span class="n">Hypergraph</span>
 <span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">Graph</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
 
@@ -404,7 +402,6 @@ document.write(`
         <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">ranks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">graph_based</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">attr</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -611,7 +608,7 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Object associated with self._nodes.</span>
+<span class="sd">        Object associated with self.elements.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -643,7 +640,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">shape</span>
 
-<div class="viewcode-block" id="CombinatorialComplex.skeleton"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.skeleton"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return skeleton.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span></div>
 
@@ -686,7 +683,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the attributes of a hyperedge or node in the CC.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_type</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">nodes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
                 <span class="n">cell</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
@@ -892,7 +889,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d = {(1, 2, 3, 4): &#39;red&#39;, (1, 2, 3): &#39;blue&#39;, (3, 4): &#39;green&#39;}</span>
 <span class="sd">        &gt;&gt;&gt; CC.set_cell_attributes(d, name=&#39;color&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CC.cells[(3, 4)].properties[&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC.cells[(3, 4)][&#39;color&#39;]</span>
 <span class="sd">        &#39;green&#39;</span>
 
 <span class="sd">        If you provide a dictionary of dictionaries as the second argument,</span>
@@ -902,7 +899,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CC = NestedCombinatorialComplex(G)</span>
 <span class="sd">        &gt;&gt;&gt; d = {(1, 2): {&#39;color&#39;: &#39;red&#39;,&#39;attr2&#39;: 1}, (0, 1): {&#39;color&#39;: &#39;blue&#39;, &#39;attr2&#39;: 3}}</span>
 <span class="sd">        &gt;&gt;&gt; CC.set_cell_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CC.cells[(0, 1)].properties[&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC.cells[(0, 1)][&#39;color&#39;]</span>
 <span class="sd">        &#39;blue&#39;</span>
 <span class="sd">        3</span>
 
@@ -952,9 +949,9 @@ document.write(`
 <span class="sd">        &#39;blue&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="n">node</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">node</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.get_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -983,9 +980,9 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="n">cell</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">cell</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)[</span><span class="n">cell</span><span class="p">]</span>
             <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
@@ -1114,7 +1111,7 @@ document.write(`
                         <span class="sa">f</span><span class="s2">&quot;a cell cannot contain duplicate nodes,got </span><span class="si">{</span><span class="n">hyperedge_</span><span class="si">}</span><span class="s2">&quot;</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">hyperedge_</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">nodes</span>
+                <span class="n">hyperedge_</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">hyperedge_</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
@@ -1153,7 +1150,7 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_</span><span class="p">][</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                    <span class="n">hyperedge</span><span class="o">.</span><span class="n">properties</span>
+                    <span class="n">hyperedge</span><span class="o">.</span><span class="n">_properties</span>
                 <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
@@ -1178,7 +1175,7 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_</span><span class="p">][</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                    <span class="n">hyperedge</span><span class="o">.</span><span class="n">properties</span>
+                    <span class="n">hyperedge</span><span class="o">.</span><span class="n">_properties</span>
                 <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_hyperedges_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedges</span><span class="p">):</span>
@@ -1197,7 +1194,7 @@ document.write(`
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
-            <span class="n">hyperedge_</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">nodes</span>
+            <span class="n">hyperedge_</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
         <span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">)</span>
@@ -1583,7 +1580,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CC = CombinatorialComplex(cells=E)</span>
 <span class="sd">        &gt;&gt;&gt; HG = CC.to_hypergraph()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.is_connected"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if combinatorial complex is :term:`s-connected &lt;s-connected, s-node-connected&gt;`.</span>
@@ -1950,7 +1947,7 @@ document.write(`
 <span class="sd">        generated by the s-adjacency matrix.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.cell_distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_distance">[docs]</a>    <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the shortest s-walk distance between two cells.</span>
