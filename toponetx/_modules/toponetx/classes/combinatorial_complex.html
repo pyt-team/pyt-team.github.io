@@ -319,8 +319,7 @@ document.write(`
   <h1>Source code for toponetx.classes.combinatorial_complex</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Creation and manipulation of a combinatorial complex.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -345,50 +344,48 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for Combinatorial Complex.</span>
 
 <span class="sd">    A Combinatorial Complex (CC) is a triple CC = (S, X, rk) where:</span>
-<span class="sd">    -  S is an abstract set of entities,</span>
+<span class="sd">    - S is an abstract set of entities,</span>
 <span class="sd">    - X a subset of the power set of X, and</span>
-<span class="sd">    - rk is the a rank function that associates for every</span>
-<span class="sd">    set x in X a rank, a positive integer.</span>
+<span class="sd">    - rk is the a rank function that associates for every set x in X a rank, a positive integer.</span>
 
-<span class="sd">    The rank function i must satisfy x&lt;=y then rk(x)&lt;=rk(y).</span>
+<span class="sd">    The rank function rk must satisfy x &lt;= y then rk(x) &lt;= rk(y).</span>
 <span class="sd">    We call this condition the CC condition.</span>
 
 <span class="sd">    A CC is a generlization of graphs, hypergraphs, cellular and simplicial complexes.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    cells : (optional)iterable, default: None</span>
-
+<span class="sd">    cells : Collection, optional</span>
 <span class="sd">    name : str, optional</span>
 <span class="sd">        An identifiable name for the combinatorial complex.</span>
-
-<span class="sd">    ranks : (optional) an iterable, default: None.</span>
+<span class="sd">    ranks : Collection, optional</span>
 <span class="sd">        when cells is an iterable or dictionary, ranks cannot be None and it must be iterable/dict of the same</span>
 <span class="sd">        size as cells.</span>
-
-<span class="sd">    weight : array-like, optional, default : None</span>
+<span class="sd">    weight : array-like, optional</span>
 <span class="sd">        User specified weight corresponding to setsytem of type pandas.DataFrame,</span>
 <span class="sd">        length must equal number of rows in dataframe.</span>
 <span class="sd">        If None, weight for all rows is assumed to be 1.</span>
-
-<span class="sd">    graph_based : boolean, default is False. When true</span>
-<span class="sd">                rank 1 edges must have cardinality equals to 1</span>
-
+<span class="sd">    graph_based : bool, default=False</span>
+<span class="sd">        When true rank 1 edges must have cardinality equals to 1</span>
 
 <span class="sd">    Mathematical example</span>
 <span class="sd">    --------------------</span>
 <span class="sd">    Let S = {1, 2, 3, 4} be a set of entities.</span>
 <span class="sd">    Let X = {{1, 2}, {1, 2, 3}, {1, 3}, {1, 4}} be a subset of the power set of S.</span>
-<span class="sd">    Let i be the ranking function that assigns the</span>
+<span class="sd">    Let rk be the ranking function that assigns the</span>
 <span class="sd">    length of a set as its rank, i.e. rk({1, 2}) = 2, rk({1, 2, 3}) = 3, etc.</span>
 
 <span class="sd">    Then, (S, X, rk) is a combinatorial complex.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; # define an empty Combinatorial Complex</span>
+<span class="sd">    Define an empty combinatorial complex:</span>
+
 <span class="sd">    &gt;&gt;&gt; CC = CombinatorialComplex()</span>
-<span class="sd">    &gt;&gt;&gt; # add cells using the add_cell method</span>
+
+<span class="sd">    Add cells to the combinatorial complex:</span>
+
+<span class="sd">    &gt;&gt;&gt; CC = CombinatorialComplex()</span>
 <span class="sd">    &gt;&gt;&gt; CC.add_cell([1, 2], rank=1)</span>
 <span class="sd">    &gt;&gt;&gt; CC.add_cell([3, 4], rank=1)</span>
 <span class="sd">    &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
@@ -399,10 +396,10 @@ document.write(`
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cells</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">ranks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">graph_based</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ranks</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">graph_based</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">attr</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -423,13 +420,11 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">complex</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># dictionary for combinatorial complex attributes</span>
 
         <span class="k">if</span> <span class="n">cells</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Input cells must be given as Iterable, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">cells</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">ranks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
@@ -442,7 +437,6 @@ document.write(`
                         <span class="bp">self</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">cell</span><span class="o">.</span><span class="n">rank</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ranks</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ranks</span><span class="p">):</span>
                             <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span>
                                 <span class="s2">&quot;cells and ranks must have equal number of elements&quot;</span>
@@ -454,7 +448,6 @@ document.write(`
                     <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">ranks</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-
                 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">cells</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>  <span class="c1"># cells is a networkx graph</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">cells</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">cells</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
@@ -530,21 +523,17 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        incidence_type : str, optional, default &#39;up&#39;, other options &#39;down&#39;</span>
-
-<span class="sd">        sparse : boolean, optional, default: True</span>
-
-<span class="sd">        index : boolean, optional, default : False</span>
+<span class="sd">        incidence_type : {&#39;up&#39;, &#39;down&#39;}, default=&#39;up&#39;</span>
+<span class="sd">        sparse : bool, default=True</span>
+<span class="sd">        index : bool, default=False</span>
 <span class="sd">            If True return will include a dictionary of children uid : row number</span>
 <span class="sd">            and element uid : column number</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        incidence_matrix : scipy.sparse.csr.csr_matrix or np.ndarray</span>
-
 <span class="sd">        row dictionary : dict</span>
 <span class="sd">            Dictionary identifying row with item in entityset&#39;s children</span>
-
 <span class="sd">        column dictionary : dict</span>
 <span class="sd">            Dictionary identifying column with item in entityset&#39;s uidset</span>
 
@@ -652,7 +641,7 @@ document.write(`
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dimension.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">allranks</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">allranks</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return detailed string representation.&quot;&quot;&quot;</span>
@@ -786,7 +775,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cell_set : an interable of HyperEdge, optional, default: None</span>
+<span class="sd">        cell_set : an interable of HyperEdge, optional</span>
 <span class="sd">            If None, then return the number of cells.</span>
 
 <span class="sd">        Returns</span>
@@ -1037,7 +1026,7 @@ document.write(`
                 <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">i</span><span class="p">})]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_add_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add hyperedge.</span>
 
 <span class="sd">        Parameters</span>
@@ -1105,7 +1094,7 @@ document.write(`
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
                 <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
                     <span class="nb">sorted</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
-                <span class="p">)</span>  <span class="c1"># put the simplex in cananical order</span>
+                <span class="p">)</span>  <span class="c1"># put the simplex in canonical order</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;a cell cannot contain duplicate nodes,got </span><span class="si">{</span><span class="n">hyperedge_</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -1178,15 +1167,7 @@ document.write(`
                     <span class="n">hyperedge</span><span class="o">.</span><span class="n">_properties</span>
                 <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add_hyperedges_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedges</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedges</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">hyperedges</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">hyperedges</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;input cells must be an iterable of HyperEdge objects&quot;</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">_remove_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">):</span>
-
         <span class="k">if</span> <span class="n">hyperedge</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The cell </span><span class="si">{</span><span class="n">hyperedge</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
 
@@ -1221,7 +1202,7 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        cell : hashable, iterable or HyperEdge</span>
 <span class="sd">            If hashable the cell returned will be empty.</span>
-<span class="sd">            rank : rank of a cell</span>
+<span class="sd">        rank : rank of a cell</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1982,7 +1963,23 @@ document.write(`
 <span class="sd">        Uses the networkx shortest_path_length method on the graph</span>
 <span class="sd">        generated by the s-cell_adjacency matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CombinatorialComplex.clone"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CombinatorialComplex&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of the simplex.</span>
+
+<span class="sd">        The clone method by default returns an independent shallow copy of the simplex and attributes. That is, if an</span>
+<span class="sd">        attribute is a container, that container is shared by the original and the copy. Use Python’s `copy.deepcopy`</span>
+<span class="sd">        for new containers.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        CombinatorialComplex</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CC</span> <span class="o">=</span> <span class="n">CombinatorialComplex</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">graph_based</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_based</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">CC</span></div></div>
 </pre></div>
 
                 </article>
