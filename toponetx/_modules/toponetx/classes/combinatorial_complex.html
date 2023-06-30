@@ -568,11 +568,12 @@ document.write(`
         <span class="k">if</span> <span class="n">to_rank</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">incidence_type</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
                 <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
-                <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;upper&quot;</span><span class="p">)</span>
+                <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">incidence_type</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
                 <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
-                <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;lower&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="s2">&quot;incidence_type must be &#39;up&#39; or &#39;down&#39; &quot;</span><span class="p">)</span>
+                <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="s2">&quot;incidence_type must be &#39;up&#39; or &#39;down&#39; &quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">assert</span> <span class="p">(</span>
                 <span class="n">rank</span> <span class="o">!=</span> <span class="n">to_rank</span>
@@ -1320,7 +1321,13 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.incidence_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.incidence_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">to_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rank</span><span class="p">,</span>
+        <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+        <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute incidence matrix for the CC indexed by nodes x cells.</span>
 
@@ -1471,7 +1478,7 @@ document.write(`
             <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
                 <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;down&quot;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
             <span class="p">)</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">col</span>
         <span class="k">return</span> <span class="n">A</span></div>
