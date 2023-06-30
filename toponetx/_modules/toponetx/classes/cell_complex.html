@@ -392,6 +392,21 @@ document.write(`
 <span class="sd">        such as sparse matrices.</span>
 <span class="sd">    5. Robust error handling and validation of input data, ensuring that the package is reliable and easy to use.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cells : iterable, optional</span>
+<span class="sd">        A list of cells to add to the complex.</span>
+<span class="sd">    name : string, optional</span>
+<span class="sd">        Name of the complex.</span>
+<span class="sd">    regular : bool, default=True</span>
+<span class="sd">    kwargs : keyword arguments, optional</span>
+<span class="sd">        Attributes to add to the complex as key=value pairs.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    complex : dict</span>
+<span class="sd">        A dictionary that can be used to store additional information about the complex.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Iteratively construct a cell complex:</span>
@@ -434,8 +449,8 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; CX.is_regular</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
@@ -464,8 +479,6 @@ document.write(`
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;cells must be iterable, networkx graph or None, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">complex</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># dictionary for cell complex attributes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">complex</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellView</span><span class="p">:</span>
