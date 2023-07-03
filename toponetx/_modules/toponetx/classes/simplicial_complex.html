@@ -458,10 +458,7 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        tuple of ints</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">))</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">shape</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -595,23 +592,23 @@ document.write(`
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_update_faces_dict_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">simplex_</span><span class="p">,</span> <span class="n">maximal_faces</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_update_faces_dict_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">simplex</span><span class="p">,</span> <span class="n">maximal_faces</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update faces dictionary entry.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        face :  an iterable, typically a list, tuple, set or a Simplex</span>
 <span class="sd">        simplex : an iterable, typically a list, tuple, set or a Simplex</span>
-<span class="sd">        **attr : attrs associated with the input simplex</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        the input `face` is a face of the input `simplex`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">face</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
+        <span class="n">face</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
         <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">face</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s2">&quot;is_maximal&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="s2">&quot;membership&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
@@ -619,30 +616,19 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s2">&quot;is_maximal&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                    <span class="s2">&quot;membership&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">({</span><span class="n">simplex_</span><span class="p">}),</span>
+                    <span class="s2">&quot;membership&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">simplex</span><span class="p">},</span>
                 <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]:</span>
                     <span class="n">maximal_faces</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-                        <span class="n">simplex_</span>
-                    <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># make sure all children of previous maximal simplices do not have that membership anymore</span>
-                    <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">maximal_faces</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span>
-                                <span class="s2">&quot;membership&quot;</span>
-                            <span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-                        <span class="n">simplex_</span>
-                    <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">simplex_</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span>
+                        <span class="s2">&quot;membership&quot;</span>
+                    <span class="p">]</span> <span class="o">-=</span> <span class="n">maximal_faces</span>
 
 <div class="viewcode-block" id="SimplicialComplex.get_boundaries"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.get_boundaries">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_boundaries</span><span class="p">(</span><span class="n">simplices</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -671,20 +657,20 @@ document.write(`
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numnodes</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">face</span><span class="p">)))</span>
+                        <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
                     <span class="k">elif</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">face</span><span class="p">)))</span>
+                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
                     <span class="k">elif</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">face</span><span class="p">)))</span>
+                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
                     <span class="k">elif</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">face</span><span class="p">)))</span>
+                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">face_set</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.remove_maximal_simplex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.remove_maximal_simplex">[docs]</a>    <span class="k">def</span> <span class="nf">remove_maximal_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.remove_maximal_simplex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.remove_maximal_simplex">[docs]</a>    <span class="k">def</span> <span class="nf">remove_maximal_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove maximal simplex from simplicial complex.</span>
 
 <span class="sd">        Note</span>
@@ -700,9 +686,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
-                <span class="n">simplex_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-                    <span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-                <span class="p">)</span>  <span class="c1"># put the simplex in canonical order</span>
+                <span class="n">simplex_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">simplex_</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">if</span> <span class="n">simplex_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
@@ -790,7 +774,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_simplex</span><span class="p">([</span><span class="n">node</span><span class="p">],</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SimplicialComplex.add_simplex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.add_simplex">[docs]</a>    <span class="k">def</span> <span class="nf">add_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+<div class="viewcode-block" id="SimplicialComplex.add_simplex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.add_simplex">[docs]</a>    <span class="k">def</span> <span class="nf">add_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add simplex to simplicial complex.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="n">simplex</span> <span class="o">=</span> <span class="p">[</span><span class="n">simplex</span><span class="p">]</span>
@@ -798,13 +782,7 @@ document.write(`
             <span class="n">simplex</span> <span class="o">=</span> <span class="p">[</span><span class="n">simplex</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">simplex</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
-                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;all element of simplex must be hashable&quot;</span><span class="p">)</span>
-
-                <span class="n">simplex_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
-                    <span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-                <span class="p">)</span>  <span class="c1"># put the simplex in canonical order</span>
+                <span class="n">simplex_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a simplex cannot contain duplicate nodes&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -825,7 +803,8 @@ document.write(`
 
             <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numnodes</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">simplex_</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_update_faces_dict_entry</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="n">simplex_</span><span class="p">,</span> <span class="n">maximal_faces</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_update_faces_dict_entry</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="n">simplex_</span><span class="p">,</span> <span class="n">maximal_faces</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">simplex_</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">simplex_</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                     <span class="n">simplex</span><span class="o">.</span><span class="n">_properties</span>
