@@ -319,18 +319,19 @@ document.write(`
   <h1>Source code for toponetx.transform.graph_to_simplicial_complex</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Methods to lift a graph to a simplicial complex.&quot;&quot;&quot;</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;graph_2_clique_complex&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;graph_2_neighbor_complex&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
-<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes.simplicial_complex</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;graph_to_clique_complex&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;graph_to_neighbor_complex&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 
-<div class="viewcode-block" id="graph_2_neighbor_complex"><a class="viewcode-back" href="../../../api/transform.html#toponetx.transform.graph_to_simplicial_complex.graph_2_neighbor_complex">[docs]</a><span class="k">def</span> <span class="nf">graph_2_neighbor_complex</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+<div class="viewcode-block" id="graph_to_neighbor_complex"><a class="viewcode-back" href="../../../api/transform.html#toponetx.transform.graph_to_simplicial_complex.graph_to_neighbor_complex">[docs]</a><span class="k">def</span> <span class="nf">graph_to_neighbor_complex</span><span class="p">(</span><span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplicialComplex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the neighbor complex of a graph.</span>
 
 <span class="sd">    Parameters</span>
@@ -347,16 +348,17 @@ document.write(`
 <span class="sd">    -----</span>
 <span class="sd">    This type of simplicial complexes can have very large dimension ( dimension = max_i(len (G.neighbors(i))) )</span>
 <span class="sd">    and it is a function of the distribution of the valency of the graph.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">neighbors</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
-        <span class="n">N</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># each simplex is the node and its n-hop nbhd</span>
-        <span class="n">neighbors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">neighbors</span><span class="p">)</span></div>
+    <span class="n">simplices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="p">:</span>
+        <span class="c1"># each simplex is the node and its n-hop neighbors</span>
+        <span class="n">simplices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">node</span><span class="p">))</span> <span class="o">+</span> <span class="p">[</span><span class="n">node</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">simplices</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="graph_2_clique_complex"><a class="viewcode-back" href="../../../api/transform.html#toponetx.transform.graph_to_simplicial_complex.graph_2_clique_complex">[docs]</a><span class="k">def</span> <span class="nf">graph_2_clique_complex</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">max_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="graph_to_clique_complex"><a class="viewcode-back" href="../../../api/transform.html#toponetx.transform.graph_to_simplicial_complex.graph_to_clique_complex">[docs]</a><span class="k">def</span> <span class="nf">graph_to_clique_complex</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">,</span> <span class="n">max_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplicialComplex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the clique complex of a graph.</span>
 
 <span class="sd">    Parameters</span>
@@ -373,12 +375,31 @@ document.write(`
 <span class="sd">    SimplicialComplex</span>
 <span class="sd">        The clique simplicial complex of dimension dim of the graph G.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">lst</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">enumerate_all_cliques</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span>
+    <span class="n">cliques</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">enumerate_all_cliques</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cliques</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">clique</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">clique</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span><span class="p">,</span> <span class="n">cliques</span><span class="p">)</span>
 
-    <span class="n">lst</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">face</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">enumerate_all_cliques</span><span class="p">(</span><span class="n">G</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">cliques</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">graph_2_neighbor_complex</span><span class="p">(</span><span class="n">G</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplicialComplex</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;`graph_2_neighbor_complex` is deprecated and will be removed in a future version, use `graph_to_neighbor_complex` instead.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">graph_to_neighbor_complex</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">graph_2_clique_complex</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">,</span> <span class="n">max_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplicialComplex</span><span class="p">:</span>
+    <span class="n">warn</span><span class="p">(</span>
+        <span class="s2">&quot;`graph_2_clique_complex` is deprecated and will be removed in a future version, use `graph_to_clique_complex` instead.&quot;</span><span class="p">,</span>
+        <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">graph_to_clique_complex</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">max_dim</span><span class="p">)</span>
 </pre></div>
 
                 </article>
