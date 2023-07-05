@@ -328,7 +328,7 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
@@ -342,7 +342,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">Graph</span>
 <span class="kn">from</span> <span class="nn">networkx.classes.reportviews</span> <span class="kn">import</span> <span class="n">EdgeView</span><span class="p">,</span> <span class="n">NodeView</span>
 <span class="kn">from</span> <span class="nn">networkx.utils</span> <span class="kn">import</span> <span class="n">pairwise</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csc_matrix</span>
 
 <span class="kn">from</span> <span class="nn">toponetx.classes.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.combinatorial_complex</span> <span class="kn">import</span> <span class="n">CombinatorialComplex</span>
@@ -449,7 +449,9 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; CX.is_regular</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regular</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_regular</span> <span class="o">=</span> <span class="n">regular</span>
@@ -556,7 +558,7 @@ document.write(`
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return detailed string representation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Cell Complex with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> edges  and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span><span class="si">}</span><span class="s2"> 2-cells &quot;</span>
 
@@ -564,11 +566,11 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;CellComplex(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return number of nodes.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over the nodes.</span>
 
 <span class="sd">        Returns</span>
@@ -578,7 +580,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return boolean indicating if item is in self.nodes.</span>
 
 <span class="sd">        Parameters</span>
@@ -681,7 +683,7 @@ document.write(`
                         <span class="n">all_inserted_cells</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">equiv_classes</span>
 
-    <span class="k">def</span> <span class="nf">_remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove homotopic cells from the cell complex.</span>
 
 <span class="sd">        Examples</span>
@@ -713,14 +715,14 @@ document.write(`
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_delete_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CellComplex.degree"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.degree">[docs]</a>    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="CellComplex.degree"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.degree">[docs]</a>    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of cells of certain rank that contain node.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        node : hashable</span>
 <span class="sd">            Identifier for the node.</span>
-<span class="sd">        rank : positive integer, optional, default: 1</span>
+<span class="sd">        rank : int, default=1</span>
 <span class="sd">            Smallest size of cell to consider in degree.</span>
 
 <span class="sd">        Returns</span>
@@ -859,14 +861,13 @@ document.write(`
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">[</span><span class="n">node</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CellComplex.cell_neighbors"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_neighbors">[docs]</a>    <span class="k">def</span> <span class="nf">cell_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.cell_neighbors"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_neighbors">[docs]</a>    <span class="k">def</span> <span class="nf">cell_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Cells in cell complex which share s nodes(s) with cells.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cell : Cell or Iterable representing a acell</span>
-
-<span class="sd">        s : int, list, optional, default : 1</span>
+<span class="sd">        s : int, default=1</span>
 <span class="sd">            Minimum number of nodes shared by neighbors cell node.</span>
 
 <span class="sd">        Returns</span>
@@ -876,7 +877,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CellComplex.remove_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.remove_node">[docs]</a>    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.remove_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.remove_node">[docs]</a>    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the given node from the cell complex.</span>
 
 <span class="sd">        This method removes the given node from the cell complex, along with any</span>
@@ -918,11 +919,11 @@ document.write(`
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_set</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.add_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.add_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single node to cell complex.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">_add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate new nodes when cells added to cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -932,7 +933,7 @@ document.write(`
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CellComplex.add_edge"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">v_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.add_edge"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">v_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add edge.</span>
 
 <span class="sd">        Parameters</span>
@@ -943,7 +944,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u_of_edge</span><span class="p">,</span> <span class="n">v_of_edge</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.add_edges_from"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.add_edges_from">[docs]</a>    <span class="k">def</span> <span class="nf">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ebunch_to_add</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.add_edges_from"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.add_edges_from">[docs]</a>    <span class="k">def</span> <span class="nf">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ebunch_to_add</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add edges.</span>
 
 <span class="sd">        Parameters</span>
@@ -958,7 +959,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">check_skeleton</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">check_skeleton</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">attr</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single cell to cell complex.</span>
@@ -1049,9 +1050,9 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cell_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">],</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">check_skeleton</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">check_skeleton</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">attr</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add cells to cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1458,7 +1459,7 @@ document.write(`
             <span class="k">return</span> <span class="n">d</span>
         <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.set_cell_data"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.set_cell_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.set_cell_data"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.set_cell_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set data for a specific cell in the complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1501,7 +1502,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid rank: </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">. Rank must be 0, 1, or 2.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.get_cell_data"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_cell_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.get_cell_data"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_cell_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve data associated with a specific cell in the complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1559,7 +1560,7 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cell &#39;</span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">&#39; is not present in the complex.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.remove_equivalent_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.remove_equivalent_cells">[docs]</a>    <span class="k">def</span> <span class="nf">remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.remove_equivalent_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.remove_equivalent_cells">[docs]</a>    <span class="k">def</span> <span class="nf">remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove equivalent cells.</span>
 
 <span class="sd">        Remove cells from the cell complex which are homotopic.</span>
@@ -1801,7 +1802,7 @@ document.write(`
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Only dimensions 0, 1 and 2 are supported, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CellComplex.hodge_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.hodge_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">hodge_laplacian_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the hodge-laplacian matrix for the CX.</span>
 
@@ -2229,7 +2230,7 @@ document.write(`
         <span class="n">HG</span><span class="o">.</span><span class="n">_add_nodes_from</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">HG</span></div>
 
-<div class="viewcode-block" id="CellComplex.is_connected"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.is_connected"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if cell complex is s-connected.</span>
 
 <span class="sd">        Parameters</span>
@@ -2302,7 +2303,9 @@ document.write(`
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">singletons</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.s_connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.s_connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_connected_components</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return generator for the s-connected components.</span>
 
 <span class="sd">        Parameters</span>
@@ -2351,7 +2354,9 @@ document.write(`
                         <span class="k">continue</span>
                 <span class="k">yield</span> <span class="p">{</span><span class="n">rowdict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="CellComplex.s_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">s_component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.s_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">s_component_subgraphs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a generator for the induced subgraphs of s_connected components.</span>
 
 <span class="sd">        Removes singletons unless return_singletons is set to True.</span>
@@ -2379,7 +2384,9 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.s_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.s_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_components</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-component.</span>
 
 <span class="sd">        Same as s_connected_components.</span>
@@ -2392,7 +2399,7 @@ document.write(`
             <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components with s=1.</span>
 
 <span class="sd">        Same as s_connected_component` with s=1, but nodes returned.</span>
@@ -2405,7 +2412,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.connected_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.connected_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">connected_component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.connected_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.connected_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">connected_component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute connected component subgraphs with s=1.</span>
 
 <span class="sd">        Same as :meth:`s_component_subgraphs` with s=1. Returns iterator.</span>
@@ -2416,7 +2423,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_component_subgraphs</span><span class="p">(</span><span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.components">[docs]</a>    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.components">[docs]</a>    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-component with s=1.</span>
 
 <span class="sd">        Same as :meth:`s_connected_components` with s=1.</span>
@@ -2429,7 +2436,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-component subgraphs with s=1.</span>
 
 <span class="sd">        Same as :meth:`s_components_subgraphs` with s=1. Returns iterator.</span>
@@ -2462,7 +2469,7 @@ document.write(`
         <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">diams</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">diams</span><span class="p">[</span><span class="n">loc</span><span class="p">],</span> <span class="n">diams</span><span class="p">,</span> <span class="n">comps</span></div>
 
-<div class="viewcode-block" id="CellComplex.cell_diameters"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_diameters">[docs]</a>    <span class="k">def</span> <span class="nf">cell_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.cell_diameters"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_diameters">[docs]</a>    <span class="k">def</span> <span class="nf">cell_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cell diameters of the s_cell_connected component subgraphs.</span>
 
 <span class="sd">        Parameters</span>
@@ -2502,7 +2509,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        diameter : int</span>
+<span class="sd">        int</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -2531,7 +2538,7 @@ document.write(`
 
 <span class="sd">        Return</span>
 <span class="sd">        ------</span>
-<span class="sd">        cell_diameter : int</span>
+<span class="sd">        int</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -2551,7 +2558,7 @@ document.write(`
             <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell complex is not s-connected. s=</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CellComplex.distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shortest s-walk distance between two nodes in the cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -2565,7 +2572,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        s-walk distance : int</span>
+<span class="sd">        int</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -2595,7 +2602,7 @@ document.write(`
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">-path between </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span></div>
 
-<div class="viewcode-block" id="CellComplex.cell_distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_distance">[docs]</a>    <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CellComplex.cell_distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_distance">[docs]</a>    <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the shortest s-walk distance between two cells in the cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -2648,11 +2655,8 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cells_from([[1,2,4],[1,2,7] ],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; G = Graph()</span>
-<span class="sd">        &gt;&gt;&gt; G.add_edge(1,0)</span>
-<span class="sd">        &gt;&gt;&gt; G.add_edge(2,0)</span>
-<span class="sd">        &gt;&gt;&gt; G.add_edge(1,2)</span>
+<span class="sd">        &gt;&gt;&gt; CX.add_cells_from([[1, 2, 4], [1, 2, 7]], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; G = Graph([(0, 1), (0, 2), (1, 2)])</span>
 <span class="sd">        &gt;&gt;&gt; CX.from_networkx_graph(G)</span>
 <span class="sd">        &gt;&gt;&gt; CX.edges</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2699,7 +2703,7 @@ document.write(`
         <span class="k">return</span> <span class="n">CX</span></div>
 
 <div class="viewcode-block" id="CellComplex.load_mesh"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.load_mesh">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CellComplex&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CellComplex&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a mesh.</span>
 
 <span class="sd">        Parameters</span>

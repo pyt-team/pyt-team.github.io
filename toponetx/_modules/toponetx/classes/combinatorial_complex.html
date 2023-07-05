@@ -319,7 +319,8 @@ document.write(`
   <h1>Source code for toponetx.classes.combinatorial_complex</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Creation and manipulation of a combinatorial complex.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -458,7 +459,9 @@ document.write(`
                     <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">edge</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">cells</span><span class="o">.</span><span class="n">get_edge_data</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_incidence_matrix_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">uidset</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_incidence_matrix_helper</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">,</span> <span class="n">uidset</span><span class="p">,</span> <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Help compute the incidence matrix.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
         <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
@@ -518,7 +521,13 @@ document.write(`
                 <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_incidence_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">to_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rank</span><span class="p">,</span>
+        <span class="n">to_rank</span><span class="p">,</span>
+        <span class="n">incidence_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">,</span>
+        <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute incidence matrix.</span>
 
@@ -648,7 +657,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dimension.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">allranks</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return detailed string representation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Combinatorial Complex with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes and cells with ranks </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ranks</span><span class="si">}</span><span class="s2"> and sizes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> &quot;</span>
 
@@ -656,15 +665,15 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;CombinatorialComplex(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return number of nodes.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over the nodes.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return boolean indicating if item is in self.nodes.</span>
 
 <span class="sd">        Parameters</span>
@@ -713,7 +722,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
 
-<div class="viewcode-block" id="CombinatorialComplex.degree"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.degree">[docs]</a>    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.degree"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.degree">[docs]</a>    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of cells of certain rank that contain node.</span>
 
 <span class="sd">        Parameters</span>
@@ -744,7 +753,7 @@ document.write(`
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">memberships</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="s2">&quot;Rank must be non-negative integer&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.size"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.size">[docs]</a>    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.size"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.size">[docs]</a>    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in node_set that belong to cell.</span>
 
 <span class="sd">        Parameters</span>
@@ -769,7 +778,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        number_of_nodes : int</span>
+<span class="sd">        int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">node_set</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_set</span><span class="p">])</span>
@@ -785,7 +794,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        number_of_cells : int</span>
+<span class="sd">        int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">cell_set</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">cell</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="k">if</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cell_set</span><span class="p">])</span>
@@ -800,7 +809,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_hyperedge</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CombinatorialComplex.remove_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.remove_node">[docs]</a>    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -832,15 +841,15 @@ document.write(`
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_set</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add one node as hyperedge.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge</span><span class="p">(</span><span class="n">hyperedge</span><span class="o">=</span><span class="n">node</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CombinatorialComplex.add_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.add_node"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.set_node_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.set_node_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.set_node_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.set_node_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set node attributes.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -857,7 +866,7 @@ document.write(`
                     <span class="k">pass</span>
             <span class="k">return</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.set_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.set_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.set_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.set_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set cell attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -914,7 +923,7 @@ document.write(`
                     <span class="k">pass</span>
             <span class="k">return</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.get_node_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_node_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.get_node_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_node_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -948,7 +957,7 @@ document.write(`
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.get_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.get_cell_attributes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_cell_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from graph.</span>
 
 <span class="sd">        Parameters</span>
@@ -985,7 +994,7 @@ document.write(`
                 <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">properties</span>
             <span class="p">}</span></div>
 
-    <span class="k">def</span> <span class="nf">_add_hyperedge_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_hyperedge_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add hyperedge.</span>
 
 <span class="sd">        Parameters</span>
@@ -1172,7 +1181,7 @@ document.write(`
                     <span class="n">hyperedge</span><span class="o">.</span><span class="n">_properties</span>
                 <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_remove_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">hyperedge</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The cell </span><span class="si">{</span><span class="n">hyperedge</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
 
@@ -1188,7 +1197,7 @@ document.write(`
 
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">_add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate new nodes when cells are added to the CC.</span>
 
 <span class="sd">        Private helper method.</span>
@@ -1281,7 +1290,6 @@ document.write(`
 <span class="sd">        the node is dropped from self.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_hyperedge</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.get_incidence_structure_dict"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_incidence_structure_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
@@ -1321,10 +1329,10 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">,</span>
         <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span>
+        <span class="n">incidence_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">,</span>
         <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute incidence matrix for the CC indexed by nodes x cells.</span>
 
@@ -1350,7 +1358,7 @@ document.write(`
             <span class="n">rank</span><span class="p">,</span> <span class="n">to_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="n">incidence_type</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sparse weighted :term:`s-adjacency matrix`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1398,7 +1406,7 @@ document.write(`
             <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">row</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.cell_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">cell_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.cell_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">cell_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the cell adjacency matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1422,7 +1430,7 @@ document.write(`
         <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.node_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">node_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.node_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">node_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the node adjacency matrix.&quot;&quot;&quot;</span>
         <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
             <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
@@ -1433,7 +1441,7 @@ document.write(`
         <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.coadjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.coadjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coadjacency matrix.</span>
 
 <span class="sd">        The sparse weighted :term:`s-coadjacency matrix`</span>
@@ -1493,7 +1501,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.restrict_to_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.restrict_to_cells">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.restrict_to_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.restrict_to_cells">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a combinatorial complex using a subset of the cells.</span>
 
 <span class="sd">        Parameters</span>
@@ -1511,7 +1519,7 @@ document.write(`
         <span class="c1"># RNS = self.cells.restrict_to(element_subset=cell_set, name=name)</span>
         <span class="c1"># return NestedCombinatorialComplex(cells=RNS, name=name)</span>
 
-<div class="viewcode-block" id="CombinatorialComplex.restrict_to_nodes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.restrict_to_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.restrict_to_nodes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.restrict_to_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict to a set of nodes.</span>
 
 <span class="sd">        Constructs a new combinatorial complex  by restricting the</span>
@@ -1522,17 +1530,15 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        node_set: iterable of hashables</span>
 <span class="sd">            References a subset of elements of self.nodes</span>
-
 <span class="sd">        name: str, optional</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        new Combinatorial Complex : NestedCombinatorialComplex</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.from_networkx_graph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.from_networkx_graph">[docs]</a>    <span class="k">def</span> <span class="nf">from_networkx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.from_networkx_graph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.from_networkx_graph">[docs]</a>    <span class="k">def</span> <span class="nf">from_networkx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a combinatorial complex from a networkx graph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1574,7 +1580,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.is_connected"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.is_connected"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.is_connected">[docs]</a>    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if combinatorial complex is :term:`s-connected &lt;s-connected, s-node-connected&gt;`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1630,7 +1636,7 @@ document.write(`
                         <span class="n">singletons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">singletons</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.remove_singletons"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.remove_singletons">[docs]</a>    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.remove_singletons"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.remove_singletons">[docs]</a>    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct new CC with singleton cells removed.</span>
 
 <span class="sd">        Parameters</span>
@@ -1644,7 +1650,9 @@ document.write(`
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="k">if</span> <span class="n">cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">singletons</span><span class="p">()]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.s_connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.s_connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_connected_components</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a generator for s-cell-connected components.</span>
 
 <span class="sd">        or the :term:`s-node-connected components &lt;s-connected component, s-node-connected component&gt;`.</span>
@@ -1696,7 +1704,9 @@ document.write(`
                         <span class="k">continue</span>
                 <span class="k">yield</span> <span class="p">{</span><span class="n">rowdict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.s_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">s_component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.s_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">s_component_subgraphs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a generator for the induced subgraphs of s_connected components.</span>
 
 <span class="sd">        Removes singletons unless return_singletons is set to True.</span>
@@ -1725,7 +1735,9 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.s_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.s_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_components">[docs]</a>    <span class="k">def</span> <span class="nf">s_components</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components.</span>
 
 <span class="sd">        Same as s_connected_components.</span>
@@ -1738,7 +1750,7 @@ document.write(`
             <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.connected_components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.connected_components">[docs]</a>    <span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components.</span>
 
 <span class="sd">        Same as :meth:`s_connected_components`,</span>
@@ -1751,7 +1763,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.connected_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.connected_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">connected_component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.connected_component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.connected_component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">connected_component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-component subgraphs with s=1.</span>
 
 <span class="sd">        Same as :meth:`s_component_subgraphs` with s=1.</span>
@@ -1764,7 +1776,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_component_subgraphs</span><span class="p">(</span><span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.components">[docs]</a>    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.components"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.components">[docs]</a>    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components for s=1.</span>
 
 <span class="sd">        Same as :meth:`s_connected_components` with s=1.</span>
@@ -1778,7 +1790,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.component_subgraphs"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.component_subgraphs">[docs]</a>    <span class="k">def</span> <span class="nf">component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-component subgraphs wth s=1.</span>
 
 <span class="sd">        Same as :meth:`s_components_subgraphs` with s=1. Returns iterator.</span>
@@ -1789,7 +1801,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_component_subgraphs</span><span class="p">(</span><span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.node_diameters"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_diameters">[docs]</a>    <span class="k">def</span> <span class="nf">node_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.node_diameters"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_diameters">[docs]</a>    <span class="k">def</span> <span class="nf">node_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return node diameters of the connected components.</span>
 
 <span class="sd">        Parameters</span>
@@ -1816,7 +1828,7 @@ document.write(`
         <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">diams</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">diams</span><span class="p">[</span><span class="n">loc</span><span class="p">],</span> <span class="n">diams</span><span class="p">,</span> <span class="n">comps</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.cell_diameters"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_diameters">[docs]</a>    <span class="k">def</span> <span class="nf">cell_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.cell_diameters"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_diameters">[docs]</a>    <span class="k">def</span> <span class="nf">cell_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cell diameters of the s_cell_connected component subgraphs.</span>
 
 <span class="sd">        Parameters</span>
@@ -1846,7 +1858,7 @@ document.write(`
         <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">diams</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">diams</span><span class="p">[</span><span class="n">loc</span><span class="p">],</span> <span class="n">diams</span><span class="p">,</span> <span class="n">comps</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.diameter"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.diameter"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the length of the longest shortest s-walk between nodes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1877,7 +1889,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CC is not s-connected. s=</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.cell_diameter"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">cell_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.cell_diameter"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_diameter">[docs]</a>    <span class="k">def</span> <span class="nf">cell_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return length of the longest shortest s-walk between cells.</span>
 
 <span class="sd">        Parameters</span>
@@ -1887,7 +1899,7 @@ document.write(`
 
 <span class="sd">        Return</span>
 <span class="sd">        ------</span>
-<span class="sd">        cell_diameter : int</span>
+<span class="sd">        int</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -1908,7 +1920,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CC is not s-connected. s=</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shortest s-walk distance between two nodes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1941,7 +1953,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.cell_distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_distance">[docs]</a>    <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.cell_distance"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_distance">[docs]</a>    <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the shortest s-walk distance between two cells.</span>
 
 <span class="sd">        Parameters</span>
@@ -1955,7 +1967,8 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        s- walk distance : the shortest s-walk cell distance</span>
+<span class="sd">        int</span>
+<span class="sd">            The shortest s-walk cell distance between `source` and `target`.</span>
 <span class="sd">            A shortest s-walk is computed as a sequence of cells,</span>
 <span class="sd">            the s-walk distance is the number of cells in the sequence</span>
 <span class="sd">            minus 1. If no such path exists returns np.inf.</span>
