@@ -383,9 +383,9 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    simplices : list, optional,  default: None</span>
+<span class="sd">    simplices : list, optional</span>
 <span class="sd">        list of maximal simplices that define the simplicial complex</span>
-<span class="sd">    name : hashable, optional, default: None</span>
+<span class="sd">    name : hashable, optional</span>
 <span class="sd">        If None then a placeholder &#39;&#39; will be inserted as name</span>
 <span class="sd">    kwargs : keyword arguments, optional</span>
 <span class="sd">        Attributes to add to the complex as key=value pairs.</span>
@@ -625,13 +625,15 @@ document.write(`
                     <span class="p">]</span> <span class="o">-=</span> <span class="n">maximal_faces</span>
 
 <div class="viewcode-block" id="SimplicialComplex.get_boundaries"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.get_boundaries">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_boundaries</span><span class="p">(</span><span class="n">simplices</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get boundaries of simplices.</span>
+    <span class="k">def</span> <span class="nf">get_boundaries</span><span class="p">(</span>
+        <span class="n">simplices</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_dim</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get boundaries of the given simplices.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        simplices : list</span>
-<span class="sd">            list or of simplices, typically integers.</span>
+<span class="sd">        simplices : Iterable</span>
+<span class="sd">            Iterable of simplices for which to compute the boundaries.</span>
 <span class="sd">        min_dim : int, optional</span>
 <span class="sd">            constrain the max dimension of faces</span>
 <span class="sd">        max_dim : int, optional</span>
@@ -639,8 +641,9 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        face_set : set</span>
-<span class="sd">            DESCRIPTION. list of tuples or all faces at all levels (subsets) of the input list of simplices</span>
+<span class="sd">        set of frozensets</span>
+<span class="sd">            Set of simplices that are boundaries of the given simplices. If `min_dim` or `max_dim` are given, only</span>
+<span class="sd">            simplices with dimension in the given range are returned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplices</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -649,20 +652,14 @@ document.write(`
 
         <span class="n">face_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">simplices</span><span class="p">:</span>
-            <span class="n">numnodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numnodes</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">min</span><span class="p">(</span><span class="n">max_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">))</span> <span class="k">if</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">min_dim</span> <span class="k">if</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
-                    <span class="k">elif</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
-                    <span class="k">elif</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
-                    <span class="k">elif</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">min_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
+                    <span class="n">face_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">face_set</span></div>
 
