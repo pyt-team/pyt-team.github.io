@@ -330,7 +330,6 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">gudhi</span> <span class="kn">import</span> <span class="n">SimplexTree</span>
 <span class="kn">from</span> <span class="nn">hypernetx</span> <span class="kn">import</span> <span class="n">Hypergraph</span>
-<span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">Graph</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span><span class="p">,</span> <span class="n">dok_matrix</span>
 
 <span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
@@ -345,7 +344,7 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a simplicial complex.</span>
 
 <span class="sd">    Class for construction boundary operators, Hodge Laplacians,</span>
-<span class="sd">    higher order (co)adjacency operators from collection of</span>
+<span class="sd">    higher order (co)adjacency operators from a collection of</span>
 <span class="sd">    simplices.</span>
 
 <span class="sd">    A simplicial complex is a topological space of a specific kind, constructed by</span>
@@ -367,7 +366,7 @@ document.write(`
 <span class="sd">    which are a type of topological space constructed by &quot;gluing together&quot; points, line segments,</span>
 <span class="sd">    triangles, and higher-dimensional counterparts. The class provides methods for computing boundary</span>
 <span class="sd">    operators, Hodge Laplacians, and higher-order adjacency operators on the simplicial complex.</span>
-<span class="sd">    It also allows for compatibility with the NetworkX and gudhi libraries.</span>
+<span class="sd">    It also allows for compatibility with NetworkX and the GUDHI library.</span>
 
 <span class="sd">    Features</span>
 <span class="sd">    --------</span>
@@ -407,17 +406,18 @@ document.write(`
 
 <span class="sd">    &gt;&gt;&gt; SC = SimplicialComplex([[1, 2, 3], [2, 3, 5], [0, 1]])</span>
 
-<span class="sd">    TopoNetX is also compatible with NetworkX, allowing users to create a simplicial complex from a NetworkX graph:</span>
+<span class="sd">    TopoNetX is also compatible with NetworkX, allowing users to create a simplicial complex from a NetworkX graph.</span>
+<span class="sd">    Existing node and edge attributes are copied to the simplicial complex:</span>
 
-<span class="sd">    &gt;&gt;&gt; G = Graph() # networkx G</span>
+<span class="sd">    &gt;&gt;&gt; G = nx.Graph()</span>
 <span class="sd">    &gt;&gt;&gt; G.add_edge(0, 1, weight=4)</span>
-<span class="sd">    &gt;&gt;&gt; G.add_edge(0, 3)</span>
-<span class="sd">    &gt;&gt;&gt; G.add_edge(0, 4)</span>
-<span class="sd">    &gt;&gt;&gt; G.add_edge(1, 4)</span>
+<span class="sd">    &gt;&gt;&gt; G.add_edges_from([(0, 3), (0, 4), (1, 4)])</span>
 <span class="sd">    &gt;&gt;&gt; SC = SimplicialComplex(simplices=G)</span>
 <span class="sd">    &gt;&gt;&gt; SC.add_simplex([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; SC.simplices</span>
 <span class="sd">    SimplexView([(0,), (1,), (3,), (4,), (2,), (0, 1), (0, 3), (0, 4), (1, 4), (1, 2), (1, 3), (2, 3), (1, 2, 3)])</span>
+<span class="sd">    &gt;&gt;&gt; SC[(0, 1)][&quot;weight&quot;]</span>
+<span class="sd">    4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -425,7 +425,7 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span> <span class="o">=</span> <span class="n">SimplexView</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplices</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplices</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">):</span>
             <span class="n">_simplices</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">simplex</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">simplices</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span>
                 <span class="n">data</span><span class="o">=</span><span class="kc">True</span>
@@ -504,7 +504,7 @@ document.write(`
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If simplex is not in simplicial complex.</span>
+<span class="sd">            If simplex is not in the simplicial complex.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -690,7 +690,7 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">simplex_</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">if</span> <span class="n">simplex_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="n">simplex</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_maximal</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">simplex_</span><span class="p">]</span>
                 <span class="n">faces</span> <span class="o">=</span> <span class="n">Simplex</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span><span class="o">.</span><span class="n">faces</span>
                 <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
@@ -1101,15 +1101,17 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        d : int, dimension of the Laplacian matrix.</span>
-<span class="sd">        signed : bool, is true return absolute value entry of the Laplacian matrix</span>
+<span class="sd">        d : int</span>
+<span class="sd">            Dimension of the Laplacian matrix.</span>
+<span class="sd">        signed : bool, default=True</span>
+<span class="sd">            Whether to return the signed or unsigned hodge laplacian.</span>
 <span class="sd">            This is useful when one needs to obtain higher-order</span>
 <span class="sd">            adjacency matrices from the hodge-laplacian</span>
 <span class="sd">            typically higher-order adjacency matrices&#39; entries are</span>
 <span class="sd">            typically positive.</span>
 <span class="sd">        weight : bool, default=False</span>
-<span class="sd">        index : boolean, optional, default False</span>
-<span class="sd">            Indicates wheather to return the indices that define the incidence matrix.</span>
+<span class="sd">        index : bool, default=False</span>
+<span class="sd">            Indicates whether to return the indices that define the incidence matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1704,7 +1706,7 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        H : hyernetx hypergraph</span>
-<span class="sd">        Hypergraph.</span>
+<span class="sd">            The hypergraph to compute the simplicial complex closure of.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
