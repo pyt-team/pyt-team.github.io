@@ -890,7 +890,7 @@ document.write(`
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
 
@@ -1337,11 +1337,11 @@ document.write(`
 <div class="viewcode-block" id="CombinatorialComplex.get_all_incidence_structure_dict"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_all_incidence_structure_dict">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all incidence structure dictionary.&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">B0r</span> <span class="o">=</span> <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;B_0_&quot;</span> <span class="o">+</span> <span class="p">{</span><span class="n">r</span><span class="p">}]</span> <span class="o">=</span> <span class="n">B0r</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;B_0_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)]</span> <span class="o">=</span> <span class="n">B0r</span>
         <span class="k">return</span> <span class="n">d</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.remove_cells"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.remove_cells">[docs]</a>    <span class="k">def</span> <span class="nf">remove_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">):</span>
