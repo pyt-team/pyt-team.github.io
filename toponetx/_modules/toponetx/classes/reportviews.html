@@ -429,7 +429,7 @@ document.write(`
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
 
             <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="si">}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
 
             <span class="c1"># If there is only one cell with these elements, return its properties</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -472,12 +472,12 @@ document.write(`
             <span class="p">]</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a given element is in the cell view.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        e : Iterable</span>
+<span class="sd">        e : tuple, list, or cell</span>
 <span class="sd">            The element to check.</span>
 
 <span class="sd">        Returns</span>
@@ -485,10 +485,19 @@ document.write(`
 <span class="sd">        bool</span>
 <span class="sd">            Whether or not the element is in the cell view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be of type: tuple, list or a cell.&quot;</span><span class="p">)</span>
+
+        <span class="n">e</span> <span class="o">=</span> <span class="n">Cell</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">e_homotopic_to</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">is_homotopic_to</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">e_homotopic_to</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a string representation of the cell view.&quot;&quot;&quot;</span>
@@ -527,8 +536,6 @@ document.write(`
             <span class="n">hyperedge_</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">hyperedge</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">hyperedge_</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">):</span>
@@ -574,7 +581,6 @@ document.write(`
                     <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="n">hyperedges</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">False</span>
-
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
@@ -583,13 +589,8 @@ document.write(`
                     <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="ow">in</span> <span class="n">hyperedges</span><span class="p">:</span>
                         <span class="k">return</span> <span class="kc">True</span>
                 <span class="k">return</span> <span class="kc">False</span>
-
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">e</span><span class="p">})</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">else</span><span class="p">:</span>
-
-            <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of hyperedges.</span>
@@ -598,7 +599,7 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;HyperEdgeView([</span><span class="si">{</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">])&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;HyperEdgeView(</span><span class="si">{</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of hyperedges.</span>
@@ -607,7 +608,7 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;HyperEdgeView([</span><span class="si">{</span><span class="nb">map</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">])&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;HyperEdgeView(</span><span class="si">{</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span>
 
 <div class="viewcode-block" id="HyperEdgeView.skeleton"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.reportviews.HyperEdgeView.skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Skeleton of the complex.&quot;&quot;&quot;</span>
@@ -621,17 +622,17 @@ document.write(`
 
         <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;upper&quot;</span> <span class="ow">or</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allranks</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">rank</span> <span class="o">&gt;=</span> <span class="n">rank</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">rank_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allranks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rank_i</span> <span class="o">&gt;=</span> <span class="n">rank</span><span class="p">:</span>
 
-                    <span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank_i</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;lower&quot;</span> <span class="ow">or</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allranks</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;=</span> <span class="n">rank</span><span class="p">:</span>
-                    <span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">rank_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allranks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rank_i</span> <span class="o">&lt;=</span> <span class="n">rank</span><span class="p">:</span>
+                    <span class="n">elements</span> <span class="o">=</span> <span class="n">elements</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank_i</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span>
@@ -649,7 +650,20 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        int, the rank of the hyperedge e</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allranks</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                        <span class="k">return</span> <span class="n">i</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hyperedge </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">e</span><span class="p">})</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hyperedge </span><span class="si">{</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">e</span><span class="p">})</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
@@ -657,31 +671,11 @@ document.write(`
                     <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
                         <span class="k">return</span> <span class="n">i</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hyperedge </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
-
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">allranks</span><span class="p">):</span>
-
-                    <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                        <span class="k">return</span> <span class="n">i</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hyperedge </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
-
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-
-            <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">e</span><span class="p">})</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hyperedge </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-
-            <span class="k">if</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">return</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hyperedge </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span></div>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hyperedge </span><span class="si">{</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">e</span><span class="p">})</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">allranks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
