@@ -318,7 +318,7 @@ document.write(`
                   
   <h1>Source code for toponetx.transform.graph_to_simplicial_complex</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Methods to lift a graph to a simplicial complex.&quot;&quot;&quot;</span>
-
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">takewhile</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
@@ -376,8 +376,11 @@ document.write(`
 <span class="sd">        The clique simplicial complex of dimension dim of the graph G.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cliques</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">enumerate_all_cliques</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+
+    <span class="c1"># `nx.enumerate_all_cliques` returns cliques in ascending order of size. Abort calling the generator once we reach</span>
+    <span class="c1"># cliques larger than the requested max dimension.</span>
     <span class="k">if</span> <span class="n">max_dim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">cliques</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">clique</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">clique</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span><span class="p">,</span> <span class="n">cliques</span><span class="p">)</span>
+        <span class="n">cliques</span> <span class="o">=</span> <span class="n">takewhile</span><span class="p">(</span><span class="k">lambda</span> <span class="n">clique</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">clique</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_dim</span><span class="p">,</span> <span class="n">cliques</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">cliques</span><span class="p">)</span></div>
 
