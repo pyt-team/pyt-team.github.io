@@ -42,12 +42,12 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/template_train';</script>
-    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/template_train.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/hypergat_train';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/hypergat_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Train a Simplicial Neural Network for Homology Localization (Dist2Cycle)" href="../simplicial/dist2Cycle_train.html" />
-    <link rel="prev" title="Train a Hypergraph Neural Network" href="hypersage_train.html" />
+    <link rel="next" title="Train a Hypergraph Neural Network" href="hypersage_train.html" />
+    <link rel="prev" title="Train a Hypergraph Network with Hyperedge Neurons (HNHN)" href="HNHN_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -303,7 +303,7 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="hypergat_train.html">Train a Hypergraph Neural Network</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Hypergraph Neural Network</a></li>
 
 
 
@@ -311,7 +311,7 @@ document.write(`
 
 
 
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Hypergraph Neural Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="template_train.html">Train a Hypergraph Neural Network</a></li>
 
 
 
@@ -388,22 +388,44 @@ document.write(`
                   
   <section id="Train-a-Hypergraph-Neural-Network">
 <h1>Train a Hypergraph Neural Network<a class="headerlink" href="#Train-a-Hypergraph-Neural-Network" title="Link to this heading">#</a></h1>
-<p>In this notebook, we will create and train a two-step message passing network in the hypergraph domain. We will use a benchmark dataset, shrec16, a collection of 3D meshes, to train the model to perform classification at the level of the hypergraph.</p>
+<p>In this notebook, we will create and train a two-step message passing network <strong>HyperGAT</strong> (<a class="reference external" href="https://aclanthology.org/2020.emnlp-main.399.pdf">Ding et al., 2020</a>) in the hypergraph domain. We will use a benchmark dataset, shrec16, a collection of 3D meshes, to train the model to perform classification at the level of the hypergraph.</p>
+<p>Given a hypergraph <span class="math notranslate nohighlight">\(G=(\mathcal{V}, \mathcal{E})\)</span>, where <span class="math notranslate nohighlight">\(|\mathcal{V}|=n, |\mathcal{V}|=m\)</span>, let <span class="math notranslate nohighlight">\(X \in \mathbb{R}^{n \times d}\)</span> and <span class="math notranslate nohighlight">\(Z \in \mathbb{R}^{m \times d'}\)</span> denote the hidden node and hyperedge representations, respectively.</p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow z}^{(0 \rightarrow 1) } = (B^T_1\odot att(h_{y \in \mathcal{B}(z)}^{t,(0)}))\_{zy} \cdot h^{t,(0)}y \cdot \Theta^{t,(0)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_z^{(1)} = \sigma(\sum_{y \in \mathcal{B}(z)} m_{y \rightarrow z}^{(0 \rightarrow 1)})\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{z \rightarrow x}^{(1 \rightarrow 0)} = (B_1 \odot att(h_{z \in \mathcal{C}(x)}^{t,(1)}))\_{xz} \cdot m_{z}^{(1)} \cdot \Theta^{t,(1)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{x}^{(0)} = \sum_{z \in \mathcal{C}(x)} m_{z \rightarrow x}^{(1\rightarrow0)}\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x = m_{x}^{(0)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1, (0)} = \sigma(m_x)\)</span></p>
+<p>Given a specific node <span class="math notranslate nohighlight">\(\mathcal{v}_{i}\)</span> , HyperGAT layer first learns the representations of all its connected hyperedges <span class="math notranslate nohighlight">\(\mathcal{E}_{i}\)</span> . As not all the nodes in a hyperedge <span class="math notranslate nohighlight">\(\mathcal{e}_{j} \in \mathcal{E}_{i}\)</span> contribute equally to the hyperedge meaning, we introduce attention mechanism (i.e., node-level attention) to highlight those nodes that are important to the meaning of the hyperedge and then aggregate them to compute the hyperedge representation
+<span class="math notranslate nohighlight">\(\mathcal{f}_{j}^{l}\)</span>. Formally:</p>
+<div class="math notranslate nohighlight">
+\[ \mathcal{f}_{j}^{l} = \sigma (\sum_{\mathcal{u}_{k} \in \mathcal{e}_{j}} \alpha_{jk} \mathcal{W}_{1}
+\mathcal{h}_{k}^{l-1})\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma\)</span> is the nonlinearity such as ReLU and <span class="math notranslate nohighlight">\(\mathcal{W}_{1}\)</span> is a trainable weight matrix. <span class="math notranslate nohighlight">\(\alpha_{jk}\)</span> denotes the attention coefficient of node <span class="math notranslate nohighlight">\(\mathcal{v}_{k}\)</span> in the hyperedge <span class="math notranslate nohighlight">\(\mathcal{e}_{j}\)</span> , which can be computed by:</p>
+<div class="math notranslate nohighlight">
+\[\alpha_{jk} = \frac{\operatorname{exp}(a_{1}^{T}u_{k})}{\sum\limits_{\mathcal{u}_{p} \in \mathcal{e}_{j}} \operatorname{exp}(a_{1}^{T}u_{p})}\]</div>
+<p>where <span class="math notranslate nohighlight">\(a_{1}^{T}\)</span> is a weight vector (a.k.a, context vector).</p>
+<p>Edge-level Attention. With all the hyperedges representations $ <span class="math">\left`{ :nbsphinx-math:</span>mathcal{f}`<em>{j}^{l}| :nbsphinx-math:`forall{mathcal{e}_{j}}` :nbsphinx-math:`in `:nbsphinx-math:`mathcal{E}`</em>{i} <span class="math">\right</span>}$, we again apply an edge-level attention mechanism to highlight the informative hyperedges for learning the next-layer representation of node vi . This process can be formally expressed as:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{h}_{i}^{l} = \sigma (\sum_{\mathcal{e}_{j} \in \mathcal{E}_{i}} \beta_{ij} \mathcal{W}_{2} \mathcal{f}_{j}^{l})\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal{h}_{i}^{l}\)</span> is the output representation of node <span class="math notranslate nohighlight">\(\mathcal{v}_{i}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{W}_{2}\)</span> is a weight matrix. <span class="math notranslate nohighlight">\(\beta_{ij}\)</span> denotes the attention coefficient of hyperedge <span class="math notranslate nohighlight">\(\mathcal{e}_{j}\)</span> on node <span class="math notranslate nohighlight">\(\mathcal{v}_{i}\)</span> , which can be computed by:</p>
+<div class="math notranslate nohighlight">
+\[\beta_{ij} = \frac{\operatorname{exp}(a_{2}^{T}v_{j})}{\sum\limits_{\mathcal{e}_{p} \in \mathcal{E}_{i}} \operatorname{exp}(a_{2}^{T}v_{p})}\]</div>
+<div class="math notranslate nohighlight">
+\[\mathcal{v}_{j} = \operatorname{LeakyRELU} ([ \mathcal{W}_{2}\mathcal{f}_{j}^{l} || \mathcal{W}_{1}\mathcal{h}_{i}^{l-1}  ])\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal{a}_{2}^{T}\)</span> is another weight (context) vector for measuring the importance of the hyperedges and || is the concatenation operation.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-
-<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.template_layer</span> <span class="kn">import</span> <span class="n">TemplateLayer</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.hypergat_layer</span> <span class="kn">import</span> <span class="n">HyperGATLayer</span>
 </pre></div>
 </div>
 </div>
-<p>If GPU’s are available, we will make use of them. Otherwise, this will run on CPU.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
@@ -449,7 +471,7 @@ cpu
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Loading dataset...
+Loading shrec 16 small dataset...
 
 done!
 </pre></div></div>
@@ -494,10 +516,14 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <span class="n">incidence_1_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">simplexes</span><span class="p">:</span>
     <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">incidence_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
     <span class="n">hg</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">to_hypergraph</span><span class="p">()</span>
     <span class="n">hg_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
+
+<span class="c1"># Extract hypergraphs incident matrices from collected hypergraphs</span>
+<span class="k">for</span> <span class="n">hg</span> <span class="ow">in</span> <span class="n">hg_list</span><span class="p">:</span>
+    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">hg</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">()</span>
+    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">incidence_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -517,28 +543,18 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
+The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </pre></div></div>
 </div>
 </section>
 </section>
-<section id="Create-the-Neural-Network">
-<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Using the TemplateLayer class, we create a neural network with stacked layers.</p>
+<section id="Define-the-Neural-Network">
+<h1>Define the Neural Network<a class="headerlink" href="#Define-the-Neural-Network" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">channels_edge</span> <span class="o">=</span> <span class="n">x_1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">channels_node</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TemplateNN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HyperGAT</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Neural network implementation of Template for hypergraph classification.</span>
 
 <span class="sd">    Parameters</span>
@@ -551,20 +567,19 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 <span class="sd">        Amount of message passing layers.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels_edge</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
+        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HyperGATLayer</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">TemplateLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">channels_edge</span><span class="p">,</span>
-                    <span class="n">intermediate_channels</span><span class="o">=</span><span class="n">channels_node</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">channels_edge</span><span class="p">,</span>
+                <span class="n">HyperGATLayer</span><span class="p">(</span>
+                    <span class="n">in_channels</span>  <span class="o">=</span> <span class="n">out_channels</span><span class="p">,</span>
+                    <span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_edge</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layer, then global max pooling.</span>
@@ -586,7 +601,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 <span class="sd">            Label assigned to whole complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
         <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">pooled_x</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
@@ -597,22 +612,33 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, the loss, and an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">TemplateNN</span><span class="p">(</span><span class="n">channels_edge</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">out_dim</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">n_layers</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Define the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">HyperGAT</span><span class="p">(</span>
+    <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_dim</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span>
+<span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="c1"># Optimizer and loss</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<p>Split the dataset into train and test sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">x_1_train</span><span class="p">,</span> <span class="n">x_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">x_0_train</span><span class="p">,</span> <span class="n">x_0_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_0s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">incidence_1_train</span><span class="p">,</span> <span class="n">incidence_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
     <span class="n">incidence_1_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
 <span class="p">)</span>
@@ -620,17 +646,8 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 </pre></div>
 </div>
 </div>
-<p>The following cell performs the training, looping over the network for a low amount of epochs. We keep training minimal for the purpose of rapid testing.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -638,15 +655,17 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_1_train</span><span class="p">,</span> <span class="n">incidence_1_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">):</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">x_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_0_train</span><span class="p">,</span> <span class="n">incidence_1_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">):</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">x_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
             <span class="n">incidence_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+        <span class="c1"># Extract edge_index from sparse incidence matrix</span>
+        <span class="c1"># edge_index, _ = to_edge_index(incidence_1)</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
@@ -659,14 +678,14 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_1_test</span><span class="p">,</span> <span class="n">incidence_1_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">):</span>
-                <span class="n">x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-                <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">x_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_0_test</span><span class="p">,</span> <span class="n">incidence_1_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">):</span>
+                <span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+                <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">x_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">incidence_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                 <span class="p">)</span>
-                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
                 <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_loss: </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -678,25 +697,17 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 274.9673
-Test_loss: 529.0007
-Epoch: 2 loss: 274.6129
-Test_loss: 529.0006
-Epoch: 3 loss: 274.6128
-Test_loss: 529.0005
-Epoch: 4 loss: 274.6128
-Test_loss: 529.0004
-Epoch: 5 loss: 274.6127
-Test_loss: 529.0004
+Epoch: 1 loss: 282.7875
+Test_loss: 529.0000
+Epoch: 2 loss: 281.3750
+Test_loss: 529.0000
+Epoch: 3 loss: 278.9625
+Test_loss: 529.0000
+Epoch: 4 loss: 278.9625
+Test_loss: 529.0000
+Epoch: 5 loss: 278.9625
+Test_loss: 529.0000
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </div>
 </section>
 
@@ -712,20 +723,20 @@ Test_loss: 529.0004
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="hypersage_train.html"
+       href="HNHN_train.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Train a Hypergraph Neural Network</p>
+        <p class="prev-next-title">Train a Hypergraph Network with Hyperedge Neurons (HNHN)</p>
       </div>
     </a>
     <a class="right-next"
-       href="../simplicial/dist2Cycle_train.html"
+       href="hypersage_train.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Train a Simplicial Neural Network for Homology Localization (Dist2Cycle)</p>
+        <p class="prev-next-title">Train a Hypergraph Neural Network</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -753,7 +764,7 @@ Test_loss: 529.0004
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures-and-lift-into-hypergraph-domain.">Define neighborhood structures and lift into hypergraph domain.</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-Neural-Network">Define the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
 </ul>
 
@@ -761,7 +772,7 @@ Test_loss: 529.0004
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../../_sources/notebooks/hypergraph/template_train.ipynb.txt">
+    <a href="../../_sources/notebooks/hypergraph/hypergat_train.ipynb.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
