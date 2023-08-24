@@ -42,12 +42,12 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/allsettransformer_train';</script>
-    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/allsettransformer_train.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/allset_transformer_train';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/allset_transformer_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Train a Hypergraph Neural Network" href="dhgcn_train.html" />
-    <link rel="prev" title="Train a CW Network (CWN)" href="../cell/cwn_train.html" />
+    <link rel="prev" title="Train a Hypergraph Neural Network" href="allset_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -306,6 +306,10 @@ document.write(`
 
 
 
+<li class="toctree-l1"><a class="reference internal" href="allset_train.html">Train a Hypergraph Neural Network</a></li>
+
+
+
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Hypergraph Neural Network</a></li>
 
 
@@ -511,7 +515,7 @@ representations of hyperedges containing <span class="math notranslate nohighlig
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.allsettransformer_layer</span> <span class="kn">import</span> <span class="n">AllSetTransformerLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.allset_transformer_layer</span> <span class="kn">import</span> <span class="n">AllSetTransformerLayer</span>
 
 <span class="c1"># %load_ext autoreload</span>
 <span class="c1"># %autoreload 2</span>
@@ -642,7 +646,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AllSetTransformerModel</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AllSetTransformer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;AllSet Neural Network Module.</span>
 
 <span class="sd">    A module that combines multiple AllSet layers to form a neural network.</span>
@@ -663,7 +667,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 <span class="sd">        Dropout probability for the layer input. Defaults to 0.2.</span>
 <span class="sd">    mlp_num_layers : int, optional</span>
 <span class="sd">        Number of layers in the MLP. Defaults to 2.</span>
-<span class="sd">    mlp_input_norm : bool, optional</span>
+<span class="sd">    mlp_norm : bool, optional</span>
 <span class="sd">        Whether to apply input normalization in the MLP. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -746,7 +750,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 
 
 <span class="c1"># Define the model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">AllSetTransformerModel</span><span class="p">(</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AllSetTransformer</span><span class="p">(</span>
     <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
     <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hid_dim</span><span class="p">,</span>
     <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
@@ -854,12 +858,12 @@ Test_loss: 529.0000
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../cell/cwn_train.html"
+       href="allset_train.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Train a CW Network (CWN)</p>
+        <p class="prev-next-title">Train a Hypergraph Neural Network</p>
       </div>
     </a>
     <a class="right-next"
@@ -902,7 +906,7 @@ Test_loss: 529.0000
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../../_sources/notebooks/hypergraph/allsettransformer_train.ipynb.txt">
+    <a href="../../_sources/notebooks/hypergraph/allset_transformer_train.ipynb.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
