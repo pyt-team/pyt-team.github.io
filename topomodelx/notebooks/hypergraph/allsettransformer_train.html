@@ -42,12 +42,12 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/hypergat_train';</script>
-    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/hypergat_train.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/allsettransformer_train';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/allsettransformer_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Train a Hypergraph Neural Network" href="hypersage_train.html" />
-    <link rel="prev" title="Train a Hypergraph Network with Hyperedge Neurons (HNHN)" href="hnhn_train_bis.html" />
+    <link rel="next" title="Train a Hypergraph Neural Network" href="dhgcn_train.html" />
+    <link rel="prev" title="Train a CW Network (CWN)" href="../cell/cwn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -300,7 +300,7 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="allsettransformer_train.html">Train a Hypergraph Neural Network</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Hypergraph Neural Network</a></li>
 
 
 
@@ -320,7 +320,7 @@ document.write(`
 
 
 
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Hypergraph Neural Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hypergat_train.html">Train a Hypergraph Neural Network</a></li>
 
 
 
@@ -444,32 +444,44 @@ document.write(`
                   
   <section id="Train-a-Hypergraph-Neural-Network">
 <h1>Train a Hypergraph Neural Network<a class="headerlink" href="#Train-a-Hypergraph-Neural-Network" title="Link to this heading">#</a></h1>
-<p>In this notebook, we will create and train a two-step message passing network <strong>HyperGAT</strong> (<a class="reference external" href="https://aclanthology.org/2020.emnlp-main.399.pdf">Ding et al., 2020</a>) in the hypergraph domain. We will use a benchmark dataset, shrec16, a collection of 3D meshes, to train the model to perform classification at the level of the hypergraph.</p>
-<p>Given a hypergraph <span class="math notranslate nohighlight">\(G=(\mathcal{V}, \mathcal{E})\)</span>, where <span class="math notranslate nohighlight">\(|\mathcal{V}|=n, |\mathcal{V}|=m\)</span>, let <span class="math notranslate nohighlight">\(X \in \mathbb{R}^{n \times d}\)</span> and <span class="math notranslate nohighlight">\(Z \in \mathbb{R}^{m \times d'}\)</span> denote the hidden node and hyperedge representations, respectively.</p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow z}^{(0 \rightarrow 1) } = (B^T_1\odot att(h_{y \in \mathcal{B}(z)}^{t,(0)}))\_{zy} \cdot h^{t,(0)}y \cdot \Theta^{t,(0)}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m_z^{(1)} = \sigma(\sum_{y \in \mathcal{B}(z)} m_{y \rightarrow z}^{(0 \rightarrow 1)})\)</span></p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{z \rightarrow x}^{(1 \rightarrow 0)} = (B_1 \odot att(h_{z \in \mathcal{C}(x)}^{t,(1)}))\_{xz} \cdot m_{z}^{(1)} \cdot \Theta^{t,(1)}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{x}^{(0)} = \sum_{z \in \mathcal{C}(x)} m_{z \rightarrow x}^{(1\rightarrow0)}\)</span></p>
-<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x = m_{x}^{(0)}\)</span></p>
-<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1, (0)} = \sigma(m_x)\)</span></p>
-<p>Given a specific node <span class="math notranslate nohighlight">\(\mathcal{v}_{i}\)</span> , HyperGAT layer first learns the representations of all its connected hyperedges <span class="math notranslate nohighlight">\(\mathcal{E}_{i}\)</span> . As not all the nodes in a hyperedge <span class="math notranslate nohighlight">\(\mathcal{e}_{j} \in \mathcal{E}_{i}\)</span> contribute equally to the hyperedge meaning, we introduce attention mechanism (i.e., node-level attention) to highlight those nodes that are important to the meaning of the hyperedge and then aggregate them to compute the hyperedge representation
-<span class="math notranslate nohighlight">\(\mathcal{f}_{j}^{l}\)</span>. Formally:</p>
-<div class="math notranslate nohighlight">
-\[ \mathcal{f}_{j}^{l} = \sigma (\sum_{\mathcal{u}_{k} \in \mathcal{e}_{j}} \alpha_{jk} \mathcal{W}_{1}
-\mathcal{h}_{k}^{l-1})\]</div>
-<p>where <span class="math notranslate nohighlight">\(\sigma\)</span> is the nonlinearity such as ReLU and <span class="math notranslate nohighlight">\(\mathcal{W}_{1}\)</span> is a trainable weight matrix. <span class="math notranslate nohighlight">\(\alpha_{jk}\)</span> denotes the attention coefficient of node <span class="math notranslate nohighlight">\(\mathcal{v}_{k}\)</span> in the hyperedge <span class="math notranslate nohighlight">\(\mathcal{e}_{j}\)</span> , which can be computed by:</p>
-<div class="math notranslate nohighlight">
-\[\alpha_{jk} = \frac{\operatorname{exp}(a_{1}^{T}u_{k})}{\sum\limits_{\mathcal{u}_{p} \in \mathcal{e}_{j}} \operatorname{exp}(a_{1}^{T}u_{p})}\]</div>
-<p>where <span class="math notranslate nohighlight">\(a_{1}^{T}\)</span> is a weight vector (a.k.a, context vector).</p>
-<p>Edge-level Attention. With all the hyperedges representations $ <span class="math">\left`{ :nbsphinx-math:</span>mathcal{f}`<em>{j}^{l}| :nbsphinx-math:`forall{mathcal{e}_{j}}` :nbsphinx-math:`in `:nbsphinx-math:`mathcal{E}`</em>{i} <span class="math">\right</span>}$, we again apply an edge-level attention mechanism to highlight the informative hyperedges for learning the next-layer representation of node vi . This process can be formally expressed as:</p>
-<div class="math notranslate nohighlight">
-\[\mathcal{h}_{i}^{l} = \sigma (\sum_{\mathcal{e}_{j} \in \mathcal{E}_{i}} \beta_{ij} \mathcal{W}_{2} \mathcal{f}_{j}^{l})\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mathcal{h}_{i}^{l}\)</span> is the output representation of node <span class="math notranslate nohighlight">\(\mathcal{v}_{i}\)</span> and <span class="math notranslate nohighlight">\(\mathcal{W}_{2}\)</span> is a weight matrix. <span class="math notranslate nohighlight">\(\beta_{ij}\)</span> denotes the attention coefficient of hyperedge <span class="math notranslate nohighlight">\(\mathcal{e}_{j}\)</span> on node <span class="math notranslate nohighlight">\(\mathcal{v}_{i}\)</span> , which can be computed by:</p>
-<div class="math notranslate nohighlight">
-\[\beta_{ij} = \frac{\operatorname{exp}(a_{2}^{T}v_{j})}{\sum\limits_{\mathcal{e}_{p} \in \mathcal{E}_{i}} \operatorname{exp}(a_{2}^{T}v_{p})}\]</div>
-<div class="math notranslate nohighlight">
-\[\mathcal{v}_{j} = \operatorname{LeakyRELU} ([ \mathcal{W}_{2}\mathcal{f}_{j}^{l} || \mathcal{W}_{1}\mathcal{h}_{i}^{l-1}  ])\]</div>
-<p>where <span class="math notranslate nohighlight">\(\mathcal{a}_{2}^{T}\)</span> is another weight (context) vector for measuring the importance of the hyperedges and || is the concatenation operation.</p>
+<p>In this notebook, we will create and train a two-step message passing network named AllSetTransformer (Chien et al., <a class="reference external" href="https://arxiv.org/abs/2106.13264">2021</a>) in the hypergraph domain. We will use a benchmark dataset, shrec16, a collection of 3D meshes, to train the model to perform classification at the level of the hypergraph.</p>
+<p>Following the “awesome-tnns” <a class="reference external" href="https://github.com/awesome-tnns/awesome-tnns/blob/main/Hypergraphs.md">github repo.</a></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{\rightarrow z}^{(\rightarrow 1)} = AGG_{y \in \mathcal{B}(z)} (h_y^{t, (0)}, h_z^{t,(1)}) \quad \text{with attention}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_z^{t+1,(1)} = \text{LN}(m_{\rightarrow z}^{(\rightarrow 1)} + \text{MLP}(m_{\rightarrow z}^{(\rightarrow 1)} ))\)</span></p>
+<p>Edge to vertex:</p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{\rightarrow x}^{(\rightarrow 0)} = AGG_{z \in \mathcal{C}(x)} (h_z^{t+1,(1)}, h_x^{t,(0)}) \quad \text{with attention}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(0)} = \text{LN}(m_{\rightarrow x}^{(\rightarrow 0)} + \text{MLP}(m_{\rightarrow x}^{(\rightarrow 0)} ))\)</span></p>
+<section id="Additional-theoretical-clarifications">
+<h2>Additional theoretical clarifications<a class="headerlink" href="#Additional-theoretical-clarifications" title="Link to this heading">#</a></h2>
+<p>Given a hypergraph <span class="math notranslate nohighlight">\(G=(\mathcal{V}, \mathcal{E})\)</span>, let <span class="math notranslate nohighlight">\(\textbf{X} \in \mathbb{R}^{|\mathcal{V}| \times F}\)</span> and <span class="math notranslate nohighlight">\(\textbf{Z} \in \mathbb{R}^{|\mathcal{E}| \times F'}\)</span> denote the hidden node and hyperedge representations, respectively. Additionally, define <span class="math notranslate nohighlight">\(V_{e, \textbf{X}} = \{\textbf{X}_{u,:}: u \in e\}\)</span> as the multiset of hidden node representations in the hyperedge <span class="math notranslate nohighlight">\(e\)</span> and <span class="math notranslate nohighlight">\(E_{v, \textbf{Z}} = \{\textbf{Z}_{e,:}: v \in e\}\)</span> as the multiset of hidden
+representations of hyperedges containing <span class="math notranslate nohighlight">\(v\)</span>.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">In this setting, the two general update rules that AllSet’s framework puts in place in each layer are:</div>
+</div>
+<p>🔷 <span class="math notranslate nohighlight">\(\textbf{Z}_{e,:}^{(t+1)} = f_{\mathcal{V} \rightarrow \mathcal{E}}(V_{e, \textbf{X}^{(t)}}; \textbf{Z}_{e,:}^{(t)})\)</span></p>
+<p>🔷 <span class="math notranslate nohighlight">\(\textbf{X}_{v,:}^{(t+1)} = f_{\mathcal{E} \rightarrow \mathcal{V}}(E_{v, \textbf{Z}^{(t+1)}}; \textbf{X}_{v,:}^{(t)})\)</span></p>
+<p>in which <span class="math notranslate nohighlight">\(f_{\mathcal{V} \rightarrow \mathcal{E}}\)</span> and <span class="math notranslate nohighlight">\(f_{\mathcal{E} \rightarrow \mathcal{V}}\)</span> are two permutation invariant functions with respect to their first input. The matrices <span class="math notranslate nohighlight">\(\textbf{Z}_{e,:}^{(0)}\)</span> and <span class="math notranslate nohighlight">\(\textbf{X}_{v,:}^{(0)}\)</span> are initialized with the hyperedge and node features respectively, if available, otherwise they are set to be all-zero matrices.</p>
+<p>In the practical implementation of the model, <span class="math notranslate nohighlight">\(f_{\mathcal{V} \rightarrow \mathcal{E}}\)</span> and <span class="math notranslate nohighlight">\(f_{\mathcal{E} \rightarrow \mathcal{V}}\)</span> are parametrized and <span class="math notranslate nohighlight">\(learnt\)</span> for each dataset and task, and the information of their second argument is not utilized. The option achieving the best results makes use of attention-based layers, giving rise to the so-called AllSetTransformer architecture.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">We now dive deep into the details of AllSetTransformer, describing how the update functions <span class="math notranslate nohighlight">\(f_{\mathcal{V} \rightarrow \mathcal{E}}\)</span> and <span class="math notranslate nohighlight">\(f_{\mathcal{E} \rightarrow \mathcal{V}}\)</span> are iteratively defined. Their input is a matrix <span class="math notranslate nohighlight">\(\textbf{S} \in \mathbb{R}^{|S| \times F}\)</span> which corresponds the multiset of <span class="math notranslate nohighlight">\(F\)</span>-dimensional feature vectors:</div>
+</div>
+<p>1️⃣ <span class="math notranslate nohighlight">\(\textbf{K}^{(i)} = \text{MLP}^{K, i}(\textbf{S}), \textbf{V}^{(i)} = \text{MLP}^{V, i}(\textbf{S})\)</span>, where <span class="math notranslate nohighlight">\(i \in \{1, ..., h\},\)</span></p>
+<p>2️⃣ $ <span class="math">\textbf{O}`^{(i)} = :nbsphinx-math:</span>omega <cite>(:nbsphinx-math:</cite>theta`<sup>{(i)}(:nbsphinx-math:</sup>textbf{K}``{(i)})^{T}) :nbsphinx-math:<a href="#id1"><span class="problematic" id="id2">`</span></a>textbf{V}`^{(i)},$</p>
+<p>3️⃣ $:nbsphinx-math:<cite>theta  `:nbsphinx-math:</cite>overset{Delta}{=}` <span class="math">\mathbin</span><span class="math">\Vert</span>_{i=1}^{h} :nbsphinx-math:<a href="#id3"><span class="problematic" id="id4">`</span></a>theta`^{(i)}, $</p>
+<p>4️⃣ $ <span class="math">\text{MH}</span><em>{h, :nbsphinx-math:`omega`}(:nbsphinx-math:`theta`, :nbsphinx-math:`textbf{S}`, :nbsphinx-math:`textbf{S}`) = :nbsphinx-math:`mathbin`:nbsphinx-math:`Vert`</em>{i=1}^{h} :nbsphinx-math:<a href="#id5"><span class="problematic" id="id6">`</span></a>textbf{O}`^{(i)}, $</p>
+<p>5️⃣ $ <span class="math">\textbf{Y}</span> = <span class="math">\text{LN}</span> (<span class="math">\theta `+ :nbsphinx-math:</span>text{MH}`_{h, <span class="math">\omega</span>}(<span class="math">\theta</span>, <span class="math">\textbf{S}</span>, <span class="math">\textbf{S}</span>)), $</p>
+<p>6️⃣ <span class="math notranslate nohighlight">\(f_{\mathcal{V} \rightarrow \mathcal{E}}(\textbf{S}) = f_{\mathcal{E} \rightarrow \mathcal{V}}(\textbf{S}) = \text{LN} (\textbf{Y} + \text{MLP}(\textbf{Y}))\)</span>.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>The elements and operations used in these steps are defined as follows:</p>
+<p>🔶 <span class="math notranslate nohighlight">\(\text{LN}\)</span> means layer normalization (Ba et al., <a class="reference external" href="https://arxiv.org/abs/1607.06450">2016</a>),</p>
+<p>🔶 <span class="math notranslate nohighlight">\(\mathbin\Vert\)</span> represents concatenation,</p>
+<p>🔶 <span class="math notranslate nohighlight">\(\theta \in \mathbb{R}^{1 \times hF_{h}}\)</span> is a learnable weight,</p>
+<p>🔶 <span class="math notranslate nohighlight">\(\text{MH}_{h, \omega}\)</span> denotes a multihead attention mechanism with <span class="math notranslate nohighlight">\(h\)</span> heads and activation function <span class="math notranslate nohighlight">\(\omega\)</span> (Vaswani et al., <a class="reference external" href="https://proceedings.neurips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html">2017</a>),</p>
+<p>🔶 all <span class="math notranslate nohighlight">\(\text{MLP}\)</span> modules are multi-layer perceptrons that operate row-wise, so they are applied identically and independently to each multiset element of <span class="math notranslate nohighlight">\(\textbf{S}\)</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
@@ -478,10 +490,14 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.hypergat_layer</span> <span class="kn">import</span> <span class="n">HyperGATLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.allsettransformer_layer</span> <span class="kn">import</span> <span class="n">AllSetTransformerLayer</span>
+
+<span class="c1"># %load_ext autoreload</span>
+<span class="c1"># %autoreload 2</span>
 </pre></div>
 </div>
 </div>
+<p>If GPU’s are available, we will make use of them. Otherwise, this will run on CPU.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
@@ -500,10 +516,9 @@ cpu
 </pre></div></div>
 </div>
 </section>
+</section>
 <section id="Pre-processing">
 <h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
-<section id="Import-data">
-<h2>Import data<a class="headerlink" href="#Import-data" title="Link to this heading">#</a></h2>
 <p>The first step is to import the dataset, shrec 16, a benchmark dataset for 3D mesh classification. We then lift each graph into our domain of choice, a hypergraph.</p>
 <p>We will also retrieve: - input signal on the edges for each of these hypergraphs, as that will be what we feed the model in input - the label associated to the hypergraph</p>
 <div class="nbinput docutils container">
@@ -527,7 +542,7 @@ cpu
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Loading shrec 16 small dataset...
+Loading dataset...
 
 done!
 </pre></div></div>
@@ -559,9 +574,6 @@ The 6th simplicial complex has 750 edges with features of dimension 10.
 The 6th simplicial complex has 500 faces with features of dimension 7.
 </pre></div></div>
 </div>
-</section>
-<section id="Define-neighborhood-structures-and-lift-into-hypergraph-domain.">
-<h2>Define neighborhood structures and lift into hypergraph domain.<a class="headerlink" href="#Define-neighborhood-structures-and-lift-into-hypergraph-domain." title="Link to this heading">#</a></h2>
 <p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on each simplicial complex. In the case of this architecture, we need the boundary matrix (or incidence matrix) <span class="math notranslate nohighlight">\(B_1\)</span> with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times n_\text{edges}\)</span>.</p>
 <p>Once we have recorded the incidence matrix (note that all incidence amtrices in the hypergraph domain must be unsigned), we lift each simplicial complex into a hypergraph. The pairwise edges will become pairwise hyperedges, and faces in the simplciial complex will become 3-wise hyperedges.</p>
 <div class="nbinput nblast docutils container">
@@ -603,62 +615,94 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </pre></div></div>
 </div>
 </section>
-</section>
 <section id="Define-the-Neural-Network">
 <h1>Define the Neural Network<a class="headerlink" href="#Define-the-Neural-Network" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HyperGAT</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Neural network implementation of Template for hypergraph classification.</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AllSetTransformerModel</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;AllSet Neural Network Module.</span>
+
+<span class="sd">    A module that combines multiple AllSet layers to form a neural network.</span>
 
 <span class="sd">    Parameters</span>
-<span class="sd">    ---------</span>
-<span class="sd">    channels_edge : int</span>
-<span class="sd">        Dimension of edge features</span>
-<span class="sd">    channels_node : int</span>
-<span class="sd">        Dimension of node features</span>
-<span class="sd">    n_layer : 2</span>
-<span class="sd">        Amount of message passing layers.</span>
-
+<span class="sd">    ----------</span>
+<span class="sd">    in_dim : int</span>
+<span class="sd">        Dimension of the input features.</span>
+<span class="sd">    hid_dim : int</span>
+<span class="sd">        Dimension of the hidden features.</span>
+<span class="sd">    out_dim : int</span>
+<span class="sd">        Dimension of the output features.</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout probability.</span>
+<span class="sd">    n_layers : int, optional</span>
+<span class="sd">        Number of AllSet layers in the network. Defaults to 2.</span>
+<span class="sd">    input_dropout : float, optional</span>
+<span class="sd">        Dropout probability for the layer input. Defaults to 0.2.</span>
+<span class="sd">    mlp_num_layers : int, optional</span>
+<span class="sd">        Number of layers in the MLP. Defaults to 2.</span>
+<span class="sd">    mlp_input_norm : bool, optional</span>
+<span class="sd">        Whether to apply input normalization in the MLP. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_channels</span><span class="p">,</span>
+        <span class="n">hidden_channels</span><span class="p">,</span>
+        <span class="n">out_channels</span><span class="p">,</span>
+        <span class="n">n_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">heads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">mlp_num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">mlp_dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HyperGATLayer</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">):</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">AllSetTransformerLayer</span><span class="p">(</span>
+                <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+                <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+                <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+                <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
+                <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
+                <span class="n">mlp_dropout</span><span class="o">=</span><span class="n">mlp_dropout</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">HyperGATLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span>  <span class="o">=</span> <span class="n">out_channels</span><span class="p">,</span>
-                    <span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
+                <span class="n">AllSetTransformerLayer</span><span class="p">(</span>
+                    <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+                    <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+                    <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+                    <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
+                    <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
+                    <span class="n">mlp_dropout</span><span class="o">=</span><span class="n">mlp_dropout</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layer, then global max pooling.</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Forward computation.</span>
 
 <span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_1 : tensor</span>
-<span class="sd">            shape = [n_edges, channels_edge]</span>
-<span class="sd">            Edge features.</span>
-
-<span class="sd">        incidence_1 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_edges]</span>
-<span class="sd">            Boundary matrix of rank 1.</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : torch.Tensor</span>
+<span class="sd">            Input features.</span>
+<span class="sd">        edge_index : torch.Tensor</span>
+<span class="sd">            Edge list (of size (2, |E|)).</span>
 
 <span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [1]</span>
-<span class="sd">            Label assigned to whole complex.</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Output prediction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+        <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">pooled_x</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -668,18 +712,26 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, the loss, and an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">out_dim</span> <span class="o">=</span> <span class="mi">32</span>
-<span class="n">n_layers</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">hid_dim</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">out_dim</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">heads</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">n_layers</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">mlp_num_layers</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">Q_n</span> <span class="o">=</span> <span class="mi">1</span>
+
 
 <span class="c1"># Define the model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">HyperGAT</span><span class="p">(</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AllSetTransformerModel</span><span class="p">(</span>
     <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+    <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hid_dim</span><span class="p">,</span>
+    <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
     <span class="n">out_channels</span><span class="o">=</span><span class="n">out_dim</span><span class="p">,</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+    <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
@@ -689,8 +741,9 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </pre></div>
 </div>
 </div>
+<p>Split the dataset into train and test sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -702,8 +755,9 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </pre></div>
 </div>
 </div>
+<p>The following cell performs the training, looping over the network for a low amount of epochs. We keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -753,15 +807,15 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 282.7875
+Epoch: 1 loss: 274.9018
 Test_loss: 529.0000
-Epoch: 2 loss: 281.3750
+Epoch: 2 loss: 274.6125
 Test_loss: 529.0000
-Epoch: 3 loss: 278.9625
+Epoch: 3 loss: 274.6125
 Test_loss: 529.0000
-Epoch: 4 loss: 278.9625
+Epoch: 4 loss: 274.6125
 Test_loss: 529.0000
-Epoch: 5 loss: 278.9625
+Epoch: 5 loss: 274.6125
 Test_loss: 529.0000
 </pre></div></div>
 </div>
@@ -779,16 +833,16 @@ Test_loss: 529.0000
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="hnhn_train_bis.html"
+       href="../cell/cwn_train.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Train a Hypergraph Network with Hyperedge Neurons (HNHN)</p>
+        <p class="prev-next-title">Train a CW Network (CWN)</p>
       </div>
     </a>
     <a class="right-next"
-       href="hypersage_train.html"
+       href="dhgcn_train.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
@@ -814,12 +868,11 @@ Test_loss: 529.0000
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Hypergraph Neural Network</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-data">Import data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures-and-lift-into-hypergraph-domain.">Define neighborhood structures and lift into hypergraph domain.</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Hypergraph Neural Network</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Additional-theoretical-clarifications">Additional theoretical clarifications</a></li>
 </ul>
 </li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-Neural-Network">Define the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
 </ul>
@@ -828,7 +881,7 @@ Test_loss: 529.0000
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../../_sources/notebooks/hypergraph/hypergat_train.ipynb.txt">
+    <a href="../../_sources/notebooks/hypergraph/allsettransformer_train.ipynb.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
