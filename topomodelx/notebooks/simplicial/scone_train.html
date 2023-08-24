@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Train a Simplicial Complex Network (SCoNe) &#8212; TopoModelX latest documentation</title>
+    <title>Train a Simplicial Complex Net (SCoNe) &#8212; TopoModelX latest documentation</title>
   
   
   
@@ -46,7 +46,7 @@
     <link rel="canonical" href="pyt-team.github.io/notebooks/simplicial/scone_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ICML 2023 Topological Deep Learning Challenge" href="../../challenge/index.html" />
+    <link rel="next" title="Train a Simplicial Complex Network (SCoNe)" href="scone_train_bis.html" />
     <link rel="prev" title="Train a Simplicial Convolutional Neural Network (SCNN)" href="scnn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -366,6 +366,10 @@ document.write(`
 
 
 
+<li class="toctree-l1"><a class="reference internal" href="scn2_train.html">Train a Simplicial Convolutional Network (SCN) of Rank 2</a></li>
+
+
+
 <li class="toctree-l1"><a class="reference internal" href="scn_train.html">Train a Simplicial Convolutional Network (SCN)</a></li>
 
 
@@ -378,7 +382,14 @@ document.write(`
 
 
 
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplicial Complex Network (SCoNe)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplicial Complex Net (SCoNe)</a></li>
+
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="scone_train_bis.html">Train a Simplicial Complex Network (SCoNe)</a></li>
 
 
 
@@ -425,7 +436,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../../tutorials/index.html" class="nav-link">Tutorials</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Train a Simplicial Complex Network (SCoNe)</li>
+    <li class="breadcrumb-item active" aria-current="page">Train a Simplicial Complex Net (SCoNe)</li>
   </ul>
 </nav>
 </div>
@@ -442,28 +453,52 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="Train-a-Simplicial-Complex-Network-(SCoNe)">
-<h1>Train a Simplicial Complex Network (SCoNe)<a class="headerlink" href="#Train-a-Simplicial-Complex-Network-(SCoNe)" title="Link to this heading">#</a></h1>
-<p>In this notebook, we will create and train a High Skip Network in the simplicial complex domain, as proposed in the paper by <a class="reference external" href="https://openreview.net/pdf?id=Sc8glB-k6e9">Hajij et. al : High Skip Networks: A Higher Order Generalization of Skip Connections (2022)</a>.</p>
-<p>We train the model to perform binary node classification using the KarateClub benchmark dataset.</p>
+  <section id="Train-a-Simplicial-Complex-Net-(SCoNe)">
+<h1>Train a Simplicial Complex Net (SCoNe)<a class="headerlink" href="#Train-a-Simplicial-Complex-Net-(SCoNe)" title="Link to this heading">#</a></h1>
+<p>In this notebook, we will create and train a SCoNe neural network in the simplicial complex domain, as proposed in <a class="reference external" href="http://proceedings.mlr.press/v139/roddenberry21a/roddenberry21a.pdf">[RGS21] (Roddenberry et. al : Principled Simplicial Neural Networks for Trajectory Prediction (2021))</a>.</p>
+<p>Following the original paper, we train a network to predict the next step in a trajectory on a (<span class="math notranslate nohighlight">\(2\)</span>-dimensional) simplicial complex. Note that we will spend some time generating the synthetic dataset consisting of trajectories. One should feel free to just run the code cells in the first section and skip ahead to the implementation and training of the neural network in section 2 to 4.</p>
+</section>
+<section id="Table-of-contents">
+<h1>Table of contents<a class="headerlink" href="#Table-of-contents" title="Link to this heading">#</a></h1>
+<ol class="arabic simple">
+<li><p>Dataset generation</p>
+<ol class="arabic simple">
+<li><p>Generating trajectories</p></li>
+<li><p>Creating PyTorch dataloaders</p></li>
+</ol>
+</li>
+<li><p>Creating the Neural Network</p></li>
+<li><p>Training the Neural Network</p></li>
+<li><p>Evaluating the model on test data</p></li>
+<li><p>Suggestions for further experimentation</p></li>
+</ol>
 <p>The equations of one layer of this neural network are given by:</p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{{y \rightarrow z \rightarrow x}}^{(1 \rightarrow 2 \rightarrow 1)} = \sigma ((L_{\uparrow,1})_{xy} \cdot h^{t,(1)}_y \cdot \Theta^{t,(1)1})\)</span></p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow z \rightarrow x}^{(1 \rightarrow 0 \rightarrow 1)} = (L_{\downarrow,1})_{xy} \cdot h^{t, (1)}_y \cdot \Theta^{t,(1)2}\)</span></p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{{x \rightarrow x}}^{(1 \rightarrow 1)} = h_x^{t,(1)} \cdot \Theta^{t,(1)3}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{(1 \rightarrow 2 \rightarrow 1)} = \sum_{y \in \mathcal{L}_\uparrow(x)} m_{{y \rightarrow x}}^{(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{(1 \rightarrow 0 \rightarrow 1)} = \sum_{y \in \mathcal{L}_\downarrow(x)} m_{y \rightarrow z \rightarrow x}^{(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
-<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(1)} = m_x^{(1 \rightarrow 2 \rightarrow 1)} + m_x^{(1 \rightarrow 0 \rightarrow 1)} + m_{x \rightarrow x}^{1 \rightarrow 1}\)</span></p>
-<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(1)} = \sigma(m_x^{(1)})\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{(1 \rightarrow 0 \rightarrow 1)}_{y \rightarrow \{z\} \rightarrow x} = (L_{\downarrow,1})_{xy} \cdot h_y^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{x \rightarrow x}^{(1 \rightarrow 1)} = h_x^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 1)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 2 \rightarrow 1)} = (L_{\uparrow,1})_{xy} \cdot h_y^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{x}^{(1 \rightarrow 0 \rightarrow 1)} = \sum_{y \in \mathcal{L}_\downarrow(x)} m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{x}^{(1 \rightarrow 2 \rightarrow 1)} = \sum_{y \in \mathcal{L}_\uparrow(x)} m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(1)} = m_{x}^{(1 \rightarrow 0 \rightarrow 1)} + m_{x \rightarrow x}^{(1 \rightarrow 1)} + m_{x}^{(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t,(1)} = \sigma(m_x^{(1)})\)</span></p>
 <p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-
-<span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">toponetx</span> <span class="k">as</span> <span class="nn">tnx</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes.simplicial_complex</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">random_split</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">Adam</span>
+<span class="kn">from</span> <span class="nn">tqdm.notebook</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">Delaunay</span><span class="p">,</span> <span class="n">distance</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scone_layer</span> <span class="kn">import</span> <span class="n">SCoNeLayer</span>
 </pre></div>
@@ -473,98 +508,110 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Seed random generators</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [2]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-cpu
+&lt;torch._C.Generator at 0x15d64d0b0&gt;
 </pre></div></div>
 </div>
 </section>
-<section id="Pre-processing">
-<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
-<section id="Import-dataset">
-<h2>Import dataset<a class="headerlink" href="#Import-dataset" title="Link to this heading">#</a></h2>
-<p>The first step is to import the shrec16 (<a class="github reference external" href="https://github.com/pyt-team/TopoNetX/blob/0090625d547af9536d9c30001ecfa1f19517921a/toponetx/datasets/mesh.py#L64">pyt-team/TopoNetX</a>) dataset. This dataset is a graph with 6 node features, 10 edge features, and the face normals, angles, and areas.</p>
-<div class="nbinput docutils container">
+<section id="Dataset-generation">
+<h1>Dataset generation<a class="headerlink" href="#Dataset-generation" title="Link to this heading">#</a></h1>
+<p>We are going to generate a synthetic dataset consisting of trajectories on a simplicial complex. We will follow, more or less, the same construction done in [RGS21]. First, we uniformly sample <span class="math notranslate nohighlight">\(N\)</span> points from the unit square <span class="math notranslate nohighlight">\([0,1]^2\)</span> and construct the Delaunay triangulation of this point cloud. We then define two disks inside the unit square and remove all <span class="math notranslate nohighlight">\(2\)</span>-simplicies with their centroid contained in either of these two disks. The remaining <span class="math notranslate nohighlight">\(2\)</span>-simplices are then used
+to define our simplicial complex. Note that the number of <span class="math notranslate nohighlight">\(0\)</span>-simplicies in the final simplicial complex is less than or equal to <span class="math notranslate nohighlight">\(N\)</span>.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">karate_club</span><span class="p">(</span><span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">)</span>
-<span class="n">dataset</span><span class="o">.</span><span class="n">shape</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_complex</span><span class="p">(</span><span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a simplicial complex of dimension 2 as follows:</span>
+<span class="sd">        1. Uniformly sample N random points form the unit square and build the Delaunay triangulation.</span>
+<span class="sd">        2. Delete triangles contained in some pre-defined disks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+    <span class="c1"># Sort points by the sum of their coordinates</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+    <span class="n">tri</span> <span class="o">=</span> <span class="n">Delaunay</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>  <span class="c1"># Create Delaunay triangulation</span>
+
+    <span class="c1"># Remove triangles having centroid inside the disks</span>
+    <span class="n">disk_centers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]])</span>
+    <span class="n">disk_radius</span> <span class="o">=</span> <span class="mf">0.15</span>
+    <span class="n">simplices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">indices_included</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">tri</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
+        <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">simplex</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">([</span><span class="n">center</span><span class="p">],</span> <span class="n">disk_centers</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">disk_radius</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># Centroid is not contained in some disk, so include it.</span>
+            <span class="n">simplices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
+            <span class="n">indices_included</span> <span class="o">|=</span> <span class="nb">set</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
+
+    <span class="c1"># Re-index vertices before constructing the simplicial complex</span>
+    <span class="n">idx_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">j</span> <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices_included</span><span class="p">)}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simplices</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">simplices</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx_dict</span><span class="p">[</span><span class="n">simplices</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]]</span>
+
+    <span class="n">sc</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">simplices</span><span class="p">)</span>
+    <span class="n">coords</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">indices_included</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">sc</span><span class="p">,</span> <span class="n">coords</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [3]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-(34, 78, 45, 11, 2)
-</pre></div></div>
-</div>
-</section>
-</section>
-<section id="Define-Neighborhood-Structures">
-<h1>Define Neighborhood Structures<a class="headerlink" href="#Define-Neighborhood-Structures" title="Link to this heading">#</a></h1>
-<p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on the domain. In this case, we need the lower Laplacian matrix <span class="math notranslate nohighlight">\(L_{\downarrow, 1}\)</span> and the upper Laplacian matrix <span class="math notranslate nohighlight">\(L_{\uparrow,1}\)</span> on the edges. For a santiy check, we show that the shape of the <span class="math notranslate nohighlight">\(L_{\downarrow, 1} = n_\text{edges} \times n_\text{edges}\)</span> and <span class="math notranslate nohighlight">\(L_{\uparrow,1} = n_\text{edges} \times n_\text{edges}\)</span>. We also convert the neighborhood structures to
-torch tensors.</p>
-<div class="nbinput docutils container">
+<p>To obtain a random simplicial complex, we simply call the above generating function.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">up_lap1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">down_lap1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">up_lap1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">up_lap1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-<span class="n">down_lap1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">down_lap1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The upper laplacian matrix has shape: </span><span class="si">{</span><span class="n">up_lap1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The lower laplacian matrix has shape: </span><span class="si">{</span><span class="n">down_lap1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate simplicial complex</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">150</span>
+<span class="n">sc</span><span class="p">,</span> <span class="n">coords</span> <span class="o">=</span> <span class="n">generate_complex</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-The upper laplacian matrix has shape: torch.Size([78, 78]).
-The lower laplacian matrix has shape: torch.Size([78, 78]).
-</pre></div></div>
-</div>
-</section>
-<section id="Defining-Labels-and-Preparing-Input">
-<h1>Defining Labels and Preparing Input<a class="headerlink" href="#Defining-Labels-and-Preparing-Input" title="Link to this heading">#</a></h1>
-<p>Gathering the edge features and using the second of the two features as a label based on its sign. The first feature will act as the input for the neural net.</p>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">sc</span></code> is an instance of the <code class="docutils literal notranslate"><span class="pre">SimplicialComplex</span></code> class from <code class="docutils literal notranslate"><span class="pre">TopoNetX</span></code>, and <code class="docutils literal notranslate"><span class="pre">coords</span></code> contains the Euclidean coordinates of the vertices. We will use these coordinates to construct the trajectories based on shortest paths.</p>
+<p>Before generating the trajectories, let us visualize the simplicial complex we just generated.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xy</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_simplex_attributes</span><span class="p">(</span><span class="s2">&quot;edge_feat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">xy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-<span class="n">xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">xy</span><span class="p">)</span>
-<span class="n">x_1</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_complex</span><span class="p">(</span><span class="n">sc</span><span class="p">:</span> <span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a simplicial complex of dimension 1 or 2, plot the simplices in the plane using the coordinates of the 0-simplices in coords.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Plot triangles</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">sc</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">coords</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">coords</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">coords</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="mi">2</span><span class="p">]]])</span>
+        <span class="n">poly</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">xy</span><span class="p">:</span>
-    <span class="n">x_1</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
-    <span class="k">if</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">x_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-<span class="n">x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># Plot edges</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">))[:,</span> <span class="mi">0</span><span class="p">]]</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">))[:,</span> <span class="mi">1</span><span class="p">]]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">start</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">start</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">end</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]]),</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Plot points</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coords</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -572,192 +619,379 @@ The lower laplacian matrix has shape: torch.Size([78, 78]).
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_complex</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [6]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="highlight"><pre>
-torch.Size([78, 1])
-</pre></div></div>
+<img alt="../../_images/notebooks_simplicial_scone_train_9_0.png" src="../../_images/notebooks_simplicial_scone_train_9_0.png" />
 </div>
-</section>
-<section id="Train/Test-Split">
-<h1>Train/Test Split<a class="headerlink" href="#Train/Test-Split" title="Link to this heading">#</a></h1>
-<p>We split the labels into test and train sets keeping the indices to be able to calculate loss later.</p>
+</div>
+<section id="Generating-trajectories">
+<h2>Generating trajectories<a class="headerlink" href="#Generating-trajectories" title="Link to this heading">#</a></h2>
+<p>A <strong>trajectory</strong> on a simplicial complex <span class="math notranslate nohighlight">\(K\)</span> is an ordered list of nodes <span class="math notranslate nohighlight">\((i_1, i_2, \ldots, i_m)\)</span> where each <span class="math notranslate nohighlight">\([i_j, i_{j+1}]\)</span> (or <span class="math notranslate nohighlight">\([i_{j+1}, i_j]\)</span>) is an edge in <span class="math notranslate nohighlight">\(K\)</span>. Our network will take in a trajectory <span class="math notranslate nohighlight">\((i_1, i_2, \ldots, i_{m-1})\)</span> where the last node is removed, and the task will be to predict which of <span class="math notranslate nohighlight">\(i_{m-1}\)</span>’s neighbours is the true <span class="math notranslate nohighlight">\(i_m\)</span> (i.e., <span class="math notranslate nohighlight">\(i_m\)</span> is the ground truth in our supervised learning setup). Before feeding a trajectory
+to the network, we need to create a vector representation of it. We will do this in the next subsection when we create the PyTorch dataset.</p>
+<p>Now, we want to construct our dataset of trajectories on the simplicial complex. First, we randomly pick triplets <span class="math notranslate nohighlight">\((s,m,e)\)</span> where <span class="math notranslate nohighlight">\(s\)</span> is sampled from the lower left corner, <span class="math notranslate nohighlight">\(m\)</span> is sampled from around the middle anti-diagonal and <span class="math notranslate nohighlight">\(e\)</span> is sampled from the upper right corner. We then compute the shortest paths from <span class="math notranslate nohighlight">\(s\)</span> to <span class="math notranslate nohighlight">\(m\)</span> and from <span class="math notranslate nohighlight">\(m\)</span> to <span class="math notranslate nohighlight">\(e\)</span>, respectively. Finally, we concatenate these two paths to form a trajectory from <span class="math notranslate nohighlight">\(s\)</span> to <span class="math notranslate nohighlight">\(e\)</span>.</p>
+<p>The parameter <code class="docutils literal notranslate"><span class="pre">n_max</span></code> determines the maximum number of trajectories to generate.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">78</span><span class="p">)</span>
-<span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">train_indices</span><span class="p">,</span> <span class="n">test_indices</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
-    <span class="n">y</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_trajectories</span><span class="p">(</span>
+    <span class="n">sc</span><span class="p">:</span> <span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate trajectories from nodes in the lower left corner to the upper right corner connected through a node in the middle.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get indices for start points in the lower left corner, mid points in the center region and end points in the upper right corner.</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+    <span class="n">start_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.2</span> <span class="o">*</span> <span class="n">N</span><span class="p">)))</span>
+    <span class="n">mid_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">N</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">N</span><span class="p">)))</span>
+    <span class="n">end_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">N</span><span class="p">),</span> <span class="n">N</span><span class="p">))</span>
+    <span class="n">all_triplets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="n">start_nodes</span><span class="p">,</span> <span class="n">mid_nodes</span><span class="p">,</span> <span class="n">end_nodes</span><span class="p">))</span>
+
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">all_triplets</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">n_max</span>
+    <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Only </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_triplets</span><span class="p">)</span><span class="si">}</span><span class="s2"> valid paths, but </span><span class="si">{</span><span class="n">n_max</span><span class="si">}</span><span class="s2"> requested. Try increasing the number of points in the simplicial complex.&quot;</span>
+    <span class="n">triplets</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">all_triplets</span><span class="p">,</span> <span class="n">n_max</span><span class="p">)</span>
+
+    <span class="c1"># Compute pairwise distances and create a matrix representing the underlying graph.</span>
+    <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance</span><span class="o">.</span><span class="n">squareform</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">coords</span><span class="p">))</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">*</span> <span class="n">distance_matrix</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_numpy_array</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+    <span class="c1"># Find shortest paths</span>
+    <span class="n">trajectories</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">triplets</span><span class="p">:</span>
+        <span class="n">path_1</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+        <span class="n">path_2</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s2">&quot;weight&quot;</span><span class="p">)</span>
+        <span class="n">trajectory</span> <span class="o">=</span> <span class="n">path_1</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">path_2</span>
+        <span class="n">trajectories</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">trajectories</span>
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Creating-Neural-Network">
-<h1>Creating Neural Network<a class="headerlink" href="#Creating-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Creating a stacked neural network that uses the SCoNeLayer class. The linear layer at the end produces an output of shape n_{nodes} x 2 so we can compare to our binary labels.</p>
+<p>Let us generate 1200 trajectories to be used for training, validation and testing.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SCoNeNN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Neural network implementation of classification using SCoNe.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ---------</span>
-<span class="sd">    channels : int</span>
-<span class="sd">        Dimension of features.</span>
-<span class="sd">    n_layers : int</span>
-<span class="sd">        Amount of message passing layers.</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate trajectories for training and evaluation</span>
+<span class="n">trajectories</span> <span class="o">=</span> <span class="n">generate_trajectories</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="mi">1200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can visualize one of the trajectories using the following function:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">plot_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot red arrows representing a trajectory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">quiver</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">scale_units</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+        <span class="n">angles</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
+        <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_complex</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+<span class="n">plot_path</span><span class="p">(</span><span class="n">trajectories</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coords</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_simplicial_scone_train_16_0.png" src="../../_images/notebooks_simplicial_scone_train_16_0.png" />
+</div>
+</div>
+</section>
+<section id="Creating-PyTorch-dataloaders">
+<h2>Creating PyTorch dataloaders<a class="headerlink" href="#Creating-PyTorch-dataloaders" title="Link to this heading">#</a></h2>
+<p>We will now create a PyTorch dataset for our trajectories. For a trajectory <span class="math notranslate nohighlight">\((i_1,i_2,\ldots,i_m)\)</span>, the dataset yields a triplet consisting of</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vectorized_trajectory</span></code> - a vector representation of the path <span class="math notranslate nohighlight">\((i_1,i_2,\ldots,i_{m-1})\)</span> (see description below),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">neigbors_mask</span></code> - a mask encoding the neighbors of <span class="math notranslate nohighlight">\(i_{m-1}\)</span> and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_node</span></code> - the last vertex <span class="math notranslate nohighlight">\(i_m\)</span> in the original trajectory, i.e., the ground truth label.</p></li>
+</ol>
+<p>The vectorization step, where we turn a trajectory into a <span class="math notranslate nohighlight">\(1\)</span>-dimensional feature on the edges, is achieved as follows: Let <span class="math notranslate nohighlight">\(\mathcal{E}\)</span> denote the set of edges in the simplicial complex with <span class="math notranslate nohighlight">\(\vert\mathcal{E}\vert=k\)</span>, and let <span class="math notranslate nohighlight">\(t=(i_1, i_2,\ldots, i_m)\)</span> be a trajectory. The <em>vectorization of :math:`t`</em> is the vector <span class="math notranslate nohighlight">\((a_1, a_2, \ldots, a_k)\in\mathbb{R}^k\)</span> where for all <span class="math notranslate nohighlight">\(0\leq j\leq k\)</span> we set</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a_j=+1\)</span> if <span class="math notranslate nohighlight">\([i_n, i_{n+1}]\in\mathcal{E}\)</span> for some <span class="math notranslate nohighlight">\(n\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_j=-1\)</span> if <span class="math notranslate nohighlight">\([i_{n+1}, i_n]\in\mathcal{E}\)</span> for some <span class="math notranslate nohighlight">\(n\)</span>, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_j=0\)</span> otherwise.</p></li>
+</ul>
+<p>The neighborhood mask is used later in the forward pass of our model when we want to apply softmax, but only over the neighbors of <span class="math notranslate nohighlight">\(i_{m-1}\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TrajectoriesDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">:</span> <span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sc</span> <span class="o">=</span> <span class="n">sc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="c1"># Lookup table used to speed up vectorizing of trajectories</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_lookup_table</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">edge</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edge_lookup_table</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edge_lookup_table</span><span class="p">[</span><span class="n">edge</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="n">trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectories</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">vectorized_trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorize_path</span><span class="p">(</span>
+            <span class="n">trajectory</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="p">)</span>  <span class="c1"># Discard the last node</span>
+
+        <span class="c1"># Find neighbors of the last node in the trajectory (for use in the forward pass of SCoNe)</span>
+        <span class="n">neighbors_mask</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span><span class="p">[</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">last_node</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">vectorized_trajectory</span><span class="p">,</span> <span class="n">neighbors_mask</span><span class="p">,</span> <span class="n">last_node</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectories</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">vectorize_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="c1"># Create a vector representation of a trajectory.</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">c0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">edge</span> <span class="o">=</span> <span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">path</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">sign</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_lookup_table</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span>
+            <span class="n">c0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sign</span>
+        <span class="k">return</span> <span class="n">c0</span>
+</pre></div>
+</div>
+</div>
+<p>Using the above dataset class, we split the dataset <span class="math notranslate nohighlight">\(60/20/20\)</span> into training, validation and test data, respectively. We set the batch size to <span class="math notranslate nohighlight">\(32\)</span> and create data loaders which we will use later.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">TrajectoriesDataset</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">trajectories</span><span class="p">)</span>
+
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">test</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">val</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">val_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+<span class="n">test_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">test</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+<span class="n">train_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="o">-</span> <span class="n">val_size</span> <span class="o">-</span> <span class="n">test_size</span>
+
+<span class="n">train_ds</span><span class="p">,</span> <span class="n">val_ds</span><span class="p">,</span> <span class="n">test_ds</span> <span class="o">=</span> <span class="n">random_split</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="p">[</span><span class="n">train_size</span><span class="p">,</span> <span class="n">val_size</span><span class="p">,</span> <span class="n">test_size</span><span class="p">])</span>
+
+<span class="n">train_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">val_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">val_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="n">test_dl</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_ds</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Creating-the-Neural-Network">
+<h1>Creating the Neural Network<a class="headerlink" href="#Creating-the-Neural-Network" title="Link to this heading">#</a></h1>
+<p>We are now ready to define the trajectory prediction network using the <code class="docutils literal notranslate"><span class="pre">SCoNeLayer</span></code> class. First, we stack multiple SCoNe layers to obtain a map <span class="math notranslate nohighlight">\(C_1\to C_1\)</span> where <span class="math notranslate nohighlight">\(C_1\)</span> is the vector space of <span class="math notranslate nohighlight">\(1\)</span>-chains. Note that the feature dimension of the first and last SCoNe layer are both <span class="math notranslate nohighlight">\(1\)</span>. We then apply the last linear operation and the boundary operator <span class="math notranslate nohighlight">\(\partial_1\)</span> going from <span class="math notranslate nohighlight">\(C_1\)</span> to <span class="math notranslate nohighlight">\(C_0\)</span>. That is, we have now assigned a scalar value to each node in the
+simplicial complex. The final step consists of applying the softmax operator over the neighbors of <span class="math notranslate nohighlight">\(i_{m-1}\)</span> and the highest scoring neighbor will be our prediction <span class="math notranslate nohighlight">\(\hat{i}_m\)</span> for <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SCoNe</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">:</span> <span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SCoNeLayer</span><span class="p">(</span>
-                    <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incidence_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">up_lap1</span><span class="p">,</span> <span class="n">down_lap1</span><span class="p">,</span> <span class="n">iden</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
+        <span class="c1"># Weights for the last layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">hidden_dims</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, channels]</span>
-<span class="sd">            Node features.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dimensions</span> <span class="o">=</span> <span class="n">hidden_dims</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden_dims</span><span class="p">)</span>
 
-<span class="sd">        up_lap1 : tensor</span>
-<span class="sd">            shape = [n_edges, n_edges]</span>
-<span class="sd">            Upper Laplacian matrix of rank 1.</span>
+        <span class="c1"># Stack multiple SCoNe layers with given hidden dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">SCoNeLayer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SCoNeLayer</span><span class="p">(</span><span class="n">hidden_dims</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">hidden_dims</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
 
-<span class="sd">        down_lap1 : tensor</span>
-<span class="sd">            shape = [n_edges, n_edges]</span>
-<span class="sd">            Laplacian matrix (down) of rank 1.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_nodes, 2]</span>
-<span class="sd">            One-hot labels assigned to nodes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
+        <span class="c1"># Initialize parameters</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">up_lap1</span><span class="p">,</span> <span class="n">down_lap1</span><span class="p">,</span> <span class="n">iden</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_2</span><span class="p">)</span>
+        <span class="c1"># Last layer going from edges to nodes using the boundary operator</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span> <span class="o">@</span> <span class="n">x</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="c1"># Take softmax only over neighbors by setting the logits of non-neighbors to approximately -inf</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1e-15</span> <span class="o">+</span> <span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Training-the-Neural-Network">
 <h1>Training the Neural Network<a class="headerlink" href="#Training-the-Neural-Network" title="Link to this heading">#</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">edge_channels</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">SCoNeNN</span><span class="p">(</span>
-    <span class="n">channels</span><span class="o">=</span><span class="n">edge_channels</span><span class="p">,</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Looping and training over data for a low number of epochs.</p>
+<p>We will train the network for <span class="math notranslate nohighlight">\(10\)</span> epochs using the Adam optimizer with hyper-parameters given below. We choose a network with <span class="math notranslate nohighlight">\(6\)</span> hidden layers, each having feature dimension <span class="math notranslate nohighlight">\(16\)</span>. We use the negative log likelihood loss function penalizing the cases where <span class="math notranslate nohighlight">\(\hat{i}_m \neq i_m\)</span>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="c1"># WHAT ARE YOU INPUTTING/ MAKE SURE OF PROPER SIZES</span>
-<span class="c1"># edge classification</span>
-<span class="n">dim</span> <span class="o">=</span> <span class="mi">78</span>
-<span class="n">iden</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hyper-parameters</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">weight_decay</span> <span class="o">=</span> <span class="mf">5e-5</span>
+<span class="n">betas</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+<span class="n">hidden_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
 
-<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SCoNe</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">)</span>
+<span class="n">loss_function</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NLLLoss</span><span class="p">()</span>  <span class="c1"># Use NLL loss since we take softmax in the SCoNe network</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="n">betas</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">)</span>
+
+<span class="c1"># Training loop</span>
+<span class="n">training_history</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;train_loss&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;train_acc&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;val_loss&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;val_acc&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">:</span><span class="s2">02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">training_losses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_dl</span><span class="p">:</span>
+        <span class="c1"># Train step</span>
+        <span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">last_nodes</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">last_nodes</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="n">correct</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">last_nodes</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">training_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
 
-    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">up_lap1</span><span class="p">,</span> <span class="n">down_lap1</span><span class="p">,</span> <span class="n">iden</span><span class="p">)</span>
+    <span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;train_loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">training_losses</span><span class="p">))</span>
+    <span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;train_acc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">correct</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_ds</span><span class="p">))</span>
 
-    <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">binary_cross_entropy_with_logits</span><span class="p">(</span>
-        <span class="n">y_hat</span><span class="p">[</span><span class="n">train_indices</span><span class="p">]</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
-    <span class="p">)</span>
+    <span class="c1"># Evaluate on validation data</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">val_losses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">val_dl</span><span class="p">:</span>
+        <span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">last_nodes</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">last_nodes</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="n">correct</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">last_nodes</span><span class="p">)</span>
+        <span class="n">val_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
 
-    <span class="n">epoch_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
-    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-
-    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_hat</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="n">train_indices</span><span class="p">]</span> <span class="o">==</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-
-    <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
-                <span class="n">model</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">up_lap1</span><span class="p">,</span> <span class="n">down_lap1</span><span class="p">,</span> <span class="n">iden</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-            <span class="n">y_pred_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="n">y_hat_test</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="n">test_accuracy</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">y_pred_test</span><span class="p">[</span><span class="n">test_indices</span><span class="p">],</span> <span class="n">y_test</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">float</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-                <span class="o">.</span><span class="n">item</span><span class="p">()</span>
-            <span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_acc: </span><span class="si">{</span><span class="n">test_accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">val_losses</span><span class="p">))</span>
+    <span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;val_acc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">correct</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_ds</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Epoch: 1 loss: 0.7211 Train_acc: 0.5323
-Epoch: 2 loss: 0.7185 Train_acc: 0.5484
-Test_acc: 0.4375
-Epoch: 3 loss: 0.7205 Train_acc: 0.5484
-Epoch: 4 loss: 0.7210 Train_acc: 0.5484
-Test_acc: 0.4375
-Epoch: 5 loss: 0.7205 Train_acc: 0.5484
-Epoch: 6 loss: 0.7194 Train_acc: 0.5484
-Test_acc: 0.3750
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-C:\Users\ajbre\AppData\Local\Temp\ipykernel_492\1152818844.py:33: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
-  y_hat_test = torch.tensor(
+Epoch 01/10
+Epoch 02/10
+Epoch 03/10
+Epoch 04/10
+Epoch 05/10
+Epoch 06/10
+Epoch 07/10
+Epoch 08/10
+Epoch 09/10
+Epoch 10/10
 </pre></div></div>
 </div>
+<p>We take a quick look at the loss and accuracy plots for training and validation data to confirm that everything looks reasonable and the that the network is learning.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;train_loss&quot;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Training loss&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Validation loss&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Accuracy&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;train_acc&quot;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Training accuracy&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">training_history</span><span class="p">[</span><span class="s2">&quot;val_acc&quot;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Validation accuracy&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_simplicial_scone_train_26_0.png" src="../../_images/notebooks_simplicial_scone_train_26_0.png" />
+</div>
+</div>
+</section>
+<section id="Evaluating-the-model-on-test-data">
+<h1>Evaluating the model on test data<a class="headerlink" href="#Evaluating-the-model-on-test-data" title="Link to this heading">#</a></h1>
+<p>We now evaluate the final model on our test dataset. The average number of neighbors in our simplicial complex is approximately <span class="math notranslate nohighlight">\(5.5\)</span>, meaning that accuracies above <span class="math notranslate nohighlight">\(0.19\)</span> should be better than random guessing.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">test_dl</span><span class="p">:</span>
+    <span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">last_nodes</span> <span class="o">=</span> <span class="n">batch</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="n">correct</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">last_nodes</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test accuracy: </span><span class="si">{</span><span class="n">correct</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">test_ds</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Test accuracy: 0.613
+</pre></div></div>
+</div>
+</section>
+<section id="Suggestions-for-further-experimentation">
+<h1>Suggestions for further experimentation<a class="headerlink" href="#Suggestions-for-further-experimentation" title="Link to this heading">#</a></h1>
+<ul class="simple">
+<li><p>Try other update functions for the SCoNe layer such as ReLU or sigmoid (simply pass <code class="docutils literal notranslate"><span class="pre">update_func=&quot;relu&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">update_func=&quot;sigmoid&quot;</span></code> to the <code class="docutils literal notranslate"><span class="pre">SCoNeLayer</span></code> constructor). Does this affect performance?</p></li>
+<li><p>Try a different number of hidden layers and different hidden dimensions.</p></li>
+<li><p>Test the generalization capabilities of the network by making the test data differ more from the training data. For example, by reversing the trajectories in the test data.</p></li>
+<li><p>Change the underlying simplicial complex. Or, go to the <a class="reference external" href="https://github.com/nglaze00/SCoNe_GCN">original implementation by the authors</a> and take a look at the real-world dataset called Ocean Drifters.</p></li>
+</ul>
 </section>
 
 
@@ -781,11 +1015,11 @@ C:\Users\ajbre\AppData\Local\Temp\ipykernel_492\1152818844.py:33: UserWarning: T
       </div>
     </a>
     <a class="right-next"
-       href="../../challenge/index.html"
+       href="scone_train_bis.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">ICML 2023 Topological Deep Learning Challenge</p>
+        <p class="prev-next-title">Train a Simplicial Complex Network (SCoNe)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -807,16 +1041,17 @@ C:\Users\ajbre\AppData\Local\Temp\ipykernel_492\1152818844.py:33: UserWarning: T
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Simplicial Complex Network (SCoNe)</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-dataset">Import dataset</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Simplicial Complex Net (SCoNe)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Table-of-contents">Table of contents</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Dataset-generation">Dataset generation</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Generating-trajectories">Generating trajectories</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Creating-PyTorch-dataloaders">Creating PyTorch dataloaders</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-Neighborhood-Structures">Define Neighborhood Structures</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Defining-Labels-and-Preparing-Input">Defining Labels and Preparing Input</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train/Test-Split">Train/Test Split</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Creating-Neural-Network">Creating Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Creating-the-Neural-Network">Creating the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Training-the-Neural-Network">Training the Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Evaluating-the-model-on-test-data">Evaluating the model on test data</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Suggestions-for-further-experimentation">Suggestions for further experimentation</a></li>
 </ul>
 
   </nav></div>
