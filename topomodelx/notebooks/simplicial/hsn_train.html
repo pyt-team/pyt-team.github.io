@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
     <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
   
@@ -36,9 +36,9 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=d649ff4b"></script>
+    <script src="../../_static/documentation_options.js?v=f4332903"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -295,6 +295,10 @@ document.write(`
 
 
 
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/HMPNN_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
+
+
+
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/template_train.html">Train a Hypergraph Neural Network</a></li>
 
 
@@ -361,7 +365,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="Train-a-Simplicial-High-Skip-Network-(HSN)">
-<h1>Train a Simplicial High-Skip Network (HSN)<a class="headerlink" href="#Train-a-Simplicial-High-Skip-Network-(HSN)" title="Permalink to this heading">#</a></h1>
+<h1>Train a Simplicial High-Skip Network (HSN)<a class="headerlink" href="#Train-a-Simplicial-High-Skip-Network-(HSN)" title="Link to this heading">#</a></h1>
 <p>In this notebook, we will create and train a High Skip Network in the simplicial complex domain, as proposed in the paper by <a class="reference external" href="https://openreview.net/pdf?id=Sc8glB-k6e9">Hajij et. al : High Skip Networks: A Higher Order Generalization of Skip Connections (2022)</a>.</p>
 <p>We train the model to perform binary node classification using the KarateClub benchmark dataset.</p>
 <p>The equations of one layer of this neural network are given by:</p>
@@ -390,9 +394,9 @@ document.write(`
 </div>
 </section>
 <section id="Pre-processing">
-<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Permalink to this heading">#</a></h1>
+<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
 <section id="Import-dataset">
-<h2>Import dataset<a class="headerlink" href="#Import-dataset" title="Permalink to this heading">#</a></h2>
+<h2>Import dataset<a class="headerlink" href="#Import-dataset" title="Link to this heading">#</a></h2>
 <p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to two different social groups. We will use these groups for the task of node-level binary classification.</p>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
@@ -414,7 +418,7 @@ Simplicial Complex with shape [34, 78, 45, 11, 2] and dimension 4
 </div>
 </section>
 <section id="Define-neighborhood-structures.">
-<h2>Define neighborhood structures.<a class="headerlink" href="#Define-neighborhood-structures." title="Permalink to this heading">#</a></h2>
+<h2>Define neighborhood structures.<a class="headerlink" href="#Define-neighborhood-structures." title="Link to this heading">#</a></h2>
 <p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on the domain. In this case, we need the boundary matrix (or incidence matrix) <span class="math notranslate nohighlight">\(B_1\)</span> and the adjacency matrix <span class="math notranslate nohighlight">\(A_{\uparrow,0}\)</span> on the nodes. For a santiy check, we show that the shape of the <span class="math notranslate nohighlight">\(B_1 = n_\text{nodes} \times n_\text{edges}\)</span> and <span class="math notranslate nohighlight">\(A_{\uparrow,0} = n_\text{nodes} \times n_\text{nodes}\)</span>. We also convert the neighborhood structures to torch tensors.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
@@ -442,7 +446,7 @@ The adjacency matrix A0 has shape: torch.Size([34, 34]).
 </div>
 </section>
 <section id="Import-signal">
-<h2>Import signal<a class="headerlink" href="#Import-signal" title="Permalink to this heading">#</a></h2>
+<h2>Import signal<a class="headerlink" href="#Import-signal" title="Link to this heading">#</a></h2>
 <p>Since our task will be node classification, we must retrieve an input signal on the nodes. The signal will have shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times\)</span> in_channels, where in_channels is the dimension of each cell’s feature. Here, we have in_channels = channels_nodes $ = 34$. This is because the Karate dataset encodes the identity of each of the 34 nodes as a one hot encoder.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
@@ -530,7 +534,7 @@ There are 45 faces with features of dimension 2.
 </div>
 </section>
 <section id="Define-binary-labels">
-<h2>Define binary labels<a class="headerlink" href="#Define-binary-labels" title="Permalink to this heading">#</a></h2>
+<h2>Define binary labels<a class="headerlink" href="#Define-binary-labels" title="Link to this heading">#</a></h2>
 <p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
 <p>We convert the binary labels into one-hot encoder form, and keep the first four nodes’ true labels for the purpose of testing.</p>
 <div class="nbinput nblast docutils container">
@@ -589,7 +593,7 @@ There are 45 faces with features of dimension 2.
 </section>
 </section>
 <section id="Create-the-Neural-Network">
-<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Permalink to this heading">#</a></h1>
+<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>Using the HSNLayer class, we create a neural network with stacked layers. A linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
@@ -652,7 +656,7 @@ There are 45 faces with features of dimension 2.
 </div>
 </section>
 <section id="Train-the-Neural-Network">
-<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Permalink to this heading">#</a></h1>
+<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
@@ -826,7 +830,7 @@ Epoch: 5 loss: 0.6825 Train_acc: 0.5667
       
         <div class="footer-item">
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.1.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     <br/>
   </p>
 </div>

@@ -28,7 +28,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=362ab14a" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
     <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
   
@@ -36,9 +36,9 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=d649ff4b"></script>
+    <script src="../../_static/documentation_options.js?v=f4332903"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
-    <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -47,7 +47,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Train a Simplicial High-Skip Network (HSN)" href="../simplicial/hsn_train.html" />
-    <link rel="prev" title="Train a Convolutional Cell Complex Network (CCXN)" href="../cell/ccxn_train.html" />
+    <link rel="prev" title="Train a Hypergraph Message Passing Neural Network (HMPNN)" href="HMPNN_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -295,6 +295,10 @@ document.write(`
 
 
 
+<li class="toctree-l1"><a class="reference internal" href="HMPNN_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
+
+
+
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Hypergraph Neural Network</a></li>
 
 
@@ -361,7 +365,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="Train-a-Hypergraph-Neural-Network">
-<h1>Train a Hypergraph Neural Network<a class="headerlink" href="#Train-a-Hypergraph-Neural-Network" title="Permalink to this heading">#</a></h1>
+<h1>Train a Hypergraph Neural Network<a class="headerlink" href="#Train-a-Hypergraph-Neural-Network" title="Link to this heading">#</a></h1>
 <p>In this notebook, we will create and train a two-step message passing network in the hypergraph domain. We will use a benchmark dataset, shrec16, a collection of 3D meshes, to train the model to perform classification at the level of the hypergraph.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
@@ -397,9 +401,9 @@ cpu
 </div>
 </section>
 <section id="Pre-processing">
-<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Permalink to this heading">#</a></h1>
+<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
 <section id="Import-data">
-<h2>Import data<a class="headerlink" href="#Import-data" title="Permalink to this heading">#</a></h2>
+<h2>Import data<a class="headerlink" href="#Import-data" title="Link to this heading">#</a></h2>
 <p>The first step is to import the dataset, shrec 16, a benchmark dataset for 3D mesh classification. We then lift each graph into our domain of choice, a hypergraph.</p>
 <p>We will also retrieve: - input signal on the edges for each of these hypergraphs, as that will be what we feed the model in input - the label associated to the hypergraph</p>
 <div class="nbinput docutils container">
@@ -457,7 +461,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </section>
 <section id="Define-neighborhood-structures-and-lift-into-hypergraph-domain.">
-<h2>Define neighborhood structures and lift into hypergraph domain.<a class="headerlink" href="#Define-neighborhood-structures-and-lift-into-hypergraph-domain." title="Permalink to this heading">#</a></h2>
+<h2>Define neighborhood structures and lift into hypergraph domain.<a class="headerlink" href="#Define-neighborhood-structures-and-lift-into-hypergraph-domain." title="Link to this heading">#</a></h2>
 <p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on each simplicial complex. In the case of this architecture, we need the boundary matrix (or incidence matrix) <span class="math notranslate nohighlight">\(B_1\)</span> with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times n_\text{edges}\)</span>.</p>
 <p>Once we have recorded the incidence matrix (note that all incidence amtrices in the hypergraph domain must be unsigned), we lift each simplicial complex into a hypergraph. The pairwise edges will become pairwise hyperedges, and faces in the simplciial complex will become 3-wise hyperedges.</p>
 <div class="nbinput nblast docutils container">
@@ -497,7 +501,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 </section>
 </section>
 <section id="Create-the-Neural-Network">
-<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Permalink to this heading">#</a></h1>
+<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>Using the TemplateLayer class, we create a neural network with stacked layers.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
@@ -568,7 +572,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 750]).
 </div>
 </section>
 <section id="Train-the-Neural-Network">
-<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Permalink to this heading">#</a></h1>
+<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, the loss, and an optimizer.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
@@ -686,12 +690,12 @@ Test_loss: 529.0004
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../cell/ccxn_train.html"
+       href="HMPNN_train.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Train a Convolutional Cell Complex Network (CCXN)</p>
+        <p class="prev-next-title">Train a Hypergraph Message Passing Neural Network (HMPNN)</p>
       </div>
     </a>
     <a class="right-next"
@@ -773,7 +777,7 @@ Test_loss: 529.0004
       
         <div class="footer-item">
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.1.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
     <br/>
   </p>
 </div>
