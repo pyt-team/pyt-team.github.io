@@ -656,16 +656,14 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 <span class="sd">        Amount of message passing layers.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HyperGATLayer</span><span class="p">(</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span><span class="p">))</span>
+        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HyperGATLayer</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">HyperGATLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span>  <span class="o">=</span> <span class="n">out_channels</span><span class="p">,</span>
-                    <span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
-                <span class="p">)</span>
+                <span class="n">HyperGATLayer</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -709,11 +707,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 <span class="n">n_layers</span> <span class="o">=</span> <span class="mi">3</span>
 
 <span class="c1"># Define the model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">HyperGAT</span><span class="p">(</span>
-    <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
-    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_dim</span><span class="p">,</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span>
-<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">HyperGAT</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">out_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
 <span class="c1"># Optimizer and loss</span>
