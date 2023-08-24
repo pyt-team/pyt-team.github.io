@@ -324,11 +324,11 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="../hypergraph/uniSAGE_train.html">Pre-processing</a></li>
-
-
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/unigcnii_train.html">Train a hypergraph neural network using UniGCNII layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/unigin_train.html">Pre-processing</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/unisage_train.html">Pre-processing</a></li>
 
 
 <li class="toctree-l1"><a class="reference internal" href="dist2cycle_train.html">Train a Simplicial Neural Network for Homology Localization (Dist2Cycle)</a></li>
@@ -466,16 +466,12 @@ document.write(`
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
-<span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">diags</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.base.aggregation</span> <span class="kn">import</span> <span class="n">Aggregation</span>
-
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scconv_layer</span> <span class="kn">import</span> <span class="n">SCConvLayer</span>
 </pre></div>
@@ -598,7 +594,7 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
     <span class="n">A_opt_to</span> <span class="o">=</span> <span class="n">A_opt</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r_mat_inv_sqrt</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r_mat_inv_sqrt</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coo_matrix</span><span class="p">(</span><span class="n">A_opt_to</span><span class="p">)</span>
-<br/></pre></div>
+</pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -630,7 +626,7 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
 <span class="nb">print</span><span class="p">(</span><span class="n">adjacency_1</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="n">k</span> <span class="o">=</span> <span class="n">normalize_higher_order_adj</span><span class="p">(</span><span class="n">adjacency_1</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<br/></pre></div>
+</pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -693,13 +689,28 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
     <span class="c1">#     down_laplacian_1_list.append(down_laplacian_1)</span>
     <span class="c1">#     down_laplacian_2_list.append(down_laplacian_2)</span>
 
-    <span class="k">return</span> <span class="n">incidence_1_list</span><span class="p">,</span> <span class="n">incidence_1_norm_list</span><span class="p">,</span> <span class="n">incidence_2_list</span><span class="p">,</span> <span class="n">incidence_2_norm_list</span><span class="p">,</span> \
-        <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span> <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_2_norm_list</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">incidence_1_list</span><span class="p">,</span>
+        <span class="n">incidence_1_norm_list</span><span class="p">,</span>
+        <span class="n">incidence_2_list</span><span class="p">,</span>
+        <span class="n">incidence_2_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
-<span class="n">incidence_1_list</span><span class="p">,</span> <span class="n">incidence_1_norm_list</span><span class="p">,</span> <span class="n">incidence_2_list</span><span class="p">,</span> <span class="n">incidence_2_norm_list</span><span class="p">,</span> \
-    <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span> <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_2_norm_list</span> <span class="o">=</span> <span class="n">get_neighborhoods</span><span class="p">(</span>
-    <span class="n">simplexes</span><span class="p">)</span>
+<span class="p">(</span>
+    <span class="n">incidence_1_list</span><span class="p">,</span>
+    <span class="n">incidence_1_norm_list</span><span class="p">,</span>
+    <span class="n">incidence_2_list</span><span class="p">,</span>
+    <span class="n">incidence_2_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">=</span> <span class="n">get_neighborhoods</span><span class="p">(</span><span class="n">simplexes</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -734,7 +745,9 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_channels</span><span class="p">,</span> <span class="n">edge_channels</span><span class="p">,</span> <span class="n">face_channels</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">node_channels</span><span class="p">,</span> <span class="n">edge_channels</span><span class="p">,</span> <span class="n">face_channels</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_channels</span> <span class="o">=</span> <span class="n">node_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edge_channels</span> <span class="o">=</span> <span class="n">edge_channels</span>
@@ -747,7 +760,7 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
                 <span class="n">SCConvLayer</span><span class="p">(</span>
                     <span class="n">node_channels</span><span class="o">=</span><span class="n">node_channels</span><span class="p">,</span>
                     <span class="n">edge_channels</span><span class="o">=</span><span class="n">edge_channels</span><span class="p">,</span>
-                    <span class="n">face_channels</span><span class="o">=</span><span class="n">face_channels</span>
+                    <span class="n">face_channels</span><span class="o">=</span><span class="n">face_channels</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
@@ -760,18 +773,20 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
             <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                <span class="n">x_0</span><span class="p">,</span>
-                <span class="n">x_1</span><span class="p">,</span>
-                <span class="n">x_2</span><span class="p">,</span>
-                <span class="n">incidence_1</span><span class="p">,</span>
-                <span class="n">incidence_1_norm</span><span class="p">,</span>
-                <span class="n">incidence_2</span><span class="p">,</span>
-                <span class="n">incidence_2_norm</span><span class="p">,</span>
-                <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
-                <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
-                <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
-                <span class="n">adjacency_down_2_norm</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_0</span><span class="p">,</span>
+        <span class="n">x_1</span><span class="p">,</span>
+        <span class="n">x_2</span><span class="p">,</span>
+        <span class="n">incidence_1</span><span class="p">,</span>
+        <span class="n">incidence_1_norm</span><span class="p">,</span>
+        <span class="n">incidence_2</span><span class="p">,</span>
+        <span class="n">incidence_2_norm</span><span class="p">,</span>
+        <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
+        <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
+        <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
+        <span class="n">adjacency_down_2_norm</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
 
 <span class="sd">        Parameters</span>
@@ -807,17 +822,19 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">x_0</span><span class="p">,</span>
-                                           <span class="n">x_1</span><span class="p">,</span>
-                                           <span class="n">x_2</span><span class="p">,</span>
-                                           <span class="n">incidence_1</span><span class="p">,</span>
-                                           <span class="n">incidence_1_norm</span><span class="p">,</span>
-                                           <span class="n">incidence_2</span><span class="p">,</span>
-                                           <span class="n">incidence_2_norm</span><span class="p">,</span>
-                                           <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
-                                           <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
-                                           <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
-                                           <span class="n">adjacency_down_2_norm</span><span class="p">)</span>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">](</span>
+                <span class="n">x_0</span><span class="p">,</span>
+                <span class="n">x_1</span><span class="p">,</span>
+                <span class="n">x_2</span><span class="p">,</span>
+                <span class="n">incidence_1</span><span class="p">,</span>
+                <span class="n">incidence_1_norm</span><span class="p">,</span>
+                <span class="n">incidence_2</span><span class="p">,</span>
+                <span class="n">incidence_2_norm</span><span class="p">,</span>
+                <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
+                <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
+                <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
+                <span class="n">adjacency_down_2_norm</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
         <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
@@ -832,7 +849,11 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
         <span class="n">face_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">face_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
 
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)</span>
+        <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -845,16 +866,23 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [100]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#ToDo: apply train/test splitting</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ToDo: apply train/test splitting</span>
 
 <span class="n">x_0_train</span> <span class="o">=</span> <span class="n">x_0s</span>
 <span class="n">x_1_train</span> <span class="o">=</span> <span class="n">x_1s</span>
 <span class="n">x_2_train</span> <span class="o">=</span> <span class="n">x_2s</span>
 
-<span class="n">incidence_1_list</span><span class="p">,</span> <span class="n">incidence_1_norm_list</span><span class="p">,</span> <span class="n">incidence_2_list</span><span class="p">,</span> <span class="n">incidence_2_norm_list</span><span class="p">,</span> \
-    <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span> <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_2_norm_list</span> \
-    <span class="o">=</span> <span class="n">get_neighborhoods</span><span class="p">(</span><span class="n">simplexes</span><span class="p">)</span>
-<br/></pre></div>
+<span class="p">(</span>
+    <span class="n">incidence_1_list</span><span class="p">,</span>
+    <span class="n">incidence_1_norm_list</span><span class="p">,</span>
+    <span class="n">incidence_2_list</span><span class="p">,</span>
+    <span class="n">incidence_2_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
+    <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">=</span> <span class="n">get_neighborhoods</span><span class="p">(</span><span class="n">simplexes</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -866,7 +894,8 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
     <span class="n">edge_channels</span><span class="o">=</span><span class="n">x_1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">face_channels</span><span class="o">=</span><span class="n">x_1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
     <span class="n">n_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ys</span><span class="p">)),</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
@@ -893,23 +922,47 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">incid1</span><span class="p">,</span> <span class="n">incid1_norm</span><span class="p">,</span> <span class="n">incid2</span><span class="p">,</span> <span class="n">incid2_norm</span><span class="p">,</span> <span class="n">adj0_up_norm</span><span class="p">,</span> <span class="n">adj1_up_norm</span><span class="p">,</span> <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-            <span class="n">x_0_train</span><span class="p">,</span>
-            <span class="n">x_1_train</span><span class="p">,</span>
-            <span class="n">x_2_train</span><span class="p">,</span>
-            <span class="n">incidence_1_list</span><span class="p">,</span>
-            <span class="n">incidence_1_norm_list</span><span class="p">,</span>
-            <span class="n">incidence_2_list</span><span class="p">,</span>
-            <span class="n">incidence_2_norm_list</span><span class="p">,</span>
-            <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span>
-            <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
-            <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
-            <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
-            <span class="n">ys</span>
+    <span class="k">for</span> <span class="p">(</span>
+        <span class="n">x_0</span><span class="p">,</span>
+        <span class="n">x_1</span><span class="p">,</span>
+        <span class="n">x_2</span><span class="p">,</span>
+        <span class="n">incid1</span><span class="p">,</span>
+        <span class="n">incid1_norm</span><span class="p">,</span>
+        <span class="n">incid2</span><span class="p">,</span>
+        <span class="n">incid2_norm</span><span class="p">,</span>
+        <span class="n">adj0_up_norm</span><span class="p">,</span>
+        <span class="n">adj1_up_norm</span><span class="p">,</span>
+        <span class="n">adj1_down_norm</span><span class="p">,</span>
+        <span class="n">adj2_down_norm</span><span class="p">,</span>
+        <span class="n">y</span><span class="p">,</span>
+    <span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="n">x_0_train</span><span class="p">,</span>
+        <span class="n">x_1_train</span><span class="p">,</span>
+        <span class="n">x_2_train</span><span class="p">,</span>
+        <span class="n">incidence_1_list</span><span class="p">,</span>
+        <span class="n">incidence_1_norm_list</span><span class="p">,</span>
+        <span class="n">incidence_2_list</span><span class="p">,</span>
+        <span class="n">incidence_2_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
+        <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
+        <span class="n">ys</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">incid1</span><span class="p">,</span> <span class="n">incid1_norm</span><span class="p">,</span> <span class="n">incid2</span><span class="p">,</span> \
-            <span class="n">incid2_norm</span><span class="p">,</span> <span class="n">adj0_up_norm</span><span class="p">,</span> <span class="n">adj1_up_norm</span><span class="p">,</span> \
-            <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span>
+            <span class="n">x_0</span><span class="p">,</span>
+            <span class="n">x_1</span><span class="p">,</span>
+            <span class="n">x_2</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">incid1</span><span class="p">,</span>
+            <span class="n">incid1_norm</span><span class="p">,</span>
+            <span class="n">incid2</span><span class="p">,</span>
+            <span class="n">incid2_norm</span><span class="p">,</span>
+            <span class="n">adj0_up_norm</span><span class="p">,</span>
+            <span class="n">adj1_up_norm</span><span class="p">,</span>
+            <span class="n">adj1_down_norm</span><span class="p">,</span>
+            <span class="n">adj2_down_norm</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
@@ -921,12 +974,24 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
             <span class="n">adj0_up_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
             <span class="n">adj1_up_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
             <span class="n">adj1_down_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">adj2_down_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">adj2_down_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
         <span class="p">)</span>
 
         <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">incid1</span><span class="p">,</span> <span class="n">incid1_norm</span><span class="p">,</span> <span class="n">incid2</span><span class="p">,</span> <span class="n">incid2_norm</span><span class="p">,</span> <span class="n">adj0_up_norm</span><span class="p">,</span> <span class="n">adj1_up_norm</span><span class="p">,</span>
-                      <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span><span class="p">)</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+            <span class="n">x_0</span><span class="p">,</span>
+            <span class="n">x_1</span><span class="p">,</span>
+            <span class="n">x_2</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">,</span>
+            <span class="n">incid1</span><span class="p">,</span>
+            <span class="n">incid1_norm</span><span class="p">,</span>
+            <span class="n">incid2</span><span class="p">,</span>
+            <span class="n">incid2_norm</span><span class="p">,</span>
+            <span class="n">adj0_up_norm</span><span class="p">,</span>
+            <span class="n">adj1_up_norm</span><span class="p">,</span>
+            <span class="n">adj1_down_norm</span><span class="p">,</span>
+            <span class="n">adj2_down_norm</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">y</span><span class="p">)</span>
         <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
 
@@ -941,8 +1006,20 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">correct_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">x_0t</span><span class="p">,</span> <span class="n">x_1t</span><span class="p">,</span> <span class="n">x_2t</span><span class="p">,</span> <span class="n">incid1t</span><span class="p">,</span> <span class="n">incid1_normt</span><span class="p">,</span> <span class="n">incid2t</span><span class="p">,</span> <span class="n">incid2_normt</span><span class="p">,</span> <span class="n">adj0_up_normt</span><span class="p">,</span> <span class="n">adj1_up_normt</span><span class="p">,</span> <span class="n">adj1_down_normt</span><span class="p">,</span> <span class="n">adj2_down_normt</span><span class="p">,</span> <span class="n">yt</span> \
-                    <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="k">for</span> <span class="p">(</span>
+                <span class="n">x_0t</span><span class="p">,</span>
+                <span class="n">x_1t</span><span class="p">,</span>
+                <span class="n">x_2t</span><span class="p">,</span>
+                <span class="n">incid1t</span><span class="p">,</span>
+                <span class="n">incid1_normt</span><span class="p">,</span>
+                <span class="n">incid2t</span><span class="p">,</span>
+                <span class="n">incid2_normt</span><span class="p">,</span>
+                <span class="n">adj0_up_normt</span><span class="p">,</span>
+                <span class="n">adj1_up_normt</span><span class="p">,</span>
+                <span class="n">adj1_down_normt</span><span class="p">,</span>
+                <span class="n">adj2_down_normt</span><span class="p">,</span>
+                <span class="n">yt</span><span class="p">,</span>
+            <span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="n">x_0_train</span><span class="p">,</span>
                 <span class="n">x_1_train</span><span class="p">,</span>
                 <span class="n">x_2_train</span><span class="p">,</span>
@@ -954,11 +1031,22 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
                 <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
                 <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
                 <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
-                <span class="n">ys</span>
+                <span class="n">ys</span><span class="p">,</span>
             <span class="p">):</span>
-                <span class="n">x_0t</span><span class="p">,</span> <span class="n">x_1t</span><span class="p">,</span> <span class="n">x_2t</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">incid1t</span><span class="p">,</span> <span class="n">incid1_normt</span><span class="p">,</span> <span class="n">incid2t</span><span class="p">,</span> \
-                    <span class="n">incid2_normt</span><span class="p">,</span> <span class="n">adj0_up_normt</span><span class="p">,</span> <span class="n">adj1_up_normt</span><span class="p">,</span> \
-                    <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="n">x_0t</span><span class="p">,</span>
+                    <span class="n">x_1t</span><span class="p">,</span>
+                    <span class="n">x_2t</span><span class="p">,</span>
+                    <span class="n">yt</span><span class="p">,</span>
+                    <span class="n">incid1t</span><span class="p">,</span>
+                    <span class="n">incid1_normt</span><span class="p">,</span>
+                    <span class="n">incid2t</span><span class="p">,</span>
+                    <span class="n">incid2_normt</span><span class="p">,</span>
+                    <span class="n">adj0_up_normt</span><span class="p">,</span>
+                    <span class="n">adj1_up_normt</span><span class="p">,</span>
+                    <span class="n">adj1_down_norm</span><span class="p">,</span>
+                    <span class="n">adj2_down_norm</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0t</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1t</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2t</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
@@ -970,12 +1058,23 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
                     <span class="n">adj0_up_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">adj1_up_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">adj1_down_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">adj2_down_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                    <span class="n">adj2_down_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                 <span class="p">)</span>
 
-                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0t</span><span class="p">,</span> <span class="n">x_1t</span><span class="p">,</span> <span class="n">x_2t</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">incid1t</span><span class="p">,</span> <span class="n">incid1_normt</span><span class="p">,</span> <span class="n">incid2t</span><span class="p">,</span> <span class="n">incid2_normt</span><span class="p">,</span> <span class="n">adj0_up_normt</span><span class="p">,</span>
-                              <span class="n">adj1_up_normt</span><span class="p">,</span>
-                              <span class="n">adj1_down_normt</span><span class="p">,</span> <span class="n">adj2_down_normt</span><span class="p">)</span>
+                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                    <span class="n">x_0t</span><span class="p">,</span>
+                    <span class="n">x_1t</span><span class="p">,</span>
+                    <span class="n">x_2t</span><span class="p">,</span>
+                    <span class="n">yt</span><span class="p">,</span>
+                    <span class="n">incid1t</span><span class="p">,</span>
+                    <span class="n">incid1_normt</span><span class="p">,</span>
+                    <span class="n">incid2t</span><span class="p">,</span>
+                    <span class="n">incid2_normt</span><span class="p">,</span>
+                    <span class="n">adj0_up_normt</span><span class="p">,</span>
+                    <span class="n">adj1_up_normt</span><span class="p">,</span>
+                    <span class="n">adj1_down_normt</span><span class="p">,</span>
+                    <span class="n">adj2_down_normt</span><span class="p">,</span>
+                <span class="p">)</span>
                 <span class="n">test_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">yt</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">item</span><span class="p">())</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="n">yt</span><span class="o">.</span><span class="n">item</span><span class="p">()):</span>
