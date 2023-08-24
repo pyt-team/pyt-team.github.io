@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Train a Cellular Attention Network (CAN) &#8212; TopoModelX latest documentation</title>
+    <title>Train a Cell Attention Network (CAN) &#8212; TopoModelX latest documentation</title>
   
   
   
@@ -46,7 +46,7 @@
     <link rel="canonical" href="pyt-team.github.io/notebooks/cell/can_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Train a Convolutional Cell Complex Network (CCXN)" href="ccxn_train.html" />
+    <link rel="next" title="Train a Cellular Attention Network (CAN)" href="can_train_bis.html" />
     <link rel="prev" title="Tutorials" href="../../tutorials/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -289,7 +289,12 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Cellular Attention Network (CAN)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Cell Attention Network (CAN)</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="can_train_bis.html">Train a Cellular Attention Network (CAN)</a></li>
 
 
 
@@ -450,7 +455,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../../tutorials/index.html" class="nav-link">Tutorials</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Train a Cellular Attention Network (CAN)</li>
+    <li class="breadcrumb-item active" aria-current="page">Train a Cell Attention Network (CAN)</li>
   </ul>
 </nav>
 </div>
@@ -467,39 +472,82 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="Train-a-Cellular-Attention-Network-(CAN)">
-<h1>Train a Cellular Attention Network (CAN)<a class="headerlink" href="#Train-a-Cellular-Attention-Network-(CAN)" title="Link to this heading">#</a></h1>
-<p>We create and train a neural network for cellular complexes with layers using a message passing scheme provided by the down and up Laplacians as proposed in <a class="reference external" href="https://arxiv.org/pdf/2110.05614.pdf">Rodenberry et. al: Signal processing on cell complexes (2022)</a>. We also train layers utilizing the cell attention mechanism originally proposed in <a class="reference external" href="https://arxiv.org/abs/2209.08179">Giusti et. al: Cell Attention Networks (2022)</a>.</p>
-<!-- We create and train a simplified version of the CCXN originally proposed in [Hajij et. al : Cell Complex Neural Networks (2020)](https://arxiv.org/pdf/2010.00743.pdf). --><section id="The-Neural-Network:">
+  <section id="Train-a-Cell-Attention-Network-(CAN)">
+<h1>Train a Cell Attention Network (CAN)<a class="headerlink" href="#Train-a-Cell-Attention-Network-(CAN)" title="Link to this heading">#</a></h1>
+<p>We create and train a Cell Attention Network (CAN) originally proposed in <a class="reference external" href="https://arxiv.org/abs/2209.08179">Giusti et al. Cell Attention Networks (2022)</a>. The aim of this notebook is to be didactic and clear, for further technical and implementation details please refer to the original paper and the TopoModelX documentation.</p>
+<section id="Abstract:">
+<h2>Abstract:<a class="headerlink" href="#Abstract:" title="Link to this heading">#</a></h2>
+<p>Since their introduction, graph attention networks achieved outstanding results in graph representation learning tasks. However, these networks consider only pairwise relationships among nodes and then they are not able to fully exploit higher-order interactions present in many real world data-sets. In this paper, we introduce Cell Attention Networks (CANs), a neural architecture operating on data defined over the vertices of a graph, representing the graph as the 1-skeleton of a cell complex
+introduced to capture higher order interactions. In particular, we exploit the lower and upper neighborhoods, as encoded in the cell complex, to design two independent masked self-attention mechanisms, thus generalizing the conventional graph attention strategy. The approach used in CANs is hierarchical and it incorporates the following steps: i) a lifting algorithm that learns edge features from node features; ii) a cell attention mechanism to find the optimal combination of edge features over
+both lower and upper neighbors; iii) a hierarchical edge pooling mechanism to extract a compact meaningful set of features.</p>
+<center><p><img alt="98d25e90-4216-4d4d-975c-2baa3e388f1c" src="https://i.ibb.co/YTvSzmw/98d25e90-4216-4d4d-975c-2baa3e388f1c.jpg" /></p>
+<figcaption></figcaption></center><p><strong>Remark.</strong> The notation we use is defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>and <a class="reference external" href="https://arxiv.org/pdf/2206.00606.pdf">Hajij et al : Topological Deep Learning: Going Beyond Graph Data(2023)</a>. Custom symbols are introduced along the notebook, when necessary.</p>
+</section>
+<section id="The-Neural-Network:">
 <h2>The Neural Network:<a class="headerlink" href="#The-Neural-Network:" title="Link to this heading">#</a></h2>
-<p>The equations of one layer of this neural network without the attention mechanism are given by:</p>
+<p>The CAN layer, in the original paper, takes rank-<span class="math notranslate nohighlight">\(0\)</span> signals as input and gives rank-<span class="math notranslate nohighlight">\(0\)</span> signals as output (in general, it could take rank-<span class="math notranslate nohighlight">\(r\)</span> signals as input and give rank-<span class="math notranslate nohighlight">\(r\)</span> signals as output). The involved neighborhoods are: <span class="math notranslate nohighlight">\(N = \{\mathcal N_1, \mathcal N_2\} = \{A_{\uparrow,r+1}, A_{\downarrow, r+1}\}\)</span>.</p>
+<p>A CAN layer is made by the following 3 message passing stages:</p>
+<ol class="arabic simple">
+<li><p>Attentional Lift (to compute <span class="math notranslate nohighlight">\(r+1\)</span>-signals from <span class="math notranslate nohighlight">\(r\)</span>-signals):</p></li>
+</ol>
+<p>:nbsphinx-math:<a href="#id1"><span class="problematic" id="id2">`</span></a>begin{align*}
+&amp;🟥textrm{ Message.} quad m_{(y,z) rightarrow x} &amp;=&amp; alpha(h_y^0,h_z^0) = \</p>
+<blockquote>
+<div><p>&amp;&amp;=&amp;Theta cdot (h_y^0||h_z^0)\</p>
+</div></blockquote>
+<p>&amp;🟦textrm{ Update.} quad h_x^1 &amp;=&amp; phi(h_x^0,  m_{(y,z) rightarrow x})
+end{align*}`</p>
+<p>Where:</p>
 <ul class="simple">
-<li><p>A convolution from edges to edges using the down and up laplacian to pass messages:</p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha\)</span> is a learnable function parameterized by <span class="math notranslate nohighlight">\(\Theta\)</span> <span class="math notranslate nohighlight">\(\in\)</span> <span class="math notranslate nohighlight">\(\mathbb R^{2F_0 \times H}\)</span>. In the case of node signals as input, <span class="math notranslate nohighlight">\(F_0\)</span> is the number of nodes’ features and <span class="math notranslate nohighlight">\(H\)</span> is the number of heads as defined in the original paper.</p></li>
+<li><p><span class="math notranslate nohighlight">\(||\)</span> is the concatenation operator.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi\)</span> is a learnable function that updates the features of a cell.</p></li>
 </ul>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 0 \rightarrow 1)} = L_{\downarrow,1} \cdot h_y^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 2 \rightarrow 1)} = L_{\uparrow,1} \cdot h_y^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{x \rightarrow x}^{(1 \rightarrow 1)} = h_x^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 1)}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(1 \rightarrow 0 \rightarrow 1)} = \sum_{y \in \mathcal{B}(x)} m_{y \rightarrow x}^{(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(1 \rightarrow 2 \rightarrow 1)} = \sum_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
-<p>🟩: <span class="math notranslate nohighlight">\(\quad m_x^{(1)} = m_x^{(1 \rightarrow 0 \rightarrow 1)} + m_{x \rightarrow x}^{(1 \rightarrow 1)} +m_x^{(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
-<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(1)} = \sigma(m_{x}^{(1)})\)</span></p>
-<p>The equations of one layer of this neural network with the attention mechanism are given by: masked by the up and down Laplacian are given by:</p>
+<ol class="arabic simple" start="2">
+<li><p>(<span class="math notranslate nohighlight">\(\times L\)</span>) Attentional message passing at level <span class="math notranslate nohighlight">\(r+1\)</span>. The general equation is given by:</p></li>
+</ol>
+<p><span class="math">\begin{align*}
+\textbf{h}_x^{t+1} =  \phi^t \Bigg ( \textbf{h}_x^{t}, \bigotimes_{\mathcal{N}_k\in\mathcal N}\bigoplus_{y \in \mathcal{N}_k(x)}  \alpha_k(h_x^t,h_y^t)\Bigg )
+\end{align*}</span></p>
+<p>In detail:</p>
+<p><span class="math">\begin{align*}
+&🟥\textrm{ Message.} &\quad m_{(y \rightarrow x),k} =&
+\alpha_k(h_x^t,h_y^t) =
+a_k(h_x^{t}, h_y^{t}) \cdot \psi_k^t(h_x^{t})\quad \forall \mathcal N_k \in \mathcal{N}\\
+\\
+&🟧 \textrm{ Within-Neighborhood Aggregation.} &\quad m_{x,k}               =& \bigoplus_{y \in \mathcal{N}_k(x)}  m_{(y \rightarrow x),k}\\
+\\
+&🟩 \textrm{ Between-Neighborhood Aggregation.} &\quad m_{x} =& \bigotimes_{\mathcal{N}_k\in\mathcal N}m_{x,k}\\
+\\
+&🟦 \textrm{ Update.}&\quad h_x^{t+1}                =& \phi^{t}(h_x^t, m_{x})
+\end{align*}</span></p>
+<p>Where:</p>
 <ul class="simple">
-<li><p>A convolution from edges to edges using an attention mechanism masked by the down and up Laplacians:</p></li>
+<li><p><span class="math notranslate nohighlight">\(\psi_k^t\)</span> is a learnable function that computes the importance of a <span class="math notranslate nohighlight">\(r+1\)</span>-cell.</p></li>
+<li><p><span class="math notranslate nohighlight">\(a_k^t: \mathbb R^{F^l}\times \mathbb R^{F^l} \to \mathbb R\)</span> are learnable functions responsible for evaluating the reciprocal importance of two <span class="math notranslate nohighlight">\(r+1\)</span>-cells that share a common <span class="math notranslate nohighlight">\((r)\)</span>-cell or are parts of the same <span class="math notranslate nohighlight">\((r+2)\)</span>-cell.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\phi^t\)</span> is a learnable function that updates the features of a cell.</p></li>
 </ul>
-<p>🟥 $:nbsphinx-math:<cite>quad `m_{y :nbsphinx-math:</cite>rightarrow <cite>{z} :nbsphinx-math:</cite>rightarrow <cite>x}^{(1 :nbsphinx-math:</cite>rightarrow 2` <span class="math">\rightarrow 1</span>)} = (L_{<span class="math">\uparrow</span>,1} <span class="math">\odot `att(h_{y :nbsphinx-math:</span>in <cite>:nbsphinx-math:</cite>mathcal{L}`:nbsphinx-math:<cite>uparrow`(x)}^{t,(1)}, h_x^{t,(1)}))_{xy} :nbsphinx-math:</cite>cdot <cite>h_y^{t,(1)} :nbsphinx-math:</cite>cdot <cite>:nbsphinx-math:</cite>Theta`^{t,(1 <span class="math">\rightarrow 2</span> <span class="math">\rightarrow 1</span>)} $</p>
-<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 0 \rightarrow 1)} = (L_{\downarrow,1} \odot att(h_{y \in \mathcal{L}\downarrow(x)}^{t,(1)}, h_x^{t,(1)}))_{xy} \cdot h_y^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
-<p>🟥 $:nbsphinx-math:<cite>quad `m^{(1 :nbsphinx-math:</cite>rightarrow 1`)}_{x <span class="math">\rightarrow `x} = (1+:nbsphinx-math:</span>epsilon`):nbsphinx-math:<cite>cdot `h_x^{t, (1)} :nbsphinx-math:</cite>cdot <cite>:nbsphinx-math:</cite>Theta`^{t,(1 <span class="math">\rightarrow 1</span>)} $</p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{x}^{(1 \rightarrow 2 \rightarrow 1)} = \sum_{y \in \mathcal{L}_\uparrow(x)}m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 2 \rightarrow 1)}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m_{x}^{(1 \rightarrow 0 \rightarrow 1)} = \sum_{y \in \mathcal{L}_\downarrow(x)}m_{y \rightarrow \{z\} \rightarrow x}^{(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
-<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{(1 \rightarrow 1)}_{x} = m^{(1 \rightarrow 1)}_{x \rightarrow x}\)</span></p>
-<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(1)} = m_x^{(1 \rightarrow 1)} + m_{x}^{(1 \rightarrow 2 \rightarrow 1)} + m_{x}^{(1 \rightarrow 0 \rightarrow 1)}\)</span></p>
-<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1, (1)} = \sigma(\theta_{att} \cdot m_x^{(1)})\cdot \sigma(m_x^{(1)})\)</span></p>
-<p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
+<ol class="arabic simple" start="3">
+<li><p>Attentional Pooling (performed after each message passing round of 2)):</p></li>
+</ol>
+<p>:nbsphinx-math:<a href="#id3"><span class="problematic" id="id4">`</span></a>begin{align*}
+&amp;🟥textrm{ Message.} quad m_{x} &amp;=&amp; gamma^t(h_x^t) =\</p>
+<blockquote>
+<div><p>&amp;&amp;=&amp; tau^t (a^tcdot h_x^t)\</p>
+</div></blockquote>
+<p>&amp;🟦textrm{ Update.} quad h_x^{t+1} &amp;=&amp;  m_{x}h_x^t, forall xin mathcal C_r^{t+1}
+end{align*}`</p>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\gamma^t\)</span> is a learnable function that computes the attention coefficients (self-scores) as defined in the original paper.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tau^t\)</span> is a non-linear function, <span class="math notranslate nohighlight">\(a\)</span> are learnable parameters.</p></li>
+<li><p><span class="math notranslate nohighlight">\(C^{t+1}_r\)</span> is the set of rank-<span class="math notranslate nohighlight">\(r\)</span> cells of the coarse cell complex, defined keeping the rank-<span class="math notranslate nohighlight">\(r\)</span> cells corresponding to the top-K self-scores <span class="math notranslate nohighlight">\(\gamma^t(h_x^t)\)</span>.</p></li>
+</ul>
 </section>
 <section id="The-Task:">
 <h2>The Task:<a class="headerlink" href="#The-Task:" title="Link to this heading">#</a></h2>
-<p>We train this model to perform entire complex classification on a small version of <a class="reference external" href="http://shapenet.cs.stanford.edu/shrec16/">shrec16</a>.</p>
+<p>We train this model to perform entire complex classification on <code class="docutils literal notranslate"><span class="pre">`MUTAG</span></code> from the TUDataset &lt;<a class="reference external" href="https://paperswithcode.com/dataset/mutag">https://paperswithcode.com/dataset/mutag</a>&gt;`__. This dataset contains: - 188 samples of chemical compounds represented as graphs, - with 7 discrete node features.</p>
+<p>The task is to predict the mutagenicity of each compound on Salmonella Typhimurium. We use a <a class="reference external" href="https://arxiv.org/abs/1710.10903">“GAT-like” attention function</a> following the approach from <a class="reference external" href="https://arxiv.org/abs/2203.07485">SAN</a>. We implemented also a <a class="reference external" href="https://arxiv.org/abs/2105.14491">“GATv2-like” attention function</a>.</p>
 </section>
 </section>
 <section id="Set-up">
@@ -508,15 +556,17 @@ document.write(`
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">random</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes.cell_complex</span> <span class="kn">import</span> <span class="n">CellComplex</span>
+<span class="kn">from</span> <span class="nn">torch_geometric.datasets</span> <span class="kn">import</span> <span class="n">TUDataset</span>
+<span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">CellComplex</span>
-<span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
-
-<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.can_layer</span> <span class="kn">import</span> <span class="n">CANLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.can_layer</span> <span class="kn">import</span> <span class="n">CANLayer</span><span class="p">,</span> <span class="n">MultiHeadLiftLayer</span><span class="p">,</span> <span class="n">PoolLayer</span>
 </pre></div>
 </div>
 </div>
@@ -541,21 +591,34 @@ cpu
 </section>
 <section id="Pre-processing">
 <h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
-<p>The first step is to import the dataset, shrec16, a benchmark dataset for 3D mesh classification. We then lift each graph into our domain of choice, a cell complex.</p>
-<p>We also retrieve: - input signals <code class="docutils literal notranslate"><span class="pre">x_0</span></code>,<code class="docutils literal notranslate"><span class="pre">x_1</span></code>, and <code class="docutils literal notranslate"><span class="pre">x_2</span></code> on the nodes (0-cells), edges (1-cells), and faces (2-cells) for each complex: these will be the model’s inputs, - a binary classification label <code class="docutils literal notranslate"><span class="pre">y</span></code> associated to the cell complex.</p>
+<p>We import a subset of MUTAG, a benchmark dataset for graph classification.</p>
+<p>We then lift each graph into our topological domain of choice, here: a cell complex.</p>
+<p>We also retrieve: - input signals <code class="docutils literal notranslate"><span class="pre">x_0</span></code> and <code class="docutils literal notranslate"><span class="pre">x_1</span></code> on the nodes (0-cells) and edges (1-cells) for each complex: these will be the model’s inputs, - a binary classification label <code class="docutils literal notranslate"><span class="pre">y</span></code> associated to the cell complex.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">TUDataset</span><span class="p">(</span>
+    <span class="n">root</span><span class="o">=</span><span class="s2">&quot;/tmp/MUTAG&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MUTAG&quot;</span><span class="p">,</span> <span class="n">use_edge_attr</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_node_attr</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">dataset</span>
+<span class="n">cc_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">x_0_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">x_1_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">y_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">graph</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+    <span class="n">cell_complex</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
+    <span class="n">cc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell_complex</span><span class="p">)</span>
+    <span class="n">x_0_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">edge_attr</span><span class="p">)</span>
+    <span class="n">y_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
 
-<span class="n">shrec</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">shrec</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-<span class="n">x_0s</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;node_feat&quot;</span><span class="p">]</span>
-<span class="n">x_1s</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;edge_feat&quot;</span><span class="p">]</span>
-<span class="n">x_2s</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;face_feat&quot;</span><span class="p">]</span>
-
-<span class="n">ys</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
-<span class="n">simplexes</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;complexes&quot;</span><span class="p">]</span>
+<span class="n">i_cc</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features on nodes for the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">th cell complex: </span><span class="si">{</span><span class="n">x_0_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features on edges for the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">th cell complex: </span><span class="si">{</span><span class="n">x_1_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Label of </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">th cell complex: </span><span class="si">{</span><span class="n">y_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -564,128 +627,58 @@ cpu
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Loading dataset...
-
-done!
+Data(edge_index=[2, 36], x=[16, 7], edge_attr=[36, 4], y=[1])
+Features on nodes for the 0th cell complex: torch.Size([17, 7]).
+Features on edges for the 0th cell complex: torch.Size([38, 4]).
+Label of 0th cell complex: 1.
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
+<p>Implementing CAN will require to perform message passing along neighborhood structures of the cell complexes.</p>
+<p>Thus, now we retrieve these neighborhood structures (i.e. their representative matrices) that we will use to send messages.</p>
+<p>We need the matrices <span class="math notranslate nohighlight">\(A_{\downarrow, 1}\)</span> and <span class="math notranslate nohighlight">\(A_{\uparrow, 1}\)</span>.</p>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i_complex</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th simplicial complex has </span><span class="si">{</span><span class="n">x_0s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes with features of dimension </span><span class="si">{</span><span class="n">x_0s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th simplicial complex has </span><span class="si">{</span><span class="n">x_1s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges with features of dimension </span><span class="si">{</span><span class="n">x_1s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th simplicial complex has </span><span class="si">{</span><span class="n">x_2s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> faces with features of dimension </span><span class="si">{</span><span class="n">x_2s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th simplicial complex has label </span><span class="si">{</span><span class="n">ys</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-The 6th simplicial complex has 252 nodes with features of dimension 6.
-The 6th simplicial complex has 750 edges with features of dimension 10.
-The 6th simplicial complex has 500 faces with features of dimension 7.
-The 6th simplicial complex has label 9.
-</pre></div></div>
-</div>
-<p>We lift each simplicial complex into a cell complex.</p>
-<p>Then, we retrieve the neighborhood structures (i.e. their representative matrices) taht we will use to send messages on each cell complex. In th case of this architecture we need the down and up laplacians acting on 1-cells denoted by <span class="math notranslate nohighlight">\(L_{\downarrow,1}, L_{\uparrow,1}\)</span></p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cc_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">down_laplacian_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">up_laplacian_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">simplexes</span><span class="p">:</span>
-    <span class="n">cell_complex</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">to_cell_complex</span><span class="p">()</span>
-    <span class="n">cc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell_complex</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lower_neighborhood_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">upper_neighborhood_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">adjacency_0_list</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">down_laplacian</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">down_laplacian</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">down_laplacian</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">up_laplacian</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">down_laplacian_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">down_laplacian</span><span class="p">)</span>
-    <span class="n">up_laplacian_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">up_laplacian</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i_complex</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th cell complex has a down_laplacian matrix of shape </span><span class="si">{</span><span class="n">down_laplacian_list</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th cell complex has an up_laplacian matrix of shape </span><span class="si">{</span><span class="n">up_laplacian_list</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-The 6th cell complex has a down_laplacian matrix of shape torch.Size([750, 750]).
-The 6th cell complex has an up_laplacian matrix of shape torch.Size([750, 750]).
-</pre></div></div>
-</div>
-<p>Implementing the CAN architecture will require to perform message passing along neighborhood structures of the cell complexes.</p>
-<p>Thus, now we retrieve these neighborhood structures (i.e. their representative matrices) that we will use to send messages.</p>
-<p>For the CAN, we need the down Laplacian matrix <span class="math notranslate nohighlight">\(L_{\downarrow, 1}\)</span> and the up Laplacian matrix <span class="math notranslate nohighlight">\(L_{\uparrow,1}\)</span> of each cell complex.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">up_laplacian_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">down_laplacian_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">cell_complex</span> <span class="ow">in</span> <span class="n">cc_list</span><span class="p">:</span>
-    <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">down_laplacian</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">up_laplacian</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">down_laplacian</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">down_laplacian</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">up_laplacian_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">up_laplacian</span><span class="p">)</span>
-    <span class="n">down_laplacian_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">down_laplacian</span><span class="p">)</span>
+    <span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">adjacency_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">adjacency_0_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">adjacency_0</span><span class="p">)</span>
 
-<span class="n">i_cc</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Up Laplacian of the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">-th complex: </span><span class="si">{</span><span class="n">up_laplacian_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Down Laplacian of the </span><span class="si">{</span><span class="n">i_cc</span><span class="si">}</span><span class="s2">-th complex: </span><span class="si">{</span><span class="n">down_laplacian_list</span><span class="p">[</span><span class="n">i_cc</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">lower_neighborhood_t</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">lower_neighborhood_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">lower_neighborhood_t</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">lower_neighborhood_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lower_neighborhood_t</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
+            <span class="n">upper_neighborhood_t</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">lower_neighborhood_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lower_neighborhood_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="p">)</span>
+        <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">upper_neighborhood_t</span><span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+
+    <span class="n">upper_neighborhood_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">upper_neighborhood_t</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Up Laplacian of the 0-th complex: torch.Size([750, 750]).
-Down Laplacian of the 0-th complex: torch.Size([750, 750]).
-</pre></div></div>
 </div>
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Using the CANLayer class, we create a neural network which applies a CAN layer to the edges followed by linear layers on nodes, edges, and faces.</p>
+<p>Using the CANLayer class, we create a neural network with stacked layers.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">in_channels_1</span> <span class="o">=</span> <span class="n">x_1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">in_channels_2</span> <span class="o">=</span> <span class="n">x_2s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">in_channels_1</span> <span class="o">=</span> <span class="n">x_1_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">in_channels_2</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="nb">print</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;The dimension of input features on nodes, edges and faces are: </span><span class="si">{</span><span class="n">in_channels_0</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">in_channels_1</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">in_channels_2</span><span class="si">}</span><span class="s2">.&quot;</span>
 <span class="p">)</span>
@@ -697,90 +690,119 @@ Down Laplacian of the 0-th complex: torch.Size([750, 750]).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-The dimension of input features on nodes, edges and faces are: 6, 10 and 7.
+The dimension of input features on nodes, edges and faces are: 7, 4 and 5.
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CAN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;CAN.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    in_channels_0 : int</span>
-<span class="sd">        Dimension of input features on nodes.</span>
-<span class="sd">    in_channels_1 : int</span>
-<span class="sd">        Dimension of input features on edges.</span>
-<span class="sd">    in_channels_2 : int</span>
-<span class="sd">        Dimension of input features on faces.</span>
-<span class="sd">    num_classes : int</span>
-<span class="sd">        Number of classes.</span>
-<span class="sd">    n_layers : int</span>
-<span class="sd">        Number of CAN layers.</span>
-<span class="sd">    att : bool</span>
-<span class="sd">        Whether to use attention.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_channels_0</span><span class="p">,</span>
         <span class="n">in_channels_1</span><span class="p">,</span>
-        <span class="n">in_channels_2</span><span class="p">,</span>
+        <span class="n">out_channels</span><span class="p">,</span>
         <span class="n">num_classes</span><span class="p">,</span>
+        <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">heads</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">concat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">skip_connection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">att_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>
         <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">att</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">att_lift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CANLayer</span><span class="p">(</span><span class="n">channels</span><span class="o">=</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="n">att</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        CAN (Cell Attention Network) module for graph classification.</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layers, then avg pooling.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape = [n_nodes, in_channels_0]</span>
-<span class="sd">            Input features on the nodes (0-cells).</span>
-<span class="sd">        x_1 : torch.Tensor, shape = [n_edges, in_channels_1]</span>
-<span class="sd">            Input features on the edges (1-cells).</span>
-<span class="sd">        x_2 : torch.Tensor, shape = [n_faces, in_channels_2]</span>
-<span class="sd">            Input features on the faces (2-cells).</span>
-<span class="sd">        down_laplacian : tensor, shape = [n_edges, n_edges]</span>
-<span class="sd">            Down Laplacian of rank 1.</span>
-<span class="sd">        up_laplacian : tensor, shape = [n_edges, n_edges]</span>
-<span class="sd">            Up Laplacian of rank 1.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        _ : tensor, shape = [1]</span>
-<span class="sd">            Label assigned to whole complex.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            in_channels_0 (int): Number of input channels for the node-level input.</span>
+<span class="sd">            in_channels_1 (int): Number of input channels for the edge-level input.</span>
+<span class="sd">            out_channels (int): Number of output channels.</span>
+<span class="sd">            num_classes (int): Number of output classes.</span>
+<span class="sd">            dropout (float, optional): Dropout probability. Default is 0.5.</span>
+<span class="sd">            heads (int, optional): Number of attention heads. Default is 3.</span>
+<span class="sd">            concat (bool, optional): Whether to concatenate the output channels of attention heads. Default is True.</span>
+<span class="sd">            skip_connection (bool, optional): Whether to use skip connections. Default is True.</span>
+<span class="sd">            att_activation (torch.nn.Module, optional): Activation function for attention mechanism. Default is torch.nn.LeakyReLU(0.2).</span>
+<span class="sd">            n_layers (int, optional): Number of CAN layers. Default is 2.</span>
+<span class="sd">            att_lift (bool, optional): Whether to apply a lift the signal from node-level to edge-level input. Default is True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">)</span>
-        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-        <span class="c1"># Take the average of the 2D, 1D and 0D cell features. If they are NaN, convert them to 0.</span>
-        <span class="n">two_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">two_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">two_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">one_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">one_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">one_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">zero_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">zero_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">zero_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Return the sum of the averages</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">one_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">zero_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">two_dimensional_cells_mean</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">att_lift</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lift_layer</span> <span class="o">=</span> <span class="n">MultiHeadLiftLayer</span><span class="p">(</span>
+                <span class="n">in_channels_0</span><span class="o">=</span><span class="n">in_channels_0</span><span class="p">,</span>
+                <span class="n">heads</span><span class="o">=</span><span class="n">in_channels_0</span><span class="p">,</span>
+                <span class="n">signal_lift_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">in_channels_1</span> <span class="o">=</span> <span class="n">in_channels_1</span> <span class="o">+</span> <span class="n">in_channels_0</span>
+
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">CANLayer</span><span class="p">(</span>
+                <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels_1</span><span class="p">,</span>
+                <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
+                <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
+                <span class="n">concat</span><span class="o">=</span><span class="n">concat</span><span class="p">,</span>
+                <span class="n">skip_connection</span><span class="o">=</span><span class="n">skip_connection</span><span class="p">,</span>
+                <span class="n">att_activation</span><span class="o">=</span><span class="n">att_activation</span><span class="p">,</span>
+                <span class="n">aggr_func</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+                <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">CANLayer</span><span class="p">(</span>
+                    <span class="n">in_channels</span><span class="o">=</span><span class="n">out_channels</span> <span class="o">*</span> <span class="n">heads</span><span class="p">,</span>
+                    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
+                    <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+                    <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
+                    <span class="n">concat</span><span class="o">=</span><span class="n">concat</span><span class="p">,</span>
+                    <span class="n">skip_connection</span><span class="o">=</span><span class="n">skip_connection</span><span class="p">,</span>
+                    <span class="n">att_activation</span><span class="o">=</span><span class="n">att_activation</span><span class="p">,</span>
+                    <span class="n">aggr_func</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+                    <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">PoolLayer</span><span class="p">(</span>
+                    <span class="n">k_pool</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">in_channels_0</span><span class="o">=</span><span class="n">out_channels</span> <span class="o">*</span> <span class="n">heads</span><span class="p">,</span>
+                    <span class="n">signal_pool_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">(),</span>
+                    <span class="n">readout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">heads</span> <span class="o">*</span> <span class="n">out_channels</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">neighborhood_0_to_0</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;lift_layer&quot;</span><span class="p">):</span>
+            <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lift_layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">neighborhood_0_to_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">PoolLayer</span><span class="p">):</span>
+                <span class="n">x_1</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span>
+                    <span class="n">x_1</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span><span class="p">)</span>
+                <span class="n">x_1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+
+        <span class="c1"># max pooling over all nodes in each graph</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x_1</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Feed-Foward Neural Network to predict the graph label</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 </div>
 </div>
@@ -788,207 +810,157 @@ The dimension of input features on nodes, edges and faces are: 6, 10 and 7.
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, initialize loss, and specify an optimizer. We first try it without any attention mechanism.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CAN</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
-<span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<p>We split the dataset into train and test sets.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="n">x_0_train</span><span class="p">,</span> <span class="n">x_0_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_0s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">x_1_train</span><span class="p">,</span> <span class="n">x_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">x_2_train</span><span class="p">,</span> <span class="n">x_2_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_2s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">up_laplacian_train</span><span class="p">,</span> <span class="n">up_laplacian_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
-    <span class="n">up_laplacian_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
-<span class="n">down_laplacian_train</span><span class="p">,</span> <span class="n">down_laplacian_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
-    <span class="n">down_laplacian_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
-<span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>We train the CAN using 10 epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-        <span class="n">x_0_train</span><span class="p">,</span>
-        <span class="n">x_1_train</span><span class="p">,</span>
-        <span class="n">x_2_train</span><span class="p">,</span>
-        <span class="n">down_laplacian_train</span><span class="p">,</span>
-        <span class="n">up_laplacian_train</span><span class="p">,</span>
-        <span class="n">y_train</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">down_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
-            <span class="n">device</span>
-        <span class="p">),</span> <span class="n">up_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">)</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-        <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-        <span class="n">epoch_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplcian</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                <span class="n">x_0_test</span><span class="p">,</span>
-                <span class="n">x_1_test</span><span class="p">,</span>
-                <span class="n">x_2_test</span><span class="p">,</span>
-                <span class="n">down_laplacian_test</span><span class="p">,</span>
-                <span class="n">up_laplacian_test</span><span class="p">,</span>
-                <span class="n">y_test</span><span class="p">,</span>
-            <span class="p">):</span>
-                <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">down_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
-                    <span class="n">device</span>
-                <span class="p">),</span> <span class="n">up_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">)</span>
-                <span class="n">test_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-C:\Users\abrah\anaconda3\envs\topological_2\Lib\site-packages\torch\nn\modules\loss.py:536: UserWarning: Using a target size (torch.Size([])) that is different to the input size (torch.Size([1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
-  return F.mse_loss(input, target, reduction=self.reduction)
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Epoch: 1 loss: 89.3527
-Epoch: 2 loss: 81.9469
-Test_loss: 59.5947
-Epoch: 3 loss: 81.1082
-Epoch: 4 loss: 80.3476
-Test_loss: 55.3188
-Epoch: 5 loss: 79.6493
-Epoch: 6 loss: 79.0137
-Test_loss: 51.6529
-Epoch: 7 loss: 78.4377
-Epoch: 8 loss: 77.9167
-Test_loss: 48.4984
-Epoch: 9 loss: 77.4454
-Epoch: 10 loss: 77.0191
-Test_loss: 45.7851
-</pre></div></div>
-</div>
-</section>
-<section id="Train-the-Neural-Network-with-Attention">
-<h1>Train the Neural Network with Attention<a class="headerlink" href="#Train-the-Neural-Network-with-Attention" title="Link to this heading">#</a></h1>
-<p>Now we create a new neural network, that uses the attention mechanism.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CAN</span><span class="p">(</span>
-    <span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">att</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">in_channels_0</span><span class="p">,</span>
+    <span class="n">in_channels_1</span><span class="p">,</span>
+    <span class="mi">32</span><span class="p">,</span>
+    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">heads</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">att_lift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
-<span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+<span class="n">model</span>
 </pre></div>
 </div>
 </div>
-<p>We run the training for this neural network:</p>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CAN(
+  (lift_layer): MultiHeadLiftLayer(
+    (lifts): LiftLayer()
+  )
+  (layers): ModuleList(
+    (0): CANLayer(
+      (lower_att): MultiHeadCellAttention(
+        (att_activation): LeakyReLU(negative_slope=0.2)
+        (lin): Linear(in_features=11, out_features=64, bias=False)
+      )
+      (upper_att): MultiHeadCellAttention(
+        (att_activation): LeakyReLU(negative_slope=0.2)
+        (lin): Linear(in_features=11, out_features=64, bias=False)
+      )
+      (lin): Linear(in_features=11, out_features=64, bias=False)
+      (aggregation): Aggregation()
+    )
+    (1): CANLayer(
+      (lower_att): MultiHeadCellAttention(
+        (att_activation): LeakyReLU(negative_slope=0.2)
+        (lin): Linear(in_features=64, out_features=64, bias=False)
+      )
+      (upper_att): MultiHeadCellAttention(
+        (att_activation): LeakyReLU(negative_slope=0.2)
+        (lin): Linear(in_features=64, out_features=64, bias=False)
+      )
+      (lin): Linear(in_features=64, out_features=64, bias=False)
+      (aggregation): Aggregation()
+    )
+    (2): PoolLayer(
+      (signal_pool_activation): Sigmoid()
+    )
+  )
+  (lin_0): Linear(in_features=64, out_features=128, bias=True)
+  (lin_1): Linear(in_features=128, out_features=2, bias=True)
+)
+</pre></div></div>
+</div>
+<p>We split the dataset into train and test sets.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">x_1_train</span><span class="p">,</span> <span class="n">x_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">x_0_train</span><span class="p">,</span> <span class="n">x_0_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_0_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">lower_neighborhood_train</span><span class="p">,</span> <span class="n">lower_neighborhood_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">lower_neighborhood_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">upper_neighborhood_train</span><span class="p">,</span> <span class="n">upper_neighborhood_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">upper_neighborhood_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">adjacency_0_train</span><span class="p">,</span> <span class="n">adjacency_0_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">adjacency_0_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">y_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">10</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">8</span>
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
         <span class="n">x_0_train</span><span class="p">,</span>
         <span class="n">x_1_train</span><span class="p">,</span>
-        <span class="n">x_2_train</span><span class="p">,</span>
-        <span class="n">down_laplacian_train</span><span class="p">,</span>
-        <span class="n">up_laplacian_train</span><span class="p">,</span>
+        <span class="n">adjacency_0_train</span><span class="p">,</span>
+        <span class="n">lower_neighborhood_train</span><span class="p">,</span>
+        <span class="n">upper_neighborhood_train</span><span class="p">,</span>
         <span class="n">y_train</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-        <span class="p">)</span>
-        <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">down_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">x_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">adjacency</span> <span class="o">=</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span> <span class="o">=</span> <span class="n">lower_neighborhood</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
             <span class="n">device</span>
-        <span class="p">),</span> <span class="n">up_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="p">),</span> <span class="n">upper_neighborhood</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">)</span>
-        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">crit</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">num_samples</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
         <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
         <span class="n">epoch_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="n">train_acc</span> <span class="o">=</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">num_samples</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">train_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplcian</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">num_samples</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="n">x_0_test</span><span class="p">,</span>
                 <span class="n">x_1_test</span><span class="p">,</span>
-                <span class="n">x_2_test</span><span class="p">,</span>
-                <span class="n">down_laplacian_test</span><span class="p">,</span>
-                <span class="n">up_laplacian_test</span><span class="p">,</span>
+                <span class="n">adjacency_0_test</span><span class="p">,</span>
+                <span class="n">lower_neighborhood_test</span><span class="p">,</span>
+                <span class="n">upper_neighborhood_test</span><span class="p">,</span>
                 <span class="n">y_test</span><span class="p">,</span>
             <span class="p">):</span>
-                <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span> <span class="o">=</span> <span class="n">down_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                <span class="n">x_0</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">x_1</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
                     <span class="n">device</span>
-                <span class="p">),</span> <span class="n">up_laplacian</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">down_laplacian</span><span class="p">,</span> <span class="n">up_laplacian</span><span class="p">)</span>
-                <span class="n">test_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">adjacency</span> <span class="o">=</span> <span class="n">adjacency</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span> <span class="o">=</span> <span class="n">lower_neighborhood</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+                    <span class="n">device</span>
+                <span class="p">),</span> <span class="n">upper_neighborhood</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                    <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span>
+                <span class="p">)</span>
+                <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="n">num_samples</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">test_acc</span> <span class="o">=</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">num_samples</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_acc: </span><span class="si">{</span><span class="n">test_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -997,22 +969,31 @@ Test_loss: 45.7851
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 96.6442
-Epoch: 2 loss: 76.8734
-Test_loss: 52.6675
-Epoch: 3 loss: 76.2222
-Epoch: 4 loss: 75.4701
-Test_loss: 46.0780
-Epoch: 5 loss: 74.7502
-Epoch: 6 loss: 74.0797
-Test_loss: 40.4300
-Epoch: 7 loss: 73.4617
-Epoch: 8 loss: 72.8948
-Test_loss: 35.5483
-Epoch: 9 loss: 72.3760
-Epoch: 10 loss: 71.9013
-Test_loss: 31.3371
+Epoch: 1 loss: 0.6234 Train_acc: 0.6794
+Test_acc: 0.5965
+Epoch: 2 loss: 0.6047 Train_acc: 0.6947
+Test_acc: 0.5965
+Epoch: 3 loss: 0.5953 Train_acc: 0.6947
+Test_acc: 0.5965
+Epoch: 4 loss: 0.5879 Train_acc: 0.7099
+Test_acc: 0.5614
+Epoch: 5 loss: 0.5801 Train_acc: 0.7099
+Test_acc: 0.6316
+Epoch: 6 loss: 0.5755 Train_acc: 0.7405
+Test_acc: 0.7544
+Epoch: 7 loss: 0.5624 Train_acc: 0.7405
+Test_acc: 0.7544
+Epoch: 8 loss: 0.5565 Train_acc: 0.7405
+Test_acc: 0.7719
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 
@@ -1037,11 +1018,11 @@ Test_loss: 31.3371
       </div>
     </a>
     <a class="right-next"
-       href="ccxn_train.html"
+       href="can_train_bis.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Train a Convolutional Cell Complex Network (CCXN)</p>
+        <p class="prev-next-title">Train a Cellular Attention Network (CAN)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1063,7 +1044,8 @@ Test_loss: 31.3371
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Cellular Attention Network (CAN)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Cell Attention Network (CAN)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Abstract:">Abstract:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#The-Neural-Network:">The Neural Network:</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#The-Task:">The Task:</a></li>
 </ul>
@@ -1072,7 +1054,6 @@ Test_loss: 31.3371
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network-with-Attention">Train the Neural Network with Attention</a></li>
 </ul>
 
   </nav></div>
