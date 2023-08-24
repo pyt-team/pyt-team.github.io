@@ -42,12 +42,12 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/uniSAGE_train';</script>
-    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/uniSAGE_train.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/hypergraph/unigin_train';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/hypergraph/unigin_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Train a hypergraph neural network using UniGCNII layers" href="unigcnii_train.html" />
-    <link rel="prev" title="Train a Hypergraph Neural Network" href="template_train.html" />
+    <link rel="next" title="Train a Simplicial Neural Network for Homology Localization (Dist2Cycle)" href="../simplicial/dist2cycle_train.html" />
+    <link rel="prev" title="Train a hypergraph neural network using UniGCNII layers" href="unigcnii_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -320,11 +320,11 @@ document.write(`
 
 
 
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Pre-processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uniSAGE_train.html">Pre-processing</a></li>
 
 
 <li class="toctree-l1"><a class="reference internal" href="unigcnii_train.html">Train a hypergraph neural network using UniGCNII layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="unigin_train.html">Pre-processing</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Pre-processing</a></li>
 
 
 <li class="toctree-l1"><a class="reference internal" href="../simplicial/dist2cycle_train.html">Train a Simplicial Neural Network for Homology Localization (Dist2Cycle)</a></li>
@@ -415,22 +415,16 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
-<span class="o">%</span><span class="k">autoreload</span> 2
-
-<span class="kn">import</span> <span class="nn">torch</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.datasets</span> <span class="kn">import</span> <span class="n">TUDataset</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
 <span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.unisage_layer</span> <span class="kn">import</span> <span class="n">UniSAGELayer</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-
-<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.unigin_layer</span> <span class="kn">import</span> <span class="n">UniGINLayer</span>
 </pre></div>
 </div>
 </div>
@@ -439,9 +433,9 @@ document.write(`
 <section id="Import-data">
 <h2>Import data<a class="headerlink" href="#Import-data" title="Link to this heading">#</a></h2>
 <p>The first step is to import the dataset, MUTAG, a benchmark dataset for graph classification. We then lift each graph into our domain of choice, a hypergraph.</p>
-<p>We will also retrieve: - input signal on the edges for each of these hypergraphs, as that will be what we feed the model in input - the binary label associated to the hypergraph</p>
+<p>We will also retrieve: - input signal on the nodes for each of these hypergraphs, as that will be what we feed the model in input - the binary label associated to the hypergraph</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">TUDataset</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;/tmp/MUTAG&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MUTAG&quot;</span><span class="p">,</span> <span class="n">use_edge_attr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -458,7 +452,7 @@ document.write(`
 <span class="n">incidence_1_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">hg</span> <span class="ow">in</span> <span class="n">hg_list</span><span class="p">:</span>
     <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">hg</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">()</span>
-    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse_csr</span><span class="p">()</span>
+    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
     <span class="n">incidence_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -467,54 +461,51 @@ document.write(`
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Using the UniSAGELayer class, we create a neural network with stacked layers.</p>
+<p>Using the UniGINLayer class, we create a neural network with stacked layers.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">channels_edge</span> <span class="o">=</span> <span class="n">x_1_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">channels_node</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UniSAGENN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Neural network implementation of UniSAGE for hypergraph classification.</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UniGIN_NN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Neural network implementation of UniGIN for hypergraph classification.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ---------</span>
-<span class="sd">    channels_edge : int</span>
-<span class="sd">        Dimension of edge features</span>
-<span class="sd">    channels_node : int</span>
+<span class="sd">    in_channels_node : int</span>
 <span class="sd">        Dimension of node features</span>
 <span class="sd">    n_layer : 2</span>
 <span class="sd">        Amount of message passing layers.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels_edge</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">in_channels_node</span><span class="p">,</span> <span class="n">intermediate_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
+            <span class="n">mlp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">intermediate_channels</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">intermediate_channels</span><span class="p">),</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">intermediate_channels</span><span class="p">,</span> <span class="n">intermediate_channels</span><span class="p">),</span>
+            <span class="p">)</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">UniSAGELayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">channels_edge</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">channels_edge</span><span class="p">,</span>
+                <span class="n">UniGINLayer</span><span class="p">(</span>
+                    <span class="n">nn</span><span class="o">=</span><span class="n">mlp</span><span class="p">,</span>
+                    <span class="n">in_channels</span><span class="o">=</span><span class="n">intermediate_channels</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_edge</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inp_embed</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_node</span><span class="p">,</span> <span class="n">intermediate_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_decoder</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">intermediate_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layer, then global max pooling.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ---------</span>
-<span class="sd">        x_1 : tensor</span>
-<span class="sd">            shape = [n_edges, channels_edge]</span>
+<span class="sd">        x_0 : tensor</span>
+<span class="sd">            shape = [n_nodes, in_channels_node]</span>
 <span class="sd">            Edge features.</span>
 
 <span class="sd">        incidence_1 : tensor</span>
@@ -527,10 +518,11 @@ document.write(`
 <span class="sd">            shape = [1]</span>
 <span class="sd">            Label assigned to whole complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inp_embed</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">pooled_x</span><span class="p">))</span>
+            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+        <span class="n">pooled_x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_decoder</span><span class="p">(</span><span class="n">pooled_x_0</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -539,18 +531,33 @@ document.write(`
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, the loss, and an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">UniSAGENN</span><span class="p">(</span><span class="n">channels_edge</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
-<span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">node_dim</span> <span class="o">=</span> <span class="n">x_1_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">intermediate_channels</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">out_dim</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
-<p>Split the dataset into train, val, and test sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">UniGIN_NN</span><span class="p">(</span>
+    <span class="n">in_channels_node</span><span class="o">=</span><span class="n">node_dim</span><span class="p">,</span>
+    <span class="n">intermediate_channels</span><span class="o">=</span><span class="n">intermediate_channels</span><span class="p">,</span>
+    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_dim</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+<span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Split the dataset into train, val and test sets.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_1_train</span><span class="p">,</span> <span class="n">x_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -567,9 +574,9 @@ document.write(`
 </pre></div>
 </div>
 </div>
-<p>The following cell performs the training, looping over the network for a low amount of epochs. We keep training minimal for the purpose of rapid testing.</p>
+<p>The below cell trains the model for 50 epochs printing the train loss, and validation accuracy after every epoch. The model is then evaluated on a seperate test-set after training.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">50</span>
@@ -579,7 +586,7 @@ document.write(`
     <span class="n">loss</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_1_train</span><span class="p">,</span> <span class="n">incidence_1_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">loss</span> <span class="o">+=</span> <span class="n">crit</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">y</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+        <span class="n">loss</span> <span class="o">+=</span> <span class="n">crit</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">y</span><span class="p">]))</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -588,7 +595,7 @@ document.write(`
         <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_1_val</span><span class="p">,</span> <span class="n">incidence_1_val</span><span class="p">,</span> <span class="n">y_val</span><span class="p">):</span>
             <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-            <span class="n">pred</span> <span class="o">=</span> <span class="n">output</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+            <span class="n">pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">pred</span> <span class="o">==</span> <span class="n">y</span><span class="p">:</span>
                 <span class="n">correct</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> Validation accuracy: </span><span class="si">{</span><span class="n">correct</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">y_val</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -598,7 +605,7 @@ document.write(`
     <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_1_test</span><span class="p">,</span> <span class="n">incidence_1_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">output</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pred</span> <span class="o">==</span> <span class="n">y</span><span class="p">:</span>
             <span class="n">correct</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test accuracy: </span><span class="si">{</span><span class="n">correct</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -610,108 +617,124 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch 0 loss: 35.38711929321289
+Epoch 0 loss: 43.3916015625
 Epoch 0 Validation accuracy: 0.5625
-Epoch 1 loss: 35.50642013549805
+Epoch 1 loss: 41.91788864135742
 Epoch 1 Validation accuracy: 0.5625
-Epoch 2 loss: 34.88081741333008
+Epoch 2 loss: 40.573387145996094
 Epoch 2 Validation accuracy: 0.5625
-Epoch 3 loss: 34.313419342041016
+Epoch 3 loss: 39.32501220703125
 Epoch 3 Validation accuracy: 0.5625
-Epoch 4 loss: 34.208885192871094
+Epoch 4 loss: 38.29070281982422
 Epoch 4 Validation accuracy: 0.5625
-Epoch 5 loss: 34.00963592529297
+Epoch 5 loss: 37.48554229736328
 Epoch 5 Validation accuracy: 0.5625
-Epoch 6 loss: 33.59610366821289
+Epoch 6 loss: 36.905006408691406
 Epoch 6 Validation accuracy: 0.5625
-Epoch 7 loss: 33.292537689208984
+Epoch 7 loss: 36.502838134765625
 Epoch 7 Validation accuracy: 0.5625
-Epoch 8 loss: 33.19595718383789
+Epoch 8 loss: 36.23980712890625
 Epoch 8 Validation accuracy: 0.5625
-Epoch 9 loss: 33.106815338134766
+Epoch 9 loss: 36.084415435791016
 Epoch 9 Validation accuracy: 0.5625
-Epoch 10 loss: 32.913330078125
+Epoch 10 loss: 36.003536224365234
 Epoch 10 Validation accuracy: 0.5625
-Epoch 11 loss: 32.710723876953125
+Epoch 11 loss: 35.96804428100586
 Epoch 11 Validation accuracy: 0.5625
-Epoch 12 loss: 32.6346549987793
+Epoch 12 loss: 35.95846939086914
 Epoch 12 Validation accuracy: 0.5625
-Epoch 13 loss: 32.63870620727539
+Epoch 13 loss: 35.9611930847168
 Epoch 13 Validation accuracy: 0.5625
-Epoch 14 loss: 32.57096481323242
+Epoch 14 loss: 35.96879196166992
 Epoch 14 Validation accuracy: 0.5625
-Epoch 15 loss: 32.44948196411133
+Epoch 15 loss: 35.977806091308594
 Epoch 15 Validation accuracy: 0.5625
-Epoch 16 loss: 32.391658782958984
+Epoch 16 loss: 35.98638916015625
 Epoch 16 Validation accuracy: 0.5625
-Epoch 17 loss: 32.39373779296875
+Epoch 17 loss: 35.99394989013672
 Epoch 17 Validation accuracy: 0.5625
-Epoch 18 loss: 32.34821319580078
+Epoch 18 loss: 36.00029754638672
 Epoch 18 Validation accuracy: 0.5625
-Epoch 19 loss: 32.241302490234375
+Epoch 19 loss: 36.00556945800781
 Epoch 19 Validation accuracy: 0.5625
-Epoch 20 loss: 32.159812927246094
+Epoch 20 loss: 36.00981521606445
 Epoch 20 Validation accuracy: 0.5625
-Epoch 21 loss: 32.131492614746094
+Epoch 21 loss: 36.01326370239258
 Epoch 21 Validation accuracy: 0.5625
-Epoch 22 loss: 32.08507537841797
+Epoch 22 loss: 36.01602554321289
 Epoch 22 Validation accuracy: 0.5625
-Epoch 23 loss: 31.99526023864746
+Epoch 23 loss: 36.018226623535156
 Epoch 23 Validation accuracy: 0.5625
-Epoch 24 loss: 31.924638748168945
+Epoch 24 loss: 36.01999282836914
 Epoch 24 Validation accuracy: 0.5625
-Epoch 25 loss: 31.894010543823242
+Epoch 25 loss: 36.0213737487793
 Epoch 25 Validation accuracy: 0.5625
-Epoch 26 loss: 31.868173599243164
+Epoch 26 loss: 36.02241897583008
 Epoch 26 Validation accuracy: 0.5625
-Epoch 27 loss: 31.829978942871094
+Epoch 27 loss: 36.02317810058594
 Epoch 27 Validation accuracy: 0.5625
-Epoch 28 loss: 31.808109283447266
+Epoch 28 loss: 36.023704528808594
 Epoch 28 Validation accuracy: 0.5625
-Epoch 29 loss: 31.807811737060547
+Epoch 29 loss: 36.02401351928711
 Epoch 29 Validation accuracy: 0.5625
-Epoch 30 loss: 31.785655975341797
+Epoch 30 loss: 36.02414321899414
 Epoch 30 Validation accuracy: 0.5625
-Epoch 31 loss: 31.746475219726562
+Epoch 31 loss: 36.024078369140625
 Epoch 31 Validation accuracy: 0.5625
-Epoch 32 loss: 31.724843978881836
+Epoch 32 loss: 36.023826599121094
 Epoch 32 Validation accuracy: 0.5625
-Epoch 33 loss: 31.700727462768555
+Epoch 33 loss: 36.02338790893555
 Epoch 33 Validation accuracy: 0.5625
-Epoch 34 loss: 31.660417556762695
+Epoch 34 loss: 36.02278137207031
 Epoch 34 Validation accuracy: 0.5625
-Epoch 35 loss: 31.624387741088867
+Epoch 35 loss: 36.021995544433594
 Epoch 35 Validation accuracy: 0.5625
-Epoch 36 loss: 31.606855392456055
+Epoch 36 loss: 36.02100372314453
 Epoch 36 Validation accuracy: 0.5625
-Epoch 37 loss: 31.585779190063477
+Epoch 37 loss: 36.019805908203125
 Epoch 37 Validation accuracy: 0.5625
-Epoch 38 loss: 31.568805694580078
+Epoch 38 loss: 36.018394470214844
 Epoch 38 Validation accuracy: 0.5625
-Epoch 39 loss: 31.556062698364258
+Epoch 39 loss: 36.01671600341797
 Epoch 39 Validation accuracy: 0.5625
-Epoch 40 loss: 31.53620147705078
+Epoch 40 loss: 36.0147590637207
 Epoch 40 Validation accuracy: 0.5625
-Epoch 41 loss: 31.51841163635254
+Epoch 41 loss: 36.01249313354492
 Epoch 41 Validation accuracy: 0.5625
-Epoch 42 loss: 31.507102966308594
+Epoch 42 loss: 36.00986862182617
 Epoch 42 Validation accuracy: 0.5625
-Epoch 43 loss: 31.491756439208984
+Epoch 43 loss: 36.0068359375
 Epoch 43 Validation accuracy: 0.5625
-Epoch 44 loss: 31.478620529174805
+Epoch 44 loss: 36.003334045410156
 Epoch 44 Validation accuracy: 0.5625
-Epoch 45 loss: 31.475711822509766
+Epoch 45 loss: 35.999298095703125
 Epoch 45 Validation accuracy: 0.5625
-Epoch 46 loss: 31.467418670654297
+Epoch 46 loss: 35.99464416503906
 Epoch 46 Validation accuracy: 0.5625
-Epoch 47 loss: 31.449710845947266
+Epoch 47 loss: 35.98926544189453
 Epoch 47 Validation accuracy: 0.5625
-Epoch 48 loss: 31.429576873779297
+Epoch 48 loss: 35.98302459716797
 Epoch 48 Validation accuracy: 0.5625
-Epoch 49 loss: 31.42317771911621
+Epoch 49 loss: 35.975791931152344
 Epoch 49 Validation accuracy: 0.5625
 Test accuracy: 0.75
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 
@@ -727,20 +750,20 @@ Test accuracy: 0.75
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="template_train.html"
+       href="unigcnii_train.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Train a Hypergraph Neural Network</p>
+        <p class="prev-next-title">Train a hypergraph neural network using UniGCNII layers</p>
       </div>
     </a>
     <a class="right-next"
-       href="unigcnii_train.html"
+       href="../simplicial/dist2cycle_train.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Train a hypergraph neural network using UniGCNII layers</p>
+        <p class="prev-next-title">Train a Simplicial Neural Network for Homology Localization (Dist2Cycle)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -774,7 +797,7 @@ Test accuracy: 0.75
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../../_sources/notebooks/hypergraph/uniSAGE_train.ipynb.txt">
+    <a href="../../_sources/notebooks/hypergraph/unigin_train.ipynb.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
