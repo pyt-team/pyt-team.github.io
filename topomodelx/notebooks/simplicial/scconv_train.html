@@ -1,0 +1,1100 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Train a Simplicial 2-complex convolutional neural network (SCConv) &#8212; TopoModelX latest documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script src="../../_static/documentation_options.js?v=f4332903"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/simplicial/scconv_train';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/simplicial/scconv_train.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Train a Simplicial Convolutional Network (SCN)" href="scn_train.html" />
+    <link rel="prev" title="Train a Simplicial Complex Autoencoder (SCA) with Coadjacency Message Passing Scheme (CMPS)" href="sca_cmps_train.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">TopoModelX latest documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../challenge/index.html">
+                        ICML 2023 Topological Deep Learning Challenge
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../challenge/index.html">
+                        ICML 2023 Topological Deep Learning Challenge
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cell/ccxn_train.html">Train a Convolutional Cell Complex Network (CCXN)</a></li>
+
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../cell/cwn_train.html">Train a CW Network (CWN)</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/hnhn_train.html">Train a Hypergraph Network with Hyperedge Neurons (HNHN)</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/hypergat_train.html">Train a Hypergraph Neural Network</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/hypersage_train.html">Train a Hypergraph Neural Network</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/template_train.html">Train a Hypergraph Neural Network</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../hypergraph/unigcnii_train.html">Train a hypergraph neural network using UniGCNII layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dist2cycle_train.html">Train a Simplicial Neural Network for Homology Localization (Dist2Cycle)</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="hsn_train.html">Train a Simplicial High-Skip Network (HSN)</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="sca_cmps_train.html">Train a Simplicial Complex Autoencoder (SCA) with Coadjacency Message Passing Scheme (CMPS)</a></li>
+
+
+
+
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
+
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="scn_train.html">Train a Simplicial Convolutional Network (SCN)</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="scone_train.html">Train a Simplicial Complex Network (SCoNe)</a></li>
+
+
+
+
+
+
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../tutorials/index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Train a Simplicial 2-complex convolutional neural network (SCConv)</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="Train-a-Simplicial-2-complex-convolutional-neural-network-(SCConv)">
+<h1>Train a Simplicial 2-complex convolutional neural network (SCConv)<a class="headerlink" href="#Train-a-Simplicial-2-complex-convolutional-neural-network-(SCConv)" title="Link to this heading">#</a></h1>
+<p>In this notebook, we will create and train a Simplicial 2-complex convolutional neural in the simplicial complex domain, as proposed in the paper by <a class="reference external" href="https://openreview.net/pdf?id=Sc8glB-k6e9">Bunch et. al : Simplicial 2-Complex Convolutional Neural Networks (2020)</a>.</p>
+<p>We train the model to perform</p>
+<p>The equations of one layer of this neural network are given by:</p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m_{y\rightarrow x}^{(0\rightarrow 0)} = ({\tilde{A}_{\uparrow,0}})_{xy} \cdot h_y^{t,(0)} \cdot \Theta^{t,(0\rightarrow0)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{(1\rightarrow0)}_{y\rightarrow x} = (B_1)_{xy} \cdot h_y^{t,(0)} \cdot \Theta^{t,(1\rightarrow 0)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{(0 \rightarrow 1)}_{y \rightarrow x} = (\tilde B_1)_{xy} \cdot h_y^{t,(0)} \cdot \Theta^{t,(0 \rightarrow1)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{(1\rightarrow1)}_{y\rightarrow x} = ({\tilde{A}_{\downarrow,1}} + {\tilde{A}_{\uparrow,1}})_{xy} \cdot h_y^{t,(1)} \cdot \Theta^{t,(1\rightarrow1)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{(2\rightarrow1)}_{y \rightarrow x} = (B_2)_{xy} \cdot h_y^{t,(2)} \cdot \Theta^{t,(2 \rightarrow1)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{(1 \rightarrow 2)}_{y \rightarrow x} = (\tilde B_2)_{xy} \cdot h_y^{t,(1)} \cdot \Theta^{t,(1 \rightarrow 2)}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{(2 \rightarrow 2)}_{y \rightarrow x} = ({\tilde{A}_{\downarrow,2}})\_{xy} \cdot h_y^{t,(2)} \cdot \Theta^{t,(2 \rightarrow 2)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(0 \rightarrow 0)} = \sum_{y \in \mathcal{L}_\uparrow(x)} m_{y \rightarrow x}^{(0 \rightarrow 0)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(1 \rightarrow 0)} = \sum_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(1 \rightarrow 0)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(0 \rightarrow 1)} = \sum_{y \in \mathcal{B}(x)} m_{y \rightarrow x}^{(0 \rightarrow 1)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(1 \rightarrow 1)} = \sum_{y \in (\mathcal{L}_\uparrow(x) + \mathcal{L}_\downarrow(x))} m_{y \rightarrow x}^{(1 \rightarrow 1)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(2 \rightarrow 1)} = \sum_{y \in \mathcal{C}(x)} m_{y \rightarrow x}^{(2 \rightarrow 1)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(1 \rightarrow 2)} = \sum_{y \in \mathcal{B}(x)} m_{y \rightarrow x}^{(1 \rightarrow 2)}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m_x^{(2 \rightarrow 2)} = \sum_{y \in \mathcal{L}_\downarrow(x)} m_{y \rightarrow x}^{(2 \rightarrow 2)}\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(0)} = m_x^{(1\rightarrow0)}+ m_x^{(0\rightarrow0)}\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(1)} = m_x^{(2\rightarrow1)}+ m_x^{(1\rightarrow1)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h^{t+1, (0)}_x = \sigma(m_x^{(0)})\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h^{t+1, (1)}_x = \sigma(m_x^{(1)})\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h^{t+1, (2)}_x = \sigma(m_x^{(2)})\)</span></p>
+<p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [103]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+<span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
+<span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
+
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">diags</span>
+
+<span class="kn">from</span> <span class="nn">topomodelx.base.aggregation</span> <span class="kn">import</span> <span class="n">Aggregation</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scconv_layer</span> <span class="kn">import</span> <span class="n">SCConvLayer</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [93]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+cuda
+</pre></div></div>
+</div>
+</section>
+<section id="Pre-processing">
+<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
+<section id="Import-dataset">
+<h2>Import dataset<a class="headerlink" href="#Import-dataset" title="Link to this heading">#</a></h2>
+<p>The first step is to import the dataset, shrec 16, a benchmark dataset for 3D mesh classification.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
+
+<span class="n">shrec</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">shrec</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">x_0s</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;node_feat&quot;</span><span class="p">]</span>
+<span class="n">x_1s</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;edge_feat&quot;</span><span class="p">]</span>
+<span class="n">x_2s</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;face_feat&quot;</span><span class="p">]</span>
+
+<span class="n">ys</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+<span class="n">simplexes</span> <span class="o">=</span> <span class="n">shrec</span><span class="p">[</span><span class="s2">&quot;complexes&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Loading shrec 16 small dataset...
+
+done!
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [97]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># l = np.unique(ys, return_counts=True)</span>
+<span class="c1"># print(l)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ys</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+30
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i_complex</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th simplicial complex has </span><span class="si">{</span><span class="n">x_0s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes with features of dimension </span><span class="si">{</span><span class="n">x_0s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th simplicial complex has </span><span class="si">{</span><span class="n">x_1s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges with features of dimension </span><span class="si">{</span><span class="n">x_1s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;The </span><span class="si">{</span><span class="n">i_complex</span><span class="si">}</span><span class="s2">th simplicial complex has </span><span class="si">{</span><span class="n">x_2s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> faces with features of dimension </span><span class="si">{</span><span class="n">x_2s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The 0th simplicial complex has 252 nodes with features of dimension 6.
+The 0th simplicial complex has 750 edges with features of dimension 10.
+The 0th simplicial complex has 500 faces with features of dimension 7.
+</pre></div></div>
+</div>
+</section>
+<section id="Helper-functions">
+<h2>Helper functions<a class="headerlink" href="#Helper-functions" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize_higher_order_adj</span><span class="p">(</span><span class="n">A_opt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        A_opt is an opt that maps a j-cochain to a k-cochain.</span>
+<span class="sd">        shape [num_of_k_simplices num_of_j_simplices]</span>
+
+<span class="sd">    return:</span>
+<span class="sd">         D^{-0.5}* (A_opt)* D^{-0.5}.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rowsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">A_opt</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">r_inv_sqrt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">rowsum</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">r_inv_sqrt</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">r_inv_sqrt</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">r_mat_inv_sqrt</span> <span class="o">=</span> <span class="n">diags</span><span class="p">(</span><span class="n">r_inv_sqrt</span><span class="p">)</span>
+    <span class="n">A_opt_to</span> <span class="o">=</span> <span class="n">A_opt</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r_mat_inv_sqrt</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r_mat_inv_sqrt</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coo_matrix</span><span class="p">(</span><span class="n">A_opt_to</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># incidence_1_list</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adjacency_1</span> <span class="o">=</span> <span class="n">simplexes</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">incidence_1</span> <span class="o">=</span> <span class="n">simplexes</span><span class="p">[</span><span class="mi">13</span><span class="p">]</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># k = normalize_higher_order_adj(adjacency_1)</span>
+<span class="c1"># print(k)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">adjacency_1</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">normalize_higher_order_adj</span><span class="p">(</span><span class="n">adjacency_1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(750, 750)
+(750, 750)
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Define-Neighbourhood-Structures">
+<h1>Define Neighbourhood Structures<a class="headerlink" href="#Define-Neighbourhood-Structures" title="Link to this heading">#</a></h1>
+<p>We create the neigborood structures expected by SSConv. The SSConv layer expects the following neighbourhood structures: * incidence_1 <span class="math notranslate nohighlight">\(B_1\)</span> * incidence_1_norm <span class="math notranslate nohighlight">\(\tilde{B}_1\)</span> * incidence_2 <span class="math notranslate nohighlight">\(B_2\)</span> * incidence_2_norm <span class="math notranslate nohighlight">\(\tilde{B}_1\)</span> * adjacency_up_0_norm <span class="math notranslate nohighlight">\(\tilde{A}_{\uparrow,0}\)</span> * adjacency_up_1_norm <span class="math notranslate nohighlight">\(\tilde{A}_{\uparrow,1}\)</span> * adjacency_down_1_norm <span class="math notranslate nohighlight">\(\tilde{A}_{\downarrow,1}\)</span> * adjacency_down_2_norm <span class="math notranslate nohighlight">\(\tilde{A}_{\downarrow,2}\)</span></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [99]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_neighborhoods</span><span class="p">(</span><span class="n">simplexes</span><span class="p">):</span>
+    <span class="n">incidence_1_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">incidence_1_norm_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">incidence_2_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">incidence_2_norm_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">adjacency_up_0_norm_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">adjacency_up_1_norm_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">adjacency_down_1_norm_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">adjacency_down_2_norm_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># incidence_1_list = []</span>
+    <span class="c1"># incidence_2_list = []</span>
+    <span class="c1"># up_laplacian_1_list = []</span>
+    <span class="c1"># up_laplacian_2_list = []</span>
+    <span class="c1"># down_laplacian_1_list = []</span>
+    <span class="c1"># down_laplacian_2_list = []</span>
+    <span class="c1"># for simplex in simplexes:</span>
+    <span class="c1">#     B1 = simplex.incidence_matrix(rank=1, signed=False)</span>
+    <span class="c1">#     B2 = simplex.incidence_matrix(rank=2, signed=False)</span>
+    <span class="c1">#</span>
+    <span class="c1">#     up_laplacian_1 = simplex.up_laplacian_matrix(rank=0)  #1</span>
+    <span class="c1">#     up_laplacian_2 = simplex.up_laplacian_matrix(rank=1)  #2</span>
+    <span class="c1">#</span>
+    <span class="c1">#     down_laplacian_1 = simplex.down_laplacian_matrix(rank=1)  #1</span>
+    <span class="c1">#     down_laplacian_2 = simplex.down_laplacian_matrix(rank=2)  #2</span>
+    <span class="c1">#</span>
+    <span class="c1">#     incidence_1 = torch.from_numpy(B1.todense()).to_sparse()</span>
+    <span class="c1">#     incidence_2 = torch.from_numpy(B2.todense()).to_sparse()</span>
+    <span class="c1">#</span>
+    <span class="c1">#     up_laplacian_1 = torch.from_numpy(up_laplacian_1.todense()).to_sparse()</span>
+    <span class="c1">#     up_laplacian_2 = torch.from_numpy(up_laplacian_2.todense()).to_sparse()</span>
+    <span class="c1">#</span>
+    <span class="c1">#     down_laplacian_1 = torch.from_numpy(down_laplacian_1.todense()).to_sparse()</span>
+    <span class="c1">#     down_laplacian_2 = torch.from_numpy(down_laplacian_2.todense()).to_sparse()</span>
+    <span class="c1">#</span>
+    <span class="c1">#     incidence_1_list.append(incidence_1)</span>
+    <span class="c1">#     incidence_2_list.append(incidence_2)</span>
+    <span class="c1">#     up_laplacian_1_list.append(up_laplacian_1)</span>
+    <span class="c1">#     up_laplacian_2_list.append(up_laplacian_2)</span>
+    <span class="c1">#     down_laplacian_1_list.append(down_laplacian_1)</span>
+    <span class="c1">#     down_laplacian_2_list.append(down_laplacian_2)</span>
+
+    <span class="k">return</span> <span class="n">incidence_1_list</span><span class="p">,</span> <span class="n">incidence_1_norm_list</span><span class="p">,</span> <span class="n">incidence_2_list</span><span class="p">,</span> <span class="n">incidence_2_norm_list</span><span class="p">,</span> \
+        <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span> <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_2_norm_list</span>
+
+
+<span class="n">incidence_1_list</span><span class="p">,</span> <span class="n">incidence_1_norm_list</span><span class="p">,</span> <span class="n">incidence_2_list</span><span class="p">,</span> <span class="n">incidence_2_norm_list</span><span class="p">,</span> \
+    <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span> <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_2_norm_list</span> <span class="o">=</span> <span class="n">get_neighborhoods</span><span class="p">(</span>
+    <span class="n">simplexes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Create-the-Neural-Network">
+<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
+<p>Using the SSConv class, we create a neural network with stacked layers.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [104]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scconv_layer</span> <span class="kn">import</span> <span class="n">SCConvLayer</span>
+
+
+<span class="k">class</span> <span class="nc">SCConv</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simplicial 2-Complex Convolutional Network Implementation for binary node classification.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ---------</span>
+<span class="sd">    node_channels : int</span>
+<span class="sd">        Dimension of node (0-cells) features</span>
+<span class="sd">    edge_channels : int</span>
+<span class="sd">        Dimension of edge (1-cells) features</span>
+<span class="sd">    face_channels : int</span>
+<span class="sd">        Dimension of face (2-cells) features</span>
+<span class="sd">    n_layers : int</span>
+<span class="sd">        Number of message passing layers.</span>
+<span class="sd">    n_classes : int</span>
+<span class="sd">        Number of classes.</span>
+<span class="sd">    update_func : str</span>
+<span class="sd">        Activation function used in aggregation layers.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_channels</span><span class="p">,</span> <span class="n">edge_channels</span><span class="p">,</span> <span class="n">face_channels</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_channels</span> <span class="o">=</span> <span class="n">node_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_channels</span> <span class="o">=</span> <span class="n">edge_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_channels</span> <span class="o">=</span> <span class="n">face_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="n">n_classes</span>
+
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">SCConvLayer</span><span class="p">(</span>
+                    <span class="n">node_channels</span><span class="o">=</span><span class="n">node_channels</span><span class="p">,</span>
+                    <span class="n">edge_channels</span><span class="o">=</span><span class="n">edge_channels</span><span class="p">,</span>
+                    <span class="n">face_channels</span><span class="o">=</span><span class="n">face_channels</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">node_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">edge_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">face_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aggr</span> <span class="o">=</span> <span class="n">Aggregation</span><span class="p">(</span>
+            <span class="n">aggr_func</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+            <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">x_0</span><span class="p">,</span>
+                <span class="n">x_1</span><span class="p">,</span>
+                <span class="n">x_2</span><span class="p">,</span>
+                <span class="n">incidence_1</span><span class="p">,</span>
+                <span class="n">incidence_1_norm</span><span class="p">,</span>
+                <span class="n">incidence_2</span><span class="p">,</span>
+                <span class="n">incidence_2_norm</span><span class="p">,</span>
+                <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
+                <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
+                <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
+                <span class="n">adjacency_down_2_norm</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_0: torch.Tensor, shape=[n_nodes, node_channels]</span>
+<span class="sd">            Input features on the nodes of the simplicial complex.</span>
+<span class="sd">        x_1: torch.Tensor, shape=[n_edges, edge_channels]</span>
+<span class="sd">            Input features on the edges of the simplicial complex.</span>
+<span class="sd">        x_2: torch.Tensor, shape=[n_faces, face_channels]</span>
+<span class="sd">            Input features on the faces of the simplicial complex.</span>
+<span class="sd">        incidence_1: torch.Tensor, shape=[n_faces, channels]</span>
+<span class="sd">            incidence matrix of rank 1 :math:`B_1`.</span>
+<span class="sd">        incidence_1_norm: torch.Tensor,</span>
+<span class="sd">            normalized incidence matrix of rank 1 :math:`B^{~}_1`.</span>
+<span class="sd">        incidence_2: torch.Tensor,</span>
+<span class="sd">             incidence matrix of rank 2 :math:`B_2`.</span>
+<span class="sd">        incidence_2_norm: torch.Tensor,</span>
+<span class="sd">            normalized incidence matrix of rank 2 :math:`B^{~}_2`.</span>
+<span class="sd">        adjacency_up_0_norm: torch.Tensor,</span>
+<span class="sd">            normalized upper adjacency matrix of rank 0.</span>
+<span class="sd">        adjacency_up_1_norm: torch.Tensor,</span>
+<span class="sd">            normalized upper adjacency matrix of rank 1.</span>
+<span class="sd">        adjacency_down_1_norm: torch.Tensor,</span>
+<span class="sd">            normalized down adjacency matrix of rank 1.</span>
+<span class="sd">        adjacency_down_2_norm: torch.Tensor,</span>
+<span class="sd">            normalized down adjacency matrix of rank 2.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        _ : tensor, shape = [1]</span>
+<span class="sd">            Label assigned to whole complex.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">x_0</span><span class="p">,</span>
+                                           <span class="n">x_1</span><span class="p">,</span>
+                                           <span class="n">x_2</span><span class="p">,</span>
+                                           <span class="n">incidence_1</span><span class="p">,</span>
+                                           <span class="n">incidence_1_norm</span><span class="p">,</span>
+                                           <span class="n">incidence_2</span><span class="p">,</span>
+                                           <span class="n">incidence_2_norm</span><span class="p">,</span>
+                                           <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
+                                           <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
+                                           <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
+                                           <span class="n">adjacency_down_2_norm</span><span class="p">)</span>
+
+        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
+
+        <span class="n">node_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">node_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">edge_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">edge_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">face_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">face_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Train-the-Neural-Network">
+<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
+<section id="prepare-training-and-test-data">
+<h2>prepare training and test data<a class="headerlink" href="#prepare-training-and-test-data" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [100]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#ToDo: apply train/test splitting</span>
+
+<span class="n">x_0_train</span> <span class="o">=</span> <span class="n">x_0s</span>
+<span class="n">x_1_train</span> <span class="o">=</span> <span class="n">x_1s</span>
+<span class="n">x_2_train</span> <span class="o">=</span> <span class="n">x_2s</span>
+
+<span class="n">incidence_1_list</span><span class="p">,</span> <span class="n">incidence_1_norm_list</span><span class="p">,</span> <span class="n">incidence_2_list</span><span class="p">,</span> <span class="n">incidence_2_norm_list</span><span class="p">,</span> \
+    <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span> <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span> <span class="n">adjacency_down_2_norm_list</span> \
+    <span class="o">=</span> <span class="n">get_neighborhoods</span><span class="p">(</span><span class="n">simplexes</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [105]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SCConv</span><span class="p">(</span>
+    <span class="n">node_channels</span><span class="o">=</span><span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">edge_channels</span><span class="o">=</span><span class="n">x_1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">face_channels</span><span class="o">=</span><span class="n">x_1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">n_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ys</span><span class="p">)),</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/kha053/anaconda3/envs/topomodelx/lib/python3.11/site-packages/torch/cuda/__init__.py:546: UserWarning: Can&#39;t initialize NVML
+  warnings.warn(&#34;Can&#39;t initialize NVML&#34;)
+</pre></div></div>
+</div>
+<p>The following cell performs the training, looping over the network for a low number of epochs.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [113]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">incid1</span><span class="p">,</span> <span class="n">incid1_norm</span><span class="p">,</span> <span class="n">incid2</span><span class="p">,</span> <span class="n">incid2_norm</span><span class="p">,</span> <span class="n">adj0_up_norm</span><span class="p">,</span> <span class="n">adj1_up_norm</span><span class="p">,</span> <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">x_0_train</span><span class="p">,</span>
+            <span class="n">x_1_train</span><span class="p">,</span>
+            <span class="n">x_2_train</span><span class="p">,</span>
+            <span class="n">incidence_1_list</span><span class="p">,</span>
+            <span class="n">incidence_1_norm_list</span><span class="p">,</span>
+            <span class="n">incidence_2_list</span><span class="p">,</span>
+            <span class="n">incidence_2_norm_list</span><span class="p">,</span>
+            <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span>
+            <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
+            <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
+            <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
+            <span class="n">ys</span>
+    <span class="p">):</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">incid1</span><span class="p">,</span> <span class="n">incid1_norm</span><span class="p">,</span> <span class="n">incid2</span><span class="p">,</span> \
+            <span class="n">incid2_norm</span><span class="p">,</span> <span class="n">adj0_up_norm</span><span class="p">,</span> <span class="n">adj1_up_norm</span><span class="p">,</span> \
+            <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">incid1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">incid1_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">incid2</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">incid2_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">adj0_up_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">adj1_up_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">adj1_down_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">adj2_down_norm</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">incid1</span><span class="p">,</span> <span class="n">incid1_norm</span><span class="p">,</span> <span class="n">incid2</span><span class="p">,</span> <span class="n">incid2_norm</span><span class="p">,</span> <span class="n">adj0_up_norm</span><span class="p">,</span> <span class="n">adj1_up_norm</span><span class="p">,</span>
+                      <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+        <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">epoch_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">correct_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">x_0t</span><span class="p">,</span> <span class="n">x_1t</span><span class="p">,</span> <span class="n">x_2t</span><span class="p">,</span> <span class="n">incid1t</span><span class="p">,</span> <span class="n">incid1_normt</span><span class="p">,</span> <span class="n">incid2t</span><span class="p">,</span> <span class="n">incid2_normt</span><span class="p">,</span> <span class="n">adj0_up_normt</span><span class="p">,</span> <span class="n">adj1_up_normt</span><span class="p">,</span> <span class="n">adj1_down_normt</span><span class="p">,</span> <span class="n">adj2_down_normt</span><span class="p">,</span> <span class="n">yt</span> \
+                    <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">x_0_train</span><span class="p">,</span>
+                <span class="n">x_1_train</span><span class="p">,</span>
+                <span class="n">x_2_train</span><span class="p">,</span>
+                <span class="n">incidence_1_list</span><span class="p">,</span>
+                <span class="n">incidence_1_norm_list</span><span class="p">,</span>
+                <span class="n">incidence_2_list</span><span class="p">,</span>
+                <span class="n">incidence_2_norm_list</span><span class="p">,</span>
+                <span class="n">adjacency_up_0_norm_list</span><span class="p">,</span>
+                <span class="n">adjacency_up_1_norm_list</span><span class="p">,</span>
+                <span class="n">adjacency_down_1_norm_list</span><span class="p">,</span>
+                <span class="n">adjacency_down_2_norm_list</span><span class="p">,</span>
+                <span class="n">ys</span>
+            <span class="p">):</span>
+                <span class="n">x_0t</span><span class="p">,</span> <span class="n">x_1t</span><span class="p">,</span> <span class="n">x_2t</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">incid1t</span><span class="p">,</span> <span class="n">incid1_normt</span><span class="p">,</span> <span class="n">incid2t</span><span class="p">,</span> \
+                    <span class="n">incid2_normt</span><span class="p">,</span> <span class="n">adj0_up_normt</span><span class="p">,</span> <span class="n">adj1_up_normt</span><span class="p">,</span> \
+                    <span class="n">adj1_down_norm</span><span class="p">,</span> <span class="n">adj2_down_norm</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0t</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_1t</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2t</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">yt</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">incid1t</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">incid1_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">incid2t</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">incid2_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">adj0_up_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">adj1_up_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">adj1_down_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">adj2_down_normt</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="p">)</span>
+
+                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0t</span><span class="p">,</span> <span class="n">x_1t</span><span class="p">,</span> <span class="n">x_2t</span><span class="p">,</span> <span class="n">yt</span><span class="p">,</span> <span class="n">incid1t</span><span class="p">,</span> <span class="n">incid1_normt</span><span class="p">,</span> <span class="n">incid2t</span><span class="p">,</span> <span class="n">incid2_normt</span><span class="p">,</span> <span class="n">adj0_up_normt</span><span class="p">,</span>
+                              <span class="n">adj1_up_normt</span><span class="p">,</span>
+                              <span class="n">adj1_down_normt</span><span class="p">,</span> <span class="n">adj2_down_normt</span><span class="p">)</span>
+                <span class="n">test_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">yt</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">item</span><span class="p">())</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="n">yt</span><span class="o">.</span><span class="n">item</span><span class="p">()):</span>
+                    <span class="n">correct_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch: 1 loss: nan
+Epoch: 2 loss: nan
+Epoch: 3 loss: nan
+Epoch: 4 loss: nan
+Epoch: 5 loss: nan
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="sca_cmps_train.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Train a Simplicial Complex Autoencoder (SCA) with Coadjacency Message Passing Scheme (CMPS)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="scn_train.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Train a Simplicial Convolutional Network (SCN)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-dataset">Import dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Helper-functions">Helper functions</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-Neighbourhood-Structures">Define Neighbourhood Structures</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prepare-training-and-test-data">prepare training and test data</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/notebooks/simplicial/scconv_train.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2022-2023, PyT-Team, Inc..
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
