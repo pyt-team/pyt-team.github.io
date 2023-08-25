@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Train a Simplicial Convolutional Network (SCN) of Rank 2 &#8212; TopoModelX latest documentation</title>
+    <title>Train a Simplex Convolutional Network (SCN) of Rank 2 &#8212; TopoModelX latest documentation</title>
   
   
   
@@ -46,7 +46,7 @@
     <link rel="canonical" href="pyt-team.github.io/notebooks/simplicial/scn2_train.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Train a Simplicial Convolutional Network (SCN)" href="scn_train.html" />
+    <link rel="next" title="Train a Simplicial Convolutional Neural Network (SCNN)" href="scnn_train.html" />
     <link rel="prev" title="Train a Simplicial 2-complex convolutional neural network (SCConv)" href="scconv_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -375,6 +375,10 @@ document.write(`
 
 
 
+<li class="toctree-l1"><a class="reference internal" href="sccn_train.html">Train a Simplicial Complex Convolutional Network (SCCN)</a></li>
+
+
+
 <li class="toctree-l1"><a class="reference internal" href="sccnn_train.html">Train a SCCNN</a></li>
 
 
@@ -388,11 +392,7 @@ document.write(`
 
 
 
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplicial Convolutional Network (SCN) of Rank 2</a></li>
-
-
-
-<li class="toctree-l1"><a class="reference internal" href="scn_train.html">Train a Simplicial Convolutional Network (SCN)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplex Convolutional Network (SCN) of Rank 2</a></li>
 
 
 
@@ -458,7 +458,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../../tutorials/index.html" class="nav-link">Tutorials</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Train a Simplicial Convolutional Network (SCN) of Rank 2</li>
+    <li class="breadcrumb-item active" aria-current="page">Train a Simplex Convolutional Network (SCN) of Rank 2</li>
   </ul>
 </nav>
 </div>
@@ -475,10 +475,19 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="Train-a-Simplicial-Convolutional-Network-(SCN)-of-Rank-2">
-<h1>Train a Simplicial Convolutional Network (SCN) of Rank 2<a class="headerlink" href="#Train-a-Simplicial-Convolutional-Network-(SCN)-of-Rank-2" title="Link to this heading">#</a></h1>
+  <section id="Train-a-Simplex-Convolutional-Network-(SCN)-of-Rank-2">
+<h1>Train a Simplex Convolutional Network (SCN) of Rank 2<a class="headerlink" href="#Train-a-Simplex-Convolutional-Network-(SCN)-of-Rank-2" title="Link to this heading">#</a></h1>
+<p>This notebook illustrates the SCN layer proposed in [Yang22c]_ for a simplicial complex of rank 2, that is for 0-cells (nodes), 1-cells (edges) and 2-cells (faces) only.</p>
+<section id="References">
+<h2>References<a class="headerlink" href="#References" title="Link to this heading">#</a></h2>
+<div role="list" class="citation-list">
+<div class="citation" id="ysb22" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>YSB22<span class="fn-bracket">]</span></span>
+<p>Ruochen Yang, Frederic Sala, and Paul Bogdan. Efficient Representation Learning for Higher-Order Data with Simplicial Complexes. In Bastian Rieck and Razvan Pascanu, editors, Proceedings of the First Learning on Graphs Conference, volume 198 of Proceedings of Machine Learning Research, pages 13:1–13:21. PMLR, 09–12 Dec 2022a. <a class="reference external" href="https://proceedings.mlr.press/v198/yang22a.html">https://proceedings.mlr.press/v198/yang22a.html</a>.</p>
+</div>
+</div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -508,13 +517,14 @@ cpu
 </pre></div></div>
 </div>
 </section>
+</section>
 <section id="Pre-processing">
 <h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
 <section id="Import-dataset">
 <h2>Import dataset<a class="headerlink" href="#Import-dataset" title="Link to this heading">#</a></h2>
 <p>According to the original paper, SCN is good at simplex classification. Thus, I chose shrec_16, a benchmark dataset for 3D mesh classification.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
@@ -541,7 +551,7 @@ done!
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i_complex</span> <span class="o">=</span> <span class="mi">6</span>
@@ -575,21 +585,21 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_0s</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">A_1s</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">A_2s</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0s</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">laplacian_1s</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">laplacian_2s</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">simplexes</span><span class="p">:</span>
-    <span class="n">A_0</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">normalized_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">A_1</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">normalized_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">A_2</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">normalized_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">normalized_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">laplacian_1</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">normalized_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">laplacian_2</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">normalized_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="n">A_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">A_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">A_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">A_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">A_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">A_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">laplacian_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">laplacian_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
 
-    <span class="n">A_0s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_0</span><span class="p">)</span>
-    <span class="n">A_1s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_1</span><span class="p">)</span>
-    <span class="n">A_2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">A_2</span><span class="p">)</span>
+    <span class="n">laplacian_0s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">laplacian_0</span><span class="p">)</span>
+    <span class="n">laplacian_1s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">laplacian_1</span><span class="p">)</span>
+    <span class="n">laplacian_2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">laplacian_2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -598,7 +608,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SCN2</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -637,7 +647,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
         <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
 
 <span class="sd">        Parameters</span>
@@ -654,7 +664,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span><span class="p">)</span>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">)</span>
         <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
         <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
         <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
@@ -680,7 +690,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -690,7 +700,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SCN2</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -701,7 +711,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -709,9 +719,15 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <span class="n">x_1s_train</span><span class="p">,</span> <span class="n">x_1s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">x_2s_train</span><span class="p">,</span> <span class="n">x_2s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_2s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">A_0s_train</span><span class="p">,</span> <span class="n">A_0s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">A_0s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">A_1s_train</span><span class="p">,</span> <span class="n">A_1s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">A_1s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">A_2s_train</span><span class="p">,</span> <span class="n">A_2s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">A_2s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">laplacian_0s_train</span><span class="p">,</span> <span class="n">laplacian_0s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">laplacian_0s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">laplacian_1s_train</span><span class="p">,</span> <span class="n">laplacian_1s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">laplacian_1s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">laplacian_2s_train</span><span class="p">,</span> <span class="n">laplacian_2s_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">laplacian_2s</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
 
 <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -719,7 +735,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 <p>The following cell performs the training, looping over the network for a low number of epochs.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
@@ -727,8 +743,14 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-        <span class="n">x_0s_train</span><span class="p">,</span> <span class="n">x_1s_train</span><span class="p">,</span> <span class="n">x_2s_train</span><span class="p">,</span> <span class="n">A_0s_train</span><span class="p">,</span> <span class="n">A_1s_train</span><span class="p">,</span> <span class="n">A_2s_train</span><span class="p">,</span> <span class="n">y_train</span>
+    <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="n">x_0s_train</span><span class="p">,</span>
+        <span class="n">x_1s_train</span><span class="p">,</span>
+        <span class="n">x_2s_train</span><span class="p">,</span>
+        <span class="n">laplacian_0s_train</span><span class="p">,</span>
+        <span class="n">laplacian_1s_train</span><span class="p">,</span>
+        <span class="n">laplacian_2s_train</span><span class="p">,</span>
+        <span class="n">y_train</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
@@ -736,13 +758,13 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
             <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
             <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
         <span class="p">)</span>
-        <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">A_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">A_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-            <span class="n">A_2</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+        <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">laplacian_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">laplacian_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">laplacian_2</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span><span class="p">)</span>
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
         <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
         <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
@@ -753,8 +775,14 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                <span class="n">x_0s_test</span><span class="p">,</span> <span class="n">x_1s_test</span><span class="p">,</span> <span class="n">x_2s_test</span><span class="p">,</span> <span class="n">A_0s_test</span><span class="p">,</span> <span class="n">A_1s_test</span><span class="p">,</span> <span class="n">A_2s_test</span><span class="p">,</span> <span class="n">y_test</span>
+            <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">x_0s_test</span><span class="p">,</span>
+                <span class="n">x_1s_test</span><span class="p">,</span>
+                <span class="n">x_2s_test</span><span class="p">,</span>
+                <span class="n">laplacian_0s_test</span><span class="p">,</span>
+                <span class="n">laplacian_1s_test</span><span class="p">,</span>
+                <span class="n">laplacian_2s_test</span><span class="p">,</span>
+                <span class="n">y_test</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
@@ -762,12 +790,12 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
                     <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                     <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                 <span class="p">)</span>
-                <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">A_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">A_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
-                    <span class="n">A_2</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">laplacian_0</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">laplacian_1</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">laplacian_2</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
                 <span class="p">)</span>
-                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">A_0</span><span class="p">,</span> <span class="n">A_1</span><span class="p">,</span> <span class="n">A_2</span><span class="p">)</span>
+                <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">)</span>
                 <span class="n">test_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
@@ -778,19 +806,35 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 76.6313
-Epoch: 2 loss: 76.5828
-Test_loss: 94.7222
-Epoch: 3 loss: 76.5361
-Epoch: 4 loss: 76.4920
-Test_loss: 94.5671
-Epoch: 5 loss: 76.4495
-Epoch: 6 loss: 76.4081
-Test_loss: 94.4065
-Epoch: 7 loss: 76.3676
-Epoch: 8 loss: 76.3283
-Test_loss: 94.2507
+Epoch: 1 loss: 307.3329
+Epoch: 2 loss: 271.0158
+Test_loss: 489.0029
+Epoch: 3 loss: 211.3648
+Epoch: 4 loss: 133.2150
+Test_loss: 213.6805
+Epoch: 5 loss: 86.5624
+Epoch: 6 loss: 78.2548
+Test_loss: 107.0384
+Epoch: 7 loss: 77.8108
+Epoch: 8 loss: 77.7633
+Test_loss: 100.3024
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 
@@ -815,11 +859,11 @@ Test_loss: 94.2507
       </div>
     </a>
     <a class="right-next"
-       href="scn_train.html"
+       href="scnn_train.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Train a Simplicial Convolutional Network (SCN)</p>
+        <p class="prev-next-title">Train a Simplicial Convolutional Neural Network (SCNN)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -841,7 +885,10 @@ Test_loss: 94.2507
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Simplicial Convolutional Network (SCN) of Rank 2</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Simplex Convolutional Network (SCN) of Rank 2</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#References">References</a></li>
+</ul>
+</li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-dataset">Import dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures.">Define neighborhood structures.</a></li>
