@@ -1,0 +1,886 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Colored Hypergraphs &#8212; TopoNetX latest documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/04_colored_hypergraphs';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/04_colored_hypergraphs.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing" href="../contributing/index.html" />
+    <link rel="prev" title="Combinatorial Complexes" href="03_combinatorial_complexes.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  <div class="navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">TopoNetX latest documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="01_simplicial_complexes.html">Introduction to Simplicial Complexes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_cell_complexes.html">Cell Complexes</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="03_combinatorial_complexes.html">Combinatorial Complexes</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Colored Hypergraphs</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../tutorials/index.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Colored Hypergraphs</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <div class="admonition note">
+  <p>Notebook source code:
+    <a class="reference external" href="https://github.com/pyt-team/TopoNetX/blob/main/notebooks/04_colored_hypergraphs.ipynb">notebooks/04_colored_hypergraphs.ipynb</a>
+  </p>
+</div><section id="Colored-Hypergraphs">
+<h1>Colored Hypergraphs<a class="headerlink" href="#Colored-Hypergraphs" title="Permalink to this heading">#</a></h1>
+<p>In this tutorial, you will learn about colored hypergraphs in <code class="docutils literal notranslate"><span class="pre">TopoNetX</span></code>, which are mathematical structures that can be depicted like this:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="n">display</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="s2">&quot;chg.png&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_04_colored_hypergraphs_2_0.png" src="../_images/notebooks_04_colored_hypergraphs_2_0.png" />
+</div>
+</div>
+<section id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes</span> <span class="kn">import</span> <span class="n">ColoredHyperGraph</span> <span class="k">as</span> <span class="n">chg</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Colored-Hypergraph">
+<h2>Colored Hypergraph<a class="headerlink" href="#Colored-Hypergraph" title="Permalink to this heading">#</a></h2>
+<p>A <em>colored hypergraph</em>, CHG, combines features of both hypergraphs and of cell complexes <span class="math notranslate nohighlight">\([1]\)</span>. A hypergraph is, as defined by <span class="math notranslate nohighlight">\([3]\)</span>, a generalisation of a graph in which a single edge is not limited to joining just two vertices like in an ordinary graph, but can actually join multiple vertices together. CHGs are set-like, such that they have the geometric constraints of a simplicial or cellular complex <span class="math notranslate nohighlight">\([1]\)</span> but they are not hierarchial like a Combinatorial Complex.</p>
+<p>A CHG is made up of cells, each cell has a specific rank <span class="math notranslate nohighlight">\(k\)</span> - these cells can be referred to as <span class="math notranslate nohighlight">\(k\)</span>-cells.</p>
+<section id="Defintion-of-Colored-Hypergraph">
+<h3>Defintion of Colored Hypergraph<a class="headerlink" href="#Defintion-of-Colored-Hypergraph" title="Permalink to this heading">#</a></h3>
+<p><span class="math notranslate nohighlight">\([1]\)</span> Let S be a non-empty finite set and <span class="math notranslate nohighlight">\(\mathcal{P}(S)\)</span> its power set. A colored hypergraph (CHG) is a tuple <span class="math notranslate nohighlight">\((X, \imath)\)</span> formed by a set <span class="math notranslate nohighlight">\(X \subset \mathcal{P}(S)\)</span>  <span class="math notranslate nohighlight">\({\emptyset}\)</span> together with a rank function <span class="math notranslate nohighlight">\(\imath : X \rightarrow \mathbb{Z}^+\)</span> that</p>
+<p>  (i) <span class="math notranslate nohighlight">\(\imath\)</span>({<span class="math notranslate nohighlight">\(x\)</span>}) <span class="math notranslate nohighlight">\(= 0\)</span> for all <span class="math notranslate nohighlight">\(x \in S\)</span>, and</p>
+</section>
+<section id="Example-of-a-Colored-Hypergraph">
+<h3>Example of a Colored Hypergraph<a class="headerlink" href="#Example-of-a-Colored-Hypergraph" title="Permalink to this heading">#</a></h3>
+<p><img alt="image0" src="../_images/chg.png" /></p>
+<p>This is an example of a colored hypergraph (CHG), this example has six cells of rank 0, three cells of rank 1 and two cells of rank 2. As we can see this is different to a cell comples (CX) as cells of rank 2 can contain cells of rank 0 without needing cells of rank 0 also.</p>
+<p>To express this example as code we may use the <code class="docutils literal notranslate"><span class="pre">add_cell</span></code> function. Examples of this can be seen below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">example</span> <span class="o">=</span> <span class="n">chg</span><span class="p">()</span>
+
+<span class="n">example</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+
+<span class="n">example</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+
+<span class="n">example</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+
+<span class="n">example</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+
+<span class="n">example</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+<span class="n">example</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Colored Hypergraph with 2 nodes and hyperedges with colors [0, 1] and sizes (2, 1)
+Colored Hypergraph with 3 nodes and hyperedges with colors [0, 1] and sizes (3, 2)
+Colored Hypergraph with 4 nodes and hyperedges with colors [0, 1, 2] and sizes (4, 2, 1)
+Colored Hypergraph with 5 nodes and hyperedges with colors [0, 1, 2] and sizes (5, 3, 1)
+Colored Hypergraph with 6 nodes and hyperedges with colors [0, 1, 2] and sizes (6, 3, 2)
+Colored Hypergraph with 6 nodes and hyperedges with colors [0, 1, 2] and sizes (6, 4, 2)
+</pre></div></div>
+</div>
+<p>The output of this code clearly demonstrates how the CHG builds up. The first line of the output comes from adding the 1-cell <span class="math notranslate nohighlight">\([1,2]\)</span>. This 1-cell is made up of two 0-cells - therefor the output says we have cells with ranks <span class="math notranslate nohighlight">\([0,1]\)</span> and these cells have sizes <span class="math notranslate nohighlight">\([2,1]\)</span>. Sizes refers to the number of cells with that rank, so after our first line of input we have two 0-cells and one 1-cell.</p>
+<p>Each futher line of input is adding another cell of varying rank. Finally, the last line of output is telling us that we have cells of rank 0, 1 and 2 and that they respectively have sizes of 6, 4 and 2. This is such that we have six 0-cells, three 1-cells and two 2-cells, just like our example figure does.</p>
+</section>
+<section id="Helpful-Code-Output">
+<h3>Helpful Code Output<a class="headerlink" href="#Helpful-Code-Output" title="Permalink to this heading">#</a></h3>
+<p>If you ever need the list of 0-cells, 1-cells or 2-cells the code below is useful for that. This utilises something called an incidence matrix which is explained later in the tutorial. Knowing the order that cells of each rank is listed in is very important when it comes to understanding the output of adjacency and incidence matrices, using this code allows you to access that information at any time.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">B2</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">row1</span><span class="p">,</span> <span class="n">column1</span><span class="p">,</span> <span class="n">B2</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rank 0:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rank 1:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rank 2:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">column1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+rank 0:
+OrderedDict([(frozenset({1}), 0), (frozenset({2}), 1), (frozenset({3}), 2), (frozenset({4}), 3), (frozenset({5}), 4), (frozenset({6}), 5)])
+rank 1:
+OrderedDict([(frozenset({1, 2}), 0), (frozenset({1, 3}), 1), (frozenset({2, 5}), 2), (frozenset({1, 2, 3, 4, 5, 6}), 3)])
+rank 2:
+OrderedDict([(frozenset({1, 2, 3, 4}), 0), (frozenset({2, 4, 6}), 1)])
+</pre></div></div>
+</div>
+<p>Although at first glance this may appear confusing, once you understand the output format it is quite simple. This output is telling us that:</p>
+<p>In the 0-cells, the <span class="math notranslate nohighlight">\(0^{th}\)</span> cell is {1}, the <span class="math notranslate nohighlight">\(1^{st}\)</span> cell is {2}, and so on until reaching the <span class="math notranslate nohighlight">\(6^{th}\)</span> cell which is {6}.</p>
+<p>In the 1-cells, the <span class="math notranslate nohighlight">\(0^{th}\)</span> cell is {1,2}, the <span class="math notranslate nohighlight">\(1^{st}\)</span> cell is {1,3},<span class="math notranslate nohighlight">\(2^{nd}\)</span> cell is {2,5} and the <span class="math notranslate nohighlight">\(3^{rd}\)</span> cell is {1,2,3,4,5,6}.</p>
+<p>In the 2-cells, the <span class="math notranslate nohighlight">\(0^{th}\)</span> cell is {1,2,3,4} and the <span class="math notranslate nohighlight">\(1^{st}\)</span> cell is {2,4,6}.</p>
+<p>Comparing this information to the diagram of our example, we see that all the cells of each rank are listed, and now we also know their order.</p>
+</section>
+</section>
+<section id="Adjacency">
+<h2>Adjacency<a class="headerlink" href="#Adjacency" title="Permalink to this heading">#</a></h2>
+<section id="Adjacency-Matrix">
+<h3>Adjacency Matrix<a class="headerlink" href="#Adjacency-Matrix" title="Permalink to this heading">#</a></h3>
+<p>An <em>adjacency matrix</em>, is a square matrix that compares a class of objects to themselves (hence being square). Entries in an adjacency matrix are zero if they are not adjacent, and non-zero if they are adjacent <span class="math notranslate nohighlight">\([5]\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}AXY(i,j) = \begin{cases}
+      1 &amp; \text{if the } i\text{-th } X\text{-cell is adjacent to the } j\text{-th } X\text{-cell by both being members of the same } Y\text{-cell} \\
+      0 &amp; \text{otherwise}
+    \end{cases}\end{split}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(X\)</span>, <span class="math notranslate nohighlight">\(Y\)</span> are ranks such that <span class="math notranslate nohighlight">\(X &lt; Y\)</span>.</p>
+<p>Being ‘adjacent’ is defined in this context as related to each other via some higher-ranked class. Thus, when we have <span class="math notranslate nohighlight">\(n\)</span> ranks, the number of adjacencies ,<span class="math notranslate nohighlight">\(A_n\)</span>, is defined by:</p>
+<p><span class="math notranslate nohighlight">\(A_n = A_{n-1} + (n-1)\)</span> with <span class="math notranslate nohighlight">\(n \geq 2\)</span> where <span class="math notranslate nohighlight">\(A_2 = 1\)</span>.</p>
+<p>In our example there are 3 ranks, this means the number of adjacency matrices that we can make is 3; A01, A02, A12. Any other combination would be impossible as cells can only be adjacent via a cell of a higher rank.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A01</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A01</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0 1 1 1 1 1]
+ [1 0 1 1 1 1]
+ [1 1 0 1 1 1]
+ [1 1 1 0 1 1]
+ [1 1 1 1 0 1]
+ [1 1 1 1 1 0]]
+</pre></div></div>
+</div>
+<p>As this is A01 matrix, it is comparing if 0-cells are related to other 0-cells via any 1-cells. The matrix is square, due to the fact it is comparing each 0-cell to every other 0-cell - it is not important which 1-cell they are adjacent by. Here we can see that the matrix is symmetric, this is due to the fact that the CHG is not directed.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-0</em>: 0: {1}, 1: {2}, 2: {3}, 3: {4}, 4: {5}, 5: {6}</p>
+<p><em>rank-1</em>: 0: {1,2}, 1: {1,3}, 2: {2,5}, 3: {1,2,3,4,5,6}.</p>
+<p>Looking at the output, the <span class="math notranslate nohighlight">\(0^{th}\)</span> row tells us that the <span class="math notranslate nohighlight">\(0^{th}\)</span> 0-cell is adjacent to the <span class="math notranslate nohighlight">\(1^{st}\)</span> and <span class="math notranslate nohighlight">\(2^{nd}\)</span> 0-cells. That is, {1} is adjacent to {2} and {3} via some 1-cell. By looking at our list of 1-cells it is easy to see that {1,2},{1,3} &amp; {1,2,3,4,5,6} are the 1-cells that {1} is adjacent to {2}, {3} via.</p>
+<p>The <span class="math notranslate nohighlight">\(2^{nd}\)</span> row tell us that that <span class="math notranslate nohighlight">\(2^{nd}\)</span> 0-cell is adjacent to the <span class="math notranslate nohighlight">\(0^{th}\)</span> 0-cell. This is such that {3} is adjacent to {1} via a 1-cell. The rest of the entries in that row are 0, which means {3} is only adjacent via a 1-cell to {1}, this is evident by looking at the diagram of our example.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A02</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A02</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0 1 1 1 0 0]
+ [1 0 1 1 0 1]
+ [1 1 0 1 0 0]
+ [1 1 1 0 0 1]
+ [0 0 0 0 0 0]
+ [0 1 0 1 0 0]]
+</pre></div></div>
+</div>
+<p>This is the A02 matrix, this is comparing which 0-cells are adjacent via 2-cells.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-0</em>: 0: {1}, 1: {2}, 2: {3}, 3: {4}, 4: {5}, 5: {6}</p>
+<p><em>rank-2</em>: 0: {1,2,3,4}, 1: {2,4,6}.</p>
+<p>Looking at the output, the <span class="math notranslate nohighlight">\(0^{th}\)</span> row tells us that the <span class="math notranslate nohighlight">\(0^{th}\)</span> 0-cell is adjacent to the <span class="math notranslate nohighlight">\(1^{st}\)</span>, <span class="math notranslate nohighlight">\(2^{nd}\)</span> and <span class="math notranslate nohighlight">\(3^{rd}\)</span> 0-cells via 2-cells. That is, {1} is adjacent to {2}, {3} and {4} via a 2-cell. Looking at our list of 2-cells or the diagram, it is obvious this is via the 2-cell {1,2,3,4}.</p>
+<p>The <span class="math notranslate nohighlight">\(4^{th}\)</span> row is all zero entries, this tells us that the <span class="math notranslate nohighlight">\(4^{th}\)</span> 0-cell is not incident to any other 0-cells via a 2-cell. That is, {5} is not incident to any other 0-cells via a 2-cell. Looking at the diagram, we can see this is because {5} is not involved with any 2-cells.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A12</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0 1 0 0]
+ [1 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+</pre></div></div>
+</div>
+<p>This is the A12 matrix, this is comparing which 1-cells are adjacent to each other via a 2-cell.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-1</em>: 0: {1,2}, 1: {1,3}, 2: {2,5}, 3:{1,2,3,4,5,6}</p>
+<p><em>rank-2</em>: 0: {1,2,3,4}, 1: {2,4,6}.</p>
+<p>As there are four 1-cells, this matrix is a 4x4 square matrix.</p>
+<p>The output here can be explained in the same way. The <span class="math notranslate nohighlight">\(0^{th}\)</span> row is showing us that the <span class="math notranslate nohighlight">\(0^{th}\)</span> 1-cell is adjacent to the <span class="math notranslate nohighlight">\(1^{st}\)</span> 1-cell via a 2-cell. That is, {1,2} is adjacent to {1,3} via a 2-cell - namely {1,2,3,4}.</p>
+<p>The <span class="math notranslate nohighlight">\(1^{st}\)</span> row is showing us that the <span class="math notranslate nohighlight">\(1^{st}\)</span> 1-cell is adjacent to the <span class="math notranslate nohighlight">\(0^{th}\)</span> 1-cell via a 2-cell, this is the same information as the <span class="math notranslate nohighlight">\(0^{th}\)</span> row but simply mirrored. This 2 cell is {1,2,3,4}. This shows that the <span class="math notranslate nohighlight">\(1^{st}\)</span> 1-cell({1,2}) and the <span class="math notranslate nohighlight">\(2^{nd}\)</span> 1-cell({1,3}) are a subset of the rank 2 cell i.e. {1,2,3,4}.</p>
+<p>The <span class="math notranslate nohighlight">\(2^{nd}\)</span> row is showing us that the <span class="math notranslate nohighlight">\(2^{nd}\)</span> 1-cell is adjacent to no other 1-cells via a 2-cell. That is {2,5} is not included in any of the 2-cells.</p>
+<p>Similarly, the last row({1,2,3,4,5,6}) is not a subset of any of the rank 2 cells. Hence, its rows are all 0.</p>
+</section>
+<section id="Co-Adjacency-Matrix">
+<h3>Co-Adjacency Matrix<a class="headerlink" href="#Co-Adjacency-Matrix" title="Permalink to this heading">#</a></h3>
+<p>A <em>co-adjacency matrix</em> is a matrix that compares a class of objects to them selves, by seeing if they are coadjacent via some cell of a lower rank.</p>
+<p>That is, do the two cells in the class being compared, both fully contain the same member of a lower class?</p>
+<p>Now let’s compute the coadjaceny matrices, CA10, CA20 and CA21, for our original example.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CA10</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CA10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0 1 1 2]
+ [1 0 0 2]
+ [1 0 0 2]
+ [2 2 2 0]]
+</pre></div></div>
+</div>
+<p>The CA10 matrix, sees if 1-cells are coadjacent via any shared 0-cells.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-0</em>: 0: {1}, 1: {2}, 2: {3}, 3: {4}, 4: {5}, 5: {6}</p>
+<p><em>rank-1</em>: 0: {1,2}, 1: {1,3}, 2: {2,5}, 3: {1,2,3,4,5,6}.</p>
+<p>The matrix’s <span class="math notranslate nohighlight">\(0^{th}\)</span> row shows us that {1,2} is coadjacent to {1,3} and {2,5} via some 0-cells. In this case we can see that {1,2} is coadjacent to {1,3} by the 0-cell {1}, is coadjacent to {2,5} by the 0-cell {2} and is coadjacent to {1,2,3,4,5,6} by the 0-cells {2} and {1}.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CA20</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CA20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0 2]
+ [2 0]]
+</pre></div></div>
+</div>
+<p>The CA20 matrix sees if any 2-cells are coadjacent via any shared 0-cells.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-0</em>: 0: {1}, 1: {2}, 2: {3}, 3: {4}, 4: {5}, 5: {6}</p>
+<p><em>rank-2</em>: 0: {1,2,3,4}, 1: {2,4,6}.</p>
+<p>CA20’s <span class="math notranslate nohighlight">\(0^{th}\)</span> row tells us that {1,2,3,4} is coadjacent to {2,4,6} via a 0-cell. Here we can see they both share the 0-cells {2} and {6}.</p>
+<p>This information is then repeated in the mirrored direction in the <span class="math notranslate nohighlight">\(1^{st}\)</span> row.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">CA21</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CA21</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[0 0]
+ [0 0]]
+</pre></div></div>
+</div>
+<p>The CA21 matrix compares if any 2-cells are coadjacent via a 1-cell.</p>
+<p>All of the entries in this matrix are zero, which tells us that no 2-cells are coadjacent via a 1-cell.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-1</em>: 0: {1,2}, 1: {1,3}, 2: {2,5} 3: {1,2,3,4,5,6}</p>
+<p><em>rank-2</em>: 0: {1,2,3,4}, 1: {2,4,6}.</p>
+<p>Looking at these cells it is clear that both 2-cells do not share any 1-cells, given that {2,4,6} does not fully contain a 1-cell.</p>
+</section>
+</section>
+<section id="Incidence">
+<h2>Incidence<a class="headerlink" href="#Incidence" title="Permalink to this heading">#</a></h2>
+<section id="Incidence-Matrix">
+<h3>Incidence Matrix<a class="headerlink" href="#Incidence-Matrix" title="Permalink to this heading">#</a></h3>
+<p>An <em>incidence matrix</em> is a matrix that shows the relationship between two classes of objects. If the first class is X and the second is Y, the matrix has one row for each element of X and one column for each element of Y. The entry in row x and column y is 1 if x and y are related (called incident in this context) and 0 if they are not <span class="math notranslate nohighlight">\([2]\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}BXY(i,j) = \begin{cases}
+      1 &amp; \text{if the } i^\text{th} \text{ X-cell is contained in, but not equal to, the } j^\text{th} \text{ Y-cell}\\
+      0 &amp; \text{otherwise.}
+    \end{cases}\end{split}\]</div>
+<p>For colored hypergraphs, we compare cells of a rank to cells of a higher rank. So for our example, as we only have three ranks we have three possible incidence matrices: B01, B02 and B12.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B01</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">B01</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[1 1 0 1]
+ [1 0 1 1]
+ [0 1 0 1]
+ [0 0 0 1]
+ [0 0 1 1]
+ [0 0 0 1]]
+</pre></div></div>
+</div>
+<p>B01 is the incidence matrix portraying which 0-cells are incident to which 1-cells.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-0</em>: 0: {1}, 1: {2}, 2: {3}, 3: {4}, 4: {5}, 5: {6}</p>
+<p><em>rank-1</em>: 0: {1,2}, 1: {1,3}, 2: {2,5}, 3:{1,2,3,4,5,6}</p>
+<p>So in this matrix, each row represents one of the six 0-cells, and each column represents one of the four 1-cells.</p>
+<p>The <span class="math notranslate nohighlight">\(0^{th}\)</span> row of this matrix is showing us that the <span class="math notranslate nohighlight">\(0^{th}\)</span> 0-cell, {1}, is incident to the <span class="math notranslate nohighlight">\(0^{th}\)</span> and <span class="math notranslate nohighlight">\(1^{st}\)</span> 1-cells {1,2} and {1,3}. This is because {1} is contained in both {1,2} and {1,3}. The entry <span class="math notranslate nohighlight">\([0,2]\)</span> of this matrix is zero, which tells us that the <span class="math notranslate nohighlight">\(2^{nd}\)</span> 1-cell {2,5} is not incident to {1} - a trivial fact when looking at the cells.</p>
+<p>The 4th column shows all ones as {1,2,3,4,5,6} contains all rank-0 cells.m</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B02</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">B02</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[1 0]
+ [1 1]
+ [1 0]
+ [1 1]
+ [0 0]
+ [0 1]]
+</pre></div></div>
+</div>
+<p>B02 is the incidence matrix demonstrating which 0-cells are incident to which 2-cells.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-0</em>: 0: {1}, 1: {2}, 2: {3}, 3: {4}, 4: {5}, 5: {6}</p>
+<p><em>rank-2</em>: 0: {1,2,3,4}, 1: {2,4,6}.</p>
+<p>In this marix, each row represents one of the six 0-cells, and each column represents one of the two 2-cells.</p>
+<p>The <span class="math notranslate nohighlight">\(0^{th}\)</span> row has a non-zero entry for the <span class="math notranslate nohighlight">\(0^{th}\)</span> column and a zero entry for the <span class="math notranslate nohighlight">\(1^{st}\)</span> column. This tells us that {1} is incident to {1,2,3,4} but is not incident to {2,4,6}. This is because {1} is not contained in {2,4,6}.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B12</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">B12</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[1 0]
+ [1 0]
+ [0 0]
+ [0 0]]
+</pre></div></div>
+</div>
+<p>B12 is the incidence matrix demonstrating which 1-cells are incident to which 2-cells.</p>
+<p>To remind ourselves,</p>
+<p><em>rank-1</em>: 0: {1,2}, 1: {1,3}, 2: {2,5}, 3: {1,2,3,4,5,6}</p>
+<p><em>rank-2</em>: 0: {1,2,3,4}, 1: {2,4,6}.</p>
+<p>The <span class="math notranslate nohighlight">\(0^{th}\)</span> row tells us that {1,2} is incident to {1,2,3,4} but is not incident to {2,4,6}. The <span class="math notranslate nohighlight">\(1^{st}\)</span> row tells us that {1,3} is incident to {1,2,3,4} but is not incident to {2,4,6}. The <span class="math notranslate nohighlight">\(2^{nd}\)</span> row tells us that {2,5} is not incident to {1,2,3,4} or {2,4,6}. The <span class="math notranslate nohighlight">\(3^{rd}\)</span> row tells us that {1,2,3,4,5,6} is not incident to {1,2,3,4} or {2,4,6}.</p>
+</section>
+</section>
+<section id="References">
+<h2>References<a class="headerlink" href="#References" title="Permalink to this heading">#</a></h2>
+<p><span class="math notranslate nohighlight">\([1]\)</span> : Hajij, M., Zamzmi, G., Papamarkou, T., Miolane, N., Guzmán-Sáenz, A. and Ramamurthy, K. (n.d.). <em>Higher-Order Attention Networks</em>. [online] Available at: <a class="reference external" href="https://arxiv.org/pdf/2206.00606.pdf">https://arxiv.org/pdf/2206.00606.pdf</a> [Accessed 3 Apr. 2023].</p>
+<p><span class="math notranslate nohighlight">\([2]\)</span> : www.scientificlib.com. (n.d.). <em>Incidence matrix</em>. [online] Available at: <a class="reference external" href="http://www.scientificlib.com/en/Mathematics/LX/IncidenceMatrix.html">http://www.scientificlib.com/en/Mathematics/LX/IncidenceMatrix.html</a>. [Accessed 3 Jan. 2023].</p>
+<p><span class="math notranslate nohighlight">\([3]\)</span> : Wikipedia. (2023). <em>Hypergraph</em>. [online] Available at: <a class="reference external" href="https://en.wikipedia.org/wiki/Hypergraph">https://en.wikipedia.org/wiki/Hypergraph</a> [Accessed 5 Apr. 2023].</p>
+<p><span class="math notranslate nohighlight">\([4]\)</span> : Wikipedia. (2023). <em>Hierarchy (mathematics)</em>. [online] Available at: <a class="reference external" href="https://en.wikipedia.org/wiki/Hierarchy_(mathematics">https://en.wikipedia.org/wiki/Hierarchy_(mathematics</a>) [Accessed 5 Apr. 2023].</p>
+<p><span class="math notranslate nohighlight">\([5]\)</span> : www.sciencedirect.com. (n.d.). <em>Adjacency Matrix - an overview | ScienceDirect Topics</em>. [online] Available at: <a class="reference external" href="https://www.sciencedirect.com/topics/mathematics/adjacency-matrix#:~:text=The%20adjacency%20matrix%20of%20a">https://www.sciencedirect.com/topics/mathematics/adjacency-matrix#:~:text=The%20adjacency%20matrix%20of%20a</a> [Accessed 5 Apr. 2023].</p>
+<p>‌</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="03_combinatorial_complexes.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Combinatorial Complexes</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../contributing/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Contributing</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Setup">Setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Colored-Hypergraph">Colored Hypergraph</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Defintion-of-Colored-Hypergraph">Defintion of Colored Hypergraph</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Example-of-a-Colored-Hypergraph">Example of a Colored Hypergraph</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Helpful-Code-Output">Helpful Code Output</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Adjacency">Adjacency</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Adjacency-Matrix">Adjacency Matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Co-Adjacency-Matrix">Co-Adjacency Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Incidence">Incidence</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Incidence-Matrix">Incidence Matrix</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#References">References</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../_sources/notebooks/04_colored_hypergraphs.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2022-2023, PyT-Team, Inc..
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
