@@ -414,10 +414,8 @@ document.write(`
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">Complex</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">graph_based</span> <span class="o">=</span> <span class="n">graph_based</span>  <span class="c1"># rank 1 edges have cardinality equals to 1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_node_membership</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_complex</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span> <span class="o">=</span> <span class="n">HyperEdgeView</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">cells</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -556,6 +554,10 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">shape</span>
 
+<div class="viewcode-block" id="CombinatorialComplex.skeleton"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.skeleton">[docs]</a>    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Skeleton of the CCC.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="CombinatorialComplex.order"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.order">[docs]</a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in the CCC.</span>
 
@@ -573,13 +575,9 @@ document.write(`
                 <span class="n">replace_key</span> <span class="o">=</span> <span class="n">key_rank</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">replace_key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">key_rank</span> <span class="o">!=</span> <span class="n">replace_key</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_max_complex</span><span class="o">.</span><span class="n">difference_update</span><span class="p">(</span>
-                            <span class="p">{</span><span class="n">HyperEdge</span><span class="p">(</span><span class="n">key_rank</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">key</span><span class="p">)}</span>
-                        <span class="p">)</span>
                         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key_rank</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># Remove original hyperedge from the ranks</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_max_complex</span><span class="o">.</span><span class="n">difference_update</span><span class="p">({</span><span class="n">HyperEdge</span><span class="p">(</span><span class="n">key_rank</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">key</span><span class="p">)})</span>
                     <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">key_rank</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="p">{}:</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
@@ -754,6 +752,29 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">attr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_nodes_of_hyperedge</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_CCC_condition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if hyperedge_ satisfy the CCC condition.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">hyperedge_</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_membership</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">existing_hyperedge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_membership</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">existing_hyperedge</span> <span class="o">==</span> <span class="n">hyperedge_</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">e_rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">existing_hyperedge</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">rank</span> <span class="o">&gt;</span> <span class="n">e_rank</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">existing_hyperedge</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">):</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                    <span class="s2">&quot;a violation of the combinatorial complex condition:&quot;</span>
+                                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;the hyperedge </span><span class="si">{</span><span class="n">existing_hyperedge</span><span class="si">}</span><span class="s2"> in the complex has rank </span><span class="si">{</span><span class="n">e_rank</span><span class="si">}</span><span class="s2"> is larger than </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">, the rank of the input hyperedge </span><span class="si">{</span><span class="n">hyperedge_</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="n">e_rank</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">hyperedge_</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">existing_hyperedge</span><span class="p">):</span>
+                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                    <span class="s2">&quot;violation of the combinatorial complex condition : &quot;</span>
+                                    <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;the hyperedge </span><span class="si">{</span><span class="n">existing_hyperedge</span><span class="si">}</span><span class="s2"> in the complex has rank </span><span class="si">{</span><span class="n">e_rank</span><span class="si">}</span><span class="s2"> is smaller than </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">, the rank of the input hyperedge </span><span class="si">{</span><span class="n">hyperedge_</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_add_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add hyperedge.</span>
 
@@ -777,13 +798,6 @@ document.write(`
 <span class="sd">        The add_hyperedge method then adds the hyperedge to the hyperedge_dict attribute of the HyperEdgeView</span>
 <span class="sd">        instance, using the hyperedge&#39;s rank as the key and the hyperedge itself as the value.</span>
 <span class="sd">        This allows the hyperedge to be accessed later using its rank.</span>
-
-<span class="sd">        Note that the add_hyperedge method also appears to check whether the hyperedge being added</span>
-<span class="sd">        is a valid hyperedge of the combinatorial complex by checking whether the hyperedge&#39;s nodes</span>
-<span class="sd">        are contained in the _aux_complex attribute of the HyperEdgeView instance.</span>
-<span class="sd">        If the hyperedge&#39;s nodes are not contained in _aux_complex, then the add_hyperedge method will</span>
-<span class="sd">        not add the hyperedge to hyperedge_dict. This is done to ensure that the HyperEdgeView</span>
-<span class="sd">        instance only contains valid hyperedges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rank must be a non-negative integer, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -791,17 +805,22 @@ document.write(`
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rank must be zero for string input, got rank </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
             <span class="n">hyperedge_set</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">hyperedge</span><span class="p">})</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rank must be zero for hashables, got rank </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">hyperedge_set</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">hyperedge</span><span class="p">})</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
-            <span class="n">hyperedge_</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">hyperedge</span><span class="o">.</span><span class="n">elements</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">)</span>
-                <span class="k">else</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
+                <span class="n">hyperedge_</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">elements</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;cells with single elements must have rank 0, got rank </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2"> for input cell </span><span class="si">{</span><span class="n">hyperedge</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">hyperedge_</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;every element hyperedge must be hashable.&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -811,54 +830,58 @@ document.write(`
             <span class="n">hyperedge_set</span> <span class="o">=</span> <span class="n">hyperedge_</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid hyperedge type&quot;</span><span class="p">)</span>
-        <span class="n">cell_add</span> <span class="o">=</span> <span class="n">HyperEdge</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_complex</span><span class="p">:</span>
-            <span class="c1"># Check if the element is a superset</span>
-            <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">cell_add</span><span class="o">.</span><span class="n">elements</span><span class="p">):</span>
-                <span class="c1"># Check if the element is not equal to the cell</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_add</span><span class="o">.</span><span class="n">elements</span><span class="p">):</span>
-                    <span class="c1"># Check if the rank of the element is greater than the rank</span>
-                    <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">_rank</span> <span class="o">&lt;</span> <span class="n">cell_add</span><span class="o">.</span><span class="n">_rank</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">&quot;a violation of the combinatorial complex condition:&quot;</span>
-                            <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;the hyperedge </span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2"> in the complex has rank </span><span class="si">{</span><span class="n">elem</span><span class="o">.</span><span class="n">_rank</span><span class="si">}</span><span class="s2"> is larger than </span><span class="si">{</span><span class="n">cell_add</span><span class="o">.</span><span class="n">_rank</span><span class="si">}</span><span class="s2">, the rank of the input hyperedge </span><span class="si">{</span><span class="n">cell_add</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2"> &quot;</span>
-                        <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_complex</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">HyperEdge</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge_helper</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">attr</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
-                <span class="n">hyperedge</span><span class="o">.</span><span class="n">_properties</span>
-            <span class="p">)</span>
-
-<div class="viewcode-block" id="CombinatorialComplex.add_cell"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_cell">[docs]</a>    <span class="k">def</span> <span class="nf">add_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single cells to combinatorial complex.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        cell : hashable, iterable or HyperEdge</span>
-<span class="sd">            If hashable the cell returned will be empty.</span>
-<span class="sd">        rank : rank of a cell</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        combinatorial complex : combinatorial complex</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_based</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-                    <span class="n">TopoNetXError</span><span class="p">(</span>
-                        <span class="s2">&quot;Rank 1 cells in graph-based combinatorial complex  must be Iterable.&quot;</span>
-                    <span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="n">TopoNetXError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Rank 1 cells in graph-based combinatorial complex must have size equalt to 1 got </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">.&quot;</span>
-                    <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hyperedge_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+                <span class="n">e_rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">e_rank</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">remove_cell</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge_helper</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="s2">&quot;weight&quot;</span>
+                        <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span>
+                    <span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span>
+                            <span class="s2">&quot;weight&quot;</span>
+                        <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">return</span>
+                <span class="k">elif</span> <span class="n">e_rank</span> <span class="o">&lt;</span> <span class="n">rank</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_CCC_condition</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">remove_cell</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge_helper</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="s2">&quot;weight&quot;</span>
+                        <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span>
+                    <span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span>
+                            <span class="s2">&quot;weight&quot;</span>
+                        <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">return</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge_helper</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="s2">&quot;weight&quot;</span>
+                        <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span>
+                    <span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span>
+                            <span class="s2">&quot;weight&quot;</span>
+                        <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_CCC_condition</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge_helper</span><span class="p">(</span><span class="n">hyperedge_set</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span><span class="s2">&quot;weight&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="n">hyperedge</span><span class="o">.</span><span class="n">_properties</span>
+                <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -912,14 +935,16 @@ document.write(`
 <span class="sd">        in the matrix. Finally, the method returns the completed incidence matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="n">to_rank</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incidence must be computed for k!=r, got equal r and k.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;incidence matrix can be computed for k!=r, got equal r and k.&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">to_rank</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">incidence_type</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
                 <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
-                <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">incidence_type</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
                 <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
-                <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;down&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;Invalid value for incidence_type. Must be &#39;up&#39; or &#39;down&#39;&quot;</span>
@@ -931,11 +956,9 @@ document.write(`
                 <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
                 <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">to_rank</span><span class="p">)</span>
 
-            <span class="k">elif</span> <span class="p">(</span>
-                <span class="n">rank</span> <span class="o">&gt;</span> <span class="n">to_rank</span>
-            <span class="p">):</span>  <span class="c1"># up incidence is defined between two skeletons of different ranks</span>
-                <span class="n">children</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">to_rank</span><span class="p">)</span>
-                <span class="n">uidset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">rank</span> <span class="o">&gt;</span> <span class="n">to_rank</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;incidence matrix can be computed for r&lt;k, got r&gt;k.&quot;</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">compute_set_incidence</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="n">uidset</span><span class="p">,</span> <span class="n">sparse</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CombinatorialComplex.incidence_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.incidence_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
@@ -1010,18 +1033,9 @@ document.write(`
         <span class="k">if</span> <span class="n">via_rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">&gt;</span> <span class="n">via_rank</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rank must be greater than via_rank&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="n">B</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
-                <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">row</span>
-        <span class="k">return</span> <span class="n">A</span></div>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.cell_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">cell_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.all_cell_to_node_codjacnecy_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.all_cell_to_node_codjacnecy_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the cell adjacency matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1045,7 +1059,7 @@ document.write(`
         <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">A</span></div>
 
-<div class="viewcode-block" id="CombinatorialComplex.node_adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">node_adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="CombinatorialComplex.node_to_all_cell_adjacnecy_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_to_all_cell_adjacnecy_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the node adjacency matrix.&quot;&quot;&quot;</span>
         <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
@@ -1088,18 +1102,7 @@ document.write(`
         <span class="k">if</span> <span class="n">via_rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="n">via_rank</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rank must be greater than via_rank&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="n">B</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
-                <span class="n">via_rank</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;down&quot;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
-                <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;down&quot;</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
-            <span class="p">)</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">col</span>
-        <span class="k">return</span> <span class="n">A</span></div>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.add_cells_from"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_cells_from">[docs]</a>    <span class="k">def</span> <span class="nf">add_cells_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">ranks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add cells to combinatorial complex.</span>
@@ -1150,7 +1153,32 @@ document.write(`
             <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
         <span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_complex</span><span class="o">.</span><span class="n">difference_update</span><span class="p">({</span><span class="n">HyperEdge</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">rank</span><span class="p">)})</span>
+
+<div class="viewcode-block" id="CombinatorialComplex.add_cell"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_cell">[docs]</a>    <span class="k">def</span> <span class="nf">add_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single cells to combinatorial complex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cell : hashable, iterable or HyperEdge</span>
+<span class="sd">            If hashable the cell returned will be empty.</span>
+<span class="sd">        rank : rank of a cell</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Combinatorial Complex : CombinatorialComplex</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_based</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+                    <span class="n">TopoNetXError</span><span class="p">(</span>
+                        <span class="s2">&quot;Rank 1 cells in graph-based CombinatorialComplex must be Iterable.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">TopoNetXError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Rank 1 cells in graph-based CombinatorialComplex must have size equalt to 1 got </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">.&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_hyperedge</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CombinatorialComplex.remove_cell"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.remove_cell">[docs]</a>    <span class="k">def</span> <span class="nf">remove_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a single cell from CCC.</span>
@@ -1446,7 +1474,7 @@ document.write(`
 <span class="sd">        list of the diameters of the s-components and</span>
 <span class="sd">        list of the s-component nodes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_adjacency_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1476,7 +1504,7 @@ document.write(`
 <span class="sd">        list of component : list</span>
 <span class="sd">            List of the cell uids in the s-cell component subgraphs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_adjacency_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1512,7 +1540,7 @@ document.write(`
 <span class="sd">        nodes v_start, v_1, v_2, ... v_n-1, v_end such that consecutive nodes</span>
 <span class="sd">        are s-adjacent. If the graph is not connected, an error will be raised.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_adjacency_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
@@ -1543,7 +1571,7 @@ document.write(`
 <span class="sd">        cells e_start, e_1, e_2, ... e_n-1, e_end such that consecutive cells</span>
 <span class="sd">        are s-adjacent. If the graph is not connected, an error will be raised.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_adjacency_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
