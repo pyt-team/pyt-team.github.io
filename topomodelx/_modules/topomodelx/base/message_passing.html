@@ -328,7 +328,7 @@ document.write(`
                   
   <h1>Source code for topomodelx.base.message_passing</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Message passing module.&quot;&quot;&quot;</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
@@ -354,11 +354,11 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    aggr_func : string</span>
+<span class="sd">    aggr_func : Literal[&quot;sum&quot;, &quot;mean&quot;, &quot;add&quot;], default=&quot;sum&quot;</span>
 <span class="sd">        Aggregation function to use.</span>
 <span class="sd">    att : bool, default=False</span>
 <span class="sd">        Whether to use attention.</span>
-<span class="sd">    initialization : string</span>
+<span class="sd">    initialization : Literal[&quot;xavier_uniform&quot;, &quot;xavier_normal&quot;], default=&quot;xavier_uniform&quot;</span>
 <span class="sd">        Initialization method for the weights of the layer.</span>
 
 <span class="sd">    References</span>
@@ -374,9 +374,10 @@ document.write(`
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">aggr_func</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+        <span class="n">aggr_func</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
         <span class="n">att</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">initialization</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span>
+        <span class="n">initialization</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_normal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span>
+        <span class="n">initialization_gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.414</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aggr_func</span> <span class="o">=</span> <span class="n">aggr_func</span>
@@ -452,7 +453,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">attention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">x_target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute attention weights for messages.</span>
 
-<span class="sd">        This provides a default attention function to the message passing scheme.</span>
+<span class="sd">        This provides a default attention function to the message-passing scheme.</span>
 
 <span class="sd">        Alternatively, users can subclass MessagePassing and overwrite</span>
 <span class="sd">        the attention method in order to replace it with their own attention mechanism.</span>
