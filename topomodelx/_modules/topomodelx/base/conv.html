@@ -358,9 +358,9 @@ document.write(`
 <span class="sd">        Whether to use attention.</span>
 <span class="sd">    initialization : Literal[&quot;xavier_uniform&quot;, &quot;xavier_normal&quot;], default=&quot;xavier_uniform&quot;</span>
 <span class="sd">        Initialization method.</span>
-<span class="sd">    with_linear_transform: bool</span>
+<span class="sd">    with_linear_transform: bool, default=True</span>
 <span class="sd">        Whether to apply a learnable linear transform.</span>
-<span class="sd">        NB: if false in_channels has to be equal to out_channels</span>
+<span class="sd">        NB: if `False` in_channels has to be equal to out_channels</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -368,7 +368,7 @@ document.write(`
         <span class="n">in_channels</span><span class="p">,</span>
         <span class="n">out_channels</span><span class="p">,</span>
         <span class="n">aggr_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">update_func</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">update_func</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">att</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">initialization</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_normal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span>
         <span class="n">initialization_gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.414</span><span class="p">,</span>
@@ -377,6 +377,7 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">att</span><span class="o">=</span><span class="n">att</span><span class="p">,</span>
             <span class="n">initialization</span><span class="o">=</span><span class="n">initialization</span><span class="p">,</span>
+            <span class="n">initialization_gain</span><span class="o">=</span><span class="n">initialization_gain</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
@@ -404,7 +405,7 @@ document.write(`
 
 <div class="viewcode-block" id="Conv.update">
 <a class="viewcode-back" href="../../../api/base.html#topomodelx.base.conv.Conv.update">[docs]</a>
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_message_on_target</span><span class="p">,</span> <span class="n">x_target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_message_on_target</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update embeddings on each cell (step 4).</span>
 
 <span class="sd">        Parameters</span>
@@ -414,18 +415,19 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : torch.Tensor, shape=[n_target_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape=[n_target_cells, out_channels]</span>
 <span class="sd">            Updated output features on target cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_func</span> <span class="o">==</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">x_message_on_target</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_func</span> <span class="o">==</span> <span class="s2">&quot;relu&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x_message_on_target</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x_message_on_target</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x_message_on_target</span></div>
 
 
 <div class="viewcode-block" id="Conv.forward">
 <a class="viewcode-back" href="../../../api/base.html#topomodelx.base.conv.Conv.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">neighborhood</span><span class="p">,</span> <span class="n">x_target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">neighborhood</span><span class="p">,</span> <span class="n">x_target</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward pass.</span>
 
 <span class="sd">        This implements message passing:</span>
@@ -453,7 +455,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : Tensor, shape=[..., n_target_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape=[..., n_target_cells, out_channels]</span>
 <span class="sd">            Output features on target cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -478,10 +480,7 @@ document.write(`
                 <span class="s2">&quot;i,ij-&gt;ij&quot;</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">neighborhood_size</span><span class="p">,</span> <span class="n">x_message_on_target</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">x_message_on_target</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x_message_on_target</span><span class="p">,</span> <span class="n">x_target</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">x_message_on_target</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

@@ -328,6 +328,7 @@ document.write(`
                   
   <h1>Source code for topomodelx.base.message_passing</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Message passing module.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -358,8 +359,10 @@ document.write(`
 <span class="sd">        Aggregation function to use.</span>
 <span class="sd">    att : bool, default=False</span>
 <span class="sd">        Whether to use attention.</span>
-<span class="sd">    initialization : Literal[&quot;xavier_uniform&quot;, &quot;xavier_normal&quot;], default=&quot;xavier_uniform&quot;</span>
+<span class="sd">    initialization : Literal[&quot;uniform&quot;, &quot;xavier_uniform&quot;, &quot;xavier_normal&quot;], default=&quot;xavier_uniform&quot;</span>
 <span class="sd">        Initialization method for the weights of the layer.</span>
+<span class="sd">    initialization_gain : float, default=1.414</span>
+<span class="sd">        Gain for the weight initialization.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -376,47 +379,57 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">aggr_func</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
         <span class="n">att</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">initialization</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_normal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span>
+        <span class="n">initialization</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+            <span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_normal&quot;</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span>
         <span class="n">initialization_gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.414</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aggr_func</span> <span class="o">=</span> <span class="n">aggr_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">att</span> <span class="o">=</span> <span class="n">att</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">initialization</span> <span class="o">=</span> <span class="n">initialization</span>
-        <span class="k">assert</span> <span class="n">initialization</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_normal&quot;</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="n">aggr_func</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialization_gain</span> <span class="o">=</span> <span class="n">initialization_gain</span>
 
 <div class="viewcode-block" id="MessagePassing.reset_parameters">
 <a class="viewcode-back" href="../../../api/base.html#topomodelx.base.message_passing.MessagePassing.reset_parameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.414</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Reset learnable parameters.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
 <span class="sd">        This function will be called by subclasses of</span>
 <span class="sd">        MessagePassing that have trainable weights.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        gain : float</span>
-<span class="sd">            Gain for the weight initialization.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialization</span> <span class="o">==</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="n">gain</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">att</span><span class="p">:</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">att_weight</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">gain</span><span class="o">=</span><span class="n">gain</span><span class="p">)</span>
-
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialization</span> <span class="o">==</span> <span class="s2">&quot;xavier_normal&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="n">gain</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">att</span><span class="p">:</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">att_weight</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">gain</span><span class="o">=</span><span class="n">gain</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Initialization method not recognized. &quot;</span>
-                <span class="s2">&quot;Should be either xavier_uniform or xavier_normal.&quot;</span>
-            <span class="p">)</span></div>
+        <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialization</span><span class="p">:</span>
+            <span class="k">case</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">stdv</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="n">stdv</span><span class="p">,</span> <span class="n">stdv</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">att</span><span class="p">:</span>
+                    <span class="n">stdv</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">att_weight</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">att_weight</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="o">-</span><span class="n">stdv</span><span class="p">,</span> <span class="n">stdv</span><span class="p">)</span>
+            <span class="k">case</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initialization_gain</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">att</span><span class="p">:</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">att_weight</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">gain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initialization_gain</span>
+                    <span class="p">)</span>
+            <span class="k">case</span> <span class="s2">&quot;xavier_normal&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initialization_gain</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">att</span><span class="p">:</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_normal_</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">att_weight</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">gain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">initialization_gain</span>
+                    <span class="p">)</span>
+            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Initialization </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">initialization</span><span class="si">}</span><span class="s2"> not recognized.&quot;</span>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MessagePassing.message">
@@ -442,7 +455,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : Tensor, shape=[..., n_source_cells, in_channels]</span>
+<span class="sd">        torch.Tensor, shape=[..., n_source_cells, in_channels]</span>
 <span class="sd">            Messages on source cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">x_source</span></div>
@@ -471,7 +484,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : torch.Tensor, shape = [n_messages, 1]</span>
+<span class="sd">        torch.Tensor, shape = [n_messages, 1]</span>
 <span class="sd">            Attention weights: one scalar per message between a source and a target cell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_source_per_message</span> <span class="o">=</span> <span class="n">x_source</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">source_index_j</span><span class="p">]</span>
@@ -510,7 +523,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : Tensor, shape=[...,  n_target_cells, out_channels]</span>
+<span class="sd">        Tensor, shape=[...,  n_target_cells, out_channels]</span>
 <span class="sd">            Output features on target cells.</span>
 <span class="sd">            Each target cell aggregates messages from several source cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
@@ -584,7 +597,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : Tensor, shape=[..., n_target_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape=[..., n_target_cells, out_channels]</span>
 <span class="sd">            Output features on target cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
