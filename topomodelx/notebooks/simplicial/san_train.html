@@ -294,12 +294,6 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="../cell/can_train_bis.html">Train a Cellular Attention Network (CAN)</a></li>
-
-
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="../cell/ccxn_train.html">Train a Convolutional Cell Complex Network (CCXN)</a></li>
 
 
@@ -385,19 +379,14 @@ document.write(`
 
 
 
-
-
 <li class="toctree-l1"><a class="reference internal" href="scconv_train.html">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
-
 
 
 
 <li class="toctree-l1"><a class="reference internal" href="scn2_train.html">Train a Simplex Convolutional Network (SCN) of Rank 2</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="scnn_train.html">Train a Simplicial Convolutional Neural Network (SCNN)</a></li>
-
 
 
 
@@ -517,7 +506,7 @@ a_k(h_x^{t}, h_y^{t}) \cdot \psi_k^t(h_x^{t})\quad \forall \mathcal N_k \in \mat
 </ul>
 <p><span class="math notranslate nohighlight">\(W\)</span>, <span class="math notranslate nohighlight">\(a_\downarrow\)</span>, <span class="math notranslate nohighlight">\(a_\uparrow\)</span>, {<span class="math notranslate nohighlight">\(W_{\downarrow,p}\}_{p=1}^P\)</span> and <span class="math notranslate nohighlight">\(\{W_{\uparrow,p}\}_{p=1}^P\)</span> are learnable weights.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -526,7 +515,7 @@ a_k(h_x^{t}, h_y^{t}) \cdot \psi_k^t(h_x^{t})\quad \forall \mathcal N_k \in \mat
 <span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.san_layer</span> <span class="kn">import</span> <span class="n">SANLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.san</span> <span class="kn">import</span> <span class="n">SAN</span>
 
 <span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
@@ -534,7 +523,7 @@ a_k(h_x^{t}, h_y^{t}) \cdot \psi_k^t(h_x^{t})\quad \forall \mathcal N_k \in \mat
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
@@ -557,7 +546,7 @@ cpu
 <p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to two different social groups. We will use these groups for the task of node-level binary classification.</p>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">karate_club</span><span class="p">(</span><span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">)</span>
@@ -570,11 +559,11 @@ cpu
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Simplicial Complex with shape [34, 78, 45, 11, 2] and dimension 4
+Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span>
@@ -582,37 +571,38 @@ Simplicial Complex with shape [34, 78, 45, 11, 2] and dimension 4
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [4]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[34, 78, 45, 11, 2]
+(34, 78, 45, 11, 2)
 </pre></div></div>
 </div>
 <p>We now retrieve the neighborhoods (i.e. their representative matrices) that we will use to send messages on the domain. In this case, we decide w.l.o.g. to work at the edge level (thus considering a simplicial complex of order 2). We therefore need the lower and upper laplacians of rank 1, <span class="math notranslate nohighlight">\(L_{\downarrow,1}=B_1^TB_1\)</span> and <span class="math notranslate nohighlight">\(L_{\uparrow,1}=B_2B_2^T\)</span>, both with dimensions <span class="math notranslate nohighlight">\(n_\text{edges} \times n_\text{edges}\)</span>, where <span class="math notranslate nohighlight">\(B_1\)</span> and <span class="math notranslate nohighlight">\(B_2\)</span> are the incidence matrices of rank 1
 and 2. Please notice that the binary adjacencies <span class="math notranslate nohighlight">\(A_{\downarrow,1}^p\)</span> and <span class="math notranslate nohighlight">\(A_{\uparrow,1}^p\)</span> encoding the <span class="math notranslate nohighlight">\(p\)</span>-hops neighborhoods are given by the support (the non-zeros pattern) of <span class="math notranslate nohighlight">\(L_{\downarrow,1}^p\)</span> and <span class="math notranslate nohighlight">\(L_{\uparrow,1}^p\)</span>, respectively. We also convert the neighborhood structures to torch tensors.</p>
 <p><strong>Remark.</strong> In the case of rank-0 simplices (nodes), there is no lower Laplacian; in this case, we just initialize the down laplacian as a 0-matrix, and SAN automatically becomes a GAT-like architecture. In the case of simplices of maxium rank (the order of the complex), there is no upper Laplacian. In this case we can also initialize it as a 0 matrix and SAN will only consider the lower adjacencies.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simplex_order_k</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="c1"># Down laplacian</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">Ldown</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
+    <span class="n">laplacian_down</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
         <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">simplex_order_k</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
     <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-    <span class="n">Ldown</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+    <span class="n">laplacian_down</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
         <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">])</span>
     <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
 <span class="c1"># Up laplacian</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">Lup</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
+    <span class="n">laplacian_up</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
         <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">simplex_order_k</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
     <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-    <span class="n">Lup</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+    <span class="n">laplacian_up</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
         <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">])</span>
     <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
 </pre></div>
@@ -621,7 +611,7 @@ and 2. Please notice that the binary adjacencies <span class="math notranslate n
 <p>We define edge features to be the gradient of the nodes features, i.e. given the node feature matrix <span class="math notranslate nohighlight">\(X_0\)</span>, we compute the edge features matrix as <span class="math notranslate nohighlight">\(X_1 = B_1^TX_0\)</span>. We will finally obtain the estimated node labels from the updated edge features by multiplying them again with <span class="math notranslate nohighlight">\(B_1\)</span>, i.e. the final nodes features are computed as the divergence of the final edge features.</p>
 <p><strong>Remark.</strong> Please notice that also this way of deriving edges/nodes features from nodes/edges features could be seen as a (non-learnable) message passing between rank-0/1 cells (nodes/edges) and rank-1/0 cells (nodes).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span> <span class="o">=</span> <span class="p">[]</span>
@@ -657,7 +647,7 @@ There are 45 faces with features of dimension 2.
 </div>
 <p>We use the incidence matrix between nodes-edges:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_0_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
@@ -666,7 +656,7 @@ There are 45 faces with features of dimension 2.
 </div>
 <p>The final edge features are obtained summing the original features of those edges plus the projection of the node features onto edges (using the incidence matrix accordingly):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">x_1</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_0_1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
@@ -675,7 +665,7 @@ There are 45 faces with features of dimension 2.
 </div>
 <p>Hence, the final input features are defined by this sum, and we also pre-define the number of hidden and output channels of the model.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -687,7 +677,7 @@ There are 45 faces with features of dimension 2.
 <p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
 <p>We convert one-hot encode the binary labels, and keep the first four nodes for the purpose of testing.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -742,153 +732,18 @@ There are 45 faces with features of dimension 2.
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Using the SANLayer class, we create a neural network with stacked layers. A linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SAN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Simplicial Attention Network (SAN) implementation for binary edge classification.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    in_channels : int</span>
-<span class="sd">        Dimension of input features.</span>
-<span class="sd">    hidden_channels : int</span>
-<span class="sd">        Dimension of hidden features.</span>
-<span class="sd">    out_channels : int</span>
-<span class="sd">        Dimension of output features.</span>
-<span class="sd">    simplex_order_k : int</span>
-<span class="sd">        Order r of the considered simplices. Default to 1 (edges).</span>
-<span class="sd">    num_filters_J : int, optional</span>
-<span class="sd">        Approximation order for simplicial filters. Defaults to 2.</span>
-<span class="sd">    J_har : int, optional</span>
-<span class="sd">        Approximation order for harmonic convolution. Defaults to 5.</span>
-<span class="sd">    epsilon_har : float, optional</span>
-<span class="sd">        Epsilon value for harmonic convolution. Defaults to 1e-1.</span>
-<span class="sd">    n_layers : int, optional</span>
-<span class="sd">        Number of message passing layers. Defaults to 2.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">in_channels</span><span class="p">,</span>
-        <span class="n">hidden_channels</span><span class="p">,</span>
-        <span class="n">out_channels</span><span class="p">,</span>
-        <span class="n">num_filters_J</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">J_har</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-        <span class="n">epsilon_har</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span>
-        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_channels</span> <span class="o">=</span> <span class="n">hidden_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_filters_J</span> <span class="o">=</span> <span class="n">num_filters_J</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">J_har</span> <span class="o">=</span> <span class="n">J_har</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_har</span> <span class="o">=</span> <span class="n">epsilon_har</span>
-        <span class="k">if</span> <span class="n">n_layers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">SANLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span>
-                    <span class="n">num_filters_J</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_filters_J</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">SANLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_channels</span><span class="p">,</span>
-                    <span class="n">num_filters_J</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_filters_J</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">]</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">SANLayer</span><span class="p">(</span>
-                        <span class="n">in_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_channels</span><span class="p">,</span>
-                        <span class="n">out_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_channels</span><span class="p">,</span>
-                        <span class="n">num_filters_J</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_filters_J</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SANLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_channels</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span><span class="p">,</span>
-                    <span class="n">num_filters_J</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_filters_J</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">compute_projection_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computation of the projection matrix which is then used</span>
-<span class="sd">        to calculate the harmonic component in SAN layers.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-
-<span class="sd">        L : tensor</span>
-<span class="sd">            shape = [n_edges, n_edges]</span>
-<span class="sd">            Hodge laplacian of rank 1.</span>
-
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_edges, n_edges]</span>
-<span class="sd">            Projection matrix.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">P</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_har</span> <span class="o">*</span> <span class="n">L</span>
-        <span class="n">P</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">J_har</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">P</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Lup</span><span class="p">,</span> <span class="n">Ldown</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x : tensor</span>
-<span class="sd">            shape = [n_nodes, channels_in]</span>
-<span class="sd">            Node features.</span>
-
-<span class="sd">        Lup : tensor</span>
-<span class="sd">            shape = [n_edges, n_edges]</span>
-<span class="sd">            Upper laplacian of rank 1.</span>
-
-<span class="sd">        Ld : tensor</span>
-<span class="sd">            shape = [n_edges, n_edges]</span>
-<span class="sd">            Down laplacian of rank 1.</span>
-
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_nodes, 2]</span>
-<span class="sd">            One-hot labels assigned to edges.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Compute the projection matrix for the harmonic component</span>
-        <span class="n">L</span> <span class="o">=</span> <span class="n">Lup</span> <span class="o">+</span> <span class="n">Ldown</span>
-        <span class="n">P</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_projection_matrix</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
-
-        <span class="c1"># Forward computation</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Lup</span><span class="p">,</span> <span class="n">Ldown</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
+<p>Using the SAN class, we create our neural network with stacked layers. A linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Lup</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Ldown</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x_1</span><span class="o">.</span><span class="n">shape</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_up</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">laplacian_down</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x_1</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [11]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -900,7 +755,7 @@ There are 45 faces with features of dimension 2.
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>The following cell performs the training, looping over the network for a low number of epochs.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SAN</span><span class="p">(</span>
@@ -918,7 +773,7 @@ There are 45 faces with features of dimension 2.
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 
-    <span class="n">y_hat_edge</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Lup</span><span class="o">=</span><span class="n">Lup</span><span class="p">,</span> <span class="n">Ldown</span><span class="o">=</span><span class="n">Ldown</span><span class="p">)</span>
+    <span class="n">y_hat_edge</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">laplacian_up</span><span class="o">=</span><span class="n">laplacian_up</span><span class="p">,</span> <span class="n">laplacian_down</span><span class="o">=</span><span class="n">laplacian_down</span><span class="p">)</span>
     <span class="c1"># We project the edge-level output of the model to the node-level</span>
     <span class="c1"># and apply softmax fn to get the final node-level classification output</span>
     <span class="n">y_hat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_0_1</span><span class="p">,</span> <span class="n">y_hat_edge</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -937,7 +792,9 @@ There are 45 faces with features of dimension 2.
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="n">y_hat_edge_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Lup</span><span class="o">=</span><span class="n">Lup</span><span class="p">,</span> <span class="n">Ldown</span><span class="o">=</span><span class="n">Ldown</span><span class="p">)</span>
+            <span class="n">y_hat_edge_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">laplacian_up</span><span class="o">=</span><span class="n">laplacian_up</span><span class="p">,</span> <span class="n">laplacian_down</span><span class="o">=</span><span class="n">laplacian_down</span>
+            <span class="p">)</span>
             <span class="c1"># Projection to node-level</span>
             <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_0_1</span><span class="p">,</span> <span class="n">y_hat_edge_test</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span>
@@ -962,21 +819,21 @@ There are 45 faces with features of dimension 2.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 0.7240 Train_acc: 0.4333
-Epoch: 2 loss: 0.7114 Train_acc: 0.7333
-Test_acc: 0.2500
-Epoch: 3 loss: 0.6948 Train_acc: 0.7333
-Epoch: 4 loss: 0.6829 Train_acc: 0.7333
-Test_acc: 0.2500
-Epoch: 5 loss: 0.6760 Train_acc: 0.7333
-Epoch: 6 loss: 0.6721 Train_acc: 0.7333
-Test_acc: 0.2500
-Epoch: 7 loss: 0.6698 Train_acc: 0.7333
-Epoch: 8 loss: 0.6685 Train_acc: 0.7333
-Test_acc: 0.2500
-Epoch: 9 loss: 0.6677 Train_acc: 0.7333
-Epoch: 10 loss: 0.6672 Train_acc: 0.7333
-Test_acc: 0.2500
+Epoch: 1 loss: 0.7322 Train_acc: 0.3667
+Epoch: 2 loss: 0.7208 Train_acc: 0.7333
+Test_acc: 0.0000
+Epoch: 3 loss: 0.7070 Train_acc: 0.7333
+Epoch: 4 loss: 0.6918 Train_acc: 0.7333
+Test_acc: 0.0000
+Epoch: 5 loss: 0.6814 Train_acc: 0.7333
+Epoch: 6 loss: 0.6753 Train_acc: 0.7333
+Test_acc: 0.0000
+Epoch: 7 loss: 0.6717 Train_acc: 0.7333
+Epoch: 8 loss: 0.6695 Train_acc: 0.7333
+Test_acc: 0.0000
+Epoch: 9 loss: 0.6682 Train_acc: 0.7333
+Epoch: 10 loss: 0.6674 Train_acc: 0.7333
+Test_acc: 0.0000
 </pre></div></div>
 </div>
 </section>

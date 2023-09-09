@@ -294,12 +294,6 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="../cell/can_train_bis.html">Train a Cellular Attention Network (CAN)</a></li>
-
-
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="../cell/ccxn_train.html">Train a Convolutional Cell Complex Network (CCXN)</a></li>
 
 
@@ -385,19 +379,14 @@ document.write(`
 
 
 
-
-
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
-
 
 
 
 <li class="toctree-l1"><a class="reference internal" href="scn2_train.html">Train a Simplex Convolutional Network (SCN) of Rank 2</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="scnn_train.html">Train a Simplicial Convolutional Neural Network (SCNN)</a></li>
-
 
 
 
@@ -507,7 +496,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">topomodelx.base.aggregation</span> <span class="kn">import</span> <span class="n">Aggregation</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scconv_layer</span> <span class="kn">import</span> <span class="n">SCConvLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scconv</span> <span class="kn">import</span> <span class="n">SCConv</span>
 </pre></div>
 </div>
 </div>
@@ -749,151 +738,8 @@ The 0th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 </section>
-<section id="Create-the-Neural-Network">
-<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Using the SSConv class, we create a neural network with stacked layers.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [104]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scconv_layer</span> <span class="kn">import</span> <span class="n">SCConvLayer</span>
-
-
-<span class="k">class</span> <span class="nc">SCConv</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simplicial 2-Complex Convolutional Network Implementation for binary node classification.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ---------</span>
-<span class="sd">    node_channels : int</span>
-<span class="sd">        Dimension of node (0-cells) features</span>
-<span class="sd">    edge_channels : int</span>
-<span class="sd">        Dimension of edge (1-cells) features</span>
-<span class="sd">    face_channels : int</span>
-<span class="sd">        Dimension of face (2-cells) features</span>
-<span class="sd">    n_layers : int</span>
-<span class="sd">        Number of message passing layers.</span>
-<span class="sd">    n_classes : int</span>
-<span class="sd">        Number of classes.</span>
-<span class="sd">    update_func : str</span>
-<span class="sd">        Activation function used in aggregation layers.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">node_channels</span><span class="p">,</span> <span class="n">edge_channels</span><span class="p">,</span> <span class="n">face_channels</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">node_channels</span> <span class="o">=</span> <span class="n">node_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">edge_channels</span> <span class="o">=</span> <span class="n">edge_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">face_channels</span> <span class="o">=</span> <span class="n">face_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="n">n_classes</span>
-
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SCConvLayer</span><span class="p">(</span>
-                    <span class="n">node_channels</span><span class="o">=</span><span class="n">node_channels</span><span class="p">,</span>
-                    <span class="n">edge_channels</span><span class="o">=</span><span class="n">edge_channels</span><span class="p">,</span>
-                    <span class="n">face_channels</span><span class="o">=</span><span class="n">face_channels</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">node_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">edge_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">face_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aggr</span> <span class="o">=</span> <span class="n">Aggregation</span><span class="p">(</span>
-            <span class="n">aggr_func</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
-            <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">x_0</span><span class="p">,</span>
-        <span class="n">x_1</span><span class="p">,</span>
-        <span class="n">x_2</span><span class="p">,</span>
-        <span class="n">incidence_1</span><span class="p">,</span>
-        <span class="n">incidence_1_norm</span><span class="p">,</span>
-        <span class="n">incidence_2</span><span class="p">,</span>
-        <span class="n">incidence_2_norm</span><span class="p">,</span>
-        <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
-        <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
-        <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
-        <span class="n">adjacency_down_2_norm</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x_0: torch.Tensor, shape=[n_nodes, node_channels]</span>
-<span class="sd">            Input features on the nodes of the simplicial complex.</span>
-<span class="sd">        x_1: torch.Tensor, shape=[n_edges, edge_channels]</span>
-<span class="sd">            Input features on the edges of the simplicial complex.</span>
-<span class="sd">        x_2: torch.Tensor, shape=[n_faces, face_channels]</span>
-<span class="sd">            Input features on the faces of the simplicial complex.</span>
-<span class="sd">        incidence_1: torch.Tensor, shape=[n_faces, channels]</span>
-<span class="sd">            incidence matrix of rank 1 :math:`B_1`.</span>
-<span class="sd">        incidence_1_norm: torch.Tensor,</span>
-<span class="sd">            normalized incidence matrix of rank 1 :math:`B^{~}_1`.</span>
-<span class="sd">        incidence_2: torch.Tensor,</span>
-<span class="sd">             incidence matrix of rank 2 :math:`B_2`.</span>
-<span class="sd">        incidence_2_norm: torch.Tensor,</span>
-<span class="sd">            normalized incidence matrix of rank 2 :math:`B^{~}_2`.</span>
-<span class="sd">        adjacency_up_0_norm: torch.Tensor,</span>
-<span class="sd">            normalized upper adjacency matrix of rank 0.</span>
-<span class="sd">        adjacency_up_1_norm: torch.Tensor,</span>
-<span class="sd">            normalized upper adjacency matrix of rank 1.</span>
-<span class="sd">        adjacency_down_1_norm: torch.Tensor,</span>
-<span class="sd">            normalized down adjacency matrix of rank 1.</span>
-<span class="sd">        adjacency_down_2_norm: torch.Tensor,</span>
-<span class="sd">            normalized down adjacency matrix of rank 2.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor, shape = [1]</span>
-<span class="sd">            Label assigned to whole complex.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">i</span><span class="p">](</span>
-                <span class="n">x_0</span><span class="p">,</span>
-                <span class="n">x_1</span><span class="p">,</span>
-                <span class="n">x_2</span><span class="p">,</span>
-                <span class="n">incidence_1</span><span class="p">,</span>
-                <span class="n">incidence_1_norm</span><span class="p">,</span>
-                <span class="n">incidence_2</span><span class="p">,</span>
-                <span class="n">incidence_2_norm</span><span class="p">,</span>
-                <span class="n">adjacency_up_0_norm</span><span class="p">,</span>
-                <span class="n">adjacency_up_1_norm</span><span class="p">,</span>
-                <span class="n">adjacency_down_1_norm</span><span class="p">,</span>
-                <span class="n">adjacency_down_2_norm</span><span class="p">,</span>
-            <span class="p">)</span>
-
-        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="n">node_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">node_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">edge_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">edge_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">face_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">face_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)</span>
-        <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Train-the-Neural-Network">
-<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
+<section id="Create-and-Train-the-Neural-Network">
+<h1>Create and Train the Neural Network<a class="headerlink" href="#Create-and-Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <section id="prepare-training-and-test-data">
 <h2>prepare training and test data<a class="headerlink" href="#prepare-training-and-test-data" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
@@ -1187,8 +1033,7 @@ Epoch: 5 loss: nan
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-Neighbourhood-Structures">Define Neighbourhood Structures</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-and-Train-the-Neural-Network">Create and Train the Neural Network</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prepare-training-and-test-data">prepare training and test data</a></li>
 </ul>
 </li>

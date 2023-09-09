@@ -294,12 +294,6 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="../cell/can_train_bis.html">Train a Cellular Attention Network (CAN)</a></li>
-
-
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="../cell/ccxn_train.html">Train a Convolutional Cell Complex Network (CCXN)</a></li>
 
 
@@ -385,19 +379,14 @@ document.write(`
 
 
 
-
-
 <li class="toctree-l1"><a class="reference internal" href="scconv_train.html">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
-
 
 
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Simplex Convolutional Network (SCN) of Rank 2</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="scnn_train.html">Train a Simplicial Convolutional Neural Network (SCNN)</a></li>
-
 
 
 
@@ -488,7 +477,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scn2_layer</span> <span class="kn">import</span> <span class="n">SCN2Layer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scn2</span> <span class="kn">import</span> <span class="n">SCN2</span>
 </pre></div>
 </div>
 </div>
@@ -598,92 +587,11 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </section>
 </section>
-<section id="Create-the-Neural-Network">
-<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SCN2</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simplex Convolutional Network Implementation for binary node classification.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ---------</span>
-<span class="sd">    in_channels_0 : int</span>
-<span class="sd">        Dimension of input features on nodes.</span>
-<span class="sd">    in_channels_1 : int</span>
-<span class="sd">        Dimension of input features on edges.</span>
-<span class="sd">    in_channels_2 : int</span>
-<span class="sd">        Dimension of input features on faces.</span>
-<span class="sd">    num_classes : int</span>
-<span class="sd">        Number of classes.</span>
-<span class="sd">    n_layers : int</span>
-<span class="sd">        Amount of message passing layers.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SCN2Layer</span><span class="p">(</span>
-                    <span class="n">in_channels_0</span><span class="o">=</span><span class="n">in_channels_0</span><span class="p">,</span>
-                    <span class="n">in_channels_1</span><span class="o">=</span><span class="n">in_channels_1</span><span class="p">,</span>
-                    <span class="n">in_channels_2</span><span class="o">=</span><span class="n">in_channels_2</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, channels]</span>
-<span class="sd">            Node features.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_nodes, 2]</span>
-<span class="sd">            One-hot labels assigned to nodes.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">)</span>
-        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="c1"># Take the average of the 2D, 1D, and 0D cell features. If they are NaN, convert them to 0.</span>
-        <span class="n">two_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">two_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">two_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">one_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">one_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">one_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">zero_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">zero_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">zero_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Return the sum of the averages</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">two_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">one_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">zero_dimensional_cells_mean</span>
-        <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -693,7 +601,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SCN2</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -704,7 +612,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -728,7 +636,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 <p>The following cell performs the training, looping over the network for a low number of epochs.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
@@ -799,18 +707,18 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 307.3329
-Epoch: 2 loss: 271.0158
-Test_loss: 489.0029
-Epoch: 3 loss: 211.3648
-Epoch: 4 loss: 133.2150
-Test_loss: 213.6805
-Epoch: 5 loss: 86.5624
-Epoch: 6 loss: 78.2548
-Test_loss: 107.0384
-Epoch: 7 loss: 77.8108
-Epoch: 8 loss: 77.7633
-Test_loss: 100.3024
+Epoch: 1 loss: 304.6056
+Epoch: 2 loss: 282.2707
+Test_loss: 514.9831
+Epoch: 3 loss: 232.8605
+Epoch: 4 loss: 147.0164
+Test_loss: 227.0106
+Epoch: 5 loss: 87.9957
+Epoch: 6 loss: 77.5624
+Test_loss: 104.0872
+Epoch: 7 loss: 77.0871
+Epoch: 8 loss: 77.0391
+Test_loss: 97.5802
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
@@ -887,7 +795,6 @@ Test_loss: 100.3024
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures.">Define neighborhood structures.</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
 </ul>
 

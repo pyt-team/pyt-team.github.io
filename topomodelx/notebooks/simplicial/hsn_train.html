@@ -294,12 +294,6 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="../cell/can_train_bis.html">Train a Cellular Attention Network (CAN)</a></li>
-
-
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="../cell/ccxn_train.html">Train a Convolutional Cell Complex Network (CCXN)</a></li>
 
 
@@ -385,19 +379,14 @@ document.write(`
 
 
 
-
-
 <li class="toctree-l1"><a class="reference internal" href="scconv_train.html">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
-
 
 
 
 <li class="toctree-l1"><a class="reference internal" href="scn2_train.html">Train a Simplex Convolutional Network (SCN) of Rank 2</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="scnn_train.html">Train a Simplicial Convolutional Neural Network (SCNN)</a></li>
-
 
 
 
@@ -491,7 +480,7 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.hsn_layer</span> <span class="kn">import</span> <span class="n">HSNLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.hsn</span> <span class="kn">import</span> <span class="n">HSN</span>
 </pre></div>
 </div>
 </div>
@@ -698,65 +687,6 @@ There are 45 faces with features of dimension 2.
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>Using the HSNLayer class, we create a neural network with stacked layers. A linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HSN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;High Skip Network Implementation for binary node classification.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ---------</span>
-<span class="sd">    channels : int</span>
-<span class="sd">        Dimension of features</span>
-<span class="sd">    n_layers : int</span>
-<span class="sd">        Amount of message passing layers.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">HSNLayer</span><span class="p">(</span>
-                    <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">layers</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, channels]</span>
-<span class="sd">            Node features.</span>
-
-<span class="sd">        incidence_1 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_edges]</span>
-<span class="sd">            Boundary matrix of rank 1.</span>
-
-<span class="sd">        adjacency_0 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_nodes]</span>
-<span class="sd">            Adjacency matrix (up) of rank 0.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_nodes, 2]</span>
-<span class="sd">            One-hot labels assigned to nodes.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">)</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 </section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>

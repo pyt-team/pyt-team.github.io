@@ -294,12 +294,6 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="../cell/can_train_bis.html">Train a Cellular Attention Network (CAN)</a></li>
-
-
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="../cell/ccxn_train.html">Train a Convolutional Cell Complex Network (CCXN)</a></li>
 
 
@@ -385,19 +379,14 @@ document.write(`
 
 
 
-
-
 <li class="toctree-l1"><a class="reference internal" href="scconv_train.html">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
-
 
 
 
 <li class="toctree-l1"><a class="reference internal" href="scn2_train.html">Train a Simplex Convolutional Network (SCN) of Rank 2</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="scnn_train.html">Train a Simplicial Convolutional Neural Network (SCNN)</a></li>
-
 
 
 
@@ -504,14 +493,14 @@ document.write(`
 <section id="1.-Complex-Classification">
 <h1>1. Complex Classification<a class="headerlink" href="#1.-Complex-Classification" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [90]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn_layer</span> <span class="kn">import</span> <span class="n">SCCNNLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn</span> <span class="kn">import</span> <span class="n">SCCNN</span><span class="p">,</span> <span class="n">SCCNNComplex</span>
 </pre></div>
 </div>
 </div>
@@ -519,7 +508,7 @@ document.write(`
 <h2>Import shrec dataset<a class="headerlink" href="#Import-shrec-dataset" title="Link to this heading">#</a></h2>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [91]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
@@ -538,13 +527,16 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
+downloading shrec 16 small dataset...
+
+done!
 Loading shrec 16 small dataset...
 
 done!
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [92]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -570,7 +562,7 @@ done!
 <p>Get incidence matrices <span class="math notranslate nohighlight">\(\mathbf{B}_1,\mathbf{B}_2\)</span> and Hodge Laplacians <span class="math notranslate nohighlight">\(\mathbf{L}_0, \mathbf{L}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{L}_2\)</span>.</p>
 <p>Note that the original paper considered the weighted versions of these operators. However, the current TOPONETX package does not provide such feature yet.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [93]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_rank</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># the order of the SC is two</span>
@@ -608,142 +600,11 @@ done!
 </div>
 </section>
 </section>
-<section id="Create-the-SCCNN">
-<h1>Create the SCCNN<a class="headerlink" href="#Create-the-SCCNN" title="Link to this heading">#</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [94]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SCCNN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;SCCNN implementation for complex classification</span>
-<span class="sd">    Note: In this task, we can consider the output on any order of simplices for the classification task, which of course can be amended by a readout layer.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    in_channels_all: tuple of int</span>
-<span class="sd">        Dimension of input features on (nodes, edges, faces)</span>
-<span class="sd">    intermediate_channels_all: tuple of int</span>
-<span class="sd">        Dimension of features of intermediate layers on (nodes, edges, faces)</span>
-<span class="sd">    out_channels_all: tuple of int</span>
-<span class="sd">        Dimension of output features on (nodes, edges, faces)</span>
-<span class="sd">    conv_order: int</span>
-<span class="sd">        Order of convolutions, we consider the same order for all convolutions</span>
-<span class="sd">    sc_order: int</span>
-<span class="sd">        SC order</span>
-<span class="sd">    n_layers: int</span>
-<span class="sd">        Numer of layers</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">in_channels_all</span><span class="p">,</span>
-        <span class="n">intermediate_channels_all</span><span class="p">,</span>
-        <span class="n">out_channels_all</span><span class="p">,</span>
-        <span class="n">conv_order</span><span class="p">,</span>
-        <span class="n">sc_order</span><span class="p">,</span>
-        <span class="n">aggr_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">update_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="c1"># first layer</span>
-        <span class="c1"># we use an MLP to map the features on simplices of different dimensions to the same dimension</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="p">)</span>
-
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SCCNNLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels_all</span><span class="p">,</span>
-                    <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
-                    <span class="n">sc_order</span><span class="o">=</span><span class="n">sc_order</span><span class="p">,</span>
-                    <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
-                    <span class="n">update_func</span><span class="o">=</span><span class="n">update_func</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-
-        <span class="n">out_channels_0</span><span class="p">,</span> <span class="n">out_channels_1</span><span class="p">,</span> <span class="n">out_channels_2</span> <span class="o">=</span> <span class="n">out_channels_all</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_0</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x: tuple tensors</span>
-<span class="sd">            (node, edge, face) features</span>
-<span class="sd">            each entry shape = [n_simplices, channels]</span>
-
-<span class="sd">        laplacian: tuple of tensors</span>
-<span class="sd">            (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</span>
-<span class="sd">            each entry shape = [n_simplices,n_simplices]</span>
-
-<span class="sd">        incidence_1: tuple of tensors</span>
-<span class="sd">            tuple pf order 1 and 2 incidence matrices</span>
-<span class="sd">            shape of B1 = [n_nodes, n_edges]</span>
-<span class="sd">            shape of B2 = [n_edges, n_faces]</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        _ : tensor, shape = [1]</span>
-<span class="sd">            Label assigned to whole complex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
-        <span class="n">in_x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">in_x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">in_x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="c1"># Forward through SCCNN</span>
-        <span class="n">x_all</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_x_0</span><span class="p">,</span> <span class="n">in_x_1</span><span class="p">,</span> <span class="n">in_x_2</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_all</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        We pass the output on the nodes, edges and triangles to a linear layer and use the sum of the averages of outputs on each simplex for labels of complex</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
-
-        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="c1"># Take the average of the 2D, 1D, and 0D cell features. If they are NaN, convert them to 0.</span>
-        <span class="n">two_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">two_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">two_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">one_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">one_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">one_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">zero_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">zero_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">zero_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Return the sum of the averages</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">two_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">one_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">zero_dimensional_cells_mean</span>
-        <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Train-the-Neural-Network">
-<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
+<section id="Create-and-Train-the-Neural-Network">
+<h1>Create and Train the Neural Network<a class="headerlink" href="#Create-and-Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [95]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conv_order</span> <span class="o">=</span> <span class="mi">2</span>
@@ -767,7 +628,7 @@ done!
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
@@ -785,8 +646,17 @@ SCCNN(
 )
 </pre></div></div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ninamiolane/opt/anaconda3/envs/tmx/lib/python3.11/site-packages/torch/nn/_reduction.py:42: UserWarning: size_average and reduce args will be deprecated, please use reduction=&#39;mean&#39; instead.
+  warnings.warn(warning.format(ret))
+</pre></div></div>
+</div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [96]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -819,7 +689,7 @@ SCCNN(
 </div>
 <p>We train the SCCNN using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [97]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -919,36 +789,42 @@ SCCNN(
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ninamiolane/opt/anaconda3/envs/tmx/lib/python3.11/site-packages/torch/nn/modules/loss.py:536: UserWarning: Using a target size (torch.Size([])) that is different to the input size (torch.Size([1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.mse_loss(input, target, reduction=self.reduction)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 288238.2517
-Test_loss: 88.7562
-Epoch: 2 loss: 296.7251
-Test_loss: 108.7232
-Epoch: 3 loss: 210.1312
-Test_loss: 40.9496
-Epoch: 4 loss: 164.2592
-Test_loss: 14.7179
-Epoch: 5 loss: 139.8378
-Test_loss: 2.7978
+Epoch: 1 loss: 117979.8366
+Test_loss: 406.8377
+Epoch: 2 loss: 977.5059
+Test_loss: 2.4212
+Epoch: 3 loss: 217.5435
+Test_loss: 5.1847
+Epoch: 4 loss: 202.9460
+Test_loss: 2.7320
+Epoch: 5 loss: 212.8642
+Test_loss: 3.1975
 </pre></div></div>
 </div>
 </section>
 <section id="2.-Node-Classification">
 <h1>2. Node Classification<a class="headerlink" href="#2.-Node-Classification" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [98]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
 
-<span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
-
-<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn_layer</span> <span class="kn">import</span> <span class="n">SCCNNLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn</span> <span class="kn">import</span> <span class="n">SCCNN</span>
 </pre></div>
 </div>
 </div>
@@ -958,7 +834,7 @@ Test_loss: 2.7978
 <p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to two different social groups. We will use these groups for the task of node-level binary classification.</p>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [99]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">karate_club</span><span class="p">(</span><span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">)</span>
@@ -982,7 +858,7 @@ Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 <p>Get incidence matrices <span class="math notranslate nohighlight">\(\mathbf{B}_1,\mathbf{B}_2\)</span> and Hodge Laplacians <span class="math notranslate nohighlight">\(\mathbf{L}_0, \mathbf{L}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{L}_2\)</span>.</p>
 <p>Note that the original paper considered the weighted versions of these operators. However, the current TOPONETX package does not provide such feature yet.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [100]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1002,8 +878,8 @@ The incidence matrix B1 has shape: (34, 78).
 The incidence matrix B2 has shape: (78, 45).
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [101]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1020,8 +896,17 @@ The incidence matrix B2 has shape: (78, 45).
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/ninamiolane/opt/anaconda3/envs/tmx/lib/python3.11/site-packages/scipy/sparse/_index.py:143: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+  self._set_arrayXarray(i, j, x)
+</pre></div></div>
+</div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [102]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
@@ -1039,7 +924,7 @@ The incidence matrix B2 has shape: (78, 45).
 <h3>Import signal<a class="headerlink" href="#Import-signal" title="Link to this heading">#</a></h3>
 <p>Since our task will be node classification, we must retrieve an input signal on the nodes. The signal will have shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times\)</span> in_channels, where in_channels is the dimension of each cell’s feature. Here, we have in_channels = channels_nodes $ = 34$. This is because the Karate dataset encodes the identity of each of the 34 nodes as a one hot encoder.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [103]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;A function to obtain features based on the input: rank</span>
@@ -1068,7 +953,7 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [104]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span> <span class="o">=</span> <span class="n">get_simplicial_features</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1083,7 +968,7 @@ The incidence matrix B2 has shape: (78, 45).
 <p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
 <p>We convert the binary labels into one-hot encoder form, and keep the first four nodes’ true labels for the purpose of testing.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [105]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -1139,125 +1024,10 @@ The incidence matrix B2 has shape: (78, 45).
 </section>
 </section>
 <section id="id2">
-<h1>Create the SCCNN<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [106]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SCCNN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;SCCNN implementation for complex classification</span>
-<span class="sd">    Note: In this task, we can consider the output on any order of simplices for the classification task, which of course can be amended by a readout layer.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    in_channels_all: tuple of int</span>
-<span class="sd">        Dimension of input features on (nodes, edges, faces)</span>
-<span class="sd">    intermediate_channels_all: tuple of int</span>
-<span class="sd">        Dimension of features of intermediate layers on (nodes, edges, faces)</span>
-<span class="sd">    out_channels_all: tuple of int</span>
-<span class="sd">        Dimension of output features on (nodes, edges, faces)</span>
-<span class="sd">    conv_order: int</span>
-<span class="sd">        Order of convolutions, we consider the same order for all convolutions</span>
-<span class="sd">    sc_order: int</span>
-<span class="sd">        SC order</span>
-<span class="sd">    n_layers: int</span>
-<span class="sd">        Numer of layers</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">in_channels_all</span><span class="p">,</span>
-        <span class="n">intermediate_channels_all</span><span class="p">,</span>
-        <span class="n">out_channels_all</span><span class="p">,</span>
-        <span class="n">conv_order</span><span class="p">,</span>
-        <span class="n">sc_order</span><span class="p">,</span>
-        <span class="n">aggr_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">update_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="c1"># first layer</span>
-        <span class="c1"># we use an MLP to map the features on simplices of different dimensions to the same dimension</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="p">)</span>
-
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SCCNNLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels_all</span><span class="p">,</span>
-                    <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
-                    <span class="n">sc_order</span><span class="o">=</span><span class="n">sc_order</span><span class="p">,</span>
-                    <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
-                    <span class="n">update_func</span><span class="o">=</span><span class="n">update_func</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-
-        <span class="n">out_channels_0</span><span class="p">,</span> <span class="n">out_channels_1</span><span class="p">,</span> <span class="n">out_channels_2</span> <span class="o">=</span> <span class="n">out_channels_all</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x: tuple tensors</span>
-<span class="sd">            (node, edge, face) features</span>
-<span class="sd">            each entry shape = [n_simplices, channels]</span>
-
-<span class="sd">        laplacian: tuple of tensors</span>
-<span class="sd">            (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</span>
-<span class="sd">            each entry shape = [n_simplices,n_simplices]</span>
-
-<span class="sd">        incidence_1: tuple of tensors</span>
-<span class="sd">            tuple pf order 1 and 2 incidence matrices</span>
-<span class="sd">            shape of B1 = [n_nodes, n_edges]</span>
-<span class="sd">            shape of B2 = [n_edges, n_faces]</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_nodes, 2]</span>
-<span class="sd">            One-hot labels assigned to nodes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
-        <span class="n">in_x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">in_x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">in_x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="c1"># Forward through SCCNN</span>
-        <span class="n">x_all</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_x_0</span><span class="p">,</span> <span class="n">in_x_1</span><span class="p">,</span> <span class="n">in_x_2</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_all</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        We pass the output on the nodes to a linear layer and use that to generate a probability label for nodes</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x_all</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">label</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="id3">
-<h1>Train the Neural Network<a class="headerlink" href="#id3" title="Link to this heading">#</a></h1>
+<h1>Create and Train the Neural Network<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [107]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Obtain the initial features on all simplices&quot;&quot;&quot;</span>
@@ -1279,7 +1049,7 @@ The incidence matrix B2 has shape: (78, 45).
 
 <span class="n">incidence_all</span> <span class="o">=</span> <span class="p">(</span><span class="n">incidence_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">)</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">SCCNN</span><span class="p">(</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SCCNNComplex</span><span class="p">(</span>
     <span class="n">in_channels_all</span><span class="o">=</span><span class="n">in_channels_all</span><span class="p">,</span>
     <span class="n">intermediate_channels_all</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
     <span class="n">out_channels_all</span><span class="o">=</span><span class="n">out_channels_all</span><span class="p">,</span>
@@ -1293,7 +1063,7 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [108]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1338,17 +1108,25 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 61.1583 Train_acc: 0.0333
-Test_acc: 0.0000
-Epoch: 2 loss: 21.6766 Train_acc: 0.3667
-Test_acc: 0.2500
-Epoch: 3 loss: 20.6162 Train_acc: 0.4000
+Epoch: 1 loss: 62.1591 Train_acc: 0.1333
 Test_acc: 0.5000
-Epoch: 4 loss: 7.0514 Train_acc: 0.5667
+Epoch: 2 loss: 67.6678 Train_acc: 0.2333
 Test_acc: 0.7500
-Epoch: 5 loss: 6.6667 Train_acc: 0.6333
+Epoch: 3 loss: 75.0000 Train_acc: 0.2333
 Test_acc: 0.7500
+Epoch: 4 loss: 74.3241 Train_acc: 0.2667
+Test_acc: 0.2500
+Epoch: 5 loss: 73.3333 Train_acc: 0.2000
+Test_acc: 0.2500
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 
@@ -1411,8 +1189,7 @@ Test_acc: 0.7500
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-Neighborhood-Strctures">Define Neighborhood Strctures</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-SCCNN">Create the SCCNN</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-and-Train-the-Neural-Network">Create and Train the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Node-Classification">2. Node Classification</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Define Neighborhood Strctures</a><ul class="nav section-nav flex-column">
@@ -1422,8 +1199,7 @@ Test_acc: 0.7500
 </li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Create the SCCNN</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Train the Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Create and Train the Neural Network</a></li>
 </ul>
 
   </nav></div>
