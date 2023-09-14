@@ -1008,7 +1008,7 @@ document.write(`
         <span class="k">return</span> <span class="n">edges</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.incidence_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.incidence_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute incidence matrix of the simplicial complex.</span>
 
@@ -1214,7 +1214,7 @@ document.write(`
         <span class="k">return</span> <span class="n">sp</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">diags_sqrt</span> <span class="o">@</span> <span class="p">(</span><span class="n">L_hodge</span> <span class="o">@</span> <span class="n">diags_sqrt</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.up_laplacian_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.up_laplacian_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">up_laplacian_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the up Laplacian matrix of the simplicial complex.</span>
 
@@ -1227,10 +1227,8 @@ document.write(`
 <span class="sd">                       adjacency matrices from the hodge-laplacian</span>
 <span class="sd">                       typically higher-order adjacency matrices&#39; entries are</span>
 <span class="sd">                       typically positive.</span>
-<span class="sd">        weight : bool, default=False</span>
-<span class="sd">            If False all nonzero entries are 1.</span>
-<span class="sd">            If True and self.static all nonzero entries are filled by</span>
-<span class="sd">            self.cells.cell_weight dictionary values.</span>
+<span class="sd">        weight : str, optional</span>
+<span class="sd">            If not given, all nonzero entries are 1.</span>
 <span class="sd">        index : boolean, optional, default False</span>
 <span class="sd">            list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix</span>
 <span class="sd">            depending on the input dimension</span>
@@ -1244,7 +1242,8 @@ document.write(`
 <span class="sd">            list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix</span>
 <span class="sd">            depending on the input dimension</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># this feature is not supported in this version</span>
+        <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`weight` is not supported in this version&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">B_next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
@@ -1315,7 +1314,7 @@ document.write(`
         <span class="k">return</span> <span class="n">L_down</span></div>
 
 <div class="viewcode-block" id="SimplicialComplex.adjacency_matrix"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.adjacency_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the adjacency matrix of the simplicial complex.</span>
 
@@ -1333,7 +1332,8 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; SC.add_simplex([3, 4, 8])</span>
 <span class="sd">        &gt;&gt;&gt; adj1 = SC.adjacency_matrix(1)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">weight</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># this feature is not supported in this version</span>
+        <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`weight` is not supported in this version&quot;</span><span class="p">)</span>
 
         <span class="n">ind</span><span class="p">,</span> <span class="n">L_up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span>
             <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
