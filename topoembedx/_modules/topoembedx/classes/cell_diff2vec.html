@@ -49,7 +49,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 19, 2023, 6:04:17 PM"/>
+    <meta name="docbuild:last-update" content="Sep 19, 2023, 6:06:59 PM"/>
   </head>
   
   
@@ -146,6 +146,13 @@
                 
 
                     <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../contributing/index.html">
                         Contributing
                       </a>
@@ -231,6 +238,13 @@ document.write(`
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../api/index.html">
                         API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                        Tutorials
                       </a>
                     </li>
                 
@@ -378,7 +392,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ind</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="CellDiff2Vec.fit"><a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.cell_diff2vec.CellDiff2Vec.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}):</span>
+<div class="viewcode-block" id="CellDiff2Vec.fit"><a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.cell_diff2vec.CellDiff2Vec.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;adj&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;coadj&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit a CellDiff2Vec model.</span>
 
 <span class="sd">        Parameters</span>
@@ -394,15 +410,15 @@ document.write(`
 <span class="sd">            The type of neighborhood to compute. &quot;adj&quot; for adjacency matrix, &quot;coadj&quot; for coadjacency matrix.</span>
 <span class="sd">        neighborhood_dim : dict</span>
 <span class="sd">            The dimensions of the neighborhood to use. If `neighborhood_type` is &quot;adj&quot;, the dimension is</span>
-<span class="sd">            `neighborhood_dim[&#39;r&#39;]`. If `neighborhood_type` is &quot;coadj&quot;, the dimension is `neighborhood_dim[&#39;k&#39;]`</span>
-<span class="sd">            and `neighborhood_dim[&#39;r&#39;]` specifies the dimension of the ambient space.</span>
+<span class="sd">            `neighborhood_dim[&quot;adj&quot;]`. If `neighborhood_type` is &quot;coadj&quot;, the dimension is `neighborhood_dim[&quot;coadj&quot;]`</span>
+<span class="sd">            and `neighborhood_dim[&quot;adj&quot;]` specifies the dimension of the ambient space.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        Here, neighborhood_dim={&quot;r&quot;: 1, &quot;k&quot;: -1} specifies the dimension for</span>
+<span class="sd">        Here, neighborhood_dim={&quot;adj&quot;: 1, &quot;coadj&quot;: -1} specifies the dimension for</span>
 <span class="sd">        which the cell embeddings are going to be computed.</span>
-<span class="sd">        r=1 means that the embeddings will be computed for the first dimension.</span>
-<span class="sd">        The integer &#39;k&#39; is ignored and only considered</span>
+<span class="sd">        The integer &quot;adj&quot;: 1 means that the embeddings will be computed for the first dimension.</span>
+<span class="sd">        The integer &quot;coadj&quot;: -1  is ignored and only considered</span>
 <span class="sd">        when the input complex is a combinatorial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -415,9 +431,6 @@ document.write(`
 
         <span class="n">g</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_numpy_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;HELO&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CellDiff2Vec</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">g</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CellDiff2Vec.get_embedding"><a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.cell_diff2vec.CellDiff2Vec.get_embedding">[docs]</a>    <span class="k">def</span> <span class="nf">get_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -436,8 +449,7 @@ document.write(`
         <span class="n">emb</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">CellDiff2Vec</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">get_dict</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ind</span><span class="p">,</span> <span class="n">emb</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">emb</span></div></div>
+        <span class="k">return</span> <span class="n">emb</span></div></div>
 </pre></div>
 
                 </article>

@@ -49,7 +49,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 19, 2023, 6:04:17 PM"/>
+    <meta name="docbuild:last-update" content="Sep 19, 2023, 6:06:59 PM"/>
   </head>
   
   
@@ -146,6 +146,13 @@
                 
 
                     <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../contributing/index.html">
                         Contributing
                       </a>
@@ -236,6 +243,13 @@ document.write(`
                 
 
                     <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
                       <a class="nav-link nav-internal" href="../../../contributing/index.html">
                         Contributing
                       </a>
@@ -320,7 +334,6 @@ document.write(`
   <h1>Source code for topoembedx.classes.hoglee</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Higher Order Geometric Laplacian EigenMaps (HOGLEE) class.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">karateclub</span> <span class="kn">import</span> <span class="n">GLEE</span>
 
 <span class="kn">from</span> <span class="nn">topoembedx.neighborhood</span> <span class="kn">import</span> <span class="n">neighborhood_from_complex</span>
@@ -344,7 +357,9 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ind</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="HOGLEE.fit"><a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.hoglee.HOGLEE.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}):</span>
+<div class="viewcode-block" id="HOGLEE.fit"><a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.hoglee.HOGLEE.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;adj&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;coadj&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit a Higher Order Geometric Laplacian EigenMaps model.</span>
 
 <span class="sd">        Parameters</span>
@@ -360,15 +375,15 @@ document.write(`
 <span class="sd">            The type of neighborhood to compute. &quot;adj&quot; for adjacency matrix, &quot;coadj&quot; for coadjacency matrix.</span>
 <span class="sd">        neighborhood_dim : dict</span>
 <span class="sd">            The dimensions of the neighborhood to use. If `neighborhood_type` is &quot;adj&quot;, the dimension is</span>
-<span class="sd">            `neighborhood_dim[&#39;r&#39;]`. If `neighborhood_type` is &quot;coadj&quot;, the dimension is `neighborhood_dim[&#39;k&#39;]`</span>
-<span class="sd">            and `neighborhood_dim[&#39;r&#39;]` specifies the dimension of the ambient space.</span>
+<span class="sd">            `neighborhood_dim[&quot;adj&quot;]`. If `neighborhood_type` is &quot;coadj&quot;, the dimension is `neighborhood_dim[&quot;coadj&quot;]`</span>
+<span class="sd">            and `neighborhood_dim[&quot;adj&quot;]` specifies the dimension of the ambient space.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        Here, neighborhood_dim={&quot;r&quot;: 1, &quot;k&quot;: -1} specifies the dimension for</span>
+<span class="sd">        Here, neighborhood_dim={&quot;adj&quot;: 1, &quot;coadj&quot;: -1} specifies the dimension for</span>
 <span class="sd">        which the cell embeddings are going to be computed.</span>
-<span class="sd">        r=1 means that the embeddings will be computed for the first dimension.</span>
-<span class="sd">        The integer &#39;k&#39; is ignored and only considered</span>
+<span class="sd">        The integer &quot;adj&quot;: 1 means that the embeddings will be computed for the first dimension.</span>
+<span class="sd">        The integer &quot;coadj&quot;: -1  is ignored and only considered</span>
 <span class="sd">        when the input complex is a combinatorial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -399,8 +414,7 @@ document.write(`
         <span class="n">emb</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">HOGLEE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">get_dict</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ind</span><span class="p">,</span> <span class="n">emb</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">emb</span></div></div>
+        <span class="k">return</span> <span class="n">emb</span></div></div>
 </pre></div>
 
                 </article>
