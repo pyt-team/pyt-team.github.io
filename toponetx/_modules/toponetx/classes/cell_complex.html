@@ -49,7 +49,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 19, 2023, 3:23:27 PM"/>
+    <meta name="docbuild:last-update" content="Sep 19, 2023, 6:11:05 PM"/>
   </head>
   
   
@@ -336,9 +336,7 @@ document.write(`
 
 <span class="sd">The class also supports attaching arbitrary attributes and data to cells.</span>
 
-<span class="sd">A cell complex is abbreviated in CX.</span>
-
-<span class="sd">We reserve the notation CC for a combinatorial complex.</span>
+<span class="sd">A cell complex is abbreviated in CC.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -426,18 +424,18 @@ document.write(`
 <span class="sd">    --------</span>
 <span class="sd">    Iteratively construct a cell complex:</span>
 
-<span class="sd">    &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
 <span class="sd">    &gt;&gt;&gt; # the cell [1, 2, 3, 4] consists of the cycle (1,2), (2,3), (3,4), (4,5)</span>
 <span class="sd">    &gt;&gt;&gt; # tnx creates these edges automatically if they are not inserted in the underlying graph</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cell([2, 3, 4, 5], rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cell([5, 6, 7, 8], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([2, 3, 4, 5], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([5, 6, 7, 8], rank=2)</span>
 
 <span class="sd">    You can also pass a list of cells to the constructor:</span>
 
 <span class="sd">    &gt;&gt;&gt; c1 = Cell((1, 2, 3)) # a cell here is always assumed to be 2d</span>
 <span class="sd">    &gt;&gt;&gt; c2 = Cell((1, 2, 3, 4))</span>
-<span class="sd">    &gt;&gt;&gt; CX = CellComplex([c1, c2])</span>
+<span class="sd">    &gt;&gt;&gt; CC = CellComplex([c1, c2])</span>
 
 <span class="sd">    TopoNetX is also compatible with NetworkX, allowing users to create a cell complex from a NetworkX graph:</span>
 
@@ -446,22 +444,22 @@ document.write(`
 <span class="sd">    &gt;&gt;&gt; g.add_edge(1, 0)</span>
 <span class="sd">    &gt;&gt;&gt; g.add_edge(2, 0)</span>
 <span class="sd">    &gt;&gt;&gt; g.add_edge(1, 2)</span>
-<span class="sd">    &gt;&gt;&gt; CX = CellComplex(g)</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cells_from([[1, 2, 4], [1, 2, 7]], rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CX.cells</span>
+<span class="sd">    &gt;&gt;&gt; CC = CellComplex(g)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cells_from([[1, 2, 4], [1, 2, 7]], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.cells</span>
 
 <span class="sd">    By default, a regular cell complex is constructed. You can change this behaviour using the</span>
 <span class="sd">    `regular` parameter when constructing the complex.</span>
 
 <span class="sd">    &gt;&gt;&gt; # non-regular cell complex</span>
 <span class="sd">    &gt;&gt;&gt; # by default CellComplex constructor assumes regular cell complex</span>
-<span class="sd">    &gt;&gt;&gt; CX = CellComplex(regular=False)</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cell([2, 3, 4, 5, 2, 3, 4, 5], rank=2)  # non-regular 2-cell</span>
+<span class="sd">    &gt;&gt;&gt; CC = CellComplex(regular=False)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([2, 3, 4, 5, 2, 3, 4, 5], rank=2)  # non-regular 2-cell</span>
 <span class="sd">    &gt;&gt;&gt; c1 = Cell((1, 2, 3, 4, 5, 1, 2, 3, 4, 5), regular=False)</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cell(c1)</span>
-<span class="sd">    &gt;&gt;&gt; CX.add_cell([5, 6, 7, 8], rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CX.is_regular</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell(c1)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([5, 6, 7, 8], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.is_regular</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -536,7 +534,7 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shape.</span>
 
 <span class="sd">        This is:</span>
-<span class="sd">        (number of cells[i], for i in range(0,dim(cc))  )</span>
+<span class="sd">        (number of cells[i], for i in range(0, dim(CC)))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
 
@@ -560,13 +558,13 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(regular=False)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2, 3, 4, 5, 2, 3, 4, 5], rank=2)  # non-regular 2-cell</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(regular=False)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2, 3, 4, 5, 2, 3, 4, 5], rank=2)  # non-regular 2-cell</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Cell((1, 2, 3, 4, 5, 1, 2, 3, 4, 5),regular=False)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell(c1)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5, 6, 7, 8], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.is_regular</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell(c1)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5, 6, 7, 8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.is_regular</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">cell</span><span class="o">.</span><span class="n">is_regular</span><span class="p">:</span>
@@ -667,17 +665,17 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; cx = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell((1, 2, 3, 4), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell((2, 3, 4, 1), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell((1, 2, 3, 4), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell((1, 2, 3, 6), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell((3, 4, 1, 2), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell((4, 3, 2, 1), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell((1, 2, 7, 3), rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 3, 4), rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell((2, 3, 4, 1), rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 3, 4), rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 3, 6), rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell((3, 4, 1, 2), rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell((4, 3, 2, 1), rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 7, 3), rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Cell((1, 2, 3, 4, 5))</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell(c1, rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx._cell_equivalence_class()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell(c1, rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC._cell_equivalence_class()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">equiv_classes</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
         <span class="n">all_inserted_cells</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -702,18 +700,18 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; cx = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell ( (1,2,3,4),rank=2 )</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell ( (2,3,4,1),rank=2 )</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell ( (1,2,3,4),rank=2 )</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell ( (1,2,3,6),rank=2 )</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell ( (3,4,1,2),rank=2 )</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell ( (4,3,2,1),rank=2 )</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell ( (1,2,7,3),rank=2 )</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell ( (1,2,3,4),rank=2 )</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell ( (2,3,4,1),rank=2 )</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell ( (1,2,3,4),rank=2 )</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell ( (1,2,3,6),rank=2 )</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell ( (3,4,1,2),rank=2 )</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell ( (4,3,2,1),rank=2 )</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell ( (1,2,7,3),rank=2 )</span>
 <span class="sd">        &gt;&gt;&gt; c1=Cell((1,2,3,4,5))</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell(c1,rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx._remove_equivalent_cells()</span>
-<span class="sd">        &gt;&gt;&gt; cx</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell(c1,rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC._remove_equivalent_cells()</span>
+<span class="sd">        &gt;&gt;&gt; CC</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">equiv_classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_equivalence_class</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">):</span>
@@ -848,12 +846,12 @@ document.write(`
             <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CellComplex.order"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.order">[docs]</a>    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute number of nodes in CX.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in the cell complex.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        order : int</span>
-<span class="sd">            Number of nodes in CX.</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of nodes in the cell complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span></div>
 
@@ -990,13 +988,13 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Cell((2, 3, 4), color=&#39;black&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell(c1, weight=3)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2, color=&#39;red&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2, 3, 4, 5], rank=2, color=&#39;blue&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5, 6, 7, 8], rank=2, color=&#39;green&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CX.cells[(1, 2, 3, 4)][&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell(c1, weight=3)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2, color=&#39;red&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2, 3, 4, 5], rank=2, color=&#39;blue&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5, 6, 7, 8], rank=2, color=&#39;green&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.cells[(1, 2, 3, 4)][&#39;color&#39;]</span>
 <span class="sd">        &#39;red&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>  <span class="c1"># rank check will be ignored, cells by default</span>
@@ -1157,9 +1155,9 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
 <span class="sd">        &gt;&gt;&gt; d = {0: 1, 1: 0, 2: 2, (0, 1): 1, (1, 2): 3}</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_filtration(d, &quot;f&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_filtration(d, &quot;f&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d_nodes</span><span class="p">,</span> <span class="n">d_edges</span><span class="p">,</span> <span class="n">d_cells</span> <span class="o">=</span> <span class="p">[{},</span> <span class="p">{},</span> <span class="p">{}]</span>
 
@@ -1198,10 +1196,10 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
 <span class="sd">        &gt;&gt;&gt; d = {0: 1, 1: 0, 2: 2, (0, 1): 1, (1, 2): 3}</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_filtration(d, &quot;f&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; CX.get_filtration(&quot;f&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_filtration(d, &quot;f&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.get_filtration(&quot;f&quot;)</span>
 <span class="sd">        {0: 1, 1: 0, 2: 2, (0, 1): 1, (1, 2): 3}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lst</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_attributes</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
@@ -1228,11 +1226,11 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d={ 1: { &#39;color&#39;:&#39;red&#39;,&#39;attr2&#39;:1 },2: {&#39;color&#39;:&#39;blue&#39;,&#39;attr2&#39;:3 } }</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_node_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CX[1][&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_node_attributes(d)</span>
+<span class="sd">        &gt;&gt;&gt; CC[1][&#39;color&#39;]</span>
 <span class="sd">        &#39;red&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
@@ -1253,11 +1251,11 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d={ 1: { &#39;color&#39;:&#39;red&#39;,&#39;attr2&#39;:1 }, 2: {&#39;color&#39;:&#39;blue&#39;,&#39;attr2&#39;:3 } }</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_node_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CX.get_node_attributes(&#39;color&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_node_attributes(d)</span>
+<span class="sd">        &gt;&gt;&gt; CC.get_node_attributes(&#39;color&#39;)</span>
 <span class="sd">        {1: &#39;red&#39;, 2: &#39;blue&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_attributes</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
@@ -1279,11 +1277,11 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d={ (1,2): { &#39;color&#39;:&#39;red&#39;,&#39;attr2&#39;:1 }, (2,3): {&#39;color&#39;:&#39;blue&#39;,&#39;attr2&#39;:3 } }</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_edge_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CX.edges[(1,2)][&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_edge_attributes(d)</span>
+<span class="sd">        &gt;&gt;&gt; CC.edges[(1,2)][&#39;color&#39;]</span>
 <span class="sd">        &#39;red&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
@@ -1304,11 +1302,11 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d={ (1,2): { &#39;color&#39;:&#39;red&#39;,&#39;attr2&#39;:1 }, (2,3): {&#39;color&#39;:&#39;blue&#39;,&#39;attr2&#39;:3 } }</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_edge_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CX.get_edge_attributes(&#39;color&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_edge_attributes(d)</span>
+<span class="sd">        &gt;&gt;&gt; CC.get_edge_attributes(&#39;color&#39;)</span>
 <span class="sd">        {(1,2): &#39;red&#39;, (2,3): &#39;blue&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_attributes</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
@@ -1339,29 +1337,27 @@ document.write(`
 <span class="sd">        to assign a cell attribute to store the value of that property for</span>
 <span class="sd">        each cell:</span>
 
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,4], rank=2,)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,8], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d={(1,2,3,4):&#39;red&#39;,(1,2,4):&#39;blue&#39;}</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_cell_attributes(d,name=&#39;color&#39;,rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.cells[(1,2,3,4)][&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_cell_attributes(d,name=&#39;color&#39;,rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.cells[(1,2,3,4)][&#39;color&#39;]</span>
 <span class="sd">        &#39;red&#39;</span>
 
 <span class="sd">        If you provide a dictionary of dictionaries as the second argument,</span>
 <span class="sd">        the entire dictionary will be used to update cell attributes::</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,4], rank=2,)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,8], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d={ (1,2,3,4): { &#39;color&#39;:&#39;red&#39;,&#39;attr2&#39;:1 },(1,2,4): {&#39;color&#39;:&#39;blue&#39;,&#39;attr2&#39;:3 } }</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_cell_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CX.cells[(1,2,3,4)][0][&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_cell_attributes(d)</span>
+<span class="sd">        &gt;&gt;&gt; CC.cells[(1,2,3,4)][0][&#39;color&#39;]</span>
 <span class="sd">        &#39;red&#39;</span>
 
 <span class="sd">        Notes</span>
@@ -1443,13 +1439,13 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; from toponetx import CellComplex</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
 <span class="sd">        &gt;&gt;&gt; d = {((1, 2, 3, 4), 0): {&#39;color&#39;: &#39;red&#39;, &#39;attr2&#39;: 1}, (1, 2, 4): {&#39;color&#39;: &#39;blue&#39;, &#39;attr2&#39;: 3 }}</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 4], rank=2,)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3, 4, 8], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.set_cell_attributes(d, 2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.get_cell_attributes(&#39;color&#39;, 2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_cell_attributes(d, 2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.get_cell_attributes(&#39;color&#39;, 2)</span>
 <span class="sd">        {((1, 2, 3, 4), 0): &#39;red&#39;, (1, 2, 4): &#39;blue&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1592,15 +1588,15 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; import networkx as nx</span>
 <span class="sd">        &gt;&gt;&gt; from toponetx import CellComplex</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; cx = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell([1,2,3,4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell([1,2,3,4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell([2,3,4,1], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell([1,2,4], rank=2,)</span>
-<span class="sd">        &gt;&gt;&gt; cx.add_cell([3,4,8], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; print(cx.cells)</span>
-<span class="sd">        &gt;&gt;&gt; cx.remove_equivalent_cells()</span>
-<span class="sd">        &gt;&gt;&gt; print(cx.cells) # observe homotopic cells have been removed</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,1], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; print(CC.cells)</span>
+<span class="sd">        &gt;&gt;&gt; CC.remove_equivalent_cells()</span>
+<span class="sd">        &gt;&gt;&gt; print(CC.cells) # observe homotopic cells have been removed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_equivalent_cells</span><span class="p">()</span></div>
 
@@ -1717,17 +1713,17 @@ document.write(`
 <span class="sd">            index of nodes, adjacency matrix, if &#39;index&#39; is True</span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3, 4, 5], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.node_to_all_cell_adjacency_matrix().todense()</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 5], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.node_to_all_cell_adjacency_matrix().todense()</span>
 <span class="sd">        matrix([[0., 2., 1., 2., 0.],</span>
 <span class="sd">                [2., 0., 2., 1., 0.],</span>
 <span class="sd">                [1., 2., 0., 3., 2.],</span>
 <span class="sd">                [2., 1., 3., 0., 2.],</span>
 <span class="sd">                [0., 0., 2., 2., 0.]])</span>
 <span class="sd">        &gt;&gt;&gt; # observe the contrast with the regular adjacency matrix</span>
-<span class="sd">        &gt;&gt;&gt; CX.adjacency_matrix(0).todense()</span>
+<span class="sd">        &gt;&gt;&gt; CC.adjacency_matrix(0).todense()</span>
 <span class="sd">        matrix([[0., 1., 0., 1., 0.],</span>
 <span class="sd">                [1., 0., 1., 0., 0.],</span>
 <span class="sd">                [0., 1., 0., 1., 1.],</span>
@@ -1784,7 +1780,7 @@ document.write(`
         <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Incidence matrix for the cx indexed by nodes x cells.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Incidence matrix for the cell complex indexed by nodes x cells.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1807,12 +1803,12 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3, 4, 5], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; B0 = CX.incidence_matrix(0)</span>
-<span class="sd">        &gt;&gt;&gt; B1 = CX.incidence_matrix(1)</span>
-<span class="sd">        &gt;&gt;&gt; B2 = CX.incidence_matrix(2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 5], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; B0 = CC.incidence_matrix(0)</span>
+<span class="sd">        &gt;&gt;&gt; B1 = CC.incidence_matrix(1)</span>
+<span class="sd">        &gt;&gt;&gt; B2 = CC.incidence_matrix(2)</span>
 <span class="sd">        &gt;&gt;&gt; B1.dot(B2).todense()</span>
 <span class="sd">        &gt;&gt;&gt; B0.dot(B1).todense()</span>
 
@@ -1821,30 +1817,30 @@ document.write(`
 
 <span class="sd">        &gt;&gt;&gt; import networkx as nx</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([4,3,2,1], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,1], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,4], rank=2,)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,8], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; B1 = CX.incidence_matrix(1)</span>
-<span class="sd">        &gt;&gt;&gt; B2 = CX.incidence_matrix(2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,3,2,1], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,1], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; B1 = CC.incidence_matrix(1)</span>
+<span class="sd">        &gt;&gt;&gt; B2 = CC.incidence_matrix(2)</span>
 <span class="sd">        &gt;&gt;&gt; B1.dot(B2).todense()</span>
 
 <span class="sd">        Non-regular cell complex example:</span>
 
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(regular=False)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,2],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,5,3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; B1 = CX.incidence_matrix(1)</span>
-<span class="sd">        &gt;&gt;&gt; B2 = CX.incidence_matrix(2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(regular=False)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,2],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,5,3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; B1 = CC.incidence_matrix(1)</span>
+<span class="sd">        &gt;&gt;&gt; B2 = CC.incidence_matrix(2)</span>
 <span class="sd">        &gt;&gt;&gt; print(B2.todense()) # observe the non-unit entries</span>
 <span class="sd">        &gt;&gt;&gt; B1.dot(B2).todense()</span>
 
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; row,column,B1 = CX.incidence_matrix(1,index=True)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; row,column,B1 = CC.incidence_matrix(1,index=True)</span>
 <span class="sd">        &gt;&gt;&gt; print(row)</span>
 <span class="sd">        &gt;&gt;&gt; print(column)</span>
 <span class="sd">        &gt;&gt;&gt; print(B1.todense())</span>
@@ -1913,7 +1909,7 @@ document.write(`
 
                     <span class="n">A</span><span class="p">[</span><span class="n">ei</span><span class="p">,</span> <span class="n">celli</span><span class="p">]</span> <span class="o">=</span> <span class="n">edge_visiting_dic</span><span class="p">[</span>
                         <span class="n">ei</span>
-                    <span class="p">]</span>  <span class="c1"># this will update everytime we visit this edge for non-regular CX</span>
+                    <span class="p">]</span>  <span class="c1"># this will update everytime we visit this edge for non-regular cell complexes</span>
                     <span class="c1"># the regular case can be handled more efficiently :</span>
                     <span class="c1"># if edge in edge_index:</span>
                     <span class="c1">#    A[ei, celli] = 1</span>
@@ -1940,7 +1936,7 @@ document.write(`
         <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the hodge-laplacian matrix for the CX.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the hodge-laplacian matrix for this cell complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1966,10 +1962,10 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3, 4, 5], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.hodge_laplacian_matrix(1)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 5], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.hodge_laplacian_matrix(1)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># return L0, the unit graph laplacian</span>
             <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
@@ -2063,15 +2059,15 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; L1_up = CX.up_laplacian_matrix(1)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; L1_up = CC.up_laplacian_matrix(1)</span>
 
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; index, L1_up = CX.up_laplacian_matrix(1, index=True)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; index, L1_up = CC.up_laplacian_matrix(1, index=True)</span>
 <span class="sd">        &gt;&gt;&gt; print(index)</span>
 <span class="sd">        &gt;&gt;&gt; print(L1_up)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2138,13 +2134,13 @@ document.write(`
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import networkx as nx</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2, 3, 4, 1], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1, 2, 4], rank=2,)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([3, 4, 8], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.down_laplacian_matrix(2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2, 3, 4, 1], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.down_laplacian_matrix(2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">weight</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Weighted Laplacian is not supported in this version.&quot;</span><span class="p">)</span>
@@ -2226,17 +2222,17 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Cell((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Cell((1, 2, 4))</span>
 <span class="sd">        &gt;&gt;&gt; c3 = Cell((1, 2, 5))</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex([c1, c2, c3])</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_edge(1, 0)</span>
-<span class="sd">        &gt;&gt;&gt; cx1 = CX.restrict_to_cells([c1, (0, 1)])</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex([c1, c2, c3])</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_edge(1, 0)</span>
+<span class="sd">        &gt;&gt;&gt; cx1 = CC.restrict_to_cells([c1, (0, 1)])</span>
 <span class="sd">        &gt;&gt;&gt; cx1.cells</span>
 <span class="sd">        CellView([Cell(1, 2, 3)])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">cells</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">cells</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 
         <span class="n">edges</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
@@ -2251,7 +2247,7 @@ document.write(`
                                 <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
                             <span class="p">}</span>
                         <span class="p">)</span>
-                        <span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                        <span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">edges</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                         <span class="p">{</span>
@@ -2261,7 +2257,7 @@ document.write(`
                             <span class="p">)</span>
                         <span class="p">}</span>
                     <span class="p">)</span>
-                    <span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">raw_cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">raw_cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
                 <span class="n">edges</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">((</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">]))))</span>
 
@@ -2270,9 +2266,9 @@ document.write(`
             <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
                 <span class="n">edge_tuple</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">((</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
                 <span class="k">if</span> <span class="n">edge_tuple</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
-                    <span class="n">CX</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">remove_edge</span><span class="p">(</span><span class="n">edge_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">CC</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">remove_edge</span><span class="p">(</span><span class="n">edge_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">CX</span></div>
+        <span class="k">return</span> <span class="n">CC</span></div>
 
 <div class="viewcode-block" id="CellComplex.restrict_to_nodes"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.restrict_to_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict cell complex to nodes.</span>
@@ -2293,25 +2289,25 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
 <span class="sd">        &gt;&gt;&gt; c1 = Cell((1, 2, 3))</span>
 <span class="sd">        &gt;&gt;&gt; c2 = Cell((1, 2, 4))</span>
 <span class="sd">        &gt;&gt;&gt; c3 = Cell((1, 2, 5))</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex([c1, c2, c3])</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_edge(1, 0)</span>
-<span class="sd">        &gt;&gt;&gt; CX.restrict_to_nodes([1, 2, 3, 0])</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex([c1, c2, c3])</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_edge(1, 0)</span>
+<span class="sd">        &gt;&gt;&gt; CC.restrict_to_nodes([1, 2, 3, 0])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_G</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">node_set</span><span class="p">))</span>
-        <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">CX</span><span class="o">.</span><span class="n">is_insertable_cycle</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">CC</span><span class="o">.</span><span class="n">is_insertable_cycle</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                 <span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
-        <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">)</span>
+        <span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">CX</span></div>
+            <span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">CC</span></div>
 
 <div class="viewcode-block" id="CellComplex.to_combinatorial_complex"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.to_combinatorial_complex">[docs]</a>    <span class="k">def</span> <span class="nf">to_combinatorial_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to combinatorial complex.</span>
@@ -2326,34 +2322,34 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2,weight = 1)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2,weight = 4)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2,weight = 0)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_node(0,color=&#39;red&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CC= CX.to_combinatorial_complex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.cells</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2,weight = 1)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,5],rank=2,weight = 4)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7,8],rank=2,weight = 0)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_node(0,color=&#39;red&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CCC = CC.to_combinatorial_complex()</span>
+<span class="sd">        &gt;&gt;&gt; CCC.cells</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cc</span> <span class="o">=</span> <span class="n">CombinatorialComplex</span><span class="p">()</span>
+        <span class="n">CCC</span> <span class="o">=</span> <span class="n">CombinatorialComplex</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-            <span class="n">cc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="n">CCC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
-            <span class="n">cc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">CCC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="n">cc</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">CCC</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">cc</span></div>
+        <span class="k">return</span> <span class="n">CCC</span></div>
 
 <div class="viewcode-block" id="CellComplex.to_hypergraph"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.to_hypergraph">[docs]</a>    <span class="k">def</span> <span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to hypergraph.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2,color=&#39;red&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; HG = CX.to_hypergraph()</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2,color=&#39;red&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7,8],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; HG = CC.to_hypergraph()</span>
 <span class="sd">        &gt;&gt;&gt; HG</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">hypernetx.classes.entity</span> <span class="kn">import</span> <span class="n">EntitySet</span>
@@ -2396,7 +2392,7 @@ document.write(`
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        A cx is s node connected if for any two nodes v0,vn</span>
+<span class="sd">        A cell complex is s node connected if for any two nodes v0,vn</span>
 <span class="sd">        there exists a sequence of nodes v0,v1,v2,...,v(n-1),vn</span>
 <span class="sd">        such that every consecutive pair of nodes v(i),v(i+1)</span>
 <span class="sd">        share at least s cell.</span>
@@ -2414,13 +2410,13 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_node(0)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_node(10)</span>
-<span class="sd">        &gt;&gt;&gt; CX.singletons()</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7,8],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_node(0)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_node(10)</span>
+<span class="sd">        &gt;&gt;&gt; CC.singletons()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span></div>
 
@@ -2434,18 +2430,18 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([1,2,3,4],rank=2,weight=5)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7,8],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_node(0)</span>
-<span class="sd">        &gt;&gt;&gt; CX2 = CX.clone()</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2,weight=5)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,5],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7,8],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_node(0)</span>
+<span class="sd">        &gt;&gt;&gt; CX2 = CC.clone()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">CX</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">_G</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-            <span class="n">CX</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">CX</span></div>
+            <span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">CC</span></div>
 
 <div class="viewcode-block" id="CellComplex.euler_characterisitics"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.euler_characterisitics">[docs]</a>    <span class="k">def</span> <span class="nf">euler_characterisitics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Euler characteristics of the cell complex.&quot;&quot;&quot;</span>
@@ -2507,7 +2503,7 @@ document.write(`
 <span class="sd">        An s-cell-component has the property that for any two cells e1 and e2</span>
 <span class="sd">        there is a sequence of cells starting with e1 and ending with e2</span>
 <span class="sd">        such that pairwise adjacent cells in the sequence intersect in at least</span>
-<span class="sd">        s nodes. If s=1 these are the path components of the CX.</span>
+<span class="sd">        s nodes. If s=1 these are the path components of the cell complex.</span>
 
 <span class="sd">        If cells=False this method returns s-node-connected components.</span>
 <span class="sd">        A list of sets of uids of the nodes which are s-walk connected.</span>
@@ -2520,17 +2516,17 @@ document.write(`
 <span class="sd">        ------</span>
 <span class="sd">        s_connected_components : iterator</span>
 <span class="sd">            Iterator returns sets of uids of the cells (or nodes) in the s-cells(node)</span>
-<span class="sd">            components of CX.</span>
+<span class="sd">            components of the cell complex.</span>
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.s_connected_components(s=1,cells=False))</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.s_connected_components(s=1,cells=False))</span>
 <span class="sd">        &gt;&gt;&gt; #  [{2, 3, 4}, {5, 6, 7}]</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.s_connected_components(s=1,cells=False))</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.s_connected_components(s=1,cells=False))</span>
 <span class="sd">        &gt;&gt;&gt; # [{2, 3, 4, 5, 6, 7}]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2563,7 +2559,7 @@ document.write(`
 <span class="sd">        s : int, optional, default: 1</span>
 <span class="sd">        cells : boolean, optional, cells=False</span>
 <span class="sd">            Determines if cell or node components are desired. Returns</span>
-<span class="sd">            subcomplexes equal to the cx restricted to each set of nodes(cells) in the</span>
+<span class="sd">            subcomplexes equal to the cell complex restricted to each set of nodes(cells) in the</span>
 <span class="sd">            s-connected components or s-cell-connected components</span>
 <span class="sd">        return_singletons : bool, optional</span>
 
@@ -2575,12 +2571,12 @@ document.write(`
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.s_component_subcomplexes(s=1,cells=False))</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.s_component_subcomplexes(s=1,cells=False))</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.s_component_subcomplexes(s=1,cells=False))</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.s_component_subcomplexes(s=1,cells=False))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span>
@@ -2605,12 +2601,12 @@ document.write(`
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.connected_components(s=1,cells=False))</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.connected_components(s=1,cells=False))</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.connected_components(s=1,cells=False))</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.connected_components(s=1,cells=False))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
@@ -2625,12 +2621,12 @@ document.write(`
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.connected_component_subcomplexes())</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.connected_component_subcomplexes())</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.connected_component_subcomplexes())</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.connected_component_subcomplexes())</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_component_subcomplexes</span><span class="p">(</span><span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
 
@@ -2644,10 +2640,10 @@ document.write(`
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.node_diameters())</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.node_diameters())</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">coldict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2677,17 +2673,17 @@ document.write(`
 <span class="sd">        maximum diameter : int</span>
 
 <span class="sd">        list of diameters : list</span>
-<span class="sd">            List of cell_diameters for s-cell component subcomplexes in CX</span>
+<span class="sd">            List of cell_diameters for s-cell component subcomplexes in the cell complex.</span>
 
 <span class="sd">        list of component : list</span>
 <span class="sd">            List of the cell uids in the s-cell component subcomplexes.</span>
 
 <span class="sd">        Example</span>
 <span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CX.cell_diameters())</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; list(CC.cell_diameters())</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">coldict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">coldict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">coldict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
@@ -2718,7 +2714,7 @@ document.write(`
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        TopoNetXError</span>
-<span class="sd">            If cx is not s-cell-connected</span>
+<span class="sd">            If the cell complex is not s-cell-connected</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -2768,9 +2764,9 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        source : node.uid or node</span>
-<span class="sd">            a node in the CX</span>
+<span class="sd">            a node in the cell complex</span>
 <span class="sd">        target : node.uid or node</span>
-<span class="sd">            a node in the CX</span>
+<span class="sd">            a node in the cell complex</span>
 <span class="sd">        s : int</span>
 <span class="sd">            the number of cells</span>
 
@@ -2867,11 +2863,11 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CX.add_cells_from([[1, 2, 4], [1, 2, 7]], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cells_from([[1, 2, 4], [1, 2, 7]], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; G = Graph([(0, 1), (0, 2), (1, 2)])</span>
-<span class="sd">        &gt;&gt;&gt; CX.from_networkx_graph(G)</span>
-<span class="sd">        &gt;&gt;&gt; CX.edges</span>
+<span class="sd">        &gt;&gt;&gt; CC.from_networkx_graph(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.edges</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -2888,22 +2884,22 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; mesh = trimesh.Trimesh(vertices=[[0, 0, 0], [0, 0, 1], [0, 1, 0]],</span>
 <span class="sd">                               faces=[[0, 1, 2]],</span>
 <span class="sd">                               process=False)</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex.from_trimesh(mesh)</span>
-<span class="sd">        &gt;&gt;&gt; CX[0][&#39;position&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex.from_trimesh(mesh)</span>
+<span class="sd">        &gt;&gt;&gt; CC[0][&#39;position&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># try to see the index of the first vertex</span>
-        <span class="n">CX</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
+        <span class="n">CC</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
         <span class="n">first_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">first_ind</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">CX</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span>
+            <span class="n">CC</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span>
                 <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)),</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)),</span>
                 <span class="n">name</span><span class="o">=</span><span class="s2">&quot;position&quot;</span><span class="p">,</span>
                 <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># first index starts at 1.</span>
-            <span class="n">CX</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span>
+            <span class="n">CC</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span>
                 <span class="nb">dict</span><span class="p">(</span>
                     <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">first_ind</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span> <span class="o">+</span> <span class="n">first_ind</span><span class="p">),</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
                 <span class="p">),</span>
@@ -2911,7 +2907,7 @@ document.write(`
                 <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">CX</span></div>
+        <span class="k">return</span> <span class="n">CC</span></div>
 
 <div class="viewcode-block" id="CellComplex.load_mesh"><a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.load_mesh">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CellComplex&quot;</span><span class="p">:</span>
@@ -2932,7 +2928,7 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CX = CellComplex.load_mesh(&quot;bunny.obj&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex.load_mesh(&quot;bunny.obj&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">trimesh</span>
 
