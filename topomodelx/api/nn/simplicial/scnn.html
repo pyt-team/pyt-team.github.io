@@ -48,7 +48,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="scnn_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 19, 2023, 4:55:02 PM"/>
+    <meta name="docbuild:last-update" content="Sep 19, 2023, 5:26:15 PM"/>
   </head>
   
   
@@ -444,19 +444,21 @@ document.write(`
   <p id="module-topomodelx.nn.simplicial.scnn">Simplicial convolutional neural network implementation for complex classification.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.scnn.SCNN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.simplicial.scnn.</span></span><span class="sig-name descname"><span class="pre">SCNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_order_down</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_order_up</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggr_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/scnn.html#SCNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.scnn.SCNN" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.simplicial.scnn.</span></span><span class="sig-name descname"><span class="pre">SCNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_order_down</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_order_up</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggr_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/scnn.html#SCNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.scnn.SCNN" title="Link to this definition">#</a></dt>
 <dd><p>Simplicial convolutional neural network implementation for complex classification.</p>
 <p>Note: At the last layer, we obtain the output on simplcies, e.g., edges.
 To perform the complex classification task for this challenge, we consider pass the final output to a linear layer and compute the average.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>in_channels</strong> (<em>int</em>) – Dimension of input features</p></li>
-<li><p><strong>intermediate_channels</strong> (<em>int</em>) – Dimension of features of intermediate layers</p></li>
-<li><p><strong>out_channels</strong> (<em>int</em>) – Dimension of output features</p></li>
-<li><p><strong>conv_order_down</strong> (<em>int</em>) – Order of lower convolution</p></li>
-<li><p><strong>conv_order_up</strong> (<em>int</em>) – Order of upper convolution</p></li>
-<li><p><strong>n_layers</strong> (<em>int</em>) – Numer of layers</p></li>
+<li><p><strong>in_channels</strong> (<em>int</em>) – Dimension of input features.</p></li>
+<li><p><strong>intermediate_channels</strong> (<em>int</em>) – Dimension of features of intermediate layers.</p></li>
+<li><p><strong>out_channels</strong> (<em>int</em>) – Dimension of output features.</p></li>
+<li><p><strong>conv_order_down</strong> (<em>int</em>) – Order of lower convolution.</p></li>
+<li><p><strong>conv_order_up</strong> (<em>int</em>) – Order of upper convolution.</p></li>
+<li><p><strong>aggr</strong> (<em>bool</em>) – Whether to aggregate features on the nodes into 1 feature for the whole complex.
+Default: False.</p></li>
+<li><p><strong>n_layers</strong> (<em>int</em>) – Number of layers.</p></li>
 </ul>
 </dd>
 </dl>
@@ -467,13 +469,14 @@ To perform the complex classification task for this challenge, we consider pass 
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>tensor</em>) – shape = [n_simplices, channels]
-node/edge/face features</p></li>
-<li><p><strong>laplacian</strong> (<em>tensor</em>) – shape = [n_simplices,n_simplices]
+<li><p><strong>x</strong> (<em>tensor, shape=[n_simplices, channels]</em>) – node/edge/face features</p></li>
+<li><p><strong>laplacian_down</strong> (<em>tensor, shape=[n_simplices, n_simplices]</em>) – Down Laplacian.
 For node features, laplacian_down = None</p></li>
-<li><p><strong>incidence_1</strong> (<em>tensor</em>) – order 1 incidence matrix
-shape = [n_edges, n_nodes]</p></li>
+<li><p><strong>laplacian_up</strong> (<em>tensor, shape=[n_edges, n_nodes]</em>) – Up Laplacian.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>one_dimensional_cells_mean</strong> (<em>tensor, shape=[n_simplices, 1]</em>) – Mean on one-dimensional cells.</p>
 </dd>
 </dl>
 </dd></dl>

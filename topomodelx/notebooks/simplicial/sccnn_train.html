@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial Complex Convolutional Network (SCCN)" href="sccn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 19, 2023, 4:55:02 PM"/>
+    <meta name="docbuild:last-update" content="Sep 19, 2023, 5:26:15 PM"/>
   </head>
   
   
@@ -515,7 +515,7 @@ document.write(`
 <section id="1.-Complex-Classification">
 <h1>1. Complex Classification<a class="headerlink" href="#1.-Complex-Classification" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -530,7 +530,7 @@ document.write(`
 <h2>Import shrec dataset<a class="headerlink" href="#Import-shrec-dataset" title="Link to this heading">#</a></h2>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
@@ -549,16 +549,13 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-downloading shrec 16 small dataset...
-
-done!
 Loading shrec 16 small dataset...
 
 done!
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -584,7 +581,7 @@ done!
 <p>Get incidence matrices <span class="math notranslate nohighlight">\(\mathbf{B}_1,\mathbf{B}_2\)</span> and Hodge Laplacians <span class="math notranslate nohighlight">\(\mathbf{L}_0, \mathbf{L}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{L}_2\)</span>.</p>
 <p>Note that the original paper considered the weighted versions of these operators. However, the current TOPONETX package does not provide such feature yet.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_rank</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># the order of the SC is two</span>
@@ -599,10 +596,10 @@ done!
 <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">simplexes</span><span class="p">:</span>
     <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">incidence_2</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">laplacian_2</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">laplacian_2</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
     <span class="n">incidence_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
@@ -626,7 +623,7 @@ done!
 <h1>Create and Train the Neural Network<a class="headerlink" href="#Create-and-Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conv_order</span> <span class="o">=</span> <span class="mi">2</span>
@@ -678,7 +675,7 @@ SCCNN(
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -711,7 +708,7 @@ SCCNN(
 </div>
 <p>We train the SCCNN using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -825,23 +822,23 @@ SCCNN(
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 117979.8366
-Test_loss: 406.8377
-Epoch: 2 loss: 977.5059
-Test_loss: 2.4212
-Epoch: 3 loss: 217.5435
-Test_loss: 5.1847
-Epoch: 4 loss: 202.9460
-Test_loss: 2.7320
-Epoch: 5 loss: 212.8642
-Test_loss: 3.1975
+Epoch: 1 loss: 944857.9959
+Test_loss: 214.5353
+Epoch: 2 loss: 2055.6737
+Test_loss: 8.6187
+Epoch: 3 loss: 1060.7969
+Test_loss: 1.4612
+Epoch: 4 loss: 635.5951
+Test_loss: 15.8349
+Epoch: 5 loss: 408.8397
+Test_loss: 45.9482
 </pre></div></div>
 </div>
 </section>
 <section id="2.-Node-Classification">
 <h1>2. Node Classification<a class="headerlink" href="#2.-Node-Classification" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
@@ -856,7 +853,7 @@ Test_loss: 3.1975
 <p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to two different social groups. We will use these groups for the task of node-level binary classification.</p>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">karate_club</span><span class="p">(</span><span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">)</span>
@@ -880,7 +877,7 @@ Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 <p>Get incidence matrices <span class="math notranslate nohighlight">\(\mathbf{B}_1,\mathbf{B}_2\)</span> and Hodge Laplacians <span class="math notranslate nohighlight">\(\mathbf{L}_0, \mathbf{L}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{L}_2\)</span>.</p>
 <p>Note that the original paper considered the weighted versions of these operators. However, the current TOPONETX package does not provide such feature yet.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -901,20 +898,20 @@ The incidence matrix B2 has shape: (78, 45).
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -928,7 +925,7 @@ The incidence matrix B2 has shape: (78, 45).
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
@@ -946,7 +943,7 @@ The incidence matrix B2 has shape: (78, 45).
 <h3>Import signal<a class="headerlink" href="#Import-signal" title="Link to this heading">#</a></h3>
 <p>Since our task will be node classification, we must retrieve an input signal on the nodes. The signal will have shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times\)</span> in_channels, where in_channels is the dimension of each cell’s feature. Here, we have in_channels = channels_nodes $ = 34$. This is because the Karate dataset encodes the identity of each of the 34 nodes as a one hot encoder.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;A function to obtain features based on the input: rank</span>
@@ -975,7 +972,7 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span> <span class="o">=</span> <span class="n">get_simplicial_features</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -990,7 +987,7 @@ The incidence matrix B2 has shape: (78, 45).
 <p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
 <p>We convert the binary labels into one-hot encoder form, and keep the first four nodes’ true labels for the purpose of testing.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -1085,7 +1082,7 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1130,16 +1127,16 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 62.1591 Train_acc: 0.1333
-Test_acc: 0.5000
-Epoch: 2 loss: 67.6678 Train_acc: 0.2333
+Epoch: 1 loss: 31.6361 Train_acc: 0.6000
 Test_acc: 0.7500
-Epoch: 3 loss: 75.0000 Train_acc: 0.2333
+Epoch: 2 loss: 17.7911 Train_acc: 0.5667
 Test_acc: 0.7500
-Epoch: 4 loss: 74.3241 Train_acc: 0.2667
-Test_acc: 0.2500
-Epoch: 5 loss: 73.3333 Train_acc: 0.2000
-Test_acc: 0.2500
+Epoch: 3 loss: 6.6667 Train_acc: 0.6333
+Test_acc: 0.7500
+Epoch: 4 loss: 6.6667 Train_acc: 0.6333
+Test_acc: 1.0000
+Epoch: 5 loss: 5.0000 Train_acc: 0.7000
+Test_acc: 1.0000
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
