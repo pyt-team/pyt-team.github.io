@@ -50,7 +50,7 @@
     <link rel="prev" title="Datasets" href="datasets.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 2:11:00 PM"/>
+    <meta name="docbuild:last-update" content="Sep 20, 2023, 7:50:59 PM"/>
   </head>
   
   
@@ -500,7 +500,7 @@ from them.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell_set</strong> (<em>iterable of hashables or Cell</em>) – For hashables the cells returned will be empty.</p></li>
-<li><p><strong>rank</strong> (<em>int (optional), default is None</em>) – when each element in cell_set is an iterable then
+<li><p><strong>rank</strong> (<em>int, optional</em>) – when each element in cell_set is an iterable then
 rank must be a number that indicates the rank
 of the added cells.</p></li>
 <li><p><strong>check_skeleton</strong> (<em>bool</em>) – If true, this function checks the skeleton whether the given cell can be added.</p></li>
@@ -516,8 +516,8 @@ of the added cells.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>u_of_edge</strong> (<em>Hashable, first node of edge</em>)</p></li>
-<li><p><strong>v_of_edge</strong> (<em>Hashable, second node of edge</em>)</p></li>
+<li><p><strong>u_of_edge</strong> (<em>hashable</em>) – first node of edge</p></li>
+<li><p><strong>v_of_edge</strong> (<em>hashable</em>) – second node of edge</p></li>
 <li><p><strong>**attr</strong> (<em>attributes to add to the edge</em>)</p></li>
 </ul>
 </dd>
@@ -548,6 +548,22 @@ of the added cells.</p></li>
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.adjacency_matrix">
 <span class="sig-name descname"><span class="pre">adjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.adjacency_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.adjacency_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Compute adjacency matrix for a given rank.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rank</strong> (<em>int</em>) – The rank for which an adjacency matrix should be computed.</p></li>
+<li><p><strong>signed</strong> (<em>bool, default=False</em>) – Whether the returned adjacency matrix should be signed (i.e., respect orientations) or unsigned.</p></li>
+<li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
+<li><p><strong>index</strong> (<em>bool, default=False</em>) – If True return will include a dictionary of node uid : row number
+and cell uid : column number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</em> – The adjacency matrix, if <cite>index</cite> is False, otherwise
+lower (row) index dict, upper (col) index dict, adjacency matrix
+where the index dictionaries map from the entity (as <cite>Hashable</cite> or <cite>tuple</cite>) to the row or col index of the matrix</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -556,10 +572,11 @@ of the added cells.</p></li>
 <dd><p>All cells s-coadjacency matrix where coadjacency is computed with respect to 0-cells.</p>
 <p>Two cells (1 dimensional or 2 dimensional) are s-coadjacent iff
 they share a vertex
-:Parameters: * <strong>weight</strong> (<em>bool, default=False</em>) – If not given, all nonzero entries are 1.</p>
+:Parameters: * <strong>s</strong> (<em>int</em>) – The dimension of the cells to consider.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>index</strong> (<em>boolean, optional, default False</em>) – If True return will include a dictionary of cell uid</p></li>
+<li><p><strong>weight</strong> (<em>bool, optional</em>) – If not given, all nonzero entries are 1.</p></li>
+<li><p><strong>index</strong> (<em>bool, optional</em>) – If True return will include a dictionary of cell uid</p></li>
 </ul>
 </div></blockquote>
 <dl class="field-list simple">
@@ -576,7 +593,7 @@ index of cells, adjacency matrix, if ‘index’ is True</p>
 <dd><p>Return the length of the longest shortest s-walk between cells.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>s</strong> (<em>int, optional, default: 1</em>)</p>
+<dd class="field-odd"><p><strong>s</strong> (<em>int, optional</em>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>cell_diameter</strong> (<em>int</em>)</p>
@@ -598,11 +615,10 @@ are s-coadjacent. If the cell complex is not connected, an error will be raised.
 <dd><p>Return the cell diameters of the s_cell_connected component subgraphs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>s</strong> (<em>int, optional, default: 1</em>)</p>
+<dd class="field-odd"><p><strong>s</strong> (<em>int, optional</em>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>maximum diameter</strong> (<em>int</em>)</p></li>
 <li><p><strong>list of diameters</strong> (<em>list</em>) – List of cell_diameters for s-cell component subcomplexes in the cell complex.</p></li>
 <li><p><strong>list of component</strong> (<em>list</em>) – List of the cell uids in the s-cell component subcomplexes.</p></li>
 </ul>
@@ -679,7 +695,7 @@ generated by the s-cell_adjacency matrix.</p>
 <dd><p>Remove all cells from a cell complex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cell complex</strong> (<em>CellComplex</em>)</p>
+<dd class="field-odd"><p><strong>cell_complex</strong> (<em>CellComplex</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -690,7 +706,7 @@ generated by the s-cell_adjacency matrix.</p>
 <dd><p>Create a clone of the CellComplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cell complex</strong> (<em>CellComplex</em>) – A list of cells uids.</p>
+<dd class="field-odd"><p><strong>cell_complex</strong> (<em>CellComplex</em>) – A list of cells uids.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -708,13 +724,34 @@ generated by the s-cell_adjacency matrix.</p>
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.coadjacency_matrix">
 <span class="sig-name descname"><span class="pre">coadjacency_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.coadjacency_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.coadjacency_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Compute coadjacency matrix for a given rank.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rank</strong> (<em>int</em>) – The rank for which an coadjacency matrix should be computed.</p></li>
+<li><p><strong>signed</strong> (<em>bool, default=False</em>) – Whether the returned coadjacency matrix should be signed (i.e., respect orientations) or unsigned.</p></li>
+<li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
+<li><p><strong>index</strong> (<em>bool, default=False</em>) – If True return will include a dictionary of node uid : row number
+and cell uid : column number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</em> – The coadjacency matrix, if <cite>index</cite> is False, otherwise
+lower (row) index dict, upper (col) index dict, coadjacency matrix
+where the index dictionaries map from the entity (as <cite>Hashable</cite> or <cite>tuple</cite>) to the row or col index of the matrix</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.connected_component_subcomplexes">
 <span class="sig-name descname"><span class="pre">connected_component_subcomplexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_singletons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.connected_component_subcomplexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.connected_component_subcomplexes" title="Link to this definition">#</a></dt>
 <dd><p>Compute connected component subgraphs with s=1.</p>
-<p>Same as <a class="reference internal" href="#toponetx.classes.cell_complex.CellComplex.s_component_subcomplexes" title="toponetx.classes.cell_complex.CellComplex.s_component_subcomplexes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">s_component_subcomplexes()</span></code></a> with s=1. Returns iterator.</p>
+<p>Same as <a class="reference internal" href="#toponetx.classes.cell_complex.CellComplex.s_component_subcomplexes" title="toponetx.classes.cell_complex.CellComplex.s_component_subcomplexes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">s_component_subcomplexes()</span></code></a> with s=1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>subgraphs</strong> (<em>iterator</em>)</p>
+</dd>
+</dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#toponetx.classes.cell_complex.CellComplex.s_component_subcomplexes" title="toponetx.classes.cell_complex.CellComplex.s_component_subcomplexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s_component_subcomplexes</span></code></a></p>
@@ -735,7 +772,11 @@ generated by the s-cell_adjacency matrix.</p>
 <span class="sig-name descname"><span class="pre">connected_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cells</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_singletons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.connected_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.connected_components" title="Link to this definition">#</a></dt>
 <dd><p>Compute s-connected components with s=1.</p>
 <p>Same as s_connected_component` with s=1, but nodes returned.</p>
-<p>Return iterator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s_connected_components</strong> (<em>iterator</em>)</p>
+</dd>
+</dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#toponetx.classes.cell_complex.CellComplex.s_connected_components" title="toponetx.classes.cell_complex.CellComplex.s_connected_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s_connected_components</span></code></a></p>
@@ -774,7 +815,7 @@ generated by the s-cell_adjacency matrix.</p>
 <dd><p>Return length of the longest shortest s-walk between nodes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>s</strong> (<em>int, optional, default: 1</em>)</p>
+<dd class="field-odd"><p><strong>s</strong> (<em>int, optional</em>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>diameter</strong> (<em>int</em>)</p>
@@ -809,7 +850,7 @@ are s-adjacent. If the cell complex is not connected, an error will be raised.</
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>s-walk distance</strong> (<em>int</em>)</p>
+<dd class="field-even"><p><strong>s_walk_distance</strong> (<em>int</em>)</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -838,13 +879,13 @@ adjacency matrices from the hodge-laplacian
 typically higher-order adjacency matrices’ entries are
 typically positive.</p></li>
 <li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
-<li><p><strong>index</strong> (<em>boolean, optional, default False</em>) – list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix
+<li><p><strong>index</strong> (<em>bool, optional</em>) – list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix
 depending on the input dimension</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>down Laplacian</strong> (<em>scipy.sparse.csr.csr_matrix</em>)</p></li>
+<li><p><strong>down_laplacian</strong> (<em>scipy.sparse.csr.csr_matrix</em>)</p></li>
 <li><p><em>when index is true</em> – return also a list : list
 list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix
 depending on the input dimension</p></li>
@@ -882,6 +923,11 @@ depending on the input dimension</p></li>
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.from_networkx_graph">
 <span class="sig-name descname"><span class="pre">from_networkx_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">G</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Graph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.from_networkx_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.from_networkx_graph" title="Link to this definition">#</a></dt>
 <dd><p>Add edges and nodes from a graph G to self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>G</strong> (<em>nx.Graph</em>) – A NetworkX graph.</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cells_from</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">]],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -896,6 +942,11 @@ depending on the input dimension</p></li>
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.from_trimesh">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_trimesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#toponetx.classes.cell_complex.CellComplex" title="toponetx.classes.cell_complex.CellComplex"><span class="pre">CellComplex</span></a></span></span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.from_trimesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.from_trimesh" title="Link to this definition">#</a></dt>
 <dd><p>Convert from trimesh object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mesh</strong> (<em>trimesh.Trimesh</em>) – A trimesh object.</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">trimesh</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span><span class="p">(</span><span class="n">vertices</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span>
@@ -1030,7 +1081,7 @@ incident cell complex edges.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>s</strong> (<em>int</em>) – The width of the connections.</p></li>
-<li><p><strong>cells</strong> (<em>bool, optional, default=True</em>) – Determines if cells or nodes will be the vertices in the line graph.</p></li>
+<li><p><strong>cells</strong> (<em>bool, optional</em>) – Determines if cells or nodes will be the vertices in the line graph.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1078,7 +1129,7 @@ adjacency matrices from the hodge-laplacian
 higher-order adjacency matrices’ entries are
 typically positive.</p></li>
 <li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
-<li><p><strong>index</strong> (<em>boolean, default False</em>) – indicates whether to return the indices that define the Laplacian matrix</p></li>
+<li><p><strong>index</strong> (<em>bool, default False</em>) – indicates whether to return the indices that define the Laplacian matrix</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1106,7 +1157,7 @@ where the index dictionaries map from the entity (as <cite>Hashable</cite> or <c
 <li><p><strong>rank</strong> (<em>int</em>) – The rank for which an incidence matrix should be computed.</p></li>
 <li><p><strong>signed</strong> (<em>bool, default=True</em>) – Whether the returned incidence matrix should be signed (i.e., respect orientations) or unsigned.</p></li>
 <li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
-<li><p><strong>index</strong> (<em>boolean, optional, default False</em>) – If True return will include a dictionary of node uid : row number
+<li><p><strong>index</strong> (<em>bool, optional</em>) – If True return will include a dictionary of node uid : row number
 and cell uid : column number</p></li>
 </ul>
 </dd>
@@ -1170,13 +1221,13 @@ edges they are incident to.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>s</strong> (<em>int, optional, default: 1</em>)</p></li>
-<li><p><strong>cells</strong> (<em>boolean, optional, default: False</em>) – If True, will determine if s-cell-connected.
+<li><p><strong>s</strong> (<em>int, optional</em>)</p></li>
+<li><p><strong>cells</strong> (<em>bool, optional</em>) – If True, will determine if s-cell-connected.
 For s=1 s-cell-connected is the same as s-connected.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>is_connected</strong> (<em>boolean</em>)</p>
+<dd class="field-even"><p><strong>is_connected</strong> (<em>bool</em>)</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1276,11 +1327,12 @@ None : will not force the above.</p></li>
 <span class="sig-name descname"><span class="pre">node_diameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.node_diameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.node_diameters" title="Link to this definition">#</a></dt>
 <dd><p>Return the node diameters of the connected components in cell complex.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>list of the diameters of the s-components and</strong></p></li>
-<li><p><strong>list of the s-component nodes</strong></p></li>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>diameters</strong> (<em>list</em>) – list of the diameters of the s-components</p></li>
+<li><p><strong>components</strong> (<em>list</em>) – list of the s-component nodes</p></li>
 </ul>
+</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -1301,8 +1353,9 @@ share contain them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>int</em>) – The dimension of the cells to consider.</p></li>
 <li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
-<li><p><strong>index</strong> (<em>boolean, default=False</em>) – If True return will include a dictionary of node uid : row number
+<li><p><strong>index</strong> (<em>bool, default=False</em>) – If True return will include a dictionary of node uid : row number
 and cell uid : column number</p></li>
 </ul>
 </dd>
@@ -1340,7 +1393,7 @@ index of nodes, adjacency matrix, if ‘index’ is True</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
-<li><p><strong>index</strong> (<em>boolean, default=False</em>) – If True return will include a dictionary of node uid : row number
+<li><p><strong>index</strong> (<em>bool, default=False</em>) – If True return will include a dictionary of node uid : row number
 and cell uid : column number</p></li>
 </ul>
 </dd>
@@ -1364,7 +1417,7 @@ where the index dictionaries map from the entity (as <cite>Hashable</cite> or <c
 <dd><p>Compute number of cells in cell_set belonging to cell complex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cell_set</strong> (<em>an iterable of cells, optional, default: None</em>) – cells can be represented as a <cite>tuple</cite>, <cite>list</cite>, or <cite>Cell</cite> object
+<dd class="field-odd"><p><strong>cell_set</strong> (<em>an iterable of cells, optional</em>) – cells can be represented as a <cite>tuple</cite>, <cite>list</cite>, or <cite>Cell</cite> object
 If None, then return the number of cells in cell complex.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1379,7 +1432,7 @@ If None, then return the number of cells in cell complex.</p>
 <dd><p>Compute number of edges in edge_set belonging to cell complex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>edge_set</strong> (<em>an iterable of optional, default: None</em>) – If None, then return the number of edges in cell complex.</p>
+<dd class="field-odd"><p><strong>edge_set</strong> (<em>an iterable of edges, optional</em>) – If None, then return the number of edges in cell complex.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>number_of_edges</strong> (<em>int</em>) – The number of edges in edge_set belonging to cell complex.</p>
@@ -1393,7 +1446,7 @@ If None, then return the number of cells in cell complex.</p>
 <dd><p>Compute number of nodes in node_set belonging to cell complex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>node_set</strong> (<em>an iterable of nodes, optional, default: None</em>) – If None, then return the number of nodes in cell complex.</p>
+<dd class="field-odd"><p><strong>node_set</strong> (<em>an iterable of nodes, optional</em>) – If None, then return the number of nodes in cell complex.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>number_of_nodes</strong> (<em>int</em>) – Number of nodes in node_set belonging to cell complex.</p>
@@ -1421,7 +1474,7 @@ If None, then return the number of cells in cell complex.</p>
 <dd class="field-odd"><p><strong>cell</strong> (<em>cell’s node_set or Cell</em>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>Cell Complex</strong> (<em>CellComplex</em>)</p>
+<dd class="field-even"><p><strong>cell_complex</strong> (<em>CellComplex</em>)</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1437,7 +1490,7 @@ If None, then return the number of cells in cell complex.</p>
 <dd class="field-odd"><p><strong>cell_set</strong> (<em>iterable of hashables or RankedEntities.</em>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>cell complex</strong> (<em>CellComplex</em>)</p>
+<dd class="field-even"><p><strong>cell_complex</strong> (<em>CellComplex</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1454,11 +1507,6 @@ permutation.</p>
 <p class="admonition-title">Note</p>
 <p>Remove all 2d- cells that are homotopic (equivalent to each other)</p>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><em>None.</em></p>
-</dd>
-</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">toponetx</span> <span class="kn">import</span> <span class="n">CellComplex</span>
@@ -1502,7 +1550,7 @@ cells that contain the node.</p>
 <dd class="field-odd"><p><strong>node_set</strong> (<em>an iterable of hashables or Entities</em>) – Nodes in CX</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>cell complex</strong> (<em>Cell Complex</em>)</p>
+<dd class="field-even"><p><strong>cell_complex</strong> (<em>Cell Complex</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1528,7 +1576,7 @@ If True, all previous edges are kept.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>new cell complex</strong> (<em>CellComplex</em>)</p>
+<dd class="field-even"><p><strong>new_cell_complex</strong> (<em>CellComplex</em>)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1559,7 +1607,7 @@ the nodes referenced by node_set.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>new Cell Complex</strong> (<em>Cellcomplex</em>)</p>
+<dd class="field-even"><p><strong>new_cell_complex</strong> (<em>Cellcomplex</em>)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1582,8 +1630,8 @@ the nodes referenced by node_set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>s</strong> (<em>int, optional, default: 1</em>)</p></li>
-<li><p><strong>cells</strong> (<em>boolean, optional, cells=False</em>) – Determines if cell or node components are desired. Returns
+<li><p><strong>s</strong> (<em>int, optional</em>)</p></li>
+<li><p><strong>cells</strong> (<em>bool, optional</em>) – Determines if cell or node components are desired. Returns
 subcomplexes equal to the cell complex restricted to each set of nodes(cells) in the
 s-connected components or s-cell-connected components</p></li>
 <li><p><strong>return_singletons</strong> (<em>bool, optional</em>)</p></li>
@@ -1612,9 +1660,9 @@ s-cell(node) components of cell complex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>s</strong> (<em>int, optional, default: 1</em>)</p></li>
-<li><p><strong>cells</strong> (<em>boolean, optional, default: True</em>) – If True will return cell components, if False will return node components</p></li>
-<li><p><strong>return_singletons</strong> (<em>bool, optional, default : False</em>)</p></li>
+<li><p><strong>s</strong> (<em>int, optional</em>)</p></li>
+<li><p><strong>cells</strong> (<em>bool, optional</em>) – If True will return cell components, if False will return node components</p></li>
+<li><p><strong>return_singletons</strong> (<em>bool, optional</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1759,7 +1807,7 @@ or nested dict with (node1, node2) -&gt; (attribute -&gt; value) (if <cite>name 
 <li><p><strong>values</strong> (<em>dict</em>) – either contains cell -&gt; value (if <cite>name</cite> is specified)
 or nested dict with cell -&gt; (attribute -&gt; value) (if <cite>name == None</cite>)
 (where cell can be of any dimension)</p></li>
-<li><p><strong>name</strong> (<em>str or None</em>)</p></li>
+<li><p><strong>name</strong> (<em>str, optional</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1816,7 +1864,7 @@ or nested dict with node -&gt; (attribute -&gt; value) (if <cite>name == None</c
 <p>A singleton cell is a node of degree 0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>new clone of the Cell Complex</strong> (<em>Cellcomplex</em>)</p>
+<dd class="field-odd"><p><strong>clone_cell_complex</strong> (<em>Cellcomplex</em>)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1864,7 +1912,7 @@ The rank of an element in a cell complex is its dimension, so vertices have rank
 edges have rank 1, and faces have rank 2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>Combinatorial Complex</strong> (<em>CombinatorialComplex</em>)</p>
+<dd class="field-odd"><p><strong>combinatorial_complex</strong> (<em>CombinatorialComplex</em>)</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1883,6 +1931,11 @@ edges have rank 1, and faces have rank 2.</p>
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.to_hypergraph">
 <span class="sig-name descname"><span class="pre">to_hypergraph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.to_hypergraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.to_hypergraph" title="Link to this definition">#</a></dt>
 <dd><p>Convert to hypergraph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hypergraph</strong> (<em>Hypergraph</em>)</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
@@ -1907,13 +1960,13 @@ adjacency matrices from the hodge-laplacian
 typically higher-order adjacency matrices’ entries are
 typically positive.</p></li>
 <li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
-<li><p><strong>index</strong> (<em>boolean, optional, default False</em>) – list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix
+<li><p><strong>index</strong> (<em>bool, optional</em>) – list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix
 depending on the input dimension</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>up Laplacian</strong> (<em>scipy.sparse.csr.csr_matrix</em>)</p></li>
+<li><p><strong>up_laplacian</strong> (<em>scipy.sparse.csr.csr_matrix</em>)</p></li>
 <li><p><em>when index is true</em> – return also a list : list
 list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix
 depending on the input dimension</p></li>
