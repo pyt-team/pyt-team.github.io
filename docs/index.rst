@@ -1,7 +1,8 @@
 🌐 TopoX 🍩
 ===========
 
-`TopoX` is a Python package for computing on Topological Domains.
+`TopoX` is a Python package for computations, machine learning and deep learning on topological domains.
+
 Many natural systems as diverse as social networks and proteins are characterized by relational structure. This is the structure of interactions between
 components in the system, such as social interactions between individuals or electrostatic interactions between atoms.
 
@@ -44,6 +45,9 @@ To learn more about how topological domains are used in deep learning:
 
 Want to try it yourself? Check out the software librairies of the `TopoX` suite:
 
-- `TopoNetX <https://github.com/pyt-team/TopoNetX>`_: computing on topological domains.
-- `TopoEmbedX <https://github.com/pyt-team/TopoEmbedX>`_: representation learning on topological domains.
-- `TopoModelX <https://github.com/pyt-team/TopoModelX>`_: topological deep learning.
+- `TopoNetX <https://pyt-team.github.io/toponetx/index.html>`_: computing on topological domains.
+  - GitHub Repository: https://github.com/pyt-team/TopoNetX
+- `TopoEmbedX <https://pyt-team.github.io/topoembedx/index.html>`_: representation learning on topological domains.
+  - GitHub Repository: https://github.com/pyt-team/TopoEmbedX
+- `TopoModelX <https://pyt-team.github.io/topomodelx/index.html>`_: topological deep learning.
+  - GitHub Repository: https://github.com/pyt-team/TopoModelX
