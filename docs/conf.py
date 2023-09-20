@@ -56,7 +56,7 @@ nbsphinx_prolog = (
     <div class="admonition note">
       <p>Notebook source code:
         <a class="reference external" href="https://github.com/pyt-team/"""
-    r"""TopoNetX/blob/main/{{ docname|e }}">{{ docname|e }}</a>
+    r"""pyt-team.github.io/blob/main/{{ docname|e }}">{{ docname|e }}</a>
       </p>
     </div>
 
