@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 23, 2023, 12:57:37 AM"/>
+    <meta name="docbuild:last-update" content="Sep 23, 2023, 3:35:41 AM"/>
   </head>
   
   
@@ -649,8 +649,9 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : dict</span>
-<span class="sd">        Dictionary of cell attributes to set keyed by cell name.</span>
+<span class="sd">            Dictionary of cell attributes to set keyed by cell name.</span>
 <span class="sd">        name : str, optional</span>
+<span class="sd">           Attribute name</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -765,7 +766,16 @@ document.write(`
 
 
     <span class="k">def</span> <span class="nf">_add_nodes_of_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adding nodes of a hyperedge.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adding nodes of a hyperedge.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        hyperedge_ : frozenset of elements</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">hyperedge_</span><span class="p">:</span>
             <span class="k">if</span> <span class="mi">0</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1075,7 +1085,7 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; G.add_edge(0,3)</span>
 <span class="sd">        &gt;&gt;&gt; G.add_edge(0,4)</span>
 <span class="sd">        &gt;&gt;&gt; G.add_edge(1, 4)</span>
-<span class="sd">        &gt;&gt;&gt; CCC = CombinatrialComplex(cells=G)</span>
+<span class="sd">        &gt;&gt;&gt; CCC = CombinatorialComplex(cells=G)</span>
 <span class="sd">        &gt;&gt;&gt; CCC.adjacency_matrix(0, 1)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">via_rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1084,48 +1094,9 @@ document.write(`
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CombinatorialComplex.all_cell_to_node_codjacnecy_matrix">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.all_cell_to_node_codjacnecy_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the cell adjacency matrix.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, list, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-
-<span class="sd">        Return</span>
-<span class="sd">        ------</span>
-<span class="sd">          all cells adjacency_matrix : scipy.sparse.csr.csr_matrix</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
-            <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-
-            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">A</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.node_to_all_cell_adjacnecy_matrix">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_to_all_cell_adjacnecy_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the node adjacency matrix.&quot;&quot;&quot;</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">A</span></div>
-
-
 <div class="viewcode-block" id="CombinatorialComplex.coadjacency_matrix">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.coadjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coadjacency matrix.</span>
 
 <span class="sd">        The sparse weighted :term:`s-coadjacency matrix`</span>
@@ -1301,45 +1272,6 @@ document.write(`
         <span class="k">return</span> <span class="n">CCC</span></div>
 
 
-<div class="viewcode-block" id="CombinatorialComplex.is_connected">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.is_connected">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if combintorial complex is :term:`s-connected &lt;s-connected, s-node-connected&gt;`.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, list, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-
-<span class="sd">        cells: bool, default=False</span>
-<span class="sd">            If True, will determine if s-cell-connected.</span>
-<span class="sd">            For s=1 s-cell-connected is the same as s-connected.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        is_connected : bool</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        A CCC is s node connected if for any two nodes v0,vn</span>
-<span class="sd">        there exists a sequence of nodes v0,v1,v2,...,v(n-1),vn</span>
-<span class="sd">        such that every consecutive pair of nodes v(i),v(i+1)</span>
-<span class="sd">        share at least s cell.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CCC = CombinatorialComplex(cells=E)</span>
-<span class="sd">        &gt;&gt;&gt; CCC.is_connected()</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">A</span> <span class="o">=</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">B</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="CombinatorialComplex.singletons">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.singletons">[docs]</a>
     <span class="k">def</span> <span class="nf">singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1390,382 +1322,6 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="k">if</span> <span class="n">cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">singletons</span><span class="p">()]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.s_connected_components">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_connected_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">s_connected_components</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a generator for s-cell-connected components.</span>
-
-<span class="sd">        or the :term:`s-node-connected components &lt;s-connected component, s-node-connected component&gt;`.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, list, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-<span class="sd">        cells : bool, default=True</span>
-<span class="sd">            If True will return cell components, if False will return node components</span>
-<span class="sd">        return_singletons : bool, default=False</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        If cells=True, this method returns the s-cell-connected components as</span>
-<span class="sd">        lists of lists of cell uids.</span>
-<span class="sd">        An s-cell-component has the property that for any two cells e1 and e2</span>
-<span class="sd">        there is a sequence of cells starting with e1 and ending with e2</span>
-<span class="sd">        such that pairwise adjacent cells in the sequence intersect in at least</span>
-<span class="sd">        s nodes. If s=1 these are the path components of the CCC.</span>
-
-<span class="sd">        If cells=False this method returns s-node-connected components.</span>
-<span class="sd">        A list of sets of uids of the nodes which are s-walk connected.</span>
-<span class="sd">        Two nodes v1 and v2 are s-walk-connected if there is a</span>
-<span class="sd">        sequence of nodes starting with v1 and ending with v2 such that pairwise</span>
-<span class="sd">        adjacent nodes in the sequence share s cells. If s=1 these are the</span>
-<span class="sd">        path components of the combinatorial complex .</span>
-
-<span class="sd">        Yields</span>
-<span class="sd">        ------</span>
-<span class="sd">        s_connected_components : iterator</span>
-<span class="sd">            Iterator returns sets of uids of the cells (or nodes) in the s-cells(node)</span>
-<span class="sd">            components of CCC.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_to_all_node_coadjacency_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">return_singletons</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">yield</span> <span class="p">{</span><span class="n">coldict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">A</span><span class="p">,</span> <span class="n">rowdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacency_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">return_singletons</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                <span class="k">yield</span> <span class="p">{</span><span class="n">rowdict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.s_component_subcomplexes">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_component_subcomplexes">[docs]</a>
-    <span class="k">def</span> <span class="nf">s_component_subcomplexes</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a generator for the induced subgraphs of s_connected components.</span>
-
-<span class="sd">        Removes singletons unless return_singletons is set to True.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, list, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-<span class="sd">        cells : bool, default=False</span>
-<span class="sd">            Determines if cell or node components are desired. Returns</span>
-<span class="sd">            subgraphs equal to the CCC restricted to each set of nodes(cells) in the</span>
-<span class="sd">            s-connected components or s-cell-connected components</span>
-<span class="sd">        return_singletons : bool, optional</span>
-
-<span class="sd">        Yields</span>
-<span class="sd">        ------</span>
-<span class="sd">        s_component_subgraphs : iterator</span>
-<span class="sd">            Iterator returns subgraphs generated by the cells (or nodes) in the</span>
-<span class="sd">            s-cell(node) components.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">s_components</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.s_components">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.s_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">s_components</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components.</span>
-
-<span class="sd">        Same as s_connected_components.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        s_connected_components</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span>
-            <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span>
-        <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.connected_components">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.connected_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components.</span>
-
-<span class="sd">        Same as :meth:`s_connected_components`,</span>
-<span class="sd">        with s=1, but nodes are returned</span>
-<span class="sd">        by default. Return iterator.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        s_connected_components</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.connected_component_subcomplexes">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.connected_component_subcomplexes">[docs]</a>
-    <span class="k">def</span> <span class="nf">connected_component_subcomplexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-component subgraphs with s=1.</span>
-
-<span class="sd">        Same as :meth:`s_component_subgraphs` with s=1.</span>
-
-<span class="sd">        Returns iterator.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        s_component_subgraphs</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_component_subgraphs</span><span class="p">(</span><span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.components">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.components">[docs]</a>
-    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components for s=1.</span>
-
-<span class="sd">        Same as :meth:`s_connected_components` with s=1.</span>
-
-<span class="sd">        But nodes are returned</span>
-<span class="sd">        by default. Return iterator.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        s_connected_components</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.component_subgraphs">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.component_subgraphs">[docs]</a>
-    <span class="k">def</span> <span class="nf">component_subgraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-component subgraphs wth s=1.</span>
-
-<span class="sd">        Same as :meth:`s_components_subgraphs` with s=1. Returns iterator.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        s_component_subgraphs</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_component_subgraphs</span><span class="p">(</span><span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.node_diameters">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.node_diameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">node_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return node diameters of the connected components.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, list, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list of the diameters of the s-components and</span>
-<span class="sd">        list of the s-component nodes</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="n">diamc</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
-            <span class="n">temp</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
-                <span class="n">temp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">coldict</span><span class="p">[</span><span class="n">e</span><span class="p">])</span>
-            <span class="n">comps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
-            <span class="n">diams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diamc</span><span class="p">)</span>
-        <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">diams</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">diams</span><span class="p">[</span><span class="n">loc</span><span class="p">],</span> <span class="n">diams</span><span class="p">,</span> <span class="n">comps</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.cell_diameters">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_diameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">cell_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cell diameters of the s_cell_connected component subgraphs.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, list, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        maximum diameter : int</span>
-<span class="sd">        list of diameters : list</span>
-<span class="sd">            List of cell_diameters for s-cell component subgraphs in CCC</span>
-<span class="sd">        list of component : list</span>
-<span class="sd">            List of the cell uids in the s-cell component subgraphs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span><span class="p">,</span> <span class="n">coldict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="n">diamc</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
-            <span class="n">temp</span> <span class="o">=</span> <span class="p">{</span><span class="n">coldict</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span>
-            <span class="n">comps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
-            <span class="n">diams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diamc</span><span class="p">)</span>
-        <span class="n">loc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">diams</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">diams</span><span class="p">[</span><span class="n">loc</span><span class="p">],</span> <span class="n">diams</span><span class="p">,</span> <span class="n">comps</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.diameter">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.diameter">[docs]</a>
-    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the length of the longest shortest s-walk between nodes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        int</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TopoNetXError</span>
-<span class="sd">            If CCC is not s-cell-connected</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Two nodes are s-adjacent if they share s cells.</span>
-<span class="sd">        Two nodes v_start and v_end are s-walk connected if there is a sequence of</span>
-<span class="sd">        nodes v_start, v_1, v_2, ... v_n-1, v_end such that consecutive nodes</span>
-<span class="sd">        are s-adjacent. If the graph is not connected, an error will be raised.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__shortstr__</span><span class="si">}</span><span class="s2"> is not s-connected. s=</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.cell_diameter">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_diameter">[docs]</a>
-    <span class="k">def</span> <span class="nf">cell_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return length of the longest shortest s-walk between cells.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, default=1</span>
-<span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-
-<span class="sd">        Return</span>
-<span class="sd">        ------</span>
-<span class="sd">        int</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TopoNetXError</span>
-<span class="sd">            If combinatorial complex is not s-cell-connected</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Two cells are s-adjacent if they share s nodes.</span>
-<span class="sd">        Two nodes e_start and e_end are s-walk connected if there is a sequence of</span>
-<span class="sd">        cells e_start, e_1, e_2, ... e_n-1, e_end such that consecutive cells</span>
-<span class="sd">        are s-adjacent. If the graph is not connected, an error will be raised.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CCC is not s-connected. s=</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.distance">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.distance">[docs]</a>
-    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shortest s-walk distance between two nodes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        source : node.uid or node</span>
-<span class="sd">            a node in the CCC</span>
-<span class="sd">        target : node.uid or node</span>
-<span class="sd">            a node in the CCC</span>
-<span class="sd">        s : int</span>
-<span class="sd">            the number of cells</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        int</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        cell_distance</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The s-distance is the shortest s-walk length between the nodes.</span>
-<span class="sd">        An s-walk between nodes is a sequence of nodes that pairwise share</span>
-<span class="sd">        at least s cells. The length of the shortest s-walk is 1 less than</span>
-<span class="sd">        the number of nodes in the path sequence.</span>
-
-<span class="sd">        Uses the networkx shortest_path_length method on the graph</span>
-<span class="sd">        generated by the s-adjacency matrix.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="CombinatorialComplex.cell_distance">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.cell_distance">[docs]</a>
-    <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the shortest s-walk distance between two cells.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        source : cell.uid or cell</span>
-<span class="sd">            an cell in the combinatorial complex</span>
-<span class="sd">        target : cell.uid or cell</span>
-<span class="sd">            an cell in the combinatorial complex</span>
-<span class="sd">        s : int, default=1</span>
-<span class="sd">            the number of intersections between pairwise consecutive cells</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        int</span>
-<span class="sd">            The shortest s-walk cell distance between `source` and `target`.</span>
-<span class="sd">            A shortest s-walk is computed as a sequence of cells,</span>
-<span class="sd">            the s-walk distance is the number of cells in the sequence</span>
-<span class="sd">            minus 1. If no such path exists returns np.inf.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        distance</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The s-distance is the shortest s-walk length between the cells.</span>
-<span class="sd">        An s-walk between cells is a sequence of cells such that consecutive pairwise</span>
-<span class="sd">        cells intersect in at least s nodes. The length of the shortest s-walk is 1 less than</span>
-<span class="sd">        the number of cells in the path sequence.</span>
-
-<span class="sd">        Uses the networkx shortest_path_length method on the graph</span>
-<span class="sd">        generated by the s-cell_adjacency matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
 </div>
 
 </pre></div>

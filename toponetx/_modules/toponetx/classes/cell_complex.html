@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 23, 2023, 12:57:37 AM"/>
+    <meta name="docbuild:last-update" content="Sep 23, 2023, 3:35:41 AM"/>
   </head>
   
   
@@ -354,7 +354,10 @@ document.write(`
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csc_matrix</span>
 
 <span class="kn">from</span> <span class="nn">toponetx.classes.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.combinatorial_complex</span> <span class="kn">import</span> <span class="n">CombinatorialComplex</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes.combinatorial_complex</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ColoredHyperGraph</span><span class="p">,</span>
+    <span class="n">CombinatorialComplex</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">CellView</span>
 <span class="kn">from</span> <span class="nn">toponetx.exception</span> <span class="kn">import</span> <span class="n">TopoNetXError</span>
@@ -1748,7 +1751,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">node_to_all_cell_incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Nodes/cells incidence matrix for the indexed by nodes X cells.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Nodes/all cells incidence matrix for the indexed by nodes X cells.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1789,9 +1792,6 @@ document.write(`
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Nodes s-adjacency matrix where adjacency is computed with respect to 2-cells.</span>
 
-<span class="sd">        Two nodes are s-adjacent iff there exists a cell (1 dimensional or 2 dimensional)</span>
-<span class="sd">        share contain them.</span>
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        s : int</span>
@@ -1807,18 +1807,24 @@ document.write(`
 <span class="sd">        scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</span>
 <span class="sd">            The adjacency matrix, if `index` is False, otherwise</span>
 <span class="sd">            index of nodes, adjacency matrix, if &#39;index&#39; is True</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Two nodes are s-adjacent iff there exists a cell (1 dimensional or 2 dimensional)</span>
+<span class="sd">        share contain them.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 5], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.node_to_all_cell_adjacency_matrix().todense()</span>
+<span class="sd">        &gt;&gt;&gt; CC.node_to_all_cell_adjacnecy_matrix().todense()</span>
 <span class="sd">        matrix([[0., 2., 1., 2., 0.],</span>
 <span class="sd">                [2., 0., 2., 1., 0.],</span>
 <span class="sd">                [1., 2., 0., 3., 2.],</span>
 <span class="sd">                [2., 1., 3., 0., 2.],</span>
 <span class="sd">                [0., 0., 2., 2., 0.]])</span>
-<span class="sd">        &gt;&gt;&gt; # observe the contrast with the regular adjacency matrix</span>
+<span class="sd">        &gt;&gt;&gt; # observe the contrast with the regular 0-adjacency matrix</span>
 <span class="sd">        &gt;&gt;&gt; CC.adjacency_matrix(0).todense()</span>
 <span class="sd">        matrix([[0., 1., 0., 1., 0.],</span>
 <span class="sd">                [1., 0., 1., 0., 0.],</span>
@@ -1838,15 +1844,13 @@ document.write(`
             <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CellComplex.all_cell_to_node_codjacnecy_matrix">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.all_cell_to_node_codjacnecy_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span>
+<div class="viewcode-block" id="CellComplex.all_cell_to_node_coadjacnecy_matrix">
+<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.all_cell_to_node_coadjacnecy_matrix">[docs]</a>
+    <span class="k">def</span> <span class="nf">all_cell_to_node_coadjacnecy_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;All cells s-coadjacency matrix where coadjacency is computed with respect to 0-cells.</span>
 
-<span class="sd">        Two cells (1 dimensional or 2 dimensional) are s-coadjacent iff</span>
-<span class="sd">        they share a vertex</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        s : int</span>
@@ -1862,6 +1866,18 @@ document.write(`
 <span class="sd">        scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</span>
 <span class="sd">            The adjacency matrix, if `index` is False, otherwise</span>
 <span class="sd">            index of cells, adjacency matrix, if &#39;index&#39; is True</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Two cells (1 dimensional or 2 dimensional) are s-coadjacent iff</span>
+<span class="sd">        they share a vertex.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        &gt;&gt;&gt; CX = CellComplex([ [1,2,3,4],[2,3,6]])</span>
+<span class="sd">        &gt;&gt;&gt; index, m = CX.all_cell_to_node_coadjacnecy_matrix(s=1,index=True)</span>
+<span class="sd">        &gt;&gt;&gt; # m_ij iff cell i is coadjacency to cell j. Dimension of cells i,j are arbirary</span>
+<span class="sd">        &gt;&gt;&gt; print(m.todense(),index)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
             <span class="n">node_index</span><span class="p">,</span> <span class="n">cell_index</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_incidence_matrix</span><span class="p">(</span>
@@ -2486,7 +2502,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        combinatorial_complex : CombinatorialComplex</span>
+<span class="sd">        CombinatorialComplex</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2507,6 +2523,40 @@ document.write(`
             <span class="n">CCC</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">CCC</span></div>
+
+
+<div class="viewcode-block" id="CellComplex.to_colored_hypergraph">
+<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.to_colored_hypergraph">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_colored_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to colored hypergraph.</span>
+
+<span class="sd">        A cell complex is a type of combinatorial complex.</span>
+<span class="sd">        The rank of an element in a cell complex is its dimension, so vertices have rank 0,</span>
+<span class="sd">        edges have rank 1, and faces have rank 2.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        combinatorial_complex : CombinatorialComplex</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2,weight = 1)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,5],rank=2,weight = 4)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7,8],rank=2,weight = 0)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_node(0,color=&#39;red&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CCC = CC.to_colored_hypergraph()</span>
+<span class="sd">        &gt;&gt;&gt; CCC.cells</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">CHG</span> <span class="o">=</span> <span class="n">ColoredHyperGraph</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+            <span class="n">CHG</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">CHG</span></div>
 
 
 <div class="viewcode-block" id="CellComplex.to_hypergraph">
@@ -2673,419 +2723,11 @@ document.write(`
                 <span class="s2">&quot;s must be a positive integer larger than 1, got type of s None.&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_coadjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">M</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.s_connected_components">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_connected_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">s_connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return generator for the s-connected components.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, optional</span>
-<span class="sd">        cells : bool, optional</span>
-<span class="sd">            If True will return cell components, if False will return node components</span>
-<span class="sd">        return_singletons : bool, optional</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        If cells=True, this method returns the s-cell-connected components as</span>
-<span class="sd">        lists of lists of cell uids.</span>
-<span class="sd">        An s-cell-component has the property that for any two cells e1 and e2</span>
-<span class="sd">        there is a sequence of cells starting with e1 and ending with e2</span>
-<span class="sd">        such that pairwise adjacent cells in the sequence intersect in at least</span>
-<span class="sd">        s nodes. If s=1 these are the path components of the cell complex.</span>
-
-<span class="sd">        If cells=False this method returns s-node-connected components.</span>
-<span class="sd">        A list of sets of uids of the nodes which are s-walk connected.</span>
-<span class="sd">        Two nodes v1 and v2 are s-walk-connected if there is a</span>
-<span class="sd">        sequence of nodes starting with v1 and ending with v2 such that pairwise</span>
-<span class="sd">        adjacent nodes in the sequence share s cells. If s=1 these are the</span>
-<span class="sd">        path components of the cell complex .</span>
-
-<span class="sd">        Yields</span>
-<span class="sd">        ------</span>
-<span class="sd">        s_connected_components : iterator</span>
-<span class="sd">            Iterator returns sets of uids of the cells (or nodes) in the s-cells(node)</span>
-<span class="sd">            components of the cell complex.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.s_connected_components(s=1,cells=False))</span>
-<span class="sd">        &gt;&gt;&gt; #  [{2, 3, 4}, {5, 6, 7}]</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.s_connected_components(s=1,cells=False))</span>
-<span class="sd">        &gt;&gt;&gt; # [{2, 3, 4, 5, 6, 7}]</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="n">cell_dict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">cell_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cell_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-            <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">return_singletons</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">yield</span> <span class="p">{</span><span class="n">cell_dict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">node_dict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">node_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">node_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-            <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">return_singletons</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                <span class="k">yield</span> <span class="p">{</span><span class="n">node_dict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.s_component_subcomplexes">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.s_component_subcomplexes">[docs]</a>
-    <span class="k">def</span> <span class="nf">s_component_subcomplexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a generator for the induced subcomplexes of s_connected components.</span>
-
-<span class="sd">        Removes singletons unless return_singletons is set to True.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, optional</span>
-<span class="sd">        cells : bool, optional</span>
-<span class="sd">            Determines if cell or node components are desired. Returns</span>
-<span class="sd">            subcomplexes equal to the cell complex restricted to each set of nodes(cells) in the</span>
-<span class="sd">            s-connected components or s-cell-connected components</span>
-<span class="sd">        return_singletons : bool, optional</span>
-
-<span class="sd">        Yields</span>
-<span class="sd">        ------</span>
-<span class="sd">        s_component_subcomplexes : iterator</span>
-<span class="sd">            Iterator returns subcomplexes generated by the cells (or nodes) in the</span>
-<span class="sd">            s-cell(node) components of cell complex.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.s_component_subcomplexes(s=1,cells=False))</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.s_component_subcomplexes(s=1,cells=False))</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span>
-                <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span>
-            <span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_nodes</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.connected_components">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.connected_components">[docs]</a>
-    <span class="k">def</span> <span class="nf">connected_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-connected components with s=1.</span>
-
-<span class="sd">        Same as s_connected_component` with s=1, but nodes returned.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        s_connected_components : iterator</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        s_connected_components</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.connected_components(s=1,cells=False))</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.connected_components(s=1,cells=False))</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.connected_component_subcomplexes">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.connected_component_subcomplexes">[docs]</a>
-    <span class="k">def</span> <span class="nf">connected_component_subcomplexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute connected component subgraphs with s=1.</span>
-
-<span class="sd">        Same as :meth:`s_component_subcomplexes` with s=1.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        subgraphs: iterator</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        s_component_subcomplexes</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.connected_component_subcomplexes())</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.connected_component_subcomplexes())</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_component_subcomplexes</span><span class="p">(</span><span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.node_diameters">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.node_diameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">node_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the node diameters of the connected components in cell complex.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        diameters : list</span>
-<span class="sd">            list of the diameters of the s-components</span>
-<span class="sd">        components : list</span>
-<span class="sd">            list of the s-component nodes</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.node_diameters())</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">coldict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">coldict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">coldict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="n">diamc</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
-            <span class="n">temp</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
-                <span class="n">temp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">coldict</span><span class="p">[</span><span class="n">e</span><span class="p">])</span>
-            <span class="n">comps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
-            <span class="n">diams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diamc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">diams</span><span class="p">,</span> <span class="n">comps</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.cell_diameters">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_diameters">[docs]</a>
-    <span class="k">def</span> <span class="nf">cell_diameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the cell diameters of the s_cell_connected component subgraphs.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, optional</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list of diameters : list</span>
-<span class="sd">            List of cell_diameters for s-cell component subcomplexes in the cell complex.</span>
-
-<span class="sd">        list of component : list</span>
-<span class="sd">            List of the cell uids in the s-cell component subcomplexes.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; list(CC.cell_diameters())</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">coldict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">coldict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">coldict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="n">diams</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">comps</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="n">diamc</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
-            <span class="n">temp</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
-                <span class="n">temp</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">coldict</span><span class="p">[</span><span class="n">e</span><span class="p">])</span>
-            <span class="n">comps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
-            <span class="n">diams</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diamc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">diams</span><span class="p">,</span> <span class="n">comps</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.diameter">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.diameter">[docs]</a>
-    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return length of the longest shortest s-walk between nodes.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, optional</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        diameter : int</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TopoNetXError</span>
-<span class="sd">            If the cell complex is not s-cell-connected</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Two nodes are s-adjacent if they share s cells.</span>
-<span class="sd">        Two nodes v_start and v_end are s-walk connected if there is a sequence of</span>
-<span class="sd">        nodes v_start, v_1, v_2, ... v_n-1, v_end such that consecutive nodes</span>
-<span class="sd">        are s-adjacent. If the cell complex is not connected, an error will be raised.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">()</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="s2">&quot;cc is not connected.&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.cell_diameter">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_diameter">[docs]</a>
-    <span class="k">def</span> <span class="nf">cell_diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the length of the longest shortest s-walk between cells.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        s : int, optional</span>
-
-<span class="sd">        Return</span>
-<span class="sd">        ------</span>
-<span class="sd">        cell_diameter : int</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TopoNetXError</span>
-<span class="sd">            If cell complex is not s-cell-connected</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        Two cells are s-coadjacent if they share s nodes.</span>
-<span class="sd">        Two nodes e_start and e_end are s-walk connected if there is a sequence of</span>
-<span class="sd">        cells (one or two dimensional) e_start, e_1, e_2, ... e_n-1, e_end such that consecutive cells</span>
-<span class="sd">        are s-coadjacent. If the cell complex is not connected, an error will be raised.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">()</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">diameter</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell complex is not s-connected. s=</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.distance">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.distance">[docs]</a>
-    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shortest s-walk distance between two nodes in the cell complex.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        source : node.uid or node</span>
-<span class="sd">            a node in the cell complex</span>
-<span class="sd">        target : node.uid or node</span>
-<span class="sd">            a node in the cell complex</span>
-<span class="sd">        s : int</span>
-<span class="sd">            the number of cells</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        s_walk_distance : int</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        cell_distance</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The s-distance is the shortest s-walk length between the nodes.</span>
-<span class="sd">        An s-walk between nodes is a sequence of nodes that pairwise share</span>
-<span class="sd">        at least s cells. The length of the shortest s-walk is 1 less than</span>
-<span class="sd">        the number of nodes in the path sequence.</span>
-
-<span class="sd">        Uses the networkx shortest_path_length method on the graph</span>
-<span class="sd">        generated by the s-adjacency matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">elements</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">elements</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-        <span class="n">rowdict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path_length</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">rowdict</span><span class="p">[</span><span class="n">source</span><span class="p">],</span> <span class="n">rowdict</span><span class="p">[</span><span class="n">target</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">path</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">-path between </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span></div>
-
-
-<div class="viewcode-block" id="CellComplex.cell_distance">
-<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.cell_distance">[docs]</a>
-    <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the shortest s-walk distance between two cells in the cell complex.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        source : cell.uid or cell</span>
-<span class="sd">            a cell in the cell complex</span>
-<span class="sd">        target : cell.uid or cell</span>
-<span class="sd">            a cell in the cell complex</span>
-<span class="sd">        s : int</span>
-<span class="sd">            the number of intersections between pairwise consecutive cells</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        int</span>
-<span class="sd">            Shortest s-walk cell distance between `source` and `target`.</span>
-<span class="sd">            A shortest s-walk is computed as a sequence of cells,</span>
-<span class="sd">            the s-walk distance is the number of cells in the sequence</span>
-<span class="sd">            minus 1. If no such path exists returns np.inf.</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        distance</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The s-distance is the shortest s-walk length between the cells.</span>
-<span class="sd">        An s-walk between cells is a sequence of cells such that consecutive pairwise</span>
-<span class="sd">        cells intersect in at least s nodes. The length of the shortest s-walk is 1 less than</span>
-<span class="sd">        the number of cells in the path sequence.</span>
-
-<span class="sd">        Uses the networkx shortest_path_length method on the graph</span>
-<span class="sd">        generated by the s-cell_adjacency matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">elements</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">elements</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">source</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
-        <span class="n">cell_dict</span><span class="p">,</span> <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_codjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">path_distance</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">shortest_path_length</span><span class="p">(</span>
-                <span class="n">G</span><span class="p">,</span> <span class="n">cell_dict</span><span class="p">[</span><span class="n">source</span><span class="p">],</span> <span class="n">cell_dict</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="n">path_distance</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">-path between </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span></div>
 
 
 <div class="viewcode-block" id="CellComplex.from_networkx_graph">
