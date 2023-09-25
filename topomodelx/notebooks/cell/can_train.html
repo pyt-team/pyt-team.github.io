@@ -51,7 +51,7 @@
     <link rel="prev" title="Tutorials" href="../../tutorials/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -337,7 +337,6 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hnhn_train.html">Train a Hypergraph Networks with Hyperedge Neurons (HNHN)</a></li>
 
 
@@ -347,7 +346,6 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hypergat_train.html">Train a Hypergraph Neural Network</a></li>
-
 
 
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hypersage_train.html">Train a Hypersage TNN</a></li>
@@ -569,7 +567,8 @@ end{align*}`</p>
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.can_layer</span> <span class="kn">import</span> <span class="n">CANLayer</span><span class="p">,</span> <span class="n">MultiHeadLiftLayer</span><span class="p">,</span> <span class="n">PoolLayer</span>
+
+<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.can</span> <span class="kn">import</span> <span class="n">CAN</span>
 </pre></div>
 </div>
 </div>
@@ -685,6 +684,17 @@ Label of 0th cell complex: 1.
 <span class="nb">print</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;The dimension of input features on nodes, edges and faces are: </span><span class="si">{</span><span class="n">in_channels_0</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">in_channels_1</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">in_channels_2</span><span class="si">}</span><span class="s2">.&quot;</span>
 <span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">CAN</span><span class="p">(</span>
+    <span class="n">in_channels_0</span><span class="p">,</span>
+    <span class="n">in_channels_1</span><span class="p">,</span>
+    <span class="mi">32</span><span class="p">,</span>
+    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">heads</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">att_lift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -696,146 +706,22 @@ Label of 0th cell complex: 1.
 The dimension of input features on nodes, edges and faces are: 7, 4 and 5.
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CAN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">in_channels_0</span><span class="p">,</span>
-        <span class="n">in_channels_1</span><span class="p">,</span>
-        <span class="n">out_channels</span><span class="p">,</span>
-        <span class="n">num_classes</span><span class="p">,</span>
-        <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-        <span class="n">heads</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">concat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">skip_connection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">att_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>
-        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">att_lift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        CAN (Cell Attention Network) module for graph classification.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            in_channels_0 (int): Number of input channels for the node-level input.</span>
-<span class="sd">            in_channels_1 (int): Number of input channels for the edge-level input.</span>
-<span class="sd">            out_channels (int): Number of output channels.</span>
-<span class="sd">            num_classes (int): Number of output classes.</span>
-<span class="sd">            dropout (float, optional): Dropout probability. Default is 0.5.</span>
-<span class="sd">            heads (int, optional): Number of attention heads. Default is 3.</span>
-<span class="sd">            concat (bool, optional): Whether to concatenate the output channels of attention heads. Default is True.</span>
-<span class="sd">            skip_connection (bool, optional): Whether to use skip connections. Default is True.</span>
-<span class="sd">            att_activation (torch.nn.Module, optional): Activation function for attention mechanism. Default is torch.nn.LeakyReLU(0.2).</span>
-<span class="sd">            n_layers (int, optional): Number of CAN layers. Default is 2.</span>
-<span class="sd">            att_lift (bool, optional): Whether to apply a lift the signal from node-level to edge-level input. Default is True.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">att_lift</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lift_layer</span> <span class="o">=</span> <span class="n">MultiHeadLiftLayer</span><span class="p">(</span>
-                <span class="n">in_channels_0</span><span class="o">=</span><span class="n">in_channels_0</span><span class="p">,</span>
-                <span class="n">heads</span><span class="o">=</span><span class="n">in_channels_0</span><span class="p">,</span>
-                <span class="n">signal_lift_dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">in_channels_1</span> <span class="o">=</span> <span class="n">in_channels_1</span> <span class="o">+</span> <span class="n">in_channels_0</span>
-
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">CANLayer</span><span class="p">(</span>
-                <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels_1</span><span class="p">,</span>
-                <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
-                <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
-                <span class="n">concat</span><span class="o">=</span><span class="n">concat</span><span class="p">,</span>
-                <span class="n">skip_connection</span><span class="o">=</span><span class="n">skip_connection</span><span class="p">,</span>
-                <span class="n">att_activation</span><span class="o">=</span><span class="n">att_activation</span><span class="p">,</span>
-                <span class="n">aggr_func</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
-                <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">CANLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">out_channels</span> <span class="o">*</span> <span class="n">heads</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
-                    <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
-                    <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
-                    <span class="n">concat</span><span class="o">=</span><span class="n">concat</span><span class="p">,</span>
-                    <span class="n">skip_connection</span><span class="o">=</span><span class="n">skip_connection</span><span class="p">,</span>
-                    <span class="n">att_activation</span><span class="o">=</span><span class="n">att_activation</span><span class="p">,</span>
-                    <span class="n">aggr_func</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
-                    <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">PoolLayer</span><span class="p">(</span>
-                    <span class="n">k_pool</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-                    <span class="n">in_channels_0</span><span class="o">=</span><span class="n">out_channels</span> <span class="o">*</span> <span class="n">heads</span><span class="p">,</span>
-                    <span class="n">signal_pool_activation</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">(),</span>
-                    <span class="n">readout</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">heads</span> <span class="o">*</span> <span class="n">out_channels</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">neighborhood_0_to_0</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span>
-    <span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;lift_layer&quot;</span><span class="p">):</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lift_layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">neighborhood_0_to_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">PoolLayer</span><span class="p">):</span>
-                <span class="n">x_1</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span>
-                    <span class="n">x_1</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">,</span> <span class="n">upper_neighborhood</span><span class="p">)</span>
-                <span class="n">x_1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
-
-        <span class="c1"># max pooling over all nodes in each graph</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">x_1</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="c1"># Feed-Foward Neural Network to predict the graph label</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-
-        <span class="k">return</span> <span class="n">out</span>
-</pre></div>
-</div>
-</div>
 </section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, initialize loss, and specify an optimizer. We first try it without any attention mechanism.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CAN</span><span class="p">(</span>
-    <span class="n">in_channels_0</span><span class="p">,</span>
-    <span class="n">in_channels_1</span><span class="p">,</span>
-    <span class="mi">32</span><span class="p">,</span>
-    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">heads</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="n">att_lift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
 <span class="n">model</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [6]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -880,7 +766,7 @@ CAN(
 </div>
 <p>We split the dataset into train and test sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.3</span>
@@ -900,7 +786,7 @@ CAN(
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -972,31 +858,23 @@ CAN(
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 0.6234 Train_acc: 0.6794
+Epoch: 1 loss: 0.6251 Train_acc: 0.6794
 Test_acc: 0.5965
-Epoch: 2 loss: 0.6047 Train_acc: 0.6947
+Epoch: 2 loss: 0.6007 Train_acc: 0.6947
 Test_acc: 0.5965
-Epoch: 3 loss: 0.5953 Train_acc: 0.6947
+Epoch: 3 loss: 0.6094 Train_acc: 0.6947
 Test_acc: 0.5965
-Epoch: 4 loss: 0.5879 Train_acc: 0.7099
-Test_acc: 0.5614
-Epoch: 5 loss: 0.5801 Train_acc: 0.7099
+Epoch: 4 loss: 0.5881 Train_acc: 0.6947
+Test_acc: 0.5965
+Epoch: 5 loss: 0.5885 Train_acc: 0.7099
 Test_acc: 0.6316
-Epoch: 6 loss: 0.5755 Train_acc: 0.7405
-Test_acc: 0.7544
-Epoch: 7 loss: 0.5624 Train_acc: 0.7405
-Test_acc: 0.7544
-Epoch: 8 loss: 0.5565 Train_acc: 0.7405
-Test_acc: 0.7719
+Epoch: 6 loss: 0.5685 Train_acc: 0.7252
+Test_acc: 0.6316
+Epoch: 7 loss: 0.5792 Train_acc: 0.7176
+Test_acc: 0.6491
+Epoch: 8 loss: 0.5614 Train_acc: 0.7405
+Test_acc: 0.7368
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </div>
 </section>
 

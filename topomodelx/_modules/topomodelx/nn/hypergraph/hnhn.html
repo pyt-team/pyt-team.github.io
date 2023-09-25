@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -394,6 +394,79 @@ document.write(`
 
 <div class="viewcode-block" id="HNHN.forward">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/hnhn.html#topomodelx.nn.hypergraph.hnhn.HNHN.forward">[docs]</a>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_0 : torch.Tensor</span>
+<span class="sd">            shape = [n_nodes, channels_node]</span>
+<span class="sd">            Hypernode features.</span>
+
+<span class="sd">        x_1 : torch.Tensor</span>
+<span class="sd">            shape = [n_nodes, channels_edge]</span>
+<span class="sd">            Hyperedge features.</span>
+
+<span class="sd">        incidence_1 : tensor</span>
+<span class="sd">            shape = [n_nodes, n_edges]</span>
+<span class="sd">            Boundary matrix of rank 1.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        logits : torch.Tensor</span>
+<span class="sd">            The predicted node logits</span>
+<span class="sd">            shape = [n_nodes, n_classes]</span>
+<span class="sd">        classes : torch.Tensor</span>
+<span class="sd">            The predicted node class</span>
+<span class="sd">            shape = [n_nodes]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">)</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logits</span><span class="p">,</span> <span class="n">classes</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HNHNNetwork">
+<a class="viewcode-back" href="../../../../api/nn/hypergraph/hnhn.html#topomodelx.nn.hypergraph.hnhn.HNHNNetwork">[docs]</a>
+<span class="k">class</span> <span class="nc">HNHNNetwork</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hypergraph Networks with Hyperedge Neurons. Implementation for multiclass node classification.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    channels_node : int</span>
+<span class="sd">        Dimension of node features.</span>
+<span class="sd">    channels_edge : int</span>
+<span class="sd">        Dimension of edge features.</span>
+<span class="sd">    incidence_1 : torch.sparse</span>
+<span class="sd">        Incidence matrix mapping edges to nodes (B_1).</span>
+<span class="sd">        shape=[n_nodes, n_edges]</span>
+<span class="sd">    n_classes: int</span>
+<span class="sd">        Number of classes</span>
+<span class="sd">    n_layers : int</span>
+<span class="sd">        Number of HNHN message passing layers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">channels_edge</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">HNHNLayer</span><span class="p">(</span>
+                    <span class="n">channels_node</span><span class="o">=</span><span class="n">channels_node</span><span class="p">,</span>
+                    <span class="n">channels_edge</span><span class="o">=</span><span class="n">channels_edge</span><span class="p">,</span>
+                    <span class="n">incidence_1</span><span class="o">=</span><span class="n">incidence_1</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_node</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HNHNNetwork.forward">
+<a class="viewcode-back" href="../../../../api/nn/hypergraph/hnhn.html#topomodelx.nn.hypergraph.hnhn.HNHNNetwork.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
 

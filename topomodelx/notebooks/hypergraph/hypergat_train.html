@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Hypergraph Network with Hyperedge Neurons (HNHN)" href="hnhn_train_bis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -337,7 +337,6 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="hnhn_train.html">Train a Hypergraph Networks with Hyperedge Neurons (HNHN)</a></li>
 
 
@@ -347,7 +346,6 @@ document.write(`
 
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Train a Hypergraph Neural Network</a></li>
-
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypersage_train.html">Train a Hypersage TNN</a></li>
@@ -511,7 +509,8 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.hypergat_layer</span> <span class="kn">import</span> <span class="n">HyperGATLayer</span>
+
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.hypergat</span> <span class="kn">import</span> <span class="n">HyperGAT</span>
 </pre></div>
 </div>
 </div>
@@ -637,69 +636,11 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </div>
 </section>
 </section>
-<section id="Define-the-Neural-Network">
-<h1>Define the Neural Network<a class="headerlink" href="#Define-the-Neural-Network" title="Link to this heading">#</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HyperGAT</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Neural network implementation of Template for hypergraph classification.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ---------</span>
-<span class="sd">    channels_edge : int</span>
-<span class="sd">        Dimension of edge features</span>
-<span class="sd">    channels_node : int</span>
-<span class="sd">        Dimension of node features</span>
-<span class="sd">    n_layer : 2</span>
-<span class="sd">        Amount of message passing layers.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HyperGATLayer</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">HyperGATLayer</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layer, then global max pooling.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_1 : tensor</span>
-<span class="sd">            shape = [n_edges, channels_edge]</span>
-<span class="sd">            Edge features.</span>
-
-<span class="sd">        incidence_1 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_edges]</span>
-<span class="sd">            Boundary matrix of rank 1.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [1]</span>
-<span class="sd">            Label assigned to whole complex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">pooled_x</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, the loss, and an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -717,7 +658,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -730,7 +671,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -780,17 +721,25 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 282.7875
+Epoch: 1 loss: 274.6125
 Test_loss: 529.0000
-Epoch: 2 loss: 281.3750
+Epoch: 2 loss: 274.6125
 Test_loss: 529.0000
-Epoch: 3 loss: 278.9625
+Epoch: 3 loss: 274.6125
 Test_loss: 529.0000
-Epoch: 4 loss: 278.9625
+Epoch: 4 loss: 274.6125
 Test_loss: 529.0000
-Epoch: 5 loss: 278.9625
+Epoch: 5 loss: 274.6125
 Test_loss: 529.0000
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 
@@ -843,7 +792,6 @@ Test_loss: 529.0000
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-neighborhood-structures-and-lift-into-hypergraph-domain.">Define neighborhood structures and lift into hypergraph domain.</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-Neural-Network">Define the Neural Network</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
 </ul>
 

@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Hypergraph Networks with Hyperedge Neurons (HNHN)" href="hnhn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -337,7 +337,6 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="hnhn_train.html">Train a Hypergraph Networks with Hyperedge Neurons (HNHN)</a></li>
 
 
@@ -347,7 +346,6 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypergat_train.html">Train a Hypergraph Neural Network</a></li>
-
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypersage_train.html">Train a Hypersage TNN</a></li>
@@ -479,7 +477,7 @@ document.write(`
 <h1>Train a Hypergraph Network with Hyperedge Neurons (HNHN)<a class="headerlink" href="#Train-a-Hypergraph-Network-with-Hyperedge-Neurons-(HNHN)" title="Link to this heading">#</a></h1>
 <p>In this notebook, we will create and train a Hypergraph Network with Hyperedge Neurons in the hypergraph domain. This method is introduced in the paper <a class="reference external" href="https://arxiv.org/abs/2006.12278">HNHN: Hypergraph Networks with Hyperedge Neurons</a> by Dong et al. We will use a benchmark dataset, CiteSeer, a collection of 1498 academic papers and 1107 authors, to do the task of node classification. There are 6 categories into which the papers are classified.</p>
 <p>Each document is initially represented as a binary vector of length 3703, standing for a unique subset of the words within the papers, in which a value of 1 means the presence of its corresponding word in the paper.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
@@ -490,17 +488,9 @@ document.write(`
 <span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.hnhn_layer_bis</span> <span class="kn">import</span> <span class="n">HNHNLayer</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.data</span> <span class="kn">import</span> <span class="n">Data</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.transforms</span> <span class="kn">import</span> <span class="n">RandomNodeSplit</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.hnhn</span> <span class="kn">import</span> <span class="n">HNHN</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/sadra-barikbin/.local/lib/python3.8/site-packages/tqdm/auto.py:22: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
-  from .autonotebook import tqdm as notebook_tqdm
-</pre></div></div>
 </div>
 <p>If GPU’s are available, we will make use of them. Otherwise, this will run on CPU.</p>
 <div class="nbinput docutils container">
@@ -556,7 +546,7 @@ cpu
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>Using the <code class="docutils literal notranslate"><span class="pre">HNHNLayer</span></code> class, we create a neural network with stacked layers.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">HNHN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -633,7 +623,7 @@ cpu
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We then specify the hyperparameters and construct the model, the loss, optimizer and a LR scheduler according to the paper.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_features</span> <span class="o">=</span> <span class="mi">3703</span>
@@ -659,7 +649,7 @@ cpu
 </div>
 <p>Now it’s time to train the model, looping over the network for a low amount of epochs. We keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_y_true</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train_mask&quot;</span><span class="p">]]</span>
@@ -683,61 +673,61 @@ cpu
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 1.7889 acc: 0.19
-Epoch: 2 loss: 11.6347 acc: 0.41
-Epoch: 3 loss: 67.6458 acc: 0.19
-Epoch: 4 loss: 21.9118 acc: 0.19
-Epoch: 5 loss: 7.5491 acc: 0.40
-Epoch: 6 loss: 2.7203 acc: 0.46
-Epoch: 7 loss: 25.5956 acc: 0.12
-Epoch: 8 loss: 1.4068 acc: 0.66
-Epoch: 9 loss: 0.4721 acc: 0.86
-Epoch: 10 loss: 0.7964 acc: 0.86
-Epoch: 11 loss: 0.3502 acc: 0.93
-Epoch: 12 loss: 0.3431 acc: 0.95
-Epoch: 13 loss: 0.5075 acc: 0.93
-Epoch: 14 loss: 1.0124 acc: 0.83
-Epoch: 15 loss: 0.2914 acc: 0.95
-Epoch: 16 loss: 0.9682 acc: 0.89
-Epoch: 17 loss: 0.2804 acc: 0.95
-Epoch: 18 loss: 0.2231 acc: 0.97
-Epoch: 19 loss: 0.6046 acc: 0.91
-Epoch: 20 loss: 0.0786 acc: 0.98
-Epoch: 21 loss: 0.2483 acc: 0.94
-Epoch: 22 loss: 0.2452 acc: 0.93
-Epoch: 23 loss: 0.2004 acc: 0.96
-Epoch: 24 loss: 0.2019 acc: 0.95
-Epoch: 25 loss: 0.0568 acc: 0.99
-Epoch: 26 loss: 0.1139 acc: 0.98
-Epoch: 27 loss: 0.0559 acc: 0.98
-Epoch: 28 loss: 0.0248 acc: 0.99
-Epoch: 29 loss: 0.0396 acc: 0.98
-Epoch: 30 loss: 0.0560 acc: 0.98
-Epoch: 31 loss: 0.0219 acc: 0.99
-Epoch: 32 loss: 0.0217 acc: 0.99
-Epoch: 33 loss: 0.0328 acc: 0.99
-Epoch: 34 loss: 0.0447 acc: 0.98
-Epoch: 35 loss: 0.0180 acc: 0.99
-Epoch: 36 loss: 0.0220 acc: 0.99
-Epoch: 37 loss: 0.0232 acc: 0.99
-Epoch: 38 loss: 0.0241 acc: 0.99
-Epoch: 39 loss: 0.0248 acc: 0.99
-Epoch: 40 loss: 0.0130 acc: 0.99
-Epoch: 41 loss: 0.0239 acc: 0.99
-Epoch: 42 loss: 0.0240 acc: 0.99
-Epoch: 43 loss: 0.0284 acc: 0.98
-Epoch: 44 loss: 0.0561 acc: 0.99
-Epoch: 45 loss: 0.0295 acc: 0.99
-Epoch: 46 loss: 0.0163 acc: 0.99
-Epoch: 47 loss: 0.0239 acc: 0.99
-Epoch: 48 loss: 0.0195 acc: 0.99
-Epoch: 49 loss: 0.0323 acc: 0.99
-Epoch: 50 loss: 0.0406 acc: 0.98
+Epoch: 1 loss: 1.7841 acc: 0.21
+Epoch: 2 loss: 10.6729 acc: 0.22
+Epoch: 3 loss: 21.2133 acc: 0.21
+Epoch: 4 loss: 35.0127 acc: 0.21
+Epoch: 5 loss: 23.5536 acc: 0.23
+Epoch: 6 loss: 17.4931 acc: 0.43
+Epoch: 7 loss: 20.3316 acc: 0.22
+Epoch: 8 loss: 12.5507 acc: 0.32
+Epoch: 9 loss: 2.6564 acc: 0.49
+Epoch: 10 loss: 6.0825 acc: 0.40
+Epoch: 11 loss: 0.6441 acc: 0.80
+Epoch: 12 loss: 1.2435 acc: 0.68
+Epoch: 13 loss: 0.5326 acc: 0.84
+Epoch: 14 loss: 0.3037 acc: 0.91
+Epoch: 15 loss: 0.5990 acc: 0.83
+Epoch: 16 loss: 0.3052 acc: 0.92
+Epoch: 17 loss: 0.2278 acc: 0.93
+Epoch: 18 loss: 0.2426 acc: 0.93
+Epoch: 19 loss: 0.2163 acc: 0.93
+Epoch: 20 loss: 0.1739 acc: 0.94
+Epoch: 21 loss: 0.1618 acc: 0.93
+Epoch: 22 loss: 0.1194 acc: 0.96
+Epoch: 23 loss: 0.1085 acc: 0.97
+Epoch: 24 loss: 0.1179 acc: 0.96
+Epoch: 25 loss: 0.0925 acc: 0.97
+Epoch: 26 loss: 0.0996 acc: 0.96
+Epoch: 27 loss: 0.0797 acc: 0.97
+Epoch: 28 loss: 0.0554 acc: 0.98
+Epoch: 29 loss: 0.0584 acc: 0.98
+Epoch: 30 loss: 0.0565 acc: 0.98
+Epoch: 31 loss: 0.0636 acc: 0.98
+Epoch: 32 loss: 0.0597 acc: 0.98
+Epoch: 33 loss: 0.0604 acc: 0.97
+Epoch: 34 loss: 0.0623 acc: 0.97
+Epoch: 35 loss: 0.0582 acc: 0.97
+Epoch: 36 loss: 0.0543 acc: 0.98
+Epoch: 37 loss: 0.0607 acc: 0.98
+Epoch: 38 loss: 0.0585 acc: 0.97
+Epoch: 39 loss: 0.0603 acc: 0.97
+Epoch: 40 loss: 0.0511 acc: 0.97
+Epoch: 41 loss: 0.0536 acc: 0.97
+Epoch: 42 loss: 0.0482 acc: 0.98
+Epoch: 43 loss: 0.0442 acc: 0.98
+Epoch: 44 loss: 0.0478 acc: 0.98
+Epoch: 45 loss: 0.0411 acc: 0.98
+Epoch: 46 loss: 0.0418 acc: 0.97
+Epoch: 47 loss: 0.0406 acc: 0.97
+Epoch: 48 loss: 0.0379 acc: 0.98
+Epoch: 49 loss: 0.0400 acc: 0.98
+Epoch: 50 loss: 0.0375 acc: 0.98
 </pre></div></div>
 </div>
 <p>We then evaluate the model against the test data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
@@ -756,13 +746,13 @@ Epoch: 50 loss: 0.0406 acc: 0.98
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Test loss: 10.8441
-Test accuracy: 0.57
+Test loss: 12.1901
+Test accuracy: 0.62
 </pre></div></div>
 </div>
 <p>Finally, it’s worth it to visualize the learned hidden representations after training the model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tsne</span> <span class="o">=</span> <span class="n">TSNE</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -782,22 +772,7 @@ Test accuracy: 0.57
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/home/sadra-barikbin/.local/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:795: FutureWarning: The default initialization in TSNE will change from &#39;random&#39; to &#39;pca&#39; in 1.2.
-  warnings.warn(
-/home/sadra-barikbin/.local/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:805: FutureWarning: The default learning rate in TSNE will change from 200.0 to &#39;auto&#39; in 1.2.
-  warnings.warn(
-/home/sadra-barikbin/.local/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:795: FutureWarning: The default initialization in TSNE will change from &#39;random&#39; to &#39;pca&#39; in 1.2.
-  warnings.warn(
-/home/sadra-barikbin/.local/lib/python3.8/site-packages/sklearn/manifold/_t_sne.py:805: FutureWarning: The default learning rate in TSNE will change from 200.0 to &#39;auto&#39; in 1.2.
-  warnings.warn(
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -809,7 +784,7 @@ Text(0.5, 1.0, &#39;Test data&#39;)
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/notebooks_hypergraph_hnhn_train_bis_16_2.png" src="../../_images/notebooks_hypergraph_hnhn_train_bis_16_2.png" />
+<img alt="../../_images/notebooks_hypergraph_hnhn_train_bis_16_1.png" src="../../_images/notebooks_hypergraph_hnhn_train_bis_16_1.png" />
 </div>
 </div>
 </section>

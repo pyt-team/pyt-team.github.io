@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a UNIGIN TNN" href="unigin_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -337,7 +337,6 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="hnhn_train.html">Train a Hypergraph Networks with Hyperedge Neurons (HNHN)</a></li>
 
 
@@ -347,7 +346,6 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypergat_train.html">Train a Hypergraph Neural Network</a></li>
-
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypersage_train.html">Train a Hypersage TNN</a></li>
@@ -475,8 +473,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+  <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
@@ -488,21 +486,13 @@ document.write(`
 <span class="kn">from</span> <span class="nn">torch_geometric.datasets</span> <span class="kn">import</span> <span class="n">TUDataset</span>
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.simplicial_complex</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.unisage_layer</span> <span class="kn">import</span> <span class="n">UniSAGELayer</span>
+
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.unisage</span> <span class="kn">import</span> <span class="n">UniSAGE</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-The autoreload extension is already loaded. To reload it, use:
-  %reload_ext autoreload
-</pre></div></div>
 </div>
 <section id="Train-a-Uni-sage-TNN">
 <h1>Train a Uni-sage TNN<a class="headerlink" href="#Train-a-Uni-sage-TNN" title="Link to this heading">#</a></h1>
@@ -513,8 +503,8 @@ The autoreload extension is already loaded. To reload it, use:
 <h2>Import data<a class="headerlink" href="#Import-data" title="Link to this heading">#</a></h2>
 <p>The first step is to import the dataset, MUTAG, a benchmark dataset for graph classification. We then lift each graph into our domain of choice, a hypergraph.</p>
 <p>We will also retrieve: - input signal on the edges for each of these hypergraphs, as that will be what we feed the model in input - the binary label associated to the hypergraph</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">TUDataset</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;/tmp/MUTAG&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MUTAG&quot;</span><span class="p">,</span> <span class="n">use_edge_attr</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -536,17 +526,6 @@ The autoreload extension is already loaded. To reload it, use:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Downloading https://www.chrsmrrs.com/graphkerneldatasets/MUTAG.zip
-Extracting /tmp/MUTAG/MUTAG/MUTAG.zip
-Processing...
-Done!
-</pre></div></div>
-</div>
 </section>
 </section>
 <section id="Create-the-Neural-Network">
@@ -558,63 +537,7 @@ Done!
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">channels_edge</span> <span class="o">=</span> <span class="n">x_1_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">channels_node</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UniSAGENN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Neural network implementation of UniSAGE for hypergraph classification.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ---------</span>
-<span class="sd">    channels_edge : int</span>
-<span class="sd">        Dimension of edge features</span>
-<span class="sd">    channels_node : int</span>
-<span class="sd">        Dimension of node features</span>
-<span class="sd">    n_layer : 2</span>
-<span class="sd">        Amount of message passing layers.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels_edge</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">UniSAGELayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">channels_edge</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">channels_edge</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_edge</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layer, then global max pooling.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ---------</span>
-<span class="sd">        x_1 : tensor</span>
-<span class="sd">            shape = [n_edges, channels_edge]</span>
-<span class="sd">            Edge features.</span>
-
-<span class="sd">        incidence_1 : tensor</span>
-<span class="sd">            shape = [n_nodes, n_edges]</span>
-<span class="sd">            Boundary matrix of rank 1.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        --------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [1]</span>
-<span class="sd">            Label assigned to whole complex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">pooled_x</span><span class="p">))</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">UniSAGE</span><span class="p">(</span><span class="n">channels_edge</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -623,18 +546,17 @@ Done!
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model, the loss, and an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">UniSAGENN</span><span class="p">(</span><span class="n">channels_edge</span><span class="p">,</span> <span class="n">channels_node</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">)</span>
 <span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCELoss</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <p>Split the dataset into train, val, and test sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_1_train</span><span class="p">,</span> <span class="n">x_1_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x_1_list</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -653,7 +575,7 @@ Done!
 </div>
 <p>The following cell performs the training, looping over the network for a low amount of epochs. We keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">50</span>
@@ -694,107 +616,107 @@ Done!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch 0 loss: 35.38711929321289
+Epoch 0 loss: 46.11848068237305
 Epoch 0 Validation accuracy: 0.5625
-Epoch 1 loss: 35.50642013549805
+Epoch 1 loss: 38.48760986328125
 Epoch 1 Validation accuracy: 0.5625
-Epoch 2 loss: 34.88081741333008
+Epoch 2 loss: 35.41103744506836
 Epoch 2 Validation accuracy: 0.5625
-Epoch 3 loss: 34.313419342041016
+Epoch 3 loss: 35.46265411376953
 Epoch 3 Validation accuracy: 0.5625
-Epoch 4 loss: 34.208885192871094
+Epoch 4 loss: 36.654991149902344
 Epoch 4 Validation accuracy: 0.5625
-Epoch 5 loss: 34.00963592529297
+Epoch 5 loss: 37.48741149902344
 Epoch 5 Validation accuracy: 0.5625
-Epoch 6 loss: 33.59610366821289
+Epoch 6 loss: 37.493499755859375
 Epoch 6 Validation accuracy: 0.5625
-Epoch 7 loss: 33.292537689208984
+Epoch 7 loss: 36.90041732788086
 Epoch 7 Validation accuracy: 0.5625
-Epoch 8 loss: 33.19595718383789
+Epoch 8 loss: 36.03223419189453
 Epoch 8 Validation accuracy: 0.5625
-Epoch 9 loss: 33.106815338134766
+Epoch 9 loss: 35.20775604248047
 Epoch 9 Validation accuracy: 0.5625
-Epoch 10 loss: 32.913330078125
+Epoch 10 loss: 34.63990020751953
 Epoch 10 Validation accuracy: 0.5625
-Epoch 11 loss: 32.710723876953125
+Epoch 11 loss: 34.34232711791992
 Epoch 11 Validation accuracy: 0.5625
-Epoch 12 loss: 32.6346549987793
+Epoch 12 loss: 34.30369567871094
 Epoch 12 Validation accuracy: 0.5625
-Epoch 13 loss: 32.63870620727539
+Epoch 13 loss: 34.4339485168457
 Epoch 13 Validation accuracy: 0.5625
-Epoch 14 loss: 32.57096481323242
+Epoch 14 loss: 34.60327911376953
 Epoch 14 Validation accuracy: 0.5625
-Epoch 15 loss: 32.44948196411133
+Epoch 15 loss: 34.69844055175781
 Epoch 15 Validation accuracy: 0.5625
-Epoch 16 loss: 32.391658782958984
+Epoch 16 loss: 34.66060256958008
 Epoch 16 Validation accuracy: 0.5625
-Epoch 17 loss: 32.39373779296875
+Epoch 17 loss: 34.48517990112305
 Epoch 17 Validation accuracy: 0.5625
-Epoch 18 loss: 32.34821319580078
+Epoch 18 loss: 34.20755386352539
 Epoch 18 Validation accuracy: 0.5625
-Epoch 19 loss: 32.241302490234375
+Epoch 19 loss: 33.90876007080078
 Epoch 19 Validation accuracy: 0.5625
-Epoch 20 loss: 32.159812927246094
+Epoch 20 loss: 33.64041519165039
 Epoch 20 Validation accuracy: 0.5625
-Epoch 21 loss: 32.131492614746094
+Epoch 21 loss: 33.4536018371582
 Epoch 21 Validation accuracy: 0.5625
-Epoch 22 loss: 32.08507537841797
+Epoch 22 loss: 33.356746673583984
 Epoch 22 Validation accuracy: 0.5625
-Epoch 23 loss: 31.99526023864746
+Epoch 23 loss: 33.32301712036133
 Epoch 23 Validation accuracy: 0.5625
-Epoch 24 loss: 31.924638748168945
+Epoch 24 loss: 33.31113052368164
 Epoch 24 Validation accuracy: 0.5625
-Epoch 25 loss: 31.894010543823242
+Epoch 25 loss: 33.28101348876953
 Epoch 25 Validation accuracy: 0.5625
-Epoch 26 loss: 31.868173599243164
+Epoch 26 loss: 33.19704818725586
 Epoch 26 Validation accuracy: 0.5625
-Epoch 27 loss: 31.829978942871094
+Epoch 27 loss: 33.05533218383789
 Epoch 27 Validation accuracy: 0.5625
-Epoch 28 loss: 31.808109283447266
+Epoch 28 loss: 32.8785400390625
 Epoch 28 Validation accuracy: 0.5625
-Epoch 29 loss: 31.807811737060547
+Epoch 29 loss: 32.683712005615234
 Epoch 29 Validation accuracy: 0.5625
-Epoch 30 loss: 31.785655975341797
+Epoch 30 loss: 32.50434875488281
 Epoch 30 Validation accuracy: 0.5625
-Epoch 31 loss: 31.746475219726562
+Epoch 31 loss: 32.371429443359375
 Epoch 31 Validation accuracy: 0.5625
-Epoch 32 loss: 31.724843978881836
+Epoch 32 loss: 32.28118133544922
 Epoch 32 Validation accuracy: 0.5625
-Epoch 33 loss: 31.700727462768555
+Epoch 33 loss: 32.21925735473633
 Epoch 33 Validation accuracy: 0.5625
-Epoch 34 loss: 31.660417556762695
+Epoch 34 loss: 32.157997131347656
 Epoch 34 Validation accuracy: 0.5625
-Epoch 35 loss: 31.624387741088867
+Epoch 35 loss: 32.07044219970703
 Epoch 35 Validation accuracy: 0.5625
-Epoch 36 loss: 31.606855392456055
+Epoch 36 loss: 31.944950103759766
 Epoch 36 Validation accuracy: 0.5625
-Epoch 37 loss: 31.585779190063477
+Epoch 37 loss: 31.793039321899414
 Epoch 37 Validation accuracy: 0.5625
-Epoch 38 loss: 31.568805694580078
+Epoch 38 loss: 31.64575958251953
 Epoch 38 Validation accuracy: 0.5625
-Epoch 39 loss: 31.556062698364258
+Epoch 39 loss: 31.5272216796875
 Epoch 39 Validation accuracy: 0.5625
-Epoch 40 loss: 31.53620147705078
+Epoch 40 loss: 31.440631866455078
 Epoch 40 Validation accuracy: 0.5625
-Epoch 41 loss: 31.51841163635254
+Epoch 41 loss: 31.375879287719727
 Epoch 41 Validation accuracy: 0.5625
-Epoch 42 loss: 31.507102966308594
+Epoch 42 loss: 31.311176300048828
 Epoch 42 Validation accuracy: 0.5625
-Epoch 43 loss: 31.491756439208984
+Epoch 43 loss: 31.22810173034668
 Epoch 43 Validation accuracy: 0.5625
-Epoch 44 loss: 31.478620529174805
+Epoch 44 loss: 31.12361717224121
 Epoch 44 Validation accuracy: 0.5625
-Epoch 45 loss: 31.475711822509766
+Epoch 45 loss: 31.010883331298828
 Epoch 45 Validation accuracy: 0.5625
-Epoch 46 loss: 31.467418670654297
+Epoch 46 loss: 30.924745559692383
 Epoch 46 Validation accuracy: 0.5625
-Epoch 47 loss: 31.449710845947266
+Epoch 47 loss: 30.86925506591797
 Epoch 47 Validation accuracy: 0.5625
-Epoch 48 loss: 31.429576873779297
+Epoch 48 loss: 30.828832626342773
 Epoch 48 Validation accuracy: 0.5625
-Epoch 49 loss: 31.42317771911621
+Epoch 49 loss: 30.78775405883789
 Epoch 49 Validation accuracy: 0.5625
-Test accuracy: 0.75
+Test accuracy: 0.8
 </pre></div></div>
 </div>
 </section>

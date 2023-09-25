@@ -48,7 +48,7 @@
     <link rel="prev" title="HNHN_Layer" href="hnhn_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -498,6 +498,51 @@ shape = [n_nodes]</p></li>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="topomodelx.nn.hypergraph.hnhn.HNHNNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.hnhn.</span></span><span class="sig-name descname"><span class="pre">HNHNNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hnhn.html#HNHNNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hnhn.HNHNNetwork" title="Link to this definition">#</a></dt>
+<dd><p>Hypergraph Networks with Hyperedge Neurons. Implementation for multiclass node classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>channels_node</strong> (<em>int</em>) – Dimension of node features.</p></li>
+<li><p><strong>channels_edge</strong> (<em>int</em>) – Dimension of edge features.</p></li>
+<li><p><strong>incidence_1</strong> (<em>torch.sparse</em>) – Incidence matrix mapping edges to nodes (B_1).
+shape=[n_nodes, n_edges]</p></li>
+<li><p><strong>n_classes</strong> (<em>int</em>) – Number of classes</p></li>
+<li><p><strong>n_layers</strong> (<em>int</em>) – Number of HNHN message passing layers.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topomodelx.nn.hypergraph.hnhn.HNHNNetwork.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hnhn.html#HNHNNetwork.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hnhn.HNHNNetwork.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_0</strong> (<em>torch.Tensor</em>) – shape = [n_nodes, channels_node]
+Hypernode features.</p></li>
+<li><p><strong>x_1</strong> (<em>torch.Tensor</em>) – shape = [n_nodes, channels_edge]
+Hyperedge features.</p></li>
+<li><p><strong>incidence_1</strong> (<em>tensor</em>) – shape = [n_nodes, n_edges]
+Boundary matrix of rank 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>logits</strong> (<em>torch.Tensor</em>) – The predicted node logits
+shape = [n_nodes, n_classes]</p></li>
+<li><p><strong>classes</strong> (<em>torch.Tensor</em>) – The predicted node class
+shape = [n_nodes]</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -545,6 +590,10 @@ shape = [n_nodes]</p></li>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.hypergraph.hnhn.HNHN"><code class="docutils literal notranslate"><span class="pre">HNHN</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.hypergraph.hnhn.HNHN.forward"><code class="docutils literal notranslate"><span class="pre">HNHN.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.hypergraph.hnhn.HNHNNetwork"><code class="docutils literal notranslate"><span class="pre">HNHNNetwork</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.hypergraph.hnhn.HNHNNetwork.forward"><code class="docutils literal notranslate"><span class="pre">HNHNNetwork.forward()</span></code></a></li>
 </ul>
 </li>
 </ul>

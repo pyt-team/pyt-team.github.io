@@ -51,7 +51,7 @@
     <link rel="prev" title="Train an All-Set TNN" href="allset_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -337,7 +337,6 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="hnhn_train.html">Train a Hypergraph Networks with Hyperedge Neurons (HNHN)</a></li>
 
 
@@ -347,7 +346,6 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypergat_train.html">Train a Hypergraph Neural Network</a></li>
-
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypersage_train.html">Train a Hypersage TNN</a></li>
@@ -523,7 +521,8 @@ representations of hyperedges containing <span class="math notranslate nohighlig
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.allset_transformer_layer</span> <span class="kn">import</span> <span class="n">AllSetTransformerLayer</span>
+
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.allset_transformer</span> <span class="kn">import</span> <span class="n">AllSetTransformer</span>
 
 <span class="c1"># %load_ext autoreload</span>
 <span class="c1"># %autoreload 2</span>
@@ -575,7 +574,7 @@ cpu
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Loading dataset...
+Loading shrec 16 small dataset...
 
 done!
 </pre></div></div>
@@ -654,100 +653,6 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AllSetTransformer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;AllSet Neural Network Module.</span>
-
-<span class="sd">    A module that combines multiple AllSet layers to form a neural network.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    in_dim : int</span>
-<span class="sd">        Dimension of the input features.</span>
-<span class="sd">    hid_dim : int</span>
-<span class="sd">        Dimension of the hidden features.</span>
-<span class="sd">    out_dim : int</span>
-<span class="sd">        Dimension of the output features.</span>
-<span class="sd">    dropout : float</span>
-<span class="sd">        Dropout probability.</span>
-<span class="sd">    n_layers : int, optional</span>
-<span class="sd">        Number of AllSet layers in the network. Defaults to 2.</span>
-<span class="sd">    input_dropout : float, optional</span>
-<span class="sd">        Dropout probability for the layer input. Defaults to 0.2.</span>
-<span class="sd">    mlp_num_layers : int, optional</span>
-<span class="sd">        Number of layers in the MLP. Defaults to 2.</span>
-<span class="sd">    mlp_norm : bool, optional</span>
-<span class="sd">        Whether to apply input normalization in the MLP. Defaults to False.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">in_channels</span><span class="p">,</span>
-        <span class="n">hidden_channels</span><span class="p">,</span>
-        <span class="n">out_channels</span><span class="p">,</span>
-        <span class="n">n_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">heads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-        <span class="n">dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-        <span class="n">mlp_num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">mlp_dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">AllSetTransformerLayer</span><span class="p">(</span>
-                <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
-                <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
-                <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
-                <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
-                <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
-                <span class="n">mlp_dropout</span><span class="o">=</span><span class="n">mlp_dropout</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">AllSetTransformerLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
-                    <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
-                    <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
-                    <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
-                    <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
-                    <span class="n">mlp_dropout</span><span class="o">=</span><span class="n">mlp_dropout</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x : torch.Tensor</span>
-<span class="sd">            Input features.</span>
-<span class="sd">        edge_index : torch.Tensor</span>
-<span class="sd">            Edge list (of size (2, |E|)).</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        torch.Tensor</span>
-<span class="sd">            Output prediction.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">pooled_x</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Train-the-Neural-Network">
-<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>We specify the model, the loss, and an optimizer.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
-</pre></div>
-</div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">hid_dim</span> <span class="o">=</span> <span class="mi">64</span>
 <span class="n">out_dim</span> <span class="o">=</span> <span class="mi">1</span>
@@ -767,8 +672,18 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
     <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-
-<span class="c1"># Optimizer and loss</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Train-the-Neural-Network">
+<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
+<p>We specify the model, the loss, and an optimizer.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optimizer and loss</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
 </pre></div>
@@ -840,7 +755,7 @@ The 6th hypergraph has an incidence matrix of shape torch.Size([252, 1250]).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 274.9018
+Epoch: 1 loss: 274.9063
 Test_loss: 529.0000
 Epoch: 2 loss: 274.6125
 Test_loss: 529.0000

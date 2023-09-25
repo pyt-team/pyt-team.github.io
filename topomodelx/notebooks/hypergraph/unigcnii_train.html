@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a UNIGCN TNN" href="unigcn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -337,7 +337,6 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="hnhn_train.html">Train a Hypergraph Networks with Hyperedge Neurons (HNHN)</a></li>
 
 
@@ -347,7 +346,6 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypergat_train.html">Train a Hypergraph Neural Network</a></li>
-
 
 
 <li class="toctree-l1"><a class="reference internal" href="hypersage_train.html">Train a Hypersage TNN</a></li>
@@ -488,7 +486,7 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.unigcnii_layer</span> <span class="kn">import</span> <span class="n">UniGCNIILayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.unigcnii</span> <span class="kn">import</span> <span class="n">UniGCNII</span>
 </pre></div>
 </div>
 </div>
@@ -529,56 +527,53 @@ cpu
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
---2023-07-13 14:18:50--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/features.pickle
-Loaded CA certificate &#39;/etc/ssl/certs/ca-certificates.crt&#39;
-Resolving github.com (github.com)... 140.82.121.3
-Connecting to github.com (github.com)|140.82.121.3|:443... connected.
+--2023-09-22 07:15:07--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/features.pickle
+Resolving github.com (github.com)... 192.30.255.113
+Connecting to github.com (github.com)|192.30.255.113|:443... connected.
 HTTP request sent, awaiting response... 302 Found
 Location: https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/features.pickle [following]
---2023-07-13 14:18:51--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/features.pickle
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.108.133, 185.199.110.133, 185.199.111.133, ...
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.108.133|:443... connected.
+--2023-09-22 07:15:08--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/features.pickle
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.109.133, 185.199.108.133, 185.199.111.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.109.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 404937 (395K) [application/octet-stream]
 Saving to: ‘features.pickle’
 
-features.pickle     100%[===================&gt;] 395.45K  --.-KB/s    in 0.1s
+features.pickle     100%[===================&gt;] 395.45K  --.-KB/s    in 0.01s
 
-2023-07-13 14:18:51 (3.93 MB/s) - ‘features.pickle’ saved [404937/404937]
+2023-09-22 07:15:08 (31.5 MB/s) - ‘features.pickle’ saved [404937/404937]
 
---2023-07-13 14:18:51--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/hypergraph.pickle
-Loaded CA certificate &#39;/etc/ssl/certs/ca-certificates.crt&#39;
-Resolving github.com (github.com)... 140.82.121.3
-Connecting to github.com (github.com)|140.82.121.3|:443... connected.
+--2023-09-22 07:15:08--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/hypergraph.pickle
+Resolving github.com (github.com)... 192.30.255.113
+Connecting to github.com (github.com)|192.30.255.113|:443... connected.
 HTTP request sent, awaiting response... 302 Found
 Location: https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/hypergraph.pickle [following]
---2023-07-13 14:18:52--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/hypergraph.pickle
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.110.133, 185.199.111.133, 185.199.108.133, ...
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.110.133|:443... connected.
+--2023-09-22 07:15:09--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/hypergraph.pickle
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.108.133, 185.199.110.133, 185.199.109.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.108.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 101905 (100K) [application/octet-stream]
 Saving to: ‘hypergraph.pickle’
 
-hypergraph.pickle   100%[===================&gt;]  99.52K  --.-KB/s    in 0.02s
+hypergraph.pickle   100%[===================&gt;]  99.52K  --.-KB/s    in 0.006s
 
-2023-07-13 14:18:52 (4.37 MB/s) - ‘hypergraph.pickle’ saved [101905/101905]
+2023-09-22 07:15:09 (16.7 MB/s) - ‘hypergraph.pickle’ saved [101905/101905]
 
---2023-07-13 14:18:52--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/labels.pickle
-Loaded CA certificate &#39;/etc/ssl/certs/ca-certificates.crt&#39;
-Resolving github.com (github.com)... 140.82.121.3
-Connecting to github.com (github.com)|140.82.121.3|:443... connected.
+--2023-09-22 07:15:09--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/labels.pickle
+Resolving github.com (github.com)... 192.30.255.113
+Connecting to github.com (github.com)|192.30.255.113|:443... connected.
 HTTP request sent, awaiting response... 302 Found
 Location: https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/labels.pickle [following]
---2023-07-13 14:18:53--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/labels.pickle
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.110.133, 185.199.111.133, 185.199.108.133, ...
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.110.133|:443... connected.
+--2023-09-22 07:15:10--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/labels.pickle
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.111.133, 185.199.108.133, 185.199.109.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.111.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 5436 (5.3K) [application/octet-stream]
 Saving to: ‘labels.pickle’
 
 labels.pickle       100%[===================&gt;]   5.31K  --.-KB/s    in 0s
 
-2023-07-13 14:18:53 (18.8 MB/s) - ‘labels.pickle’ saved [5436/5436]
+2023-09-22 07:15:10 (46.0 MB/s) - ‘labels.pickle’ saved [5436/5436]
 
 </pre></div></div>
 </div>
@@ -595,22 +590,21 @@ labels.pickle       100%[===================&gt;]   5.31K  --.-KB/s    in 0s
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
---2023-07-13 14:18:53--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/splits/1.pickle
-Loaded CA certificate &#39;/etc/ssl/certs/ca-certificates.crt&#39;
-Resolving github.com (github.com)... 140.82.121.3
-Connecting to github.com (github.com)|140.82.121.3|:443... connected.
+--2023-09-22 07:15:10--  https://github.com/malllabiisc/HyperGCN/raw/master/data/cocitation/cora/splits/1.pickle
+Resolving github.com (github.com)... 192.30.255.113
+Connecting to github.com (github.com)|192.30.255.113|:443... connected.
 HTTP request sent, awaiting response... 302 Found
 Location: https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/splits/1.pickle [following]
---2023-07-13 14:18:54--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/splits/1.pickle
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.109.133, 185.199.110.133, 185.199.111.133, ...
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.109.133|:443... connected.
+--2023-09-22 07:15:11--  https://raw.githubusercontent.com/malllabiisc/HyperGCN/master/data/cocitation/cora/splits/1.pickle
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.108.133, 185.199.111.133, 185.199.110.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.108.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
 Length: 51582 (50K) [application/octet-stream]
 Saving to: ‘1.pickle’
 
-1.pickle            100%[===================&gt;]  50.37K  --.-KB/s    in 0.01s
+1.pickle            100%[===================&gt;]  50.37K  --.-KB/s    in 0.003s
 
-2023-07-13 14:18:54 (4.51 MB/s) - ‘1.pickle’ saved [51582/51582]
+2023-09-22 07:15:11 (14.8 MB/s) - ‘1.pickle’ saved [51582/51582]
 
 </pre></div></div>
 </div>
@@ -635,7 +629,7 @@ Saving to: ‘1.pickle’
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_14655/121206761.py:2: DeprecationWarning: Please use `csr_matrix` from the `scipy.sparse` namespace, the `scipy.sparse.csr` namespace is deprecated.
+/tmp/ipykernel_1201318/2369537045.py:2: DeprecationWarning: Please use `csr_matrix` from the `scipy.sparse` namespace, the `scipy.sparse.csr` namespace is deprecated.
   features = pickle.load(handle).todense()
 </pre></div></div>
 </div>
@@ -679,7 +673,7 @@ Saving to: ‘1.pickle’
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_14655/2226475299.py:6: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at ../aten/src/ATen/SparseCsrTensorImpl.cpp:54.)
+/tmp/ipykernel_1201318/2226475299.py:6: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at ../aten/src/ATen/SparseCsrTensorImpl.cpp:54.)
   incidence = torch.Tensor(incidence).to_sparse_csr()
 </pre></div></div>
 </div>
@@ -705,62 +699,9 @@ Saving to: ‘1.pickle’
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UniGCNIIModel</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hypergraph neural network utilizing the UniGCNII layer for node-level classification.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    num_classes: int, default=2</span>
-<span class="sd">        Number of classes used for node classification.</span>
-<span class="sd">    in_features: int, default=1</span>
-<span class="sd">        Number of input features on the nodes.</span>
-<span class="sd">    n_layers: int, default=2</span>
-<span class="sd">        Number of UniGCNII message passing layers.</span>
-<span class="sd">    alpha: float, default=0.5</span>
-<span class="sd">        Parameter of the UniGCNII layer.</span>
-<span class="sd">    beta: float, default=0.5</span>
-<span class="sd">        Parameter of the UniGCNII layer.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">in_features</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_features</span> <span class="o">=</span> <span class="n">in_features</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span> <span class="o">=</span> <span class="n">num_classes</span>
-
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">UniGCNIILayer</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">in_features</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_features</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;forward pass through the model</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape = [num_nodes, in_channels]</span>
-<span class="sd">            Input features of the nodes of the hypergraph.</span>
-<span class="sd">        incidence_1 : torch.Tensor, shape = [num_nodes, num_edges]</span>
-<span class="sd">            Incidence matrix of the hypergraph.</span>
-<span class="sd">            It is expected that the incidence matrix contains self-loops for all nodes.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        y_hat : torch.Tensor, shape = [num_nodes, num_classes]</span>
-<span class="sd">            Contains the logits for classification for every node.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Copy the original features to use as skip connections</span>
-        <span class="n">x_0_skip</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">x_0_skip</span><span class="p">)</span>
-
-        <span class="c1"># linear layer for node classification output</span>
-        <span class="c1"># softmax ommited for use of cross-entropy loss</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">channels</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">classes</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># current problem has 7 classes</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">UniGCNII</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="n">classes</span><span class="p">,</span> <span class="n">in_features</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -782,27 +723,14 @@ Saving to: ‘1.pickle’
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">channels</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">classes</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># current problem has 7 classes</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">UniGCNIIModel</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="n">classes</span><span class="p">,</span> <span class="n">in_features</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
-    <span class="n">device</span>
-<span class="p">)</span>
-
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <p>Now, we are ready to train the created model and evaluate the performance on the validation set.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
@@ -837,16 +765,16 @@ Saving to: ‘1.pickle’
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 5         Train accuracy: 0.7071428298950195      Test accuracy: 0.39291277527809143
-Epoch: 10        Train accuracy: 0.75    Test accuracy: 0.4376946985721588
-Epoch: 15        Train accuracy: 0.9357143044471741      Test accuracy: 0.6137071847915649
-Epoch: 20        Train accuracy: 0.8714285492897034      Test accuracy: 0.45210281014442444
-Epoch: 25        Train accuracy: 0.9071428775787354      Test accuracy: 0.5502336621284485
-Epoch: 30        Train accuracy: 0.9785714149475098      Test accuracy: 0.5463395714759827
-Epoch: 35        Train accuracy: 0.9785714149475098      Test accuracy: 0.5747663378715515
-Epoch: 40        Train accuracy: 0.9857142567634583      Test accuracy: 0.5673676133155823
-Epoch: 45        Train accuracy: 0.9428571462631226      Test accuracy: 0.552570104598999
-Epoch: 50        Train accuracy: 0.9571428298950195      Test accuracy: 0.5607476830482483
+Epoch: 5         Train accuracy: 0.8357142806053162      Test accuracy: 0.47507786750793457
+Epoch: 10        Train accuracy: 0.7642857432365417      Test accuracy: 0.5183022022247314
+Epoch: 15        Train accuracy: 0.9214285612106323      Test accuracy: 0.5611370801925659
+Epoch: 20        Train accuracy: 0.9428571462631226      Test accuracy: 0.597741425037384
+Epoch: 25        Train accuracy: 0.9642857313156128      Test accuracy: 0.5915108919143677
+Epoch: 30        Train accuracy: 0.9857142567634583      Test accuracy: 0.5837227702140808
+Epoch: 35        Train accuracy: 0.9571428298950195      Test accuracy: 0.579828679561615
+Epoch: 40        Train accuracy: 0.9857142567634583      Test accuracy: 0.5654205679893494
+Epoch: 45        Train accuracy: 1.0     Test accuracy: 0.5735981464385986
+Epoch: 50        Train accuracy: 1.0     Test accuracy: 0.5813862681388855
 </pre></div></div>
 </div>
 </section>

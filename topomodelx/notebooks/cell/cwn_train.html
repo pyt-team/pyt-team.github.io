@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Convolutional Cell Complex Network (CCXN)" href="ccxn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 20, 2023, 1:13:36 PM"/>
+    <meta name="docbuild:last-update" content="Sep 25, 2023, 4:45:37 PM"/>
   </head>
   
   
@@ -337,7 +337,6 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hmpnn_train.html">Train a Hypergraph Message Passing Neural Network (HMPNN)</a></li>
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hnhn_train.html">Train a Hypergraph Networks with Hyperedge Neurons (HNHN)</a></li>
 
 
@@ -347,7 +346,6 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hypergat_train.html">Train a Hypergraph Neural Network</a></li>
-
 
 
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hypersage_train.html">Train a Hypersage TNN</a></li>
@@ -507,7 +505,7 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.cwn_layer</span> <span class="kn">import</span> <span class="n">CWNLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.cell.cwn</span> <span class="kn">import</span> <span class="n">CWN</span>
 </pre></div>
 </div>
 </div>
@@ -666,6 +664,15 @@ The 6th cell complex has an incidence_1_t matrix of shape torch.Size([750, 252])
     <span class="sa">f</span><span class="s2">&quot;The dimensions of input features on nodes, edges and faces are &quot;</span>
     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">in_channels_0</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">in_channels_1</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">in_channels_2</span><span class="si">}</span><span class="s2">, respectively.&quot;</span>
 <span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">CWN</span><span class="p">(</span>
+    <span class="n">in_channels_0</span><span class="p">,</span>
+    <span class="n">in_channels_1</span><span class="p">,</span>
+    <span class="n">in_channels_2</span><span class="p">,</span>
+    <span class="n">hid_channels</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -677,152 +684,22 @@ The 6th cell complex has an incidence_1_t matrix of shape torch.Size([750, 252])
 The dimensions of input features on nodes, edges and faces are 6, 10 and 7, respectively.
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CWN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of a specific version of CW Network.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    in_channels_0 : int</span>
-<span class="sd">        Dimension of input features on nodes (0-cells).</span>
-<span class="sd">    in_channels_1 : int</span>
-<span class="sd">        Dimension of input features on edges (1-cells).</span>
-<span class="sd">    in_channels_2 : int</span>
-<span class="sd">        Dimension of input features on faces (2-cells).</span>
-<span class="sd">    hid_channels : int</span>
-<span class="sd">        Dimension of hidden features.</span>
-<span class="sd">    num_classes : int</span>
-<span class="sd">        Number of classes.</span>
-<span class="sd">    n_layers : int</span>
-<span class="sd">        Number of CWN layers.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">in_channels_0</span><span class="p">,</span>
-        <span class="n">in_channels_1</span><span class="p">,</span>
-        <span class="n">in_channels_2</span><span class="p">,</span>
-        <span class="n">hid_channels</span><span class="p">,</span>
-        <span class="n">num_classes</span><span class="p">,</span>
-        <span class="n">n_layers</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proj_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">hid_channels</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proj_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">hid_channels</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">proj_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_2</span><span class="p">,</span> <span class="n">hid_channels</span><span class="p">)</span>
-
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">CWNLayer</span><span class="p">(</span>
-                    <span class="n">in_channels_0</span><span class="o">=</span><span class="n">hid_channels</span><span class="p">,</span>
-                    <span class="n">in_channels_1</span><span class="o">=</span><span class="n">hid_channels</span><span class="p">,</span>
-                    <span class="n">in_channels_2</span><span class="o">=</span><span class="n">hid_channels</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">hid_channels</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid_channels</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid_channels</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid_channels</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">x_0</span><span class="p">,</span>
-        <span class="n">x_1</span><span class="p">,</span>
-        <span class="n">x_2</span><span class="p">,</span>
-        <span class="n">neighborhood_1_to_1</span><span class="p">,</span>
-        <span class="n">neighborhood_2_to_1</span><span class="p">,</span>
-        <span class="n">neighborhood_0_to_1</span><span class="p">,</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through projection, convolutions, linear layers and average pooling.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape = [n_nodes, in_channels_0]</span>
-<span class="sd">            Input features on the nodes (0-cells).</span>
-<span class="sd">        x_1 : torch.Tensor, shape = [n_edges, in_channels_1]</span>
-<span class="sd">            Input features on the edges (1-cells).</span>
-<span class="sd">        x_2 : torch.Tensor, shape = [n_faces, in_channels_2]</span>
-<span class="sd">            Input features on the faces (2-cells).</span>
-<span class="sd">        neighborhood_1_to_1 : tensor, shape = [n_edges, n_edges]</span>
-<span class="sd">            Upper-adjacency matrix of rank 1.</span>
-<span class="sd">        neighborhood_2_to_1 : tensor, shape = [n_edges, n_faces]</span>
-<span class="sd">            Boundary matrix of rank 2.</span>
-<span class="sd">        neighborhood_0_to_1 : tensor, shape = [n_edges, n_nodes]</span>
-<span class="sd">            Coboundary matrix of rank 1.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        _ : tensor, shape = [1]</span>
-<span class="sd">            Label assigned to whole complex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">))</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">))</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">))</span>
-
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span>
-                <span class="n">x_0</span><span class="p">,</span>
-                <span class="n">x_1</span><span class="p">,</span>
-                <span class="n">x_2</span><span class="p">,</span>
-                <span class="n">neighborhood_1_to_1</span><span class="p">,</span>
-                <span class="n">neighborhood_2_to_1</span><span class="p">,</span>
-                <span class="n">neighborhood_0_to_1</span><span class="p">,</span>
-            <span class="p">)</span>
-
-        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="c1"># Take the average of the 2D, 1D, and 0D cell features. If they are NaN, convert them to 0.</span>
-        <span class="n">two_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">two_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">two_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">one_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">one_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">one_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">zero_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">zero_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">zero_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="c1"># Return the sum of the averages</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">two_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">one_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">zero_dimensional_cells_mean</span>
-        <span class="p">)</span>
-</pre></div>
-</div>
-</div>
 </section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We instantiate a model, specify an optimizer, define a loss function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">CWN</span><span class="p">(</span>
-    <span class="n">in_channels_0</span><span class="p">,</span>
-    <span class="n">in_channels_1</span><span class="p">,</span>
-    <span class="n">in_channels_2</span><span class="p">,</span>
-    <span class="n">hid_channels</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-    <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 <span class="n">criterion</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <p>We split the dataset into train and test sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -847,7 +724,7 @@ The dimensions of input features on nodes, edges and faces are 6, 10 and 7, resp
 </div>
 <p>We train the CWN using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
@@ -918,12 +795,12 @@ The dimensions of input features on nodes, edges and faces are 6, 10 and 7, resp
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1, Train Loss: 106.5665
-Epoch: 2, Train Loss: 85.4893
-Test Loss: 54.3770
-Epoch: 3, Train Loss: 85.0177
-Epoch: 4, Train Loss: 84.6247
-Test Loss: 51.4964
+Epoch: 1, Train Loss: 107.6411
+Epoch: 2, Train Loss: 84.9619
+Test Loss: 51.5892
+Epoch: 3, Train Loss: 84.2476
+Epoch: 4, Train Loss: 83.7038
+Test Loss: 50.7303
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
