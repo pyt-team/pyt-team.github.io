@@ -48,7 +48,7 @@
     <link rel="prev" title="API Reference" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 28, 2023, 7:38:14 PM"/>
+    <meta name="docbuild:last-update" content="Sep 28, 2023, 7:55:20 PM"/>
   </head>
   
   
@@ -378,9 +378,9 @@ document.write(`
 <li><p><strong>complex</strong> (<em>TopoNetX object</em>) – A complex object. The complex object can be one of the following:
 - CellComplex
 - CombinatorialComplex
-- CombinatorialComplex
+- PathComplex
 - SimplicialComplex
-- DynamicSimplicialComplex</p></li>
+- ColoredHyperGraph</p></li>
 <li><p><strong>neighborhood_type</strong> (<em>str</em>) – The type of neighborhood to compute. “adj” for adjacency matrix, “coadj” for coadjacency matrix.</p></li>
 <li><p><strong>neighborhood_dim</strong> (<em>dict</em>) – The integer parmaters needed to specify the neighborhood of the cells to generate the embedding.
 In TopoNetX  (co)adjacency neighborhood matrices are specified via one or two parameters.
@@ -464,9 +464,9 @@ random walks to use for the node2vec algorithm, and the number of workers to use
 Can be one of the following:
 - CellComplex
 - CombinatorialComplex
-- CombinatorialComplex
+- PathComplex
 - SimplicialComplex
-- DynamicSimplicialComplex</p></li>
+- ColoredHyperGraph</p></li>
 <li><p><strong>neighborhood_type</strong> (<em>str</em>) – The type of neighborhood to compute.
 Can be one of the following:
 - “adj” for adjacency matrix.
@@ -537,11 +537,32 @@ colored hypergraph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>complex</strong> (<em>SimplicialComplex, CellComplex, or CombinatorialComplex</em>) – The complex to be embedded.</p></li>
-<li><p><strong>neighborhood_type</strong> (<em>str, optional</em>) – The type of neighborhood to use, by default “adj”.</p></li>
-<li><p><strong>neighborhood_dim</strong> (<em>dict, optional</em>) – The dimension of the neighborhood to use.
-Default: {“adj”: 0, “coadj”: -1}.</p></li>
+<li><p><strong>complex</strong> (<em>TopoNetX object</em>) – A complex object. The complex object can be one of the following:
+- CellComplex
+- CombinatorialComplex
+- PathComplex
+- SimplicialComplex
+- ColoredHyperGraph</p></li>
+<li><p><strong>neighborhood_type</strong> (<em>str</em>) – The type of neighborhood to compute. “adj” for adjacency matrix, “coadj” for coadjacency matrix.</p></li>
+<li><p><strong>neighborhood_dim</strong> (<em>dict</em>) – The integer parmaters needed to specify the neighborhood of the cells to generate the embedding.
+In TopoNetX  (co)adjacency neighborhood matrices are specified via one or two parameters.
+- For Cell/Simplicial/Path complexes (co)adjacency matrix is specified by a single parameter, this is precisely
+neighborhood_dim[“dim”]
+- For Combinatorial/ColoredHyperGraph the (co)adjacency matrix is specified by a single parameter, this is precisely
+neighborhood_dim[“dim”] and neighborhood_dim[“codim”]</p></li>
 </ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Here neighborhood_dim={“dim”: 1, “codim”: -1} specifies the dimension for
+which the cell embeddings are going to be computed.
+“dim”: 1 means that the embeddings will be computed for the first dimension.
+The integer “codim”: -1 is ignored when the input is cell/simplicial complex
+and  must be specified when the input complex is a combinatorial complex or
+colored hypergraph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>None</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -587,9 +608,9 @@ Default: False.</p>
 <li><p><strong>complex</strong> (<em>TopoNetX object</em>) – A complex object. The complex object can be one of the following:
 - CellComplex
 - CombinatorialComplex
-- CombinatorialComplex
+- PathComplex
 - SimplicialComplex
-- DynamicSimplicialComplex</p></li>
+- ColoredHyperGraph</p></li>
 <li><p><strong>neighborhood_type</strong> (<em>str</em>) – The type of neighborhood to compute. “adj” for adjacency matrix, “coadj” for coadjacency matrix.</p></li>
 <li><p><strong>neighborhood_dim</strong> (<em>dict</em>) – The integer parmaters needed to specify the neighborhood of the cells to generate the embedding.
 In TopoNetX  (co)adjacency neighborhood matrices are specified via one or two parameters.
@@ -653,9 +674,9 @@ colored hypergraph.</p>
 <li><p><strong>complex</strong> (<em>TopoNetX object</em>) – A complex object. The complex object can be one of the following:
 - CellComplex
 - CombinatorialComplex
-- CombinatorialComplex
+- PathComplex
 - SimplicialComplex
-- DynamicSimplicialComplex</p></li>
+- ColoredHyperGraph</p></li>
 <li><p><strong>neighborhood_type</strong> (<em>str</em>) – The type of neighborhood to compute. “adj” for adjacency matrix, “coadj” for coadjacency matrix.</p></li>
 <li><p><strong>neighborhood_dim</strong> (<em>dict</em>) – The integer parmaters needed to specify the neighborhood of the cells to generate the embedding.
 In TopoNetX  (co)adjacency neighborhood matrices are specified via one or two parameters.
