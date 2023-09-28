@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 21, 2023, 6:57:53 PM"/>
+    <meta name="docbuild:last-update" content="Sep 28, 2023, 7:33:52 PM"/>
   </head>
   
   
@@ -358,7 +358,7 @@ document.write(`
 <div class="viewcode-block" id="HOGLEE.fit">
 <a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.hoglee.HOGLEE.fit">[docs]</a>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;adj&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;coadj&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;codim&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit a Higher Order Geometric Laplacian EigenMaps model.</span>
 
@@ -374,17 +374,21 @@ document.write(`
 <span class="sd">        neighborhood_type : str</span>
 <span class="sd">            The type of neighborhood to compute. &quot;adj&quot; for adjacency matrix, &quot;coadj&quot; for coadjacency matrix.</span>
 <span class="sd">        neighborhood_dim : dict</span>
-<span class="sd">            The dimensions of the neighborhood to use. If `neighborhood_type` is &quot;adj&quot;, the dimension is</span>
-<span class="sd">            `neighborhood_dim[&quot;adj&quot;]`. If `neighborhood_type` is &quot;coadj&quot;, the dimension is `neighborhood_dim[&quot;coadj&quot;]`</span>
-<span class="sd">            and `neighborhood_dim[&quot;adj&quot;]` specifies the dimension of the ambient space.</span>
+<span class="sd">            The integer parmaters needed to specify the neighborhood of the cells to generate the embedding.</span>
+<span class="sd">            In TopoNetX  (co)adjacency neighborhood matrices are specified via one or two parameters.</span>
+<span class="sd">            - For Cell/Simplicial/Path complexes (co)adjacency matrix is specified by a single parameter, this is precisely</span>
+<span class="sd">            neighborhood_dim[&quot;dim&quot;]</span>
+<span class="sd">            - For Combinatorial/ColoredHyperGraph the (co)adjacency matrix is specified by a single parameter, this is precisely</span>
+<span class="sd">            neighborhood_dim[&quot;dim&quot;] and neighborhood_dim[&quot;codim&quot;]</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        Here, neighborhood_dim={&quot;adj&quot;: 1, &quot;coadj&quot;: -1} specifies the dimension for</span>
-<span class="sd">        which the cell embeddings are going to be computed.</span>
-<span class="sd">        The integer &quot;adj&quot;: 1 means that the embeddings will be computed for the first dimension.</span>
-<span class="sd">        The integer &quot;coadj&quot;: -1  is ignored and only considered</span>
-<span class="sd">        when the input complex is a combinatorial complex.</span>
+<span class="sd">            Here neighborhood_dim={&quot;dim&quot;: 1, &quot;codim&quot;: -1} specifies the dimension for</span>
+<span class="sd">            which the cell embeddings are going to be computed.</span>
+<span class="sd">            &quot;dim&quot;: 1 means that the embeddings will be computed for the first dimension.</span>
+<span class="sd">            The integer &quot;codim&quot;: -1 is ignored when the input is cell/simplicial complex</span>
+<span class="sd">            and  must be specified when the input complex is a combinatorial complex or</span>
+<span class="sd">            colored hypergraph.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
