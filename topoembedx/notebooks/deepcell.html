@@ -51,7 +51,7 @@
     <link rel="prev" title="Tutorials" href="../tutorials/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 29, 2023, 6:03:48 AM"/>
+    <meta name="docbuild:last-update" content="Sep 29, 2023, 6:09:46 AM"/>
   </head>
   
   
@@ -394,7 +394,7 @@ within the topological domain.</p>
 <span class="n">model</span> <span class="o">=</span> <span class="n">tex</span><span class="o">.</span><span class="n">DeepCell</span><span class="p">()</span>
 
 <span class="c1"># Fit the model to the cell complex</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span> <span class="p">:</span><span class="mi">0</span><span class="p">})</span>
 
 <span class="c1"># Get the embeddings</span>
 <span class="n">embedded_points</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">(</span><span class="n">get_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -402,28 +402,26 @@ within the topological domain.</p>
 <span class="c1"># Prepare data for plotting</span>
 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
-<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
+<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 
 <span class="c1"># Plotting</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Projected Points&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Projected Points&#39;</span><span class="p">)</span>
 
 <span class="c1"># Annotate the points to correspond with cells</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_labels</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
-        <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>
-    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
 <span class="c1"># Label axes and add title</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Projection of 0-dim Cell Complex in 2D&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Projection of 0-dim Cell Complex in 2D&#39;</span><span class="p">)</span>
 
 <span class="c1"># Display the plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -443,7 +441,7 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">### Embedding of edges in a cell complex using DeepCell</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -462,7 +460,7 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="n">model</span> <span class="o">=</span> <span class="n">tex</span><span class="o">.</span><span class="n">DeepCell</span><span class="p">()</span>
 
 <span class="c1"># Fit the model to the cell complex</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span> <span class="p">:</span><span class="mi">0</span><span class="p">})</span>
 
 <span class="c1"># Get the embeddings</span>
 <span class="n">embedded_points</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">(</span><span class="n">get_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -470,28 +468,26 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="c1"># Prepare data for plotting</span>
 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
-<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
+<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 
 <span class="c1"># Plotting</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Projected Points&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Projected Points&#39;</span><span class="p">)</span>
 
 <span class="c1"># Annotate the points to correspond with cells</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_labels</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
-        <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>
-    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
 <span class="c1"># Label axes and add title</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Projection of 1-dim Cell Complex in 2D&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Projection of 1-dim Cell Complex in 2D&#39;</span><span class="p">)</span>
 
 <span class="c1"># Display the plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+<br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -507,8 +503,16 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <section id="DeepCell-can-also-be-applied-to-on-other-domains-smoothly">
 <h1>DeepCell can also be applied to on other domains smoothly<a class="headerlink" href="#DeepCell-can-also-be-applied-to-on-other-domains-smoothly" title="Link to this heading">#</a></h1>
 <p>The following example demonstrate the unifying principle as the same algorithm can be used to embed various domains.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [65]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -519,17 +523,17 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="c1"># Create a cell complex object with a few cells</span>
 <span class="n">ccc</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">CombinatorialComplex</span><span class="p">()</span>
 
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="c1"># Create a model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">tex</span><span class="o">.</span><span class="n">DeepCell</span><span class="p">()</span>
 
 <span class="c1"># Fit the model to the cell complex</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ccc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ccc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span> <span class="p">:</span><span class="mi">3</span><span class="p">})</span>
 
 <span class="c1"># Get the embeddings</span>
 <span class="n">embedded_points</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">(</span><span class="n">get_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -537,35 +541,33 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="c1"># Prepare data for plotting</span>
 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
-<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
+<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 
 <span class="c1"># Plotting</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Projected Points&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Projected Points&#39;</span><span class="p">)</span>
 
 <span class="c1"># Annotate the points to correspond with cells</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_labels</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
-        <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>
-    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
 <span class="c1"># Label axes and add title</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Projection of 0-dim Combinatorial Complex in 2D&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Projection of 0-dim Combinatorial Complex in 2D&#39;</span><span class="p">)</span>
 
 <span class="c1"># Display the plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+<br/><br/><br/></pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_deepcell_11_0.png" src="../_images/notebooks_deepcell_11_0.png" />
+<img alt="../_images/notebooks_deepcell_12_0.png" src="../_images/notebooks_deepcell_12_0.png" />
 </div>
 </div>
 <p>Observe in the above example that the points 2,4 and 5 are clustered together because they are all part of the same 3 cell and we are computing the embedding with resepct to the matrix adjacency(0,3)</p>
@@ -573,7 +575,7 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [64]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ccc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ccc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -604,20 +606,20 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="kn">import</span> <span class="nn">toponetx</span> <span class="k">as</span> <span class="nn">tnx</span>
 
 <span class="c1"># Create a cell complex object with a few cells</span>
-<span class="n">ccc</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">CombinatorialComplex</span><span class="p">()</span>
+<span class="n">ccc</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">ColoredHyperGraph</span><span class="p">()</span>
 
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="c1"># Create a model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">tex</span><span class="o">.</span><span class="n">DeepCell</span><span class="p">()</span>
 
 <span class="c1"># Fit the model to the cell complex</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ccc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;coadj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ccc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;coadj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span> <span class="p">:</span><span class="mi">0</span><span class="p">})</span>
 
 <span class="c1"># Get the embeddings</span>
 <span class="n">embedded_points</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">(</span><span class="n">get_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -625,28 +627,26 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="c1"># Prepare data for plotting</span>
 <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">embedded_points</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
-<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
+<span class="n">cell_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">embedded_points</span><span class="p">]</span>
 
 <span class="c1"># Plotting</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Projected Points&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Projected Points&#39;</span><span class="p">)</span>
 
 <span class="c1"># Annotate the points to correspond with cells</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cell_labels</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
-        <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>
-    <span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span> <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
 <span class="c1"># Label axes and add title</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;X-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Y-axis&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Projection of 2-dim Combinatorial Complex in 2D&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;X-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Y-axis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Projection of 2-dim Combinatorial Complex in 2D&#39;</span><span class="p">)</span>
 
 <span class="c1"># Display the plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
+<br/><br/><br/></pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
