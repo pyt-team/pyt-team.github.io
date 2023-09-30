@@ -51,7 +51,7 @@
     <link rel="prev" title="Tutorial: Cell2Vec - Embedding Cells using Topological Deep Learning" href="cell2vec.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 30, 2023, 11:11:20 PM"/>
+    <meta name="docbuild:last-update" content="Sep 30, 2023, 11:20:53 PM"/>
   </head>
   
   
@@ -517,7 +517,7 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -535,7 +535,7 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="c1"># Create a model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">tex</span><span class="o">.</span><span class="n">DeepCell</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">tex</span><span class="o">.</span><span class="n">DeepCell</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># Fit the model to the cell complex</span>
 <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ccc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
@@ -603,8 +603,8 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <section id="Working-with-coadjaency-matrices">
 <h1>Working with coadjaency matrices<a class="headerlink" href="#Working-with-coadjaency-matrices" title="Link to this heading">#</a></h1>
 <p>TopoEmbedX can also compute the embeddings with respect to coadjacency relations</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -613,7 +613,7 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="kn">import</span> <span class="nn">toponetx</span> <span class="k">as</span> <span class="nn">tnx</span>
 
 <span class="c1"># Create a cell complex object with a few cells</span>
-<span class="n">ccc</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">ColoredHyperGraph</span><span class="p">()</span>
+<span class="n">ccc</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">classes</span><span class="o">.</span><span class="n">CombinatorialComplex</span><span class="p">()</span>
 
 <span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">ccc</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -626,7 +626,7 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="n">model</span> <span class="o">=</span> <span class="n">tex</span><span class="o">.</span><span class="n">DeepCell</span><span class="p">()</span>
 
 <span class="c1"># Fit the model to the cell complex</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ccc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;coadj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;to_rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ccc</span><span class="p">,</span> <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;coadj&quot;</span><span class="p">,</span> <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
 
 <span class="c1"># Get the embeddings</span>
 <span class="n">embedded_points</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_embedding</span><span class="p">(</span><span class="n">get_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -656,6 +656,13 @@ vertices in the original 0-dimensional cell complex, as captured by the DeepCell
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_deepcell_17_0.png" src="../_images/notebooks_deepcell_17_0.png" />
 </div>
 </div>
 <div class="nbinput nblast docutils container">
