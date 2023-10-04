@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:23:25 AM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 2:37:05 PM"/>
   </head>
   
   
@@ -360,7 +360,6 @@ document.write(`
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">CellView</span>
-<span class="kn">from</span> <span class="nn">toponetx.exception</span> <span class="kn">import</span> <span class="n">TopoNetXError</span>
 <span class="kn">from</span> <span class="nn">toponetx.utils</span> <span class="kn">import</span> <span class="n">incidence_to_adjacency</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CellComplex&quot;</span><span class="p">]</span>
@@ -542,14 +541,24 @@ document.write(`
 <div class="viewcode-block" id="CellComplex.skeleton">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.skeleton">[docs]</a>
     <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute skeleton.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute skeleton.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rank : {0, 1, 2}</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If `rank` is not 0, 1 or 2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span>
-        <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="s2">&quot;Only dimensions 0,1, and 2 are supported.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only dimensions 0,1, and 2 are supported.&quot;</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -693,7 +702,6 @@ document.write(`
                 <span class="k">elif</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">all_inserted_cells</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">else</span><span class="p">:</span>
-
                     <span class="k">if</span> <span class="n">c1</span><span class="o">.</span><span class="n">is_homotopic_to</span><span class="p">(</span><span class="n">c2</span><span class="p">):</span>
                         <span class="n">equiv_classes</span><span class="p">[</span><span class="n">c1</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
                         <span class="n">all_inserted_cells</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
@@ -786,7 +794,6 @@ document.write(`
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-
                 <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; the key </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not a key for an existing cell &quot;</span><span class="p">)</span></div>
@@ -932,11 +939,11 @@ document.write(`
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        TopoNetXError</span>
+<span class="sd">        RuntimeError</span>
 <span class="sd">            If the given node does not exist in the cell complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="s2">&quot;The given node does not exist in the cell complex.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The given node does not exist in the cell complex.&quot;</span><span class="p">)</span>
         <span class="c1"># Remove the node from the cell complex</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="c1"># Remove any cells that contain the node</span>
@@ -954,12 +961,8 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        node_set : an iterable of hashables or Entities</span>
-<span class="sd">            Nodes in CX</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        cell_complex : Cell Complex</span>
+<span class="sd">        node_set : iterable of hashables or Entities</span>
+<span class="sd">            Nodes in the cell complex</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_set</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
@@ -1055,20 +1058,20 @@ document.write(`
                     <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">is_regular</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span>
+                        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                             <span class="s2">&quot;input cell violates the regularity condition.&quot;</span>
                         <span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                     <span class="s2">&quot;input cell violates the regularity condition, make sure cell is regular or change complex to non-regular&quot;</span>
                 <span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span>
-                    <span class="s2">&quot;Use add_node to insert nodes or zero ranked cells.&quot;</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Use `add_node` to insert nodes or zero ranked cells.&quot;</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
@@ -1086,7 +1089,6 @@ document.write(`
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_insertable_cycle</span><span class="p">(</span>
                         <span class="n">cell</span><span class="p">,</span> <span class="n">check_skeleton</span><span class="o">=</span><span class="n">check_skeleton</span><span class="p">,</span> <span class="n">warnings_dis</span><span class="o">=</span><span class="kc">True</span>
                     <span class="p">):</span>
-
                         <span class="n">edges_cell</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">zip_longest</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]]))</span>
                         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges_cell</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges_cell</span><span class="p">)</span>
@@ -1224,7 +1226,6 @@ document.write(`
         <span class="n">d_nodes</span><span class="p">,</span> <span class="n">d_edges</span><span class="p">,</span> <span class="n">d_cells</span> <span class="o">=</span> <span class="p">[{},</span> <span class="p">{},</span> <span class="p">{}]</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
             <span class="c1"># to do, make sure v is a number</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
@@ -1474,10 +1475,8 @@ document.write(`
                         <span class="k">pass</span>
 
             <span class="k">else</span><span class="p">:</span>
-
                 <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">try</span><span class="p">:</span>
-
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span>
                                 <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span>
@@ -1489,7 +1488,6 @@ document.write(`
                             <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">],</span> <span class="nb">list</span>
                         <span class="p">):</span>  <span class="c1"># all cells with same key get same attrs</span>
                             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">])):</span>
-
                                 <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
@@ -1497,7 +1495,7 @@ document.write(`
                         <span class="k">pass</span>
                 <span class="k">return</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CellComplex.get_cell_attributes">
@@ -1547,7 +1545,7 @@ document.write(`
                         <span class="n">d</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
 
             <span class="k">return</span> <span class="n">d</span>
-        <span class="k">raise</span> <span class="n">TopoNetXError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rank must be 0, 1 or 2, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CellComplex.set_cell_data">
@@ -1779,7 +1777,6 @@ document.write(`
                 <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
                     <span class="n">A</span><span class="p">[</span><span class="n">ni</span><span class="p">,</span> <span class="n">cj</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-
             <span class="k">return</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">all_cell_index</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">asformat</span><span class="p">(</span><span class="s2">&quot;csc&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">A</span><span class="o">.</span><span class="n">asformat</span><span class="p">(</span><span class="s2">&quot;csc&quot;</span><span class="p">)</span></div>
@@ -2108,7 +2105,6 @@ document.write(`
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">L_hodge</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># rank == 1, return L1</span>
-
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">edge_list</span><span class="p">,</span> <span class="n">cell_list</span><span class="p">,</span> <span class="n">B_next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
                     <span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
@@ -2125,7 +2121,6 @@ document.write(`
                 <span class="k">return</span> <span class="n">L_hodge</span>
 
         <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-
             <span class="n">edge_list</span><span class="p">,</span> <span class="n">cell_list</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
                 <span class="n">rank</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
@@ -2211,7 +2206,6 @@ document.write(`
             <span class="p">)</span>
             <span class="n">L_up</span> <span class="o">=</span> <span class="n">B_next</span> <span class="o">@</span> <span class="n">B_next</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Rank should larger than 0 and &lt;= </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> (maximal dimension cells-1), got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
