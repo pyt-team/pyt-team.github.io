@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -353,22 +353,23 @@ document.write(`
 <span class="k">class</span> <span class="nc">SCCNN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SCCNN implementation for complex classification.</span>
 
-<span class="sd">    Note: In this task, we can consider the output on any order of simplices for the classification task, which of course can be amended by a readout layer.</span>
+<span class="sd">    Note: In this task, we can consider the output on any order of simplices for the classification task,</span>
+<span class="sd">    which of course can be amended by a readout layer.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    in_channels_all: tuple of int</span>
-<span class="sd">        Dimension of input features on (nodes, edges, faces)</span>
-<span class="sd">    intermediate_channels_all: tuple of int</span>
-<span class="sd">        Dimension of features of intermediate layers on (nodes, edges, faces)</span>
-<span class="sd">    out_channels_all: tuple of int</span>
-<span class="sd">        Dimension of output features on (nodes, edges, faces)</span>
-<span class="sd">    conv_order: int</span>
-<span class="sd">        Order of convolutions, we consider the same order for all convolutions</span>
-<span class="sd">    sc_order: int</span>
-<span class="sd">        SC order</span>
-<span class="sd">    n_layers: int</span>
-<span class="sd">        Numer of layers</span>
+<span class="sd">    in_channels_all : tuple of int</span>
+<span class="sd">        Dimension of input features on (nodes, edges, faces).</span>
+<span class="sd">    intermediate_channels_all : tuple of int</span>
+<span class="sd">        Dimension of features of intermediate layers on (nodes, edges, faces).</span>
+<span class="sd">    out_channels_all : tuple of int</span>
+<span class="sd">        Dimension of output features on (nodes, edges, faces).</span>
+<span class="sd">    conv_order : int</span>
+<span class="sd">        Order of convolutions, we consider the same order for all convolutions.</span>
+<span class="sd">    sc_order : int</span>
+<span class="sd">        SC order.</span>
+<span class="sd">    n_layers : int</span>
+<span class="sd">        Number of layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -423,22 +424,23 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: tuple tensors</span>
-<span class="sd">            (node, edge, face) features</span>
-<span class="sd">            each entry shape = [n_simplices, channels]</span>
+<span class="sd">        x_all : tuple of tensors, shape = (node, edge, face)</span>
+<span class="sd">            Tuple of feature tensors.</span>
+<span class="sd">            Each entry shape = (n_simplices, channels).</span>
 
-<span class="sd">        laplacian: tuple of tensors</span>
-<span class="sd">            (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</span>
-<span class="sd">            each entry shape = [n_simplices,n_simplices]</span>
+<span class="sd">        laplacian_all : tuple of tensors, shape = (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</span>
+<span class="sd">            Tuple of Laplacian tensors.</span>
+<span class="sd">            Each entry shape = (n_simplices,n_simplices).</span>
 
-<span class="sd">        incidence_1: tuple of tensors</span>
-<span class="sd">            tuple pf order 1 and 2 incidence matrices</span>
-<span class="sd">            shape of B1 = [n_nodes, n_edges]</span>
-<span class="sd">            shape of B2 = [n_edges, n_faces]</span>
+<span class="sd">        incidence_all : tuple of tensors</span>
+<span class="sd">            Tuple of order 1 and 2 incidence matrices:</span>
+
+<span class="sd">            - Shape of B1 = [n_nodes, n_edges],</span>
+<span class="sd">            - Shape of B2 = [n_edges, n_faces].</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : tensor, shape = [1]</span>
+<span class="sd">        _ : tensor, shape = (1)</span>
 <span class="sd">            Label assigned to whole complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
@@ -551,23 +553,22 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: tuple tensors</span>
-<span class="sd">            (node, edge, face) features</span>
-<span class="sd">            each entry shape = [n_simplices, channels]</span>
+<span class="sd">        x_all : tuple of tensors</span>
+<span class="sd">            Tuple of feature tensors (node, edge, face).</span>
+<span class="sd">            Each entry shape = (n_simplices, channels).</span>
 
-<span class="sd">        laplacian: tuple of tensors</span>
-<span class="sd">            (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</span>
-<span class="sd">            each entry shape = [n_simplices,n_simplices]</span>
+<span class="sd">        laplacian_all : tuple of tensors</span>
+<span class="sd">            Tuple of Laplacian tensors (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2).</span>
+<span class="sd">            Each entry shape = (n_simplices,n_simplices).</span>
 
-<span class="sd">        incidence_1: tuple of tensors</span>
-<span class="sd">            tuple pf order 1 and 2 incidence matrices</span>
-<span class="sd">            shape of B1 = [n_nodes, n_edges]</span>
-<span class="sd">            shape of B2 = [n_edges, n_faces]</span>
+<span class="sd">        incidence_all : tuple of tensors</span>
+<span class="sd">            Tuple of order 1 and 2 incidence matrices.</span>
+<span class="sd">            Shape of B1 = [n_nodes, n_edges].</span>
+<span class="sd">            Shape of B2 = [n_edges, n_faces].</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _ : tensor</span>
-<span class="sd">            shape = [n_nodes, 2]</span>
+<span class="sd">        tensor, shape = (n_nodes, 2)</span>
 <span class="sd">            One-hot labels assigned to nodes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>

@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -362,12 +362,12 @@ document.write(`
 <span class="sd">        Dimension of input features.</span>
 <span class="sd">    out_channels : int</span>
 <span class="sd">        Dimension of output features.</span>
-<span class="sd">    conv_order: int</span>
-<span class="sd">      The order of the convolutions.</span>
-<span class="sd">      if conv_order == 0:</span>
-<span class="sd">        the corresponding convolution is not performed.</span>
-<span class="sd">      - down: for the lower convolutions.</span>
-<span class="sd">      - up: for the upper convolutions.</span>
+<span class="sd">    conv_order : int</span>
+<span class="sd">        The order of the convolutions.</span>
+<span class="sd">        if conv_order == 0:</span>
+<span class="sd">            the corresponding convolution is not performed.</span>
+<span class="sd">        - down: for the lower convolutions.</span>
+<span class="sd">        - up: for the upper convolutions.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -472,12 +472,12 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_message_on_target: torch.Tensor, shape=[n_target_cells, out_channels]</span>
+<span class="sd">        x : torch.Tensor, shape = (n_target_cells, out_channels)</span>
 <span class="sd">            Output features on target cells.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_target_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (n_target_cells, out_channels)</span>
 <span class="sd">            Updated output features on target cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_func</span> <span class="o">==</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">:</span>
@@ -493,17 +493,17 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        conv_operator: torch.sparse</span>
-<span class="sd">          shape = [n_simplices,n_simplices]</span>
-<span class="sd">          e.g. adjacency matrix or the Hodge Laplacians</span>
-<span class="sd">        conv_order: int</span>
-<span class="sd">          the order of the convolution</span>
-<span class="sd">        x : torch.Tensor</span>
-<span class="sd">          shape = [n_simplices,num_channels]</span>
+<span class="sd">        conv_operator : torch.sparse, shape = (n_simplices,n_simplices)</span>
+<span class="sd">            Convolution operator e.g. adjacency matrix or the Hodge Laplacians.</span>
+<span class="sd">        conv_order : int</span>
+<span class="sd">            The order of the convolution</span>
+<span class="sd">        x : torch.Tensor, shape = (n_simplices,num_channels)</span>
+<span class="sd">            Input feature tensor.</span>
 
 <span class="sd">        Return</span>
 <span class="sd">        ------</span>
-<span class="sd">          x[:,:,k] = (conv_operator@....@conv_operator) @ x</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Output tensor, x[:,:,k] = (conv_operator@....@conv_operator) @ x.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_simplices</span><span class="p">,</span> <span class="n">num_channels</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
         <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">num_simplices</span><span class="p">,</span> <span class="n">num_channels</span><span class="p">,</span> <span class="n">conv_order</span><span class="p">))</span>
@@ -535,20 +535,16 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: torch.Tensor, shape=[n_simplex,in_channels]</span>
-<span class="sd">          Inpute features on the simplices, e.g., nodes, edges, triangles, etc.</span>
+<span class="sd">        x: torch.Tensor, shape = (n_simplex,in_channels)</span>
+<span class="sd">            Input features on the simplices, e.g., nodes, edges, triangles, etc.</span>
 
-<span class="sd">        laplacian: torch.sparse</span>
-<span class="sd">          shape = [n_simplices,n_simplices]</span>
-<span class="sd">          The Hodge Laplacian matrix</span>
-<span class="sd">            - can also be adjacency matrix</span>
-<span class="sd">            - lower part</span>
-<span class="sd">            - upper part</span>
+<span class="sd">        laplacian: torch.sparse, shape = (n_simplices,n_simplices)</span>
+<span class="sd">            The Hodge Laplacian matrix. Can also be adjacency matrix, lower part, or upper part.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_edges, channels]</span>
-<span class="sd">          Output features on the edges of the simplical complex.</span>
+<span class="sd">        torch.Tensor, shape = (n_edges, channels)</span>
+<span class="sd">            Output features on the edges of the simplical complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_simplices</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 

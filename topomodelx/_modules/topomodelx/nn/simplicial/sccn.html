@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -357,6 +357,8 @@ document.write(`
 <span class="sd">    ----------</span>
 <span class="sd">    channels : int</span>
 <span class="sd">        Dimension of features</span>
+<span class="sd">    max_rank : int</span>
+<span class="sd">        Maximum rank of the cells in the simplicial complex.</span>
 <span class="sd">    n_layers : int</span>
 <span class="sd">        Number of message passing layers.</span>
 <span class="sd">    n_classes : int</span>
@@ -395,28 +397,21 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        features: Dict[int, torch.Tensor],</span>
-<span class="sd">                length=max_rank+1,</span>
-<span class="sd">                shape=[n_rank_r_cells, channels]</span>
+<span class="sd">        features: dict[int, torch.Tensor], length=max_rank+1, shape = (n_rank_r_cells, channels)</span>
 <span class="sd">            Input features on the cells of the simplicial complex.</span>
-<span class="sd">        incidences : Dict[int, torch.sparse],</span>
-<span class="sd">                length=max_rank,</span>
-<span class="sd">                shape=[n_rank_r_minus_1_cells, n_rank_r_cells]</span>
+<span class="sd">        incidences : dict[int, torch.sparse], length=max_rank, shape = (n_rank_r_minus_1_cells, n_rank_r_cells)</span>
 <span class="sd">            Incidence matrices :math:`B_r` mapping r-cells to (r-1)-cells.</span>
-<span class="sd">        adjacencies : Dict[int, torch.sparse],</span>
-<span class="sd">                length=max_rank,</span>
-<span class="sd">                shape=[n_rank_r_cells, n_rank_r_cells]</span>
-<span class="sd">            Adjacency matrices :math:`H_r` mapping cells to cells</span>
-<span class="sd">                via lower and upper cells.</span>
+<span class="sd">        adjacencies : dict[int, torch.sparse], length=max_rank, shape = (n_rank_r_cells, n_rank_r_cells)</span>
+<span class="sd">            Adjacency matrices :math:`H_r` mapping cells to cells via lower and upper cells.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        _ : tensor</span>
 <span class="sd">            If n_classes &gt; 2:</span>
-<span class="sd">                shape = [n_nodes, n_classes]</span>
+<span class="sd">                shape = (n_nodes, n_classes)</span>
 <span class="sd">                Logits assigned to each node.</span>
 <span class="sd">            If n_classes == 2:</span>
-<span class="sd">                shape = [n_nodes,]</span>
+<span class="sd">                shape = (n_nodes,)</span>
 <span class="sd">                Binary logits assigned to each node.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>

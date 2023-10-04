@@ -48,7 +48,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="sccnn_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -445,16 +445,17 @@ document.write(`
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.sccnn.SCCNN">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.simplicial.sccnn.</span></span><span class="sig-name descname"><span class="pre">SCCNN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels_all</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intermediate_channels_all</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels_all</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggr_norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/sccnn.html#SCCNN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.sccnn.SCCNN" title="Link to this definition">#</a></dt>
 <dd><p>SCCNN implementation for complex classification.</p>
-<p>Note: In this task, we can consider the output on any order of simplices for the classification task, which of course can be amended by a readout layer.</p>
+<p>Note: In this task, we can consider the output on any order of simplices for the classification task,
+which of course can be amended by a readout layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>in_channels_all</strong> (<em>tuple of int</em>) – Dimension of input features on (nodes, edges, faces)</p></li>
-<li><p><strong>intermediate_channels_all</strong> (<em>tuple of int</em>) – Dimension of features of intermediate layers on (nodes, edges, faces)</p></li>
-<li><p><strong>out_channels_all</strong> (<em>tuple of int</em>) – Dimension of output features on (nodes, edges, faces)</p></li>
-<li><p><strong>conv_order</strong> (<em>int</em>) – Order of convolutions, we consider the same order for all convolutions</p></li>
-<li><p><strong>sc_order</strong> (<em>int</em>) – SC order</p></li>
-<li><p><strong>n_layers</strong> (<em>int</em>) – Numer of layers</p></li>
+<li><p><strong>in_channels_all</strong> (<em>tuple of int</em>) – Dimension of input features on (nodes, edges, faces).</p></li>
+<li><p><strong>intermediate_channels_all</strong> (<em>tuple of int</em>) – Dimension of features of intermediate layers on (nodes, edges, faces).</p></li>
+<li><p><strong>out_channels_all</strong> (<em>tuple of int</em>) – Dimension of output features on (nodes, edges, faces).</p></li>
+<li><p><strong>conv_order</strong> (<em>int</em>) – Order of convolutions, we consider the same order for all convolutions.</p></li>
+<li><p><strong>sc_order</strong> (<em>int</em>) – SC order.</p></li>
+<li><p><strong>n_layers</strong> (<em>int</em>) – Number of layers.</p></li>
 </ul>
 </dd>
 </dl>
@@ -465,17 +466,20 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>tuple tensors</em>) – (node, edge, face) features
-each entry shape = [n_simplices, channels]</p></li>
-<li><p><strong>laplacian</strong> (<em>tuple of tensors</em>) – (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)
-each entry shape = [n_simplices,n_simplices]</p></li>
-<li><p><strong>incidence_1</strong> (<em>tuple of tensors</em>) – tuple pf order 1 and 2 incidence matrices
-shape of B1 = [n_nodes, n_edges]
-shape of B2 = [n_edges, n_faces]</p></li>
+<li><p><strong>x_all</strong> (<em>tuple of tensors, shape = (node, edge, face)</em>) – Tuple of feature tensors.
+Each entry shape = (n_simplices, channels).</p></li>
+<li><p><strong>laplacian_all</strong> (<em>tuple of tensors, shape = (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</em>) – Tuple of Laplacian tensors.
+Each entry shape = (n_simplices,n_simplices).</p></li>
+<li><p><strong>incidence_all</strong> (<em>tuple of tensors</em>) – Tuple of order 1 and 2 incidence matrices:</p>
+<ul>
+<li><p>Shape of B1 = [n_nodes, n_edges],</p></li>
+<li><p>Shape of B2 = [n_edges, n_faces].</p></li>
+</ul>
+</li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>_</strong> (<em>tensor, shape = [1]</em>) – Label assigned to whole complex.</p>
+<dd class="field-even"><p><strong>_</strong> (<em>tensor, shape = (1)</em>) – Label assigned to whole complex.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -507,18 +511,17 @@ classification task, which of course can be amended by a readout layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>tuple tensors</em>) – (node, edge, face) features
-each entry shape = [n_simplices, channels]</p></li>
-<li><p><strong>laplacian</strong> (<em>tuple of tensors</em>) – (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)
-each entry shape = [n_simplices,n_simplices]</p></li>
-<li><p><strong>incidence_1</strong> (<em>tuple of tensors</em>) – tuple pf order 1 and 2 incidence matrices
-shape of B1 = [n_nodes, n_edges]
-shape of B2 = [n_edges, n_faces]</p></li>
+<li><p><strong>x_all</strong> (<em>tuple of tensors</em>) – Tuple of feature tensors (node, edge, face).
+Each entry shape = (n_simplices, channels).</p></li>
+<li><p><strong>laplacian_all</strong> (<em>tuple of tensors</em>) – Tuple of Laplacian tensors (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2).
+Each entry shape = (n_simplices,n_simplices).</p></li>
+<li><p><strong>incidence_all</strong> (<em>tuple of tensors</em>) – Tuple of order 1 and 2 incidence matrices.
+Shape of B1 = [n_nodes, n_edges].
+Shape of B2 = [n_edges, n_faces].</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>_</strong> (<em>tensor</em>) – shape = [n_nodes, 2]
-One-hot labels assigned to nodes.</p>
+<dd class="field-even"><p><em>tensor, shape = (n_nodes, 2)</em> – One-hot labels assigned to nodes.</p>
 </dd>
 </dl>
 </dd></dl>

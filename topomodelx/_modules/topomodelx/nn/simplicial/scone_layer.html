@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -353,14 +353,7 @@ document.write(`
 <div class="viewcode-block" id="SCoNeLayer">
 <a class="viewcode-back" href="../../../../api/nn/simplicial/scone_layer.html#topomodelx.nn.simplicial.scone_layer.SCoNeLayer">[docs]</a>
 <span class="k">class</span> <span class="nc">SCoNeLayer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Implementation of the SCoNe layer proposed in [1]_.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    This is the architecture proposed for trajectory prediction on simplicial complexes.</span>
-
-<span class="sd">    For the trajectory prediction architecture proposed in [1]_, these layers are stacked before applying the boundary map from 1-chains to 0-chains. Finally, one can apply the softmax operator on the neighbouring nodes of the last node in the given trajectory to predict the next node. When implemented like this, we get a map from (ordered) 1-chains (trajectories) to the neighbouring nodes of the last node in the 1-chain.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of the SCoNe layer proposed in [1]_.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -370,6 +363,15 @@ document.write(`
 <span class="sd">        Output dimension of features on each edge.</span>
 <span class="sd">    update_func : Literal[&#39;relu&#39;, &#39;sigmoid&#39;, &#39;tanh&#39;]</span>
 <span class="sd">        Update function to use when updating edge features.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is the architecture proposed for trajectory prediction on simplicial complexes.</span>
+
+<span class="sd">    For the trajectory prediction architecture proposed in [1]_, these layers are stacked before applying the</span>
+<span class="sd">    boundary map from 1-chains to 0-chains. Finally, one can apply the softmax operator on the neighbouring nodes of</span>
+<span class="sd">    the last node in the given trajectory to predict the next node. When implemented like this, we get a map from</span>
+<span class="sd">    (ordered) 1-chains (trajectories) to the neighbouring nodes of the last node in the 1-chain.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -437,16 +439,16 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x: torch.Tensor, shape=[n_edges, in_channels]</span>
+<span class="sd">        x: torch.Tensor, shape = (n_edges, in_channels)</span>
 <span class="sd">            Input features on the edges of the simplicial complex.</span>
-<span class="sd">        incidence_1 : torch.sparse, shape=[n_nodes, n_edges]</span>
+<span class="sd">        incidence_1 : torch.sparse, shape = (n_nodes, n_edges)</span>
 <span class="sd">            Incidence matrix :math:`B_1` mapping edges to nodes.</span>
-<span class="sd">        incidence_2 : torch.sparse, shape=[n_edges, n_triangles]</span>
+<span class="sd">        incidence_2 : torch.sparse, shape = (n_edges, n_triangles)</span>
 <span class="sd">            Incidence matrix :math:`B_2` mapping triangles to edges.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_edges, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (n_edges, out_channels)</span>
 <span class="sd">            Output features on the edges of the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">z1</span> <span class="o">=</span> <span class="n">incidence_2</span> <span class="o">@</span> <span class="n">incidence_2</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">x</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight_2</span>

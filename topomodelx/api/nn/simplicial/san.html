@@ -48,7 +48,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="san_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -451,11 +451,11 @@ document.write(`
 <li><p><strong>in_channels</strong> (<em>int</em>) – Dimension of input features.</p></li>
 <li><p><strong>hidden_channels</strong> (<em>int</em>) – Dimension of hidden features.</p></li>
 <li><p><strong>out_channels</strong> (<em>int</em>) – Dimension of output features.</p></li>
-<li><p><strong>simplex_order_k</strong> (<em>int</em>) – Order r of the considered simplices. Default to 1 (edges).</p></li>
-<li><p><strong>n_filters</strong> (<em>int, optional</em>) – Approximation order for simplicial filters. Defaults to 2.</p></li>
-<li><p><strong>order_harmonic</strong> (<em>int, optional</em>) – Approximation order for harmonic convolution. Defaults to 5.</p></li>
-<li><p><strong>epsilon_harmonic</strong> (<em>float, optional</em>) – Epsilon value for harmonic convolution. Defaults to 1e-1.</p></li>
-<li><p><strong>n_layers</strong> (<em>int, optional</em>) – Number of message passing layers. Defaults to 2.</p></li>
+<li><p><strong>simplex_order_k</strong> (<em>int, default = 1</em>) – Order r of the considered simplices.</p></li>
+<li><p><strong>n_filters</strong> (<em>int, default = 2</em>) – Approximation order for simplicial filters.</p></li>
+<li><p><strong>order_harmonic</strong> (<em>int, default = 5</em>) – Approximation order for harmonic convolution.</p></li>
+<li><p><strong>epsilon_harmonic</strong> (<em>float, default = 1e-1</em>) – Epsilon value for harmonic convolution.</p></li>
+<li><p><strong>n_layers</strong> (<em>int, default = 2</em>) – Number of message passing layers.</p></li>
 </ul>
 </dd>
 </dl>
@@ -466,12 +466,10 @@ document.write(`
 <p>The matrix is used to calculate the harmonic component in SAN layers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>L</strong> (<em>tensor</em>) – shape = [n_edges, n_edges]
-Hodge laplacian of rank 1.</p>
+<dd class="field-odd"><p><strong>L</strong> (<em>tensor, shape = (n_edges, n_edges)</em>) – Hodge laplacian of rank 1.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>_</strong> (<em>tensor</em>) – shape = [n_edges, n_edges]
-Projection matrix.</p>
+<dd class="field-even"><p><strong>_</strong> (<em>tensor, shape = (n_edges, n_edges)</em>) – Projection matrix.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -483,17 +481,13 @@ Projection matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>tensor</em>) – shape = [n_nodes, channels_in]
-Node features.</p></li>
-<li><p><strong>laplacian_up</strong> (<em>tensor</em>) – shape = [n_edges, n_edges]
-Upper laplacian of rank 1.</p></li>
-<li><p><strong>Ld</strong> (<em>tensor</em>) – shape = [n_edges, n_edges]
-Down laplacian of rank 1.</p></li>
+<li><p><strong>x</strong> (<em>tensor, shape = (n_nodes, channels_in)</em>) – Node features.</p></li>
+<li><p><strong>laplacian_up</strong> (<em>tensor, shape = (n_edges, n_edges)</em>) – Upper laplacian of rank 1.</p></li>
+<li><p><strong>Ld</strong> (<em>tensor, shape = (n_edges, n_edges)</em>) – Down laplacian of rank 1.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>_</strong> (<em>tensor</em>) – shape = [n_nodes, 2]
-One-hot labels assigned to edges.</p>
+<dd class="field-even"><p><strong>_</strong> (<em>tensor, shape = (n_nodes, 2)</em>) – One-hot labels assigned to edges.</p>
 </dd>
 </dl>
 </dd></dl>

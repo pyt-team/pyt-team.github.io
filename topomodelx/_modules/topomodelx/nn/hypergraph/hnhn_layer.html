@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -365,19 +365,14 @@ document.write(`
 <span class="sd">    Two hyperparameters alpha and beta, control the normalization strenght.</span>
 <span class="sd">    The convolutional layers support the training of a bias term.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    This is the architecture proposed for node classification.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    channels_node : int</span>
 <span class="sd">        Dimension of node features.</span>
 <span class="sd">    channels_edge : int</span>
 <span class="sd">        Dimension of edge features.</span>
-<span class="sd">    incidence_1 : torch.sparse</span>
+<span class="sd">    incidence_1 : torch.sparse, shape = (n_nodes, n_edges)</span>
 <span class="sd">        Incidence matrix mapping edges to nodes (B_1).</span>
-<span class="sd">        shape=[n_nodes, n_edges]</span>
 <span class="sd">    use_bias : bool</span>
 <span class="sd">        Flag controlling whether to use a bias term in the convolution.</span>
 <span class="sd">    use_normalized_incidence : bool</span>
@@ -390,6 +385,10 @@ document.write(`
 <span class="sd">        Gain for the bias initialization.</span>
 <span class="sd">    bias_init : Literal[&quot;xavier_uniform&quot;, &quot;xavier_normal&quot;], default=&quot;xavier_uniform&quot;</span>
 <span class="sd">        Controls the bias initialization method.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is the architecture proposed for node classification.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -541,17 +540,17 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape=[n_nodes, channels_node]</span>
-<span class="sd">            Input features on the hypernodes</span>
-<span class="sd">        x_1 : torch.Tensor, shape=[n_edges, channels_edge]</span>
-<span class="sd">            Input features on the hyperedges</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, channels_node)</span>
+<span class="sd">            Input features on the hypernodes.</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (n_edges, channels_edge)</span>
+<span class="sd">            Input features on the hyperedges.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        x_0 : torch.Tensor, shape=[n_nodes, channels_node]</span>
-<span class="sd">            Output features on the hypernodes</span>
-<span class="sd">        x_1 : torch.Tensor, shape=[n_edges, channels_edge]</span>
-<span class="sd">            Output features on the hyperedges</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, channels_node)</span>
+<span class="sd">            Output features on the hypernodes.</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (n_edges, channels_edge)</span>
+<span class="sd">            Output features on the hyperedges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Move incidence matrices to device</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x_0</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>

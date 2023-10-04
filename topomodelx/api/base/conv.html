@@ -48,7 +48,7 @@
     <link rel="prev" title="Aggregation" href="aggregation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -443,7 +443,7 @@ document.write(`
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.base.conv.</span></span><span class="sig-name descname"><span class="pre">Conv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggr_norm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'relu'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'sigmoid'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">att</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'xavier_uniform'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'xavier_normal'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'xavier_uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialization_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.414</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_linear_transform</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topomodelx/base/conv.html#Conv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.base.conv.Conv" title="Link to this definition">#</a></dt>
 <dd><p>Message passing: steps 1, 2, and 3.</p>
 <p>Builds the message passing route given by one neighborhood matrix.
-Includes an option for a x-specific update function.</p>
+Includes an option for an x-specific update function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -454,7 +454,7 @@ Includes an option for a x-specific update function.</p>
 <li><p><strong>att</strong> (<em>bool, default=False</em>) – Whether to use attention.</p></li>
 <li><p><strong>initialization</strong> (<em>Literal[“xavier_uniform”, “xavier_normal”], default=”xavier_uniform”</em>) – Initialization method.</p></li>
 <li><p><strong>with_linear_transform</strong> (<em>bool, default=True</em>) – Whether to apply a learnable linear transform.
-NB: if <cite>False</cite> in_channels has to be equal to out_channels</p></li>
+NB: if <cite>False</cite> in_channels has to be equal to out_channels.</p></li>
 </ul>
 </dd>
 </dl>
@@ -472,17 +472,17 @@ i.e. source cells send messages to themselves.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>Tensor, shape=[…, n_source_cells, in_channels]</em>) – Input features on source cells.
+<li><p><strong>x_source</strong> (<em>Tensor, shape = (…, n_source_cells, in_channels)</em>) – Input features on source cells.
 Assumes that all source cells have the same rank r.</p></li>
-<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape=[n_target_cells, n_source_cells]</em>) – Neighborhood matrix.</p></li>
-<li><p><strong>x_target</strong> (<em>Tensor, shape=[…, n_target_cells, in_channels]</em>) – Input features on target cells.
+<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape = (n_target_cells, n_source_cells)</em>) – Neighborhood matrix.</p></li>
+<li><p><strong>x_target</strong> (<em>Tensor, shape = (…, n_target_cells, in_channels)</em>) – Input features on target cells.
 Assumes that all target cells have the same rank s.
 Optional. If not provided, x_target is assumed to be x_source,
 i.e. source cells send messages to themselves.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[…, n_target_cells, out_channels]</em> – Output features on target cells.
+<dd class="field-even"><p><em>torch.Tensor, shape = (…, n_target_cells, out_channels)</em> – Output features on target cells.
 Assumes that all target cells have the same rank s.</p>
 </dd>
 </dl>
@@ -494,10 +494,10 @@ Assumes that all target cells have the same rank s.</p>
 <dd><p>Update embeddings on each cell (step 4).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x_message_on_target</strong> (<em>torch.Tensor, shape=[n_target_cells, out_channels]</em>) – Output features on target cells.</p>
+<dd class="field-odd"><p><strong>x_message_on_target</strong> (<em>torch.Tensor, shape = (n_target_cells, out_channels)</em>) – Output features on target cells.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[n_target_cells, out_channels]</em> – Updated output features on target cells.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_target_cells, out_channels)</em> – Updated output features on target cells.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -50,7 +50,7 @@
     <link rel="prev" title="AllSet_Layer" href="allset_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -473,12 +473,12 @@ document.write(`
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>torch.Tensor</em>) – Input features.</p></li>
-<li><p><strong>incidence</strong> (<em>torch.sparse</em>) – Incidence matrix between node/hyperedges</p></li>
+<li><p><strong>x_source</strong> (<em>Tensor, shape = (…, n_source_cells, in_channels)</em>) – Inputer features.</p></li>
+<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape = (n_target_cells, n_source_cells)</em>) – Neighborhood matrix.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>x</strong> (<em>torch.Tensor</em>) – Output features.</p>
+<dd class="field-even"><p><em>x_message_on_target</em> – Output sum over features on target cells.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -543,8 +543,8 @@ ICLR 2022.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>torch.Tensor, shape=[n_nodes, channels]</em>) – Node input features.</p></li>
-<li><p><strong>incidence_1</strong> (<em>torch.sparse, shape=[n_nodes, n_hyperedges]</em>) – Incidence matrix <span class="math notranslate nohighlight">\(B_1\)</span> mapping hyperedges to nodes.</p></li>
+<li><p><strong>x</strong> (<em>torch.Tensor, shape = (n_nodes, channels)</em>) – Node input features.</p></li>
+<li><p><strong>incidence_1</strong> (<em>torch.sparse, shape = (n_nodes, n_hyperedges)</em>) – Incidence matrix <span class="math notranslate nohighlight">\(B_1\)</span> mapping hyperedges to nodes.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -607,13 +607,13 @@ ICLR 2022.
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>torch.Tensor, shape=[n_source_cells, in_channels]</em>) – Input features on source cells.
+<li><p><strong>x_source</strong> (<em>torch.Tensor, shape = (n_source_cells, in_channels)</em>) – Input features on source cells.
 Assumes that all source cells have the same rank r.</p></li>
-<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape=[n_target_cells, n_source_cells]</em>) – Neighborhood matrix.</p></li>
+<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape = (n_target_cells, n_source_cells)</em>) – Neighborhood matrix.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = [n_target_cells, heads, number_queries, n_source_cells]</em> – Attention weights: one scalar per message between a source and a target cell.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_target_cells, heads, number_queries, n_source_cells)</em> – Attention weights: one scalar per message between a source and a target cell.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -627,13 +627,13 @@ Module MH from Eq (7) in AllSet paper <a class="footnote-reference brackets" hre
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>Tensor, shape=[…, n_source_cells, in_channels]</em>) – Input features on source cells.
+<li><p><strong>x_source</strong> (<em>Tensor, shape = (…, n_source_cells, in_channels)</em>) – Input features on source cells.
 Assumes that all source cells have the same rank r.</p></li>
-<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape=[n_target_cells, n_source_cells]</em>) – Neighborhood matrix.</p></li>
+<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape = (n_target_cells, n_source_cells)</em>) – Neighborhood matrix.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Tensor, shape=[…, n_target_cells, out_channels]</em> – Output features on target cells.
+<dd class="field-even"><p><em>Tensor, shape = (…, n_target_cells, out_channels)</em> – Output features on target cells.
 Assumes that all target cells have the same rank s.</p>
 </dd>
 </dl>

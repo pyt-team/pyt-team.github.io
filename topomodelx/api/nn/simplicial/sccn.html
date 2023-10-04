@@ -50,7 +50,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="sccn_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -451,6 +451,7 @@ document.write(`
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>channels</strong> (<em>int</em>) – Dimension of features</p></li>
+<li><p><strong>max_rank</strong> (<em>int</em>) – Maximum rank of the cells in the simplicial complex.</p></li>
 <li><p><strong>n_layers</strong> (<em>int</em>) – Number of message passing layers.</p></li>
 <li><p><strong>n_classes</strong> (<em>int</em>) – Number of classes.</p></li>
 <li><p><strong>update_func</strong> (<em>str</em>) – Activation function used in aggregation layers.</p></li>
@@ -461,37 +462,21 @@ document.write(`
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.sccn.SCCN.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidences</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjacencies</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/sccn.html#SCCN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.sccn.SCCN.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward computation.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><dl class="simple">
-<dt><strong>features</strong> (<em>Dict[int, torch.Tensor],</em>) –     length=max_rank+1,</dt><dd><p>shape=[n_rank_r_cells, channels]</p>
-</dd>
-</dl>
-<p>Input features on the cells of the simplicial complex.</p>
-</li>
-<li><dl class="simple">
-<dt><strong>incidences</strong> (<em>Dict[int, torch.sparse],</em>) –     length=max_rank,</dt><dd><p>shape=[n_rank_r_minus_1_cells, n_rank_r_cells]</p>
-</dd>
-</dl>
-<p>Incidence matrices <span class="math notranslate nohighlight">\(B_r\)</span> mapping r-cells to (r-1)-cells.</p>
-</li>
-<li><dl class="simple">
-<dt><strong>adjacencies</strong> (<em>Dict[int, torch.sparse],</em>) –     length=max_rank,</dt><dd><p>shape=[n_rank_r_cells, n_rank_r_cells]</p>
-</dd>
-<dt>Adjacency matrices <span class="math notranslate nohighlight">\(H_r\)</span> mapping cells to cells</dt><dd><p>via lower and upper cells.</p>
-</dd>
-</dl>
-</li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>features</strong> (<em>dict[int, torch.Tensor], length=max_rank+1, shape = (n_rank_r_cells, channels)</em>) – Input features on the cells of the simplicial complex.</p></li>
+<li><p><strong>incidences</strong> (<em>dict[int, torch.sparse], length=max_rank, shape = (n_rank_r_minus_1_cells, n_rank_r_cells)</em>) – Incidence matrices <span class="math notranslate nohighlight">\(B_r\)</span> mapping r-cells to (r-1)-cells.</p></li>
+<li><p><strong>adjacencies</strong> (<em>dict[int, torch.sparse], length=max_rank, shape = (n_rank_r_cells, n_rank_r_cells)</em>) – Adjacency matrices <span class="math notranslate nohighlight">\(H_r\)</span> mapping cells to cells via lower and upper cells.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p><strong>_</strong> (<em>tensor</em>) –</p>
 <dl class="simple">
-<dt>If n_classes &gt; 2:</dt><dd><p>shape = [n_nodes, n_classes]
+<dt>If n_classes &gt; 2:</dt><dd><p>shape = (n_nodes, n_classes)
 Logits assigned to each node.</p>
 </dd>
-<dt>If n_classes == 2:</dt><dd><p>shape = [n_nodes,]
+<dt>If n_classes == 2:</dt><dd><p>shape = (n_nodes,)
 Binary logits assigned to each node.</p>
 </dd>
 </dl>

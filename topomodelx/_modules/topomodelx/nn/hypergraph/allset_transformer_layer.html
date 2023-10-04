@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -471,9 +471,9 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x : torch.Tensor, shape=[n_nodes, channels]</span>
+<span class="sd">        x : torch.Tensor, shape = (n_nodes, channels)</span>
 <span class="sd">            Node input features.</span>
-<span class="sd">        incidence_1 : torch.sparse, shape=[n_nodes, n_hyperedges]</span>
+<span class="sd">        incidence_1 : torch.sparse, shape = (n_nodes, n_hyperedges)</span>
 <span class="sd">            Incidence matrix :math:`B_1` mapping hyperedges to nodes.</span>
 
 <span class="sd">        Returns</span>
@@ -592,15 +592,15 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x : torch.Tensor</span>
-<span class="sd">            Input features.</span>
-<span class="sd">        incidence : torch.sparse</span>
-<span class="sd">            Incidence matrix between node/hyperedges</span>
+<span class="sd">        x_source : Tensor, shape = (…, n_source_cells, in_channels)</span>
+<span class="sd">            Inputer features.</span>
+<span class="sd">        neighborhood : torch.sparse, shape = (n_target_cells, n_source_cells)</span>
+<span class="sd">            Neighborhood matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        x : torch.Tensor</span>
-<span class="sd">            Output features.</span>
+<span class="sd">        x_message_on_target :</span>
+<span class="sd">            Output sum over features on target cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">neighborhood</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_index_j</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>
@@ -719,15 +719,15 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_source : torch.Tensor, shape=[n_source_cells, in_channels]</span>
+<span class="sd">        x_source : torch.Tensor, shape = (n_source_cells, in_channels)</span>
 <span class="sd">            Input features on source cells.</span>
 <span class="sd">            Assumes that all source cells have the same rank r.</span>
-<span class="sd">        neighborhood : torch.sparse, shape=[n_target_cells, n_source_cells]</span>
+<span class="sd">        neighborhood : torch.sparse, shape = (n_target_cells, n_source_cells)</span>
 <span class="sd">            Neighborhood matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape = [n_target_cells, heads, number_queries, n_source_cells]</span>
+<span class="sd">        torch.Tensor, shape = (n_target_cells, heads, number_queries, n_source_cells)</span>
 <span class="sd">            Attention weights: one scalar per message between a source and a target cell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_K</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">K_weight</span><span class="p">)</span>
@@ -760,15 +760,15 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_source : Tensor, shape=[..., n_source_cells, in_channels]</span>
+<span class="sd">        x_source : Tensor, shape = (..., n_source_cells, in_channels)</span>
 <span class="sd">            Input features on source cells.</span>
 <span class="sd">            Assumes that all source cells have the same rank r.</span>
-<span class="sd">        neighborhood : torch.sparse, shape=[n_target_cells, n_source_cells]</span>
+<span class="sd">        neighborhood : torch.sparse, shape = (n_target_cells, n_source_cells)</span>
 <span class="sd">            Neighborhood matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Tensor, shape=[..., n_target_cells, out_channels]</span>
+<span class="sd">        Tensor, shape = (..., n_target_cells, out_channels)</span>
 <span class="sd">            Output features on target cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

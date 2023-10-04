@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -480,11 +480,11 @@ document.write(`
 <span class="sd">        and aggregated messages of nodes as input and returns hyperedge messages. If not given, two inputs</span>
 <span class="sd">        are concatenated and a linear layer reducing back to in_features plus sigmoid is applied, according</span>
 <span class="sd">        to the paper.</span>
-<span class="sd">    adjacency_dropout: 0.7</span>
+<span class="sd">    adjacency_dropout: int, default = 0.7</span>
 <span class="sd">        Adjacency dropout rate.</span>
 <span class="sd">    aggr_func: Literal[&quot;sum&quot;, &quot;mean&quot;, &quot;add&quot;], default=&quot;sum&quot;</span>
 <span class="sd">        Message aggregation function.</span>
-<span class="sd">    updating_dropout: 0.5</span>
+<span class="sd">    updating_dropout: int, default = 0.5</span>
 <span class="sd">        Regular dropout rate applied to node and hyperedge features.</span>
 <span class="sd">    updating_func: None</span>
 <span class="sd">        The final function or nn.Module object to be called on node and hyperedge features to retrieve</span>
@@ -555,18 +555,18 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape=[n_nodes, node_in_features]</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, node_in_features)</span>
 <span class="sd">            Input features of the nodes.</span>
-<span class="sd">        x_1 : torch.Tensor, shape=[n_edges, hyperedge_in_features]</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (n_edges, hyperedge_in_features)</span>
 <span class="sd">            Input features of the hyperedges.</span>
-<span class="sd">        incidence_1 : torch.sparse.Tensor</span>
-<span class="sd">            Incidence matrix mapping hyperedges to nodes (B_1) with shape [n_nodes, n_edges].</span>
+<span class="sd">        incidence_1 : torch.sparse.Tensor, shape = (n_nodes, n_edges)</span>
+<span class="sd">            Incidence matrix mapping hyperedges to nodes (B_1).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        x_0 : torch.Tensor, shape=[n_nodes, node_in_features]</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, node_in_features)</span>
 <span class="sd">            Output features of the nodes.</span>
-<span class="sd">        x_1 : torch.Tensor, shape=[n_edges, hyperedge_in_features]</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (n_edges, hyperedge_in_features)</span>
 <span class="sd">            Output features of the hyperedges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">node_messages_aggregated</span><span class="p">,</span> <span class="n">node_messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_to_hyperedge_messenger</span><span class="p">(</span>

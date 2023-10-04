@@ -50,7 +50,7 @@
     <link rel="prev" title="Cell" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -451,8 +451,6 @@ document.write(`
 <dd><p>Layer of the Cell Attention Network (CAN) model.</p>
 <p>The CAN layer considers an attention convolutional message passing though the upper and lower neighborhoods of the cell.
 Additionally, a skip connection can be added to the output of the layer.</p>
-<p class="rubric">Notes</p>
-<p>Add_self_loops is preferred to be False. If necessary, the self-loops should be added to the neighborhood matrix in the preprocessing step.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -467,14 +465,31 @@ Additionally, a skip connection can be added to the output of the layer.</p>
 <li><p><strong>aggr_func</strong> (<em>Literal[“mean”, “sum”], default=”sum”</em>) – Between-neighborhood aggregation function applied to the messages.</p></li>
 <li><p><strong>update_func</strong> (<em>Literal[“relu”, “sigmoid”, “tanh”, None], default=”relu”</em>) – Update function applied to the messages.</p></li>
 <li><p><strong>version</strong> (<em>Literal[“v1”, “v2”], default=”v1”</em>) – Version of the layer, by default “v1” which is the same as the original CAN layer. While “v2” has the same attetion mechanism as the GATv2 layer.</p></li>
-<li><p><strong>share_weights</strong> (<em>bool, default=False</em>) – This option is valid only for “v2”. If True, the weights of the linear transformation applied to the source and target features are shared, by default False</p></li>
+<li><p><strong>share_weights</strong> (<em>bool, default=False</em>) – This option is valid only for “v2”. If True, the weights of the linear transformation applied to the source and target features are shared, by default False.</p></li>
 </ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>Add_self_loops is preferred to be False. If necessary, the self-loops should be added to the neighborhood matrix in the preprocessing step.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.cell.can_layer.CANLayer.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_neighborhood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_neighborhood</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/can_layer.html#CANLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.can_layer.CANLayer.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward pass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor, shape = (n_k_cells, channels)</em>) – Input features on the r-cell of the cell complex.</p></li>
+<li><p><strong>lower_neighborhood</strong> (<em>torch.sparse</em>) – shape = (n_k_cells, n_k_cells)
+Lower neighborhood matrix mapping r-cells to r-cells (A_k_low).</p></li>
+<li><p><strong>upper_neighborhood</strong> (<em>torch.sparse</em>) – shape = (n_k_cells, n_k_cells)
+Upper neighborhood matrix mapping r-cells to r-cells (A_k_up).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_k_cells, out_channels)</em></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
 <div class="math notranslate nohighlight">
 \[\mathcal N = \{\mathcal N_1, \mathcal N_2\} = \{A_{\uparrow, r}, A_{\downarrow, r}\}\]</div>
 <div class="math notranslate nohighlight">
@@ -488,20 +503,6 @@ Additionally, a skip connection can be added to the output of the layer.</p>
 &amp;🟦 \quad h_x^{t+1,(r)}
     = \phi^{t}(h_x^t, m_{x}^{(r)})
 \end{align*}\end{split}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>torch.Tensor, shape=[n_k_cells, channels]</em>) – Input features on the k-cell of the cell complex.</p></li>
-<li><p><strong>lower_neighborhood</strong> (<em>torch.sparse</em>) – shape=[n_k_cells, n_k_cells]
-Lower neighborhood matrix mapping k-cells to k-cells (A_k_low).</p></li>
-<li><p><strong>upper_neighborhood</strong> (<em>torch.sparse</em>) – shape=[n_k_cells, n_k_cells]
-Upper neighborhood matrix mapping k-cells to k-cells (A_k_up).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[n_k_cells, out_channels]</em></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -546,12 +547,12 @@ Repository: <a class="github reference external" href="https://github.com/lrnzgi
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_0</strong> (<em>torch.Tensor</em>) – Node signal of shape (num_nodes, in_channels_0)</p></li>
-<li><p><strong>neighborhood_0_to_0</strong> (<em>torch.Tensor</em>) – Sparse neighborhood matrix of shape (num_nodes, num_nodes)</p></li>
+<li><p><strong>x_0</strong> (<em>torch.Tensor, shape = (num_nodes, in_channels_0)</em>) – Node signal.</p></li>
+<li><p><strong>neighborhood_0_to_0</strong> (<em>torch.Tensor, shape = (num_nodes, num_nodes)</em>) – Sparse neighborhood matrix.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor</em> – Edge signal of shape (num_edges, 1)</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (num_edges, 1)</em> – Edge signal.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -573,7 +574,8 @@ Repository: <a class="github reference external" href="https://github.com/lrnzgi
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.cell.can_layer.MultiHeadCellAttention">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.cell.can_layer.</span></span><span class="sig-name descname"><span class="pre">MultiHeadCellAttention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">att_activation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_self_loops</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggr_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'sum'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mean'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'add'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'xavier_uniform'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'xavier_normal'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'xavier_uniform'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/can_layer.html#MultiHeadCellAttention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.can_layer.MultiHeadCellAttention" title="Link to this definition">#</a></dt>
-<dd><p>Attentional Message Passing from Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> following the attention mechanism proposed in GAT <a class="footnote-reference brackets" href="#id5" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
+<dd><p>Attentional Message Passing v1.</p>
+<p>Attentional Message Passing from Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> following the attention mechanism proposed in GAT <a class="footnote-reference brackets" href="#id5" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -623,12 +625,12 @@ Graph attention networks (2017).
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>torch.Tensor, shape=[n_k_cells, channels]</em>) – Input features on the k-cell of the cell complex.</p></li>
-<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape=[n_k_cells, n_k_cells]</em>) – Neighborhood matrix mapping k-cells to k-cells (A_k). [up, down]</p></li>
+<li><p><strong>x_source</strong> (<em>torch.Tensor, shape = (n_k_cells, channels)</em>) – Input features on the r-cell of the cell complex.</p></li>
+<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape = (n_k_cells, n_k_cells)</em>) – Neighborhood matrix mapping r-cells to r-cells (A_k). [up, down]</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[n_k_cells, channels]</em> – Output features on the k-cell of the cell complex.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_k_cells, channels)</em> – Output features on the r-cell of the cell complex.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -640,10 +642,10 @@ Graph attention networks (2017).
 <p>🟥 This provides a default message function to the message passing scheme.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x_source</strong> (<em>torch.Tensor, shape=[n_k_cells, channels]</em>) – Input features on the k-cell of the cell complex.</p>
+<dd class="field-odd"><p><strong>x_source</strong> (<em>torch.Tensor, shape = (n_k_cells, channels)</em>) – Input features on the r-cell of the cell complex.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[n_k_cells, heads, in_channels]</em> – Messages on source cells.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_k_cells, heads, in_channels)</em> – Messages on source cells.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -659,7 +661,8 @@ Graph attention networks (2017).
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.cell.can_layer.MultiHeadCellAttention_v2">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.cell.can_layer.</span></span><span class="sig-name descname"><span class="pre">MultiHeadCellAttention_v2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">att_activation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_self_loops</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggr_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'sum'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mean'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'add'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'xavier_uniform'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'xavier_normal'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'xavier_uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">share_weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/can_layer.html#MultiHeadCellAttention_v2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.can_layer.MultiHeadCellAttention_v2" title="Link to this definition">#</a></dt>
-<dd><p>Attentional Message Passing from Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> following the attention mechanism proposed in GATv2 <a class="footnote-reference brackets" href="#id8" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+<dd><p>Attentional Message Passing v2.</p>
+<p>Attentional Message Passing from Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> following the attention mechanism proposed in GATv2 <a class="footnote-reference brackets" href="#id8" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -692,10 +695,10 @@ How attentive are graph attention networks? (2022).
 <dd><p>Compute attention weights for messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x_source</strong> (<em>torch.Tensor</em>) – Source node features. Shape: [<a href="#id11"><span class="problematic" id="id12">|n_k_cells|</span></a>, heads, in_channels]</p>
+<dd class="field-odd"><p><strong>x_source</strong> (<em>torch.Tensor, shape = (|n_k_cells|, heads, in_channels)</em>) – Source node features.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>alpha</strong> (<em>torch.Tensor</em>) – Attention weights. Shape: [n_k_cells, heads]</p>
+<dd class="field-even"><p><strong>alpha</strong> (<em>torch.Tensor, shape = (n_k_cells, heads)</em>) – Attention weights.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -707,12 +710,12 @@ How attentive are graph attention networks? (2022).
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>torch.Tensor, shape=[n_k_cells, channels]</em>) – Input features on the k-cell of the cell complex.</p></li>
-<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape=[n_k_cells, n_k_cells]</em>) – Neighborhood matrix mapping k-cells to k-cells (A_k). [up, down]</p></li>
+<li><p><strong>x_source</strong> (<em>torch.Tensor, shape = (n_k_cells, channels)</em>) – Input features on the r-cell of the cell complex.</p></li>
+<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape = (n_k_cells, n_k_cells)</em>) – Neighborhood matrix mapping r-cells to r-cells (A_k), [up, down].</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[n_k_cells, channels]</em> – Output features on the k-cell of the cell complex.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_k_cells, channels)</em> – Output features on the r-cell of the cell complex.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -724,10 +727,10 @@ How attentive are graph attention networks? (2022).
 <p>🟥 This provides a default message function to the message passing scheme.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x_source</strong> (<em>torch.Tensor, shape=[n_k_cells, channels]</em>) – Input features on the k-cell of the cell complex.</p>
+<dd class="field-odd"><p><strong>x_source</strong> (<em>torch.Tensor, shape = (n_k_cells, channels)</em>) – Input features on the r-cell of the cell complex.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Tensor, shape=[n_k_cells, heads, in_channels]</em> – Messages on source cells.</p>
+<dd class="field-even"><p><em>Tensor, shape = (n_k_cells, heads, in_channels)</em> – Messages on source cells.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -743,7 +746,8 @@ How attentive are graph attention networks? (2022).
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.cell.can_layer.MultiHeadLiftLayer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.cell.can_layer.</span></span><span class="sig-name descname"><span class="pre">MultiHeadLiftLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels_0:</span> <span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">heads:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_lift_activation:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;built-in</span> <span class="pre">method</span> <span class="pre">relu</span> <span class="pre">of</span> <span class="pre">type</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_lift_dropout:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_lift_readout:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">'cat'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/can_layer.html#MultiHeadLiftLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.can_layer.MultiHeadLiftLayer" title="Link to this definition">#</a></dt>
-<dd><p>Multi Head Attentional Lift Layer adapted from the official implementation of the Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<dd><p>Multi Head Attentional Lift Layer.</p>
+<p>Multi Head Attentional Lift Layer adapted from the official implementation of the Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -759,13 +763,6 @@ How attentive are graph attention networks? (2022).
 <dt class="sig sig-object py" id="topomodelx.nn.cell.can_layer.MultiHeadLiftLayer.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_0_to_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/can_layer.html#MultiHeadLiftLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.can_layer.MultiHeadLiftLayer.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward pass.</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}\begin{align*}
-&amp;🟥 \quad m_{(y,z) \rightarrow x}^{(0 \rightarrow 1)}
-    = \alpha(h_y, h_z) = \Theta(h_z||h_y)\\
-&amp;🟦 \quad h_x^{(1)}
-    = \phi(h_x, m_x^{(1)})
-\end{align*}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -778,6 +775,14 @@ How attentive are graph attention networks? (2022).
 <dd class="field-even"><p><strong>_</strong> (<em>torch.Tensor</em>) – Lifted node signal of shape (num_edges, heads + in_channels_1)</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{align*}
+&amp;🟥 \quad m_{(y,z) \rightarrow x}^{(0 \rightarrow 1)}
+    = \alpha(h_y, h_z) = \Theta(h_z||h_y)\\
+&amp;🟦 \quad h_x^{(1)}
+    = \phi(h_x, m_x^{(1)})
+\end{align*}\end{split}\]</div>
 </dd></dl>
 
 <dl class="py method">
@@ -791,7 +796,8 @@ How attentive are graph attention networks? (2022).
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.cell.can_layer.PoolLayer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.cell.can_layer.</span></span><span class="sig-name descname"><span class="pre">PoolLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k_pool</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_pool_activation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/can_layer.html#PoolLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.can_layer.PoolLayer" title="Link to this definition">#</a></dt>
-<dd><p>Attentional Pooling Layer adapted from the official implementation of the Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<dd><p>Attentional Pooling Layer.</p>
+<p>Attentional Pooling Layer adapted from the official implementation of the Cell Attention Network (CAN) <a class="footnote-reference brackets" href="#id2" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -806,6 +812,19 @@ How attentive are graph attention networks? (2022).
 <dt class="sig sig-object py" id="topomodelx.nn.cell.can_layer.PoolLayer.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_neighborhood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_neighborhood</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/can_layer.html#PoolLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.can_layer.PoolLayer.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward pass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_0</strong> (<em>torch.Tensor, shape = (num_nodes, in_channels_0)</em>) – Node signal.</p></li>
+<li><p><strong>lower_neighborhood</strong> (<em>torch.Tensor</em>) – Lower neighborhood matrix.</p></li>
+<li><p><strong>upper_neighborhood</strong> (<em>torch.Tensor</em>) – Upper neighbourhood matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>out</strong> (<em>torch.Tensor</em>) – Pooled node signal of shape (num_pooled_nodes, in_channels_0).</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align*}
 &amp;🟥 \quad m_{x}^{(r)}
@@ -813,17 +832,6 @@ How attentive are graph attention networks? (2022).
 &amp;🟦 \quad h_x^{t+1,(r)}
     = \phi^t(h_x^t, m_{x}^{(r)}), \forall x\in \mathcal C_r^{t+1}
 \end{align*}\end{split}\]</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x_0</strong> (<em>torch.Tensor</em>) – Node signal of shape (num_nodes, in_channels_0).</p></li>
-<li><p><strong>neighborhood_0_to_0</strong> (<em>torch.Tensor</em>) – Neighborhood matrix of shape (num_edges, 2).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>out</strong> (<em>torch.Tensor</em>) – Pooled node signal of shape (num_pooled_nodes, in_channels_0).</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -842,10 +850,10 @@ How attentive are graph attention networks? (2022).
 <p>Add to utils file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>neighborhood</strong> (<em>torch.sparse_coo_tensor</em>) – Neighborhood matrix. Shape: [n_k_cells, n_k_cells]</p>
+<dd class="field-odd"><p><strong>neighborhood</strong> (<em>torch.sparse_coo_tensor, shape = (n_k_cells, n_k_cells)</em>) – Neighborhood matrix.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.sparse_coo_tensor</em> – Neighborhood matrix with self-loops. Shape: [n_k_cells, n_k_cells]</p>
+<dd class="field-even"><p><em>torch.sparse_coo_tensor, shape = (n_k_cells, n_k_cells)</em> – Neighborhood matrix with self-loops.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -861,13 +869,13 @@ and underflow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>src</strong> (<em>torch.Tensor</em>) – Attention coefficients. Shape: [n_k_cells, heads]</p></li>
-<li><p><strong>index</strong> (<em>torch.Tensor</em>) – Indices of the target nodes. Shape: [n_k_cells]</p></li>
+<li><p><strong>src</strong> (<em>torch.Tensor, shape = (n_k_cells, heads)</em>) – Attention coefficients.</p></li>
+<li><p><strong>index</strong> (<em>torch.Tensor, shape = (n_k_cells)</em>) – Indices of the target nodes.</p></li>
 <li><p><strong>num_cells</strong> (<em>int</em>) – Number of cells in the batch.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor</em> – Softmax of the attention coefficients. Shape: [n_k_cells, heads]</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_k_cells, heads)</em> – Softmax of the attention coefficients.</p>
 </dd>
 </dl>
 </dd></dl>

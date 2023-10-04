@@ -50,7 +50,7 @@
     <link rel="prev" title="DHGCN" href="dhgcn.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -476,9 +476,9 @@ function is used, according to the paper.</p></li>
 and aggregated messages of nodes as input and returns hyperedge messages. If not given, two inputs
 are concatenated and a linear layer reducing back to in_features plus sigmoid is applied, according
 to the paper.</p></li>
-<li><p><strong>adjacency_dropout</strong> (<em>0.7</em>) – Adjacency dropout rate.</p></li>
+<li><p><strong>adjacency_dropout</strong> (<em>int, default = 0.7</em>) – Adjacency dropout rate.</p></li>
 <li><p><strong>aggr_func</strong> (<em>Literal[“sum”, “mean”, “add”], default=”sum”</em>) – Message aggregation function.</p></li>
-<li><p><strong>updating_dropout</strong> (<em>0.5</em>) – Regular dropout rate applied to node and hyperedge features.</p></li>
+<li><p><strong>updating_dropout</strong> (<em>int, default = 0.5</em>) – Regular dropout rate applied to node and hyperedge features.</p></li>
 <li><p><strong>updating_func</strong> (<em>None</em>) – The final function or nn.Module object to be called on node and hyperedge features to retrieve
 their new representation. If not given, a linear layer is applied, received message is added
 and sigmoid is called.</p></li>
@@ -510,15 +510,15 @@ masked features in the vector and d is the total number of features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_0</strong> (<em>torch.Tensor, shape=[n_nodes, node_in_features]</em>) – Input features of the nodes.</p></li>
-<li><p><strong>x_1</strong> (<em>torch.Tensor, shape=[n_edges, hyperedge_in_features]</em>) – Input features of the hyperedges.</p></li>
-<li><p><strong>incidence_1</strong> (<em>torch.sparse.Tensor</em>) – Incidence matrix mapping hyperedges to nodes (B_1) with shape [n_nodes, n_edges].</p></li>
+<li><p><strong>x_0</strong> (<em>torch.Tensor, shape = (n_nodes, node_in_features)</em>) – Input features of the nodes.</p></li>
+<li><p><strong>x_1</strong> (<em>torch.Tensor, shape = (n_edges, hyperedge_in_features)</em>) – Input features of the hyperedges.</p></li>
+<li><p><strong>incidence_1</strong> (<em>torch.sparse.Tensor, shape = (n_nodes, n_edges)</em>) – Incidence matrix mapping hyperedges to nodes (B_1).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>x_0</strong> (<em>torch.Tensor, shape=[n_nodes, node_in_features]</em>) – Output features of the nodes.</p></li>
-<li><p><strong>x_1</strong> (<em>torch.Tensor, shape=[n_edges, hyperedge_in_features]</em>) – Output features of the hyperedges.</p></li>
+<li><p><strong>x_0</strong> (<em>torch.Tensor, shape = (n_nodes, node_in_features)</em>) – Output features of the nodes.</p></li>
+<li><p><strong>x_1</strong> (<em>torch.Tensor, shape = (n_edges, hyperedge_in_features)</em>) – Output features of the hyperedges.</p></li>
 </ul>
 </p>
 </dd>

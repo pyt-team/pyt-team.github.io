@@ -50,7 +50,7 @@
     <link rel="prev" title="Conv" href="conv.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -443,7 +443,7 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.base.message_passing.MessagePassing">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.base.message_passing.</span></span><span class="sig-name descname"><span class="pre">MessagePassing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aggr_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'sum'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'mean'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'add'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">att</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialization</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'uniform'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'xavier_uniform'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'xavier_normal'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'xavier_uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialization_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.414</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topomodelx/base/message_passing.html#MessagePassing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.base.message_passing.MessagePassing" title="Link to this definition">#</a></dt>
-<dd><p>MessagePassing.</p>
+<dd><p>Define message passing.</p>
 <p>This class defines message passing through a single neighborhood N,
 by decomposing it into 2 steps:</p>
 <ol class="arabic simple">
@@ -493,11 +493,11 @@ feature per target cell.</p>
 defined in <a class="footnote-reference brackets" href="#id1" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> and <a class="footnote-reference brackets" href="#id2" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x_messages</strong> (<em>Tensor, shape=[…, n_messages, out_channels]</em>) – Features associated with each message.
+<dd class="field-odd"><p><strong>x_messages</strong> (<em>Tensor, shape = (…, n_messages, out_channels)</em>) – Features associated with each message.
 One message is sent from a source cell to a target cell.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>Tensor, shape=[…,  n_target_cells, out_channels]</em> – Output features on target cells.
+<dd class="field-even"><p><em>Tensor, shape = (…,  n_target_cells, out_channels)</em> – Output features on target cells.
 Each target cell aggregates messages from several source cells.
 Assumes that all target cells have the same rank s.</p>
 </dd>
@@ -515,14 +515,14 @@ the attention method in order to replace it with their own attention mechanism.<
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>torch.Tensor, shape=[n_source_cells, in_channels]</em>) – Input features on source cells.
+<li><p><strong>x_source</strong> (<em>torch.Tensor, shape = (n_source_cells, in_channels)</em>) – Input features on source cells.
 Assumes that all source cells have the same rank r.</p></li>
-<li><p><strong>x_target</strong> (<em>torch.Tensor, shape=[n_target_cells, in_channels]</em>) – Input features on source cells.
+<li><p><strong>x_target</strong> (<em>torch.Tensor, shape = (n_target_cells, in_channels)</em>) – Input features on source cells.
 Assumes that all source cells have the same rank r.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = [n_messages, 1]</em> – Attention weights: one scalar per message between a source and a target cell.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_messages, 1)</em> – Attention weights: one scalar per message between a source and a target cell.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -568,17 +568,17 @@ neighborhood <span class="math notranslate nohighlight">\(\mathcal{N}(x)\)</span
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>Tensor, shape=[…, n_source_cells, in_channels]</em>) – Input features on source cells.
+<li><p><strong>x_source</strong> (<em>Tensor, shape = (…, n_source_cells, in_channels)</em>) – Input features on source cells.
 Assumes that all source cells have the same rank r.</p></li>
-<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape=[n_target_cells, n_source_cells]</em>) – Neighborhood matrix.</p></li>
-<li><p><strong>x_target</strong> (<em>Tensor, shape=[…, n_target_cells, in_channels]</em>) – Input features on target cells.
+<li><p><strong>neighborhood</strong> (<em>torch.sparse, shape = (n_target_cells, n_source_cells)</em>) – Neighborhood matrix.</p></li>
+<li><p><strong>x_target</strong> (<em>Tensor, shape = (…, n_target_cells, in_channels)</em>) – Input features on target cells.
 Assumes that all target cells have the same rank s.
 Optional. If not provided, x_target is assumed to be x_source,
 i.e. source cells send messages to themselves.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[…, n_target_cells, out_channels]</em> – Output features on target cells.
+<dd class="field-even"><p><em>torch.Tensor, shape = (…, n_target_cells, out_channels)</em> – Output features on target cells.
 Assumes that all target cells have the same rank s.</p>
 </dd>
 </dl>
@@ -594,16 +594,16 @@ the message method in order to replace it with their own message mechanism.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x_source</strong> (<em>Tensor, shape=[…, n_source_cells, in_channels]</em>) – Input features on source cells.
+<li><p><strong>x_source</strong> (<em>Tensor, shape = (…, n_source_cells, in_channels)</em>) – Input features on source cells.
 Assumes that all source cells have the same rank r.</p></li>
-<li><p><strong>x_target</strong> (<em>Tensor, shape=[…, n_target_cells, in_channels]</em>) – Input features on target cells.
+<li><p><strong>x_target</strong> (<em>Tensor, shape = (…, n_target_cells, in_channels)</em>) – Input features on target cells.
 Assumes that all target cells have the same rank s.
 Optional. If not provided, x_target is assumed to be x_source,
 i.e. source cells send messages to themselves.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[…, n_source_cells, in_channels]</em> – Messages on source cells.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (…, n_source_cells, in_channels)</em> – Messages on source cells.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -613,8 +613,7 @@ i.e. source cells send messages to themselves.</p></li>
 <span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topomodelx/base/message_passing.html#MessagePassing.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.base.message_passing.MessagePassing.reset_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Reset learnable parameters.</p>
 <p class="rubric">Notes</p>
-<p>This function will be called by subclasses of
-MessagePassing that have trainable weights.</p>
+<p>This function will be called by subclasses of MessagePassing that have trainable weights.</p>
 </dd></dl>
 
 </dd></dl>

@@ -50,7 +50,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="scn2.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -528,14 +528,13 @@ Architectures of topological deep learning: a survey on topological neural netwo
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>conv_operator</strong> (<em>torch.sparse</em>) – shape = [n_simplices,n_simplices]
-e.g. adjacency matrix or the Hodge Laplacians</p></li>
-<li><p><strong>conv_order</strong> (<em>int</em>) – the order of the convolution</p></li>
-<li><p><strong>x</strong> (<em>torch.Tensor</em>) – shape = [n_simplices,num_channels]</p></li>
+<li><p><strong>conv_operator</strong> (<em>torch.sparse, shape = (n_simplices,n_simplices)</em>) – Convolution operator e.g. adjacency matrix or the Hodge Laplacians.</p></li>
+<li><p><strong>conv_order</strong> (<em>int</em>) – The order of the convolution</p></li>
+<li><p><strong>x</strong> (<em>torch.Tensor, shape = (n_simplices,num_channels)</em>) – Input feature tensor.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>x[</strong> (<em>,:,k] = (conv_operator&#64;….&#64;conv_operator) &#64; x</em>)</p>
+<dd class="field-even"><p><em>torch.Tensor</em> – Output tensor, x[:,:,k] = (conv_operator&#64;….&#64;conv_operator) &#64; x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -555,24 +554,15 @@ e.g. adjacency matrix or the Hodge Laplacians</p></li>
 &amp;🟩 \quad m_x^{(1)}  = m_x^{(1 \rightarrow 1)} + \sum_{p=1}^P( \sum_{u=1}^{U} m_{x}^{p,u,(1 \rightarrow 2 \rightarrow 1)} + \sum_{d=1}^{D} m_{x}^{p,d,(1 \rightarrow 0 \rightarrow 1)})\\
 &amp;🟦 \quad h_x^{t+1, (1)} = \sigma(m_x^{(1)})
 \end{align*}\end{split}\]</div>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>x</strong> (<em>torch.Tensor, shape=[n_simplex,in_channels]</em>) – Inpute features on the simplices, e.g., nodes, edges, triangles, etc.</p></li>
-<li><p><strong>laplacian</strong> (<em>torch.sparse</em>) – shape = [n_simplices,n_simplices]
-The Hodge Laplacian matrix</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>can also be adjacency matrix</p></li>
-<li><p>lower part</p></li>
-<li><p>upper part</p></li>
-</ul>
-</div></blockquote>
-</li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor, shape = (n_simplex,in_channels)</em>) – Input features on the simplices, e.g., nodes, edges, triangles, etc.</p></li>
+<li><p><strong>laplacian</strong> (<em>torch.sparse, shape = (n_simplices,n_simplices)</em>) – The Hodge Laplacian matrix. Can also be adjacency matrix, lower part, or upper part.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[n_edges, channels]</em> – Output features on the edges of the simplical complex.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_edges, channels)</em> – Output features on the edges of the simplical complex.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -597,10 +587,10 @@ MessagePassing that have trainable weights.</p>
 <dd><p>Update embeddings on each cell (step 4).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>x_message_on_target</strong> (<em>torch.Tensor, shape=[n_target_cells, out_channels]</em>) – Output features on target cells.</p>
+<dd class="field-odd"><p><strong>x</strong> (<em>torch.Tensor, shape = (n_target_cells, out_channels)</em>) – Output features on target cells.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape=[n_target_cells, out_channels]</em> – Updated output features on target cells.</p>
+<dd class="field-even"><p><em>torch.Tensor, shape = (n_target_cells, out_channels)</em> – Updated output features on target cells.</p>
 </dd>
 </dl>
 </dd></dl>

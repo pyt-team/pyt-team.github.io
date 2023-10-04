@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -354,7 +354,7 @@ document.write(`
 <div class="viewcode-block" id="MessagePassing">
 <a class="viewcode-back" href="../../../api/base/message_passing.html#topomodelx.base.message_passing.MessagePassing">[docs]</a>
 <span class="k">class</span> <span class="nc">MessagePassing</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;MessagePassing.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Define message passing.</span>
 
 <span class="sd">    This class defines message passing through a single neighborhood N,</span>
 <span class="sd">    by decomposing it into 2 steps:</span>
@@ -413,8 +413,7 @@ document.write(`
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        This function will be called by subclasses of</span>
-<span class="sd">        MessagePassing that have trainable weights.</span>
+<span class="sd">        This function will be called by subclasses of MessagePassing that have trainable weights.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialization</span><span class="p">:</span>
             <span class="k">case</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
@@ -460,10 +459,10 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_source : Tensor, shape=[..., n_source_cells, in_channels]</span>
+<span class="sd">        x_source : Tensor, shape = (..., n_source_cells, in_channels)</span>
 <span class="sd">            Input features on source cells.</span>
 <span class="sd">            Assumes that all source cells have the same rank r.</span>
-<span class="sd">        x_target : Tensor, shape=[..., n_target_cells, in_channels]</span>
+<span class="sd">        x_target : Tensor, shape = (..., n_target_cells, in_channels)</span>
 <span class="sd">            Input features on target cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
 <span class="sd">            Optional. If not provided, x_target is assumed to be x_source,</span>
@@ -471,7 +470,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[..., n_source_cells, in_channels]</span>
+<span class="sd">        torch.Tensor, shape = (..., n_source_cells, in_channels)</span>
 <span class="sd">            Messages on source cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">x_source</span></div>
@@ -491,16 +490,16 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_source : torch.Tensor, shape=[n_source_cells, in_channels]</span>
+<span class="sd">        x_source : torch.Tensor, shape = (n_source_cells, in_channels)</span>
 <span class="sd">            Input features on source cells.</span>
 <span class="sd">            Assumes that all source cells have the same rank r.</span>
-<span class="sd">        x_target : torch.Tensor, shape=[n_target_cells, in_channels]</span>
+<span class="sd">        x_target : torch.Tensor, shape = (n_target_cells, in_channels)</span>
 <span class="sd">            Input features on source cells.</span>
 <span class="sd">            Assumes that all source cells have the same rank r.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape = [n_messages, 1]</span>
+<span class="sd">        torch.Tensor, shape = (n_messages, 1)</span>
 <span class="sd">            Attention weights: one scalar per message between a source and a target cell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_source_per_message</span> <span class="o">=</span> <span class="n">x_source</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">source_index_j</span><span class="p">]</span>
@@ -533,13 +532,13 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_messages : Tensor, shape=[..., n_messages, out_channels]</span>
+<span class="sd">        x_messages : Tensor, shape = (..., n_messages, out_channels)</span>
 <span class="sd">            Features associated with each message.</span>
 <span class="sd">            One message is sent from a source cell to a target cell.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Tensor, shape=[...,  n_target_cells, out_channels]</span>
+<span class="sd">        Tensor, shape = (...,  n_target_cells, out_channels)</span>
 <span class="sd">            Output features on target cells.</span>
 <span class="sd">            Each target cell aggregates messages from several source cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
@@ -600,12 +599,12 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_source : Tensor, shape=[..., n_source_cells, in_channels]</span>
+<span class="sd">        x_source : Tensor, shape = (..., n_source_cells, in_channels)</span>
 <span class="sd">            Input features on source cells.</span>
 <span class="sd">            Assumes that all source cells have the same rank r.</span>
-<span class="sd">        neighborhood : torch.sparse, shape=[n_target_cells, n_source_cells]</span>
+<span class="sd">        neighborhood : torch.sparse, shape = (n_target_cells, n_source_cells)</span>
 <span class="sd">            Neighborhood matrix.</span>
-<span class="sd">        x_target : Tensor, shape=[..., n_target_cells, in_channels]</span>
+<span class="sd">        x_target : Tensor, shape = (..., n_target_cells, in_channels)</span>
 <span class="sd">            Input features on target cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
 <span class="sd">            Optional. If not provided, x_target is assumed to be x_source,</span>
@@ -613,7 +612,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[..., n_target_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (..., n_target_cells, out_channels)</span>
 <span class="sd">            Output features on target cells.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

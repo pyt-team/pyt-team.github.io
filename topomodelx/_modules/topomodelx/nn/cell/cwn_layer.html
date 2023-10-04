@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 27, 2023, 8:40:40 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:54:32 AM"/>
   </head>
   
   
@@ -363,10 +363,6 @@ document.write(`
 <span class="sd">    3. A layer that creates representations in r-cells based on the received messages.</span>
 <span class="sd">    4. A layer that updates representations in r-cells.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    This is the architecture proposed for entire complex classification.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    in_channels_0 : int</span>
@@ -405,6 +401,10 @@ document.write(`
 
 <span class="sd">        If None is passed, a default implementation of this module is used</span>
 <span class="sd">        (check the docstring of _CWNDefaultUpdate for more detail).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This is the architecture proposed for entire complex classification.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -502,25 +502,23 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape=[n_{r-1}_cells, in_channels_{r-1}]</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_{r-1}_cells, in_channels_{r-1})</span>
 <span class="sd">            Input features on the (r-1)-cells.</span>
-<span class="sd">        x_1 : torch.Tensor, shape=[n_{r}_cells, in_channels_{r}]</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (n_{r}_cells, in_channels_{r})</span>
 <span class="sd">            Input features on the r-cells.</span>
-<span class="sd">        x_2 : torch.Tensor, shape=[n_{r+1}_cells, in_channels_{r+1}]</span>
+<span class="sd">        x_2 : torch.Tensor, shape = (n_{r+1}_cells, in_channels_{r+1})</span>
 <span class="sd">            Input features on the (r+1)-cells.</span>
-<span class="sd">        neighborhood_1_to_1 : torch.sparse</span>
-<span class="sd">            shape=[n_{r}_cells, n_{r}_cells]</span>
+<span class="sd">        neighborhood_1_to_1 : torch.sparse, shape = (n_{r}_cells, n_{r}_cells)</span>
 <span class="sd">            Neighborhood matrix mapping r-cells to r-cells (A_{up,r}).</span>
-<span class="sd">        neighborhood_2_to_1 : torch.sparse</span>
-<span class="sd">            shape=[n_{r}_cells, n_{r+1}_cells]</span>
+<span class="sd">        neighborhood_2_to_1 : torch.sparse, shape = (n_{r}_cells, n_{r+1}_cells)</span>
 <span class="sd">            Neighborhood matrix mapping (r+1)-cells to r-cells (B_{r+1}).</span>
 <span class="sd">        neighborhood_0_to_1 : torch.sparse</span>
-<span class="sd">            shape=[n_{r}_cells, n_{r-1}_cells]</span>
+<span class="sd">            shape = (n_{r}_cells, n_{r-1}_cells)</span>
 <span class="sd">            Neighborhood matrix mapping (r-1)-cells to r-cells (B^T_r).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_{r}_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (n_{r}_cells, out_channels)</span>
 <span class="sd">            Updated representations of the r-cells.</span>
 
 <span class="sd">        References</span>
@@ -567,20 +565,18 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_1 : torch.Tensor, shape=[n_{r-1}_cells, in_channels_{r-1}]</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (n_{r-1}_cells, in_channels_{r-1})</span>
 <span class="sd">            Input features on the (r-1)-cells.</span>
-<span class="sd">        x_2 : torch.Tensor, shape=[n_{r}_cells, in_channels_{r}]</span>
+<span class="sd">        x_2 : torch.Tensor, shape = (n_{r}_cells, in_channels_{r})</span>
 <span class="sd">            Input features on the r-cells.</span>
-<span class="sd">        neighborhood_1_to_1 : torch.sparse</span>
-<span class="sd">            shape=[n_{r}_cells, n_{r}_cells]</span>
+<span class="sd">        neighborhood_1_to_1 : torch.sparse, shape = (n_{r}_cells, n_{r}_cells)</span>
 <span class="sd">            Neighborhood matrix mapping r-cells to r-cells (A_{up,r}).</span>
-<span class="sd">        neighborhood_2_to_1 : torch.sparse</span>
-<span class="sd">            shape=[n_{r}_cells, n_{r+1}_cells]</span>
+<span class="sd">        neighborhood_2_to_1 : torch.sparse, shape = (n_{r}_cells, n_{r+1}_cells)</span>
 <span class="sd">            Neighborhood matrix mapping (r+1)-cells to r-cells (B_{r+1}).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_{r}_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (n_{r}_cells, out_channels)</span>
 <span class="sd">            Updated representations on the r-cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_up</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv_1_to_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">neighborhood_1_to_1</span><span class="p">))</span>
@@ -607,17 +603,16 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape=[n_{r-1}_cells, in_channels_{r-1}]</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_{r-1}_cells, in_channels_{r-1})</span>
 <span class="sd">            Input features on the (r-1)-cells.</span>
-<span class="sd">        x_1 : torch.Tensor, shape=[n_{r}_cells, in_channels_{r}]</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (n_{r}_cells, in_channels_{r})</span>
 <span class="sd">            Input features on the r-cells.</span>
-<span class="sd">        neighborhood_0_to_1 : torch.sparse</span>
-<span class="sd">            shape=[n_{r}_cells, n_{r-1}_cells]</span>
+<span class="sd">        neighborhood_0_to_1 : torch.sparse, shape = (n_{r}_cells, n_{r-1}_cells)</span>
 <span class="sd">            Neighborhood matrix mapping (r-1)-cells to r-cells (B^T_r).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_{r}_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (n_{r}_cells, out_channels)</span>
 <span class="sd">            Updated representations on the r-cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_boundary</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv_0_to_1</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">neighborhood_0_to_1</span><span class="p">))</span>
@@ -640,14 +635,14 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x : torch.Tensor, shape=[n_{r}_cells, in_channels_{r}]</span>
+<span class="sd">        x : torch.Tensor, shape = (n_{r}_cells, in_channels_{r})</span>
 <span class="sd">            Representations on the r-cells produced by the first convolutional step.</span>
-<span class="sd">        y : torch.Tensor, shape=[n_{r}_cells, in_channels_{r}]</span>
+<span class="sd">        y : torch.Tensor, shape = (n_{r}_cells, in_channels_{r})</span>
 <span class="sd">            Representations on the r-cells produced by the second convolutional step.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_{r}_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (n_{r}_cells, out_channels)</span>
 <span class="sd">            Aggregated representations on the r-cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
@@ -665,14 +660,14 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x : torch.Tensor, shape=[n_{r}_cells, in_channels_{r}]</span>
+<span class="sd">        x : torch.Tensor, shape = (n_{r}_cells, in_channels_{r})</span>
 <span class="sd">            New representations on the r-cells obtained after the aggregation step.</span>
-<span class="sd">        x_prev : torch.Tensor, shape=[n_{r}_cells, in_channels_{r}]</span>
+<span class="sd">        x_prev : torch.Tensor, shape = (n_{r}_cells, in_channels_{r})</span>
 <span class="sd">            Original representations on the r-cells passed into the CWN layer.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape=[n_{r}_cells, out_channels]</span>
+<span class="sd">        torch.Tensor, shape = (n_{r}_cells, out_channels)</span>
 <span class="sd">            Updated representations on the r-cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_updated</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
