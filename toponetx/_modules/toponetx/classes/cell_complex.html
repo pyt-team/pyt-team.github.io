@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Sep 28, 2023, 2:20:33 PM"/>
+    <meta name="docbuild:last-update" content="Oct 4, 2023, 8:23:25 AM"/>
   </head>
   
   
@@ -2665,9 +2665,9 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([1,2,3,4],rank=2,weight=5)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([2,3,4,5],rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell([5,6,7,8],rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2, weight=5)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([2, 3, 4, 5], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([5, 6, 7, 8], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CC.add_node(0)</span>
 <span class="sd">        &gt;&gt;&gt; CX2 = CC.clone()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2695,7 +2695,7 @@ document.write(`
 
 <div class="viewcode-block" id="CellComplex.get_linegraph">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.get_linegraph">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_linegraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_linegraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create line graph of self.</span>
 
 <span class="sd">        If cells=True (default), the cells will be the vertices of the line graph.</span>
@@ -2717,11 +2717,19 @@ document.write(`
 <span class="sd">        -------</span>
 <span class="sd">        nx.Graph</span>
 <span class="sd">            A NetworkX graph representing the s-linegraph of the Cell Complex.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([0, 1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; G = CC.get_linegraph()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;s must be a positive integer larger than 1, got type of s None.&quot;</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;s&#39; must be a positive integer, got </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;cells&#39; must be a boolean, got </span><span class="si">{</span><span class="n">cells</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
             <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_cell_to_node_coadjacnecy_matrix</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2774,25 +2782,15 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CC = CellComplex.from_trimesh(mesh)</span>
 <span class="sd">        &gt;&gt;&gt; CC[0][&#39;position&#39;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># try to see the index of the first vertex</span>
         <span class="n">CC</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
         <span class="n">first_ind</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">faces</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">first_ind</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">CC</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span>
-                <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)),</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)),</span>
-                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;position&quot;</span><span class="p">,</span>
-                <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># first index starts at 1.</span>
-            <span class="n">CC</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span>
-                <span class="nb">dict</span><span class="p">(</span>
-                    <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">first_ind</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span> <span class="o">+</span> <span class="n">first_ind</span><span class="p">),</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span>
-                <span class="p">),</span>
-                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;position&quot;</span><span class="p">,</span>
-                <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-            <span class="p">)</span>
+        <span class="n">CC</span><span class="o">.</span><span class="n">set_cell_attributes</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">first_ind</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)</span> <span class="o">+</span> <span class="n">first_ind</span><span class="p">),</span> <span class="n">mesh</span><span class="o">.</span><span class="n">vertices</span><span class="p">)),</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;position&quot;</span><span class="p">,</span>
+            <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">CC</span></div>
 
