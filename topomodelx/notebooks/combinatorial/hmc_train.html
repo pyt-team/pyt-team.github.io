@@ -1,0 +1,982 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Train a Combinatorial Complex Attention Neural Network for Mesh Classification. &#8212; TopoModelX latest documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+
+    <script src="../../_static/documentation_options.js?v=f4332903"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/combinatorial/hmc_train';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/combinatorial/hmc_train.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="Oct 7, 2023, 2:52:24 AM"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">TopoModelX latest documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../challenge/index.html">
+                        ICML 2023 Topological Deep Learning Challenge
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../api/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../contributing/index.html">
+                        Contributing
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../tutorials/index.html">
+                        Tutorials
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="../../challenge/index.html">
+                        ICML 2023 Topological Deep Learning Challenge
+                      </a>
+                    </li>
+                
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Train a...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section id="Train-a-Combinatorial-Complex-Attention-Neural-Network-for-Mesh-Classification.">
+<h1>Train a Combinatorial Complex Attention Neural Network for Mesh Classification.<a class="headerlink" href="#Train-a-Combinatorial-Complex-Attention-Neural-Network-for-Mesh-Classification." title="Link to this heading">#</a></h1>
+<p>We create and train a mesh classification high order attentional neural network operating over combinatorial complexes. The model was introduced in <a class="reference external" href="https://arxiv.org/pdf/2206.00606.pdf">Figure 35(b), Hajij et. al : Topological Deep Learning: Going Beyond Graph Data (2023)</a>.</p>
+<section id="The-Neural-Network:">
+<h2>The Neural Network:<a class="headerlink" href="#The-Neural-Network:" title="Link to this heading">#</a></h2>
+<p>The neural network is composed of a sequence of identical attention layers for a dimension two combinatorial complex, a final fully connected layer embedding the features into a common space, and a final transformation to a vector with probabilities for each class. Each attention layer is composed of two levels. In both levels, messages computed for the cells of identical dimension are aggregated using a sum operation. All the messages are computed using the attention mechanisms for squared and
+non-squared neighborhoods presented in <a class="reference external" href="https://arxiv.org/pdf/2206.00606.pdf">Definitions 31, 32, and 33, Hajij et. al : Topological Deep Learning: Going Beyond Graph Data (2023)</a>. The following message passing scheme is followed in each of the levels for each layer:</p>
+<ol class="arabic simple">
+<li><p>First level:</p></li>
+</ol>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 0}_{y\rightarrow x} = \left((A_{\uparrow, 0})_{xy} \cdot \text{att}_{xy}^{0\rightarrow 0}\right) h_y^{t,(0)} \Theta^t_{0\rightarrow 0}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 1}_{y\rightarrow x} = \left((B_{1}^T)_{xy} \cdot \text{att}_{xy}^{0\rightarrow 1}\right) h_y^{t,(0)} \Theta^t_{0\rightarrow 1}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 0}_{y\rightarrow x} = \left((B_{1})_{xy} \cdot \text{att}_{xy}^{1\rightarrow 0}\right) h_y^{t,(1)} \Theta^t_{1\rightarrow 0}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 2}_{y\rightarrow x} = \left((B_{2}^T)_{xy} \cdot \text{att}_{xy}^{1\rightarrow 2}\right) h_y^{t,(1)} \Theta^t_{1\rightarrow 2}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{2\rightarrow 1}_{y\rightarrow x} = \left((B_{2})_{xy} \cdot \text{att}_{xy}^{2\rightarrow 1}\right) h_y^{t,(2)} \Theta^t_{2\rightarrow 1}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 0}_{x}=\phi_u\left(\sum_{y\in A_{\uparrow, 0}(x)} m^{0\rightarrow 0}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 1}_{x}=\phi_u\left(\sum_{y\in B_{1}^T(x)} m^{0\rightarrow 1}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 0}_{x}=\phi_u\left(\sum_{y\in B_{1}(x)} m^{1\rightarrow 0}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 2}_{x}=\phi_u\left(\sum_{y\in B_{2}^T(x)} m^{1\rightarrow 2}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{2\rightarrow 1}_{x}=\phi_u\left(\sum_{y\in B_{2}(x)} m^{2\rightarrow 1}_{y\rightarrow x}\right)\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(0)}=\phi_a\left(m^{0\rightarrow 0}_{x}+m^{1\rightarrow 0}_{x}\right)\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(1)}=\phi_a\left(m^{0\rightarrow 1}_{x}+m^{2\rightarrow 1}_{x}\right)\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(2)}=\phi_a\left(m^{1\rightarrow 2}_{x}\right)\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad i_x^{t,(0)} = m_x^{(0)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad i_x^{t,(1)} = m_x^{(1)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad i_x^{t,(2)} = m_x^{(2)}\)</span></p>
+<p>where <span class="math notranslate nohighlight">\(i_x^{t,(\cdot)}\)</span> represents intermediate feature vectors.</p>
+<ol class="arabic simple" start="2">
+<li><p>Second level:</p></li>
+</ol>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 0}_{y\rightarrow x} = \left((A_{\uparrow, 0})_{xy} \cdot \text{att}_{xy}^{0\rightarrow 0}\right) i_y^{t,(0)} \Theta^t_{0\rightarrow 0}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 1}_{y\rightarrow x} = \left((A_{\uparrow, 1})_{xy} \cdot \text{att}_{xy}^{1\rightarrow 1}\right) i_y^{t,(1)} \Theta^t_{1\rightarrow 1}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{2\rightarrow 2}_{y\rightarrow x} = \left((A_{\downarrow, 2})_{xy} \cdot \text{att}_{xy}^{2\rightarrow 2}\right) i_y^{t,(2)} \Theta^t_{2\rightarrow 2}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 1}_{y\rightarrow x} = \left((B_{1}^T)_{xy} \cdot \text{att}_{xy}^{0\rightarrow 1}\right) i_y^{t,(0)} \Theta^t_{0\rightarrow 1}\)</span></p>
+<p>🟥 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 2}_{y\rightarrow x} = \left((B_{2}^T)_{xy} \cdot \text{att}_{xy}^{1\rightarrow 2}\right) i_y^{t,(1)} \Theta^t_{1\rightarrow 2}\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 0}_{x}=\phi_u\left(\sum_{y\in A_{\uparrow, 0}(x)} m^{0\rightarrow 0}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 1}_{x}=\phi_u\left(\sum_{y\in A_{\uparrow, 1}(x)} m^{1\rightarrow 1}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{2\rightarrow 2}_{x}=\phi_u\left(\sum_{y\in A_{\downarrow, 2}(x)} m^{2\rightarrow 2}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{0\rightarrow 1}_{x}=\phi_u\left(\sum_{y\in B_{1}^T(x)} m^{0\rightarrow 1}_{y\rightarrow x}\right)\)</span></p>
+<p>🟧 <span class="math notranslate nohighlight">\(\quad m^{1\rightarrow 2}_{x}=\phi_u\left(\sum_{y\in B_{2}^T(x)} m^{1\rightarrow 2}_{y\rightarrow x}\right)\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(0)}=\phi_a\left(m^{0\rightarrow 0}_{x}+m^{1\rightarrow 0}_{x}\right)\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(1)}=\phi_a\left(m^{1\rightarrow 1}_{x} + m^{0\rightarrow 1}_{x}\right)\)</span></p>
+<p>🟩 <span class="math notranslate nohighlight">\(\quad m_x^{(2)}=\phi_a\left(m^{1\rightarrow 2}_{x} + m^{2\rightarrow 2}_{x}\right)\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(0)} = m_x^{(0)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(1)} = m_x^{(1)}\)</span></p>
+<p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(2)} = m_x^{(2)}\)</span></p>
+<p>In both message passing levels, <span class="math notranslate nohighlight">\(\phi_u\)</span> and <span class="math notranslate nohighlight">\(\phi_a\)</span> represent common activation functions for within and between neighborhood aggregations, respectively. Also, <span class="math notranslate nohighlight">\(\Theta\)</span> and <span class="math notranslate nohighlight">\(\text{att}\)</span> represent learnable weights and attention matrices, respectively, that are different in each level. Attention matrices are introduced in <a class="reference external" href="https://arxiv.org/pdf/2206.00606.pdf">Figure 35(b), Hajij et. al : Topological Deep Learning: Going Beyond Graph Data (2023)</a>. In this
+implementation, attention matrices are computed using the LeakyReLU activation function, as in previous versions of the paper. We give more information about the actual implementation of the neural network in this notebook in the following sections.</p>
+<p>Notations, adjacency, coadjacency, and incidence matrices are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>. The tensor diagram for the layer can be found in the first column and last row of Figure 11, from the same paper.</p>
+</section>
+<section id="The-Task:">
+<h2>The Task:<a class="headerlink" href="#The-Task:" title="Link to this heading">#</a></h2>
+<p>We train this model to perform entire mesh classification on <code class="docutils literal notranslate"><span class="pre">`SHREC</span> <span class="pre">2016</span></code> from the ShapeNet Dataset &lt;<a class="reference external" href="http://shapenet.cs.stanford.edu/shrec16/">http://shapenet.cs.stanford.edu/shrec16/</a>&gt;`__. This dataset contains 480 3D mesh samples belonging to 30 distinct classes and represented as simplicial complexes.</p>
+<p>Each mesh contains a set of vertices, edges, and faces. Each of the latter entities have a set of features associated to them:</p>
+<ul class="simple">
+<li><p>Node features <span class="math notranslate nohighlight">\(v \in \mathbb{R}^6\)</span> defined as the direct sum of the following features:</p>
+<ul>
+<li><p>Position <span class="math notranslate nohighlight">\(p_v \in \mathbb{R}^3\)</span> coordinates.</p></li>
+<li><p>Normal <span class="math notranslate nohighlight">\(n_v \in \mathbb{R}^3\)</span> coordinates.</p></li>
+</ul>
+</li>
+<li><p>Edge features <span class="math notranslate nohighlight">\(e \in \mathbb{R}^{10}\)</span> defined as the direct sum of the following features:</p>
+<ul>
+<li><p>Dihedral angle <span class="math notranslate nohighlight">\(\phi \in \mathbb{R}\)</span>.</p></li>
+<li><p>Edge span <span class="math notranslate nohighlight">\(l \in \mathbb{R}\)</span>.</p></li>
+<li><p>2 edge angle in the triangle that <span class="math notranslate nohighlight">\(\theta_e \in \mathbb{R}^2\)</span>.</p></li>
+<li><p>6 edge ratios <span class="math notranslate nohighlight">\(r \in \mathbb{R}^6\)</span>.</p></li>
+</ul>
+</li>
+<li><p>Face features</p>
+<ul>
+<li><p>Face area <span class="math notranslate nohighlight">\(a \in \mathbb{R}\)</span>.</p></li>
+<li><p>Face normal <span class="math notranslate nohighlight">\(n_f \in \mathbb{R}^3\)</span>.</p></li>
+<li><p>3 face angles <span class="math notranslate nohighlight">\(\theta_f \in \mathbb{R}^3\)</span>.</p></li>
+</ul>
+</li>
+</ul>
+<p>We lift the simplicial complexes representing each mesh to a topologically equivalent combinatorial complex representation.</p>
+<p>The task is to predict the class that a certain mesh belongs to, given its combinatorial complex representation. For this purpose we implement the Higher Order Attention Model for Mesh Classification first introduced in <a class="reference external" href="https://arxiv.org/pdf/2206.00606.pdf">Hajij et. al : Topological Deep Learning: Going Beyond Graph Data (2023)</a>.</p>
+</section>
+</section>
+<section id="Set-up">
+<h1>Set-up<a class="headerlink" href="#Set-up" title="Link to this heading">#</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">toponetx.datasets.mesh</span> <span class="kn">import</span> <span class="n">shrec_16</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.combinatorial.hmc_layer</span> <span class="kn">import</span> <span class="n">HMCLayer</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.combinatorial.hmc</span> <span class="kn">import</span> <span class="n">HMC</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Pre-processing">
+<h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
+<section id="Import-data">
+<h2>Import data<a class="headerlink" href="#Import-data" title="Link to this heading">#</a></h2>
+<p>We first create a class for the SHREC 2016 dataset. This class will be used to load the data and create the necessary neighborhood matrices for each combinatorial complex in the dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SHRECDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the SHREC 2016 dataset.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data : npz file</span>
+<span class="sd">        npz file containing the SHREC 2016 data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">complexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">cc</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span> <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;complexes&quot;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_0</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;node_feat&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;edge_feat&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_2</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;face_feat&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coa2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_neighborhood_matrix</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_neighborhood_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">Tensor</span><span class="p">],</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Neighborhood matrices for each combinatorial complex in the dataset.</span>
+
+<span class="sd">        Following the Higher Order Attention Model for Mesh Classification message passing scheme, this method computes the necessary neighborhood matrices</span>
+<span class="sd">        for each combinatorial complex in the dataset. This method computes:</span>
+
+<span class="sd">        - Adjacency matrices for each 0-cell in the dataset.</span>
+<span class="sd">        - Adjacency matrices for each 1-cell in the dataset.</span>
+<span class="sd">        - Coadjacency matrices for each 2-cell in the dataset.</span>
+<span class="sd">        - Incidence matrices from 1-cells to 0-cells for each 1-cell in the dataset.</span>
+<span class="sd">        - Incidence matrices from 2-cells to 1-cells for each 2-cell in the dataset.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        a0 : list of torch.sparse.FloatTensor</span>
+<span class="sd">            Adjacency matrices for each 0-cell in the dataset.</span>
+<span class="sd">        a1 : list of torch.sparse.FloatTensor</span>
+<span class="sd">            Adjacency matrices for each 1-cell in the dataset.</span>
+<span class="sd">        coa2 : list of torch.sparse.FloatTensor</span>
+<span class="sd">            Coadjacency matrices for each 2-cell in the dataset.</span>
+<span class="sd">        b1 : list of torch.sparse.FloatTensor</span>
+<span class="sd">            Incidence matrices from 1-cells to 0-cells for each 1-cell in the dataset.</span>
+<span class="sd">        b2 : list of torch.sparse.FloatTensor</span>
+<span class="sd">            Incidence matrices from 2-cells to 1-cells for each 2-cell in the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">a0</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">a1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">coa2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">b1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">b2</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">complexes</span><span class="p">:</span>
+            <span class="n">a0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">())</span>
+            <span class="n">a1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">())</span>
+
+            <span class="n">B</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">to_rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">B</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">coa2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">())</span>
+
+            <span class="n">b1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">())</span>
+            <span class="n">b2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">coa2</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span>
+
+    <span class="k">def</span> <span class="nf">num_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of classes in the dataset.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of classes in the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">channels_dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of channels for each input signal.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of int</span>
+<span class="sd">            Number of channels for each input signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x_0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of elements in the dataset.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Number of elements in the dataset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">complexes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the idx-th element in the dataset.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        idx : int</span>
+<span class="sd">            Index of the element to return.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of torch.Tensor</span>
+<span class="sd">            Tuple containing the idx-th element in the dataset, including the input signals on nodes, edges and faces, the neighborhood matrices and the label.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_0</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_1</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_2</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a0</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">a1</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coa2</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b1</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b2</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We load the data.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec_training</span><span class="p">,</span> <span class="n">shrec_testing</span> <span class="o">=</span> <span class="n">shrec_16</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Loading shrec 16 full dataset...
+
+done!
+</pre></div></div>
+</div>
+<p>Creating the train dataset and dataloader.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_dataset</span> <span class="o">=</span> <span class="n">SHRECDataset</span><span class="p">(</span><span class="n">shrec_training</span><span class="p">)</span>
+<span class="n">training_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">training_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Creating the train dataset and dataloader.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">testing_dataset</span> <span class="o">=</span> <span class="n">SHRECDataset</span><span class="p">(</span><span class="n">shrec_testing</span><span class="p">)</span>
+<span class="n">testing_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">testing_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Create-the-Neural-Network">
+<h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
+<p>The task is to classify the meshes into their corresponding classes. To address this, we employ the Higher Order Attention Network Model for Mesh Classification, as outlined in the article <a class="reference external" href="https://www.researchgate.net/publication/361022512_Higher-Order_Attention_Networks">Higher Order Attention Networks</a>. This model integrates a hierarchical and attention-based message passing scheme as per the article’s descriptions. In addition, the model utilizes a final sum pooling layer which
+effectively maps the nodal, edge, and face features of the meshes into a shared N-dimensional Euclidean space, where N represents the number of different classes.</p>
+</section>
+<section id="Train-the-Neural-Network">
+<h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
+<p>We create the trainer class. The model is trained using the Adam optimizer and the Cross Entropy Loss function.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Trainer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Trainer for the HOANMeshClassifier.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : torch.nn.Module</span>
+<span class="sd">        The model to train.</span>
+<span class="sd">    training_dataloader : torch.utils.data.DataLoader</span>
+<span class="sd">        The dataloader for the training set.</span>
+<span class="sd">    testing_dataloader : torch.utils.data.DataLoader</span>
+<span class="sd">        The dataloader for the testing set.</span>
+<span class="sd">    learning_rate : float</span>
+<span class="sd">        The learning rate for the Adam optimizer.</span>
+<span class="sd">    device : torch.device</span>
+<span class="sd">        The device to use for training.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">training_dataloader</span><span class="p">,</span> <span class="n">testing_dataloader</span><span class="p">,</span> <span class="n">learning_rate</span><span class="p">,</span> <span class="n">device</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training_dataloader</span> <span class="o">=</span> <span class="n">training_dataloader</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">testing_dataloader</span> <span class="o">=</span> <span class="n">testing_dataloader</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">crit</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts tensors to the correct type and moves them to the device.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : List[torch.Tensor]</span>
+<span class="sd">            List of tensors to convert.</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[torch.Tensor]</span>
+<span class="sd">            List of converted tensors to float type and moved to the device.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">test_interval</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains the model for the specified number of epochs.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_epochs : int</span>
+<span class="sd">            Number of epochs to train.</span>
+<span class="sd">        test_interval : int</span>
+<span class="sd">            Interval between testing epochs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+            <span class="n">training_accuracy</span><span class="p">,</span> <span class="n">epoch_loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_train_epoch</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">epoch_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">training_accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">epoch_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">test_accuracy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test_acc: </span><span class="si">{</span><span class="n">test_accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_train_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Trains the model for one epoch.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        training_accuracy : float</span>
+<span class="sd">            The mean training accuracy for the epoch.</span>
+<span class="sd">        epoch_loss : float</span>
+<span class="sd">            The mean loss for the epoch.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">training_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">training_dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_dataloader</span><span class="p">:</span>
+            <span class="p">(</span>
+                <span class="n">x_0</span><span class="p">,</span>
+                <span class="n">x_1</span><span class="p">,</span>
+                <span class="n">x_2</span><span class="p">,</span>
+                <span class="n">adjacency_0</span><span class="p">,</span>
+                <span class="n">adjacency_1</span><span class="p">,</span>
+                <span class="n">coadjacency_2</span><span class="p">,</span>
+                <span class="n">incidence_1</span><span class="p">,</span>
+                <span class="n">incidence_2</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_device</span><span class="p">(</span><span class="n">sample</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+            <span class="n">y_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span>
+                <span class="n">x_0</span><span class="p">,</span>
+                <span class="n">x_1</span><span class="p">,</span>
+                <span class="n">x_2</span><span class="p">,</span>
+                <span class="n">adjacency_0</span><span class="p">,</span>
+                <span class="n">adjacency_1</span><span class="p">,</span>
+                <span class="n">coadjacency_2</span><span class="p">,</span>
+                <span class="n">incidence_1</span><span class="p">,</span>
+                <span class="n">incidence_2</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">y</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">total_loss</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_loss_and_update</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+        <span class="n">training_accuracy</span> <span class="o">=</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">training_samples</span>
+        <span class="n">epoch_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">training_samples</span>
+
+        <span class="k">return</span> <span class="n">training_accuracy</span><span class="p">,</span> <span class="n">epoch_loss</span>
+
+    <span class="k">def</span> <span class="nf">_compute_loss_and_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes the loss, performs backpropagation, and updates the model&#39;s parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y_hat : torch.Tensor</span>
+<span class="sd">            The output of the model.</span>
+<span class="sd">        y : torch.Tensor</span>
+<span class="sd">            The ground truth.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        loss: float</span>
+<span class="sd">            The loss value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crit</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the model using the testing dataloader.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        test_accuracy : float</span>
+<span class="sd">            The mean testing accuracy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="n">test_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">testing_dataloader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">testing_dataloader</span><span class="p">:</span>
+                <span class="p">(</span>
+                    <span class="n">x_0</span><span class="p">,</span>
+                    <span class="n">x_1</span><span class="p">,</span>
+                    <span class="n">x_2</span><span class="p">,</span>
+                    <span class="n">adjacency_0</span><span class="p">,</span>
+                    <span class="n">adjacency_1</span><span class="p">,</span>
+                    <span class="n">coadjacency_2</span><span class="p">,</span>
+                    <span class="n">incidence_1</span><span class="p">,</span>
+                    <span class="n">incidence_2</span><span class="p">,</span>
+                <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_device</span><span class="p">(</span><span class="n">sample</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="n">y_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span>
+                    <span class="n">x_0</span><span class="p">,</span>
+                    <span class="n">x_1</span><span class="p">,</span>
+                    <span class="n">x_2</span><span class="p">,</span>
+                    <span class="n">adjacency_0</span><span class="p">,</span>
+                    <span class="n">adjacency_1</span><span class="p">,</span>
+                    <span class="n">coadjacency_2</span><span class="p">,</span>
+                    <span class="n">incidence_1</span><span class="p">,</span>
+                    <span class="n">incidence_2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_hat</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">test_accuracy</span> <span class="o">=</span> <span class="n">correct</span> <span class="o">/</span> <span class="n">test_samples</span>
+            <span class="k">return</span> <span class="n">test_accuracy</span>
+</pre></div>
+</div>
+</div>
+<p>We define the parameters for the model. We use softmax activation for the attention layers. Moreover, we use relu activation for the update and the aggregation steps. We set the negative slope parameter for the Leaky ReLU activation to 0.2. We only use one higher order attention layer as it already achieves almost perfect test accuracy, although more layers could be added.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">training_dataset</span><span class="o">.</span><span class="n">channels_dim</span><span class="p">()</span>
+<span class="n">intermediate_channels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">]</span>
+<span class="n">final_channels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">]</span>
+
+<span class="n">channels_per_layer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">intermediate_channels</span><span class="p">,</span> <span class="n">final_channels</span><span class="p">]]</span>
+<span class="c1"># defube HOAN mesh classifier</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">HMC</span><span class="p">(</span>
+    <span class="n">channels_per_layer</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">training_dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># If GPU&#39;s are available, we will make use of them. Otherwise, this will run on CPU.</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">training_dataloader</span><span class="p">,</span> <span class="n">testing_dataloader</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We train the HoanMeshClassifier using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch: 0 loss: 3.5354 Train_acc: 0.0521
+Epoch: 1 loss: 3.1654 Train_acc: 0.0688
+Epoch: 2 loss: 2.9049 Train_acc: 0.1229
+Epoch: 3 loss: 2.6443 Train_acc: 0.1917
+Epoch: 4 loss: 2.3331 Train_acc: 0.2604
+</pre></div></div>
+</div>
+<p>Letting the model train for longer, we can see that the model achieves an outstanding performance on both the training and testing sets.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">test_interval</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch: 0 loss: 2.0427 Train_acc: 0.3438
+Epoch: 1 loss: 1.7749 Train_acc: 0.4167
+Epoch: 2 loss: 1.5524 Train_acc: 0.4958
+Epoch: 3 loss: 1.4013 Train_acc: 0.5333
+Epoch: 4 loss: 1.2587 Train_acc: 0.6042
+Epoch: 5 loss: 1.1615 Train_acc: 0.6208
+Epoch: 6 loss: 1.0356 Train_acc: 0.6292
+Epoch: 7 loss: 1.0127 Train_acc: 0.6604
+Epoch: 8 loss: 0.9019 Train_acc: 0.6937
+Epoch: 9 loss: 0.8633 Train_acc: 0.7083
+Test_acc: 0.6750
+Epoch: 10 loss: 0.7822 Train_acc: 0.7354
+Epoch: 11 loss: 0.7564 Train_acc: 0.7479
+Epoch: 12 loss: 0.7253 Train_acc: 0.7500
+Epoch: 13 loss: 0.6240 Train_acc: 0.8063
+Epoch: 14 loss: 0.6154 Train_acc: 0.7979
+Epoch: 15 loss: 0.6222 Train_acc: 0.8021
+Epoch: 16 loss: 0.5450 Train_acc: 0.8042
+Epoch: 17 loss: 0.5201 Train_acc: 0.8396
+</pre></div></div>
+</div>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Train a Combinatorial Complex Attention Neural Network for Mesh Classification.</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#The-Neural-Network:">The Neural Network:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#The-Task:">The Task:</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Set-up">Set-up</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Pre-processing">Pre-processing</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Import-data">Import data</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Create-the-Neural-Network">Create the Neural Network</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Train-the-Neural-Network">Train the Neural Network</a></li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/notebooks/combinatorial/hmc_train.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2022-2023, PyT-Team, Inc..
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
