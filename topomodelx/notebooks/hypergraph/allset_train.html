@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a CW Network (CWN)" href="../cell/cwn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 7, 2023, 10:00:29 PM"/>
+    <meta name="docbuild:last-update" content="Oct 9, 2023, 7:13:05 AM"/>
   </head>
   
   
@@ -512,6 +512,7 @@ representations of hyperedges containing <span class="math notranslate nohighlig
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.allset</span> <span class="kn">import</span> <span class="n">AllSet</span>
+<span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
 </pre></div>
 </div>
 </div>
@@ -602,7 +603,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <span class="n">incidence_1_list</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="n">simplexes</span><span class="p">:</span>
     <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="c1"># incidence_1 = torch.from_numpy(incidence_1.todense()).to_sparse()</span>
+    <span class="c1"># incidence_1 = from_sparse(incidence_1)</span>
     <span class="c1"># incidence_1_list.append(incidence_1)</span>
     <span class="n">hg</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">to_hypergraph</span><span class="p">()</span>
     <span class="n">hg_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hg</span><span class="p">)</span>
@@ -611,7 +612,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <span class="c1"># Extract hypergraphs incident matrices from collected hypergraphs</span>
 <span class="k">for</span> <span class="n">hg</span> <span class="ow">in</span> <span class="n">hg_list</span><span class="p">:</span>
     <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">hg</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">()</span>
-    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
     <span class="n">incidence_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
 </pre></div>
 </div>

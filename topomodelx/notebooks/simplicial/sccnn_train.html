@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial Complex Convolutional Network (SCCN)" href="sccn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 7, 2023, 10:00:29 PM"/>
+    <meta name="docbuild:last-update" content="Oct 9, 2023, 7:13:05 AM"/>
   </head>
   
   
@@ -517,6 +517,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn</span> <span class="kn">import</span> <span class="n">SCCNN</span><span class="p">,</span> <span class="n">SCCNNComplex</span>
+<span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
 </pre></div>
 </div>
 </div>
@@ -595,12 +596,12 @@ done!
     <span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">laplacian_2</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">incidence_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_down_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_up_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-    <span class="n">laplacian_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
+    <span class="n">incidence_2</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">incidence_2</span><span class="p">)</span>
+    <span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_0</span><span class="p">)</span>
+    <span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_down_1</span><span class="p">)</span>
+    <span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_up_1</span><span class="p">)</span>
+    <span class="n">laplacian_2</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_2</span><span class="p">)</span>
 
     <span class="n">incidence_1_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
     <span class="n">incidence_2_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence_2</span><span class="p">)</span>
@@ -922,14 +923,14 @@ The incidence matrix B2 has shape: (78, 45).
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_0</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-<span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_down_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-<span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_up_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-<span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_down_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-<span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">laplacian_up_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_0</span><span class="p">)</span>
+<span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_down_1</span><span class="p">)</span>
+<span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_up_1</span><span class="p">)</span>
+<span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_down_2</span><span class="p">)</span>
+<span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_up_2</span><span class="p">)</span>
 
-<span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
-<span class="n">incidence_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">incidence_2</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+<span class="n">incidence_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">incidence_1</span><span class="p">)</span>
+<span class="n">incidence_2</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">incidence_2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

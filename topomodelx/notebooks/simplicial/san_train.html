@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial High-Skip Network (HSN)" href="hsn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 7, 2023, 10:00:29 PM"/>
+    <meta name="docbuild:last-update" content="Oct 9, 2023, 7:13:05 AM"/>
   </head>
   
   
@@ -532,6 +532,7 @@ a_k(h_x^{t}, h_y^{t}) \cdot \psi_k^t(h_x^{t})\quad \forall \mathcal N_k \in \mat
 <span class="kn">from</span> <span class="nn">torch_geometric.utils.convert</span> <span class="kn">import</span> <span class="n">to_networkx</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.san</span> <span class="kn">import</span> <span class="n">SAN</span>
+<span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
 
 <span class="o">%</span><span class="k">load_ext</span> autoreload
 <span class="o">%</span><span class="k">autoreload</span> 2
@@ -605,18 +606,14 @@ and 2. Please notice that the binary adjacencies <span class="math notranslate n
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simplex_order_k</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="c1"># Down laplacian</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">laplacian_down</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">simplex_order_k</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">laplacian_down</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">simplex_order_k</span><span class="p">))</span>
 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
     <span class="n">laplacian_down</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
         <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">])</span>
     <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
 <span class="c1"># Up laplacian</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">laplacian_up</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
-        <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">simplex_order_k</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">laplacian_up</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="n">simplex_order_k</span><span class="p">))</span>
 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
     <span class="n">laplacian_up</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
         <span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">],</span> <span class="n">dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">simplex_order_k</span><span class="p">])</span>
@@ -666,7 +663,7 @@ There are 45 faces with features of dimension 2.
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_0_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_0_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>

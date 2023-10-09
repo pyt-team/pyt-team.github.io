@@ -51,7 +51,7 @@
     <link rel="prev" title="Tutorials" href="../../tutorials/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 7, 2023, 10:00:29 PM"/>
+    <meta name="docbuild:last-update" content="Oct 9, 2023, 7:13:05 AM"/>
   </head>
   
   
@@ -569,6 +569,7 @@ end{align*}`</p>
 
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.cell.can</span> <span class="kn">import</span> <span class="n">CAN</span>
+<span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
 </pre></div>
 </div>
 </div>
@@ -652,14 +653,12 @@ Label of 0th cell complex: 1.
     <span class="n">adjacency_0_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">adjacency_0</span><span class="p">)</span>
 
     <span class="n">lower_neighborhood_t</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">lower_neighborhood_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">lower_neighborhood_t</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+    <span class="n">lower_neighborhood_t</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">lower_neighborhood_t</span><span class="p">)</span>
     <span class="n">lower_neighborhood_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lower_neighborhood_t</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">cell_complex</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span>
-            <span class="n">upper_neighborhood_t</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+        <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">upper_neighborhood_t</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">upper_neighborhood_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="p">(</span><span class="n">lower_neighborhood_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">lower_neighborhood_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
