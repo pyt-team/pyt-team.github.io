@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 13, 2023, 8:47:57 PM"/>
+    <meta name="docbuild:last-update" content="Oct 14, 2023, 9:09:02 AM"/>
   </head>
   
   
@@ -1088,10 +1088,10 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; B2 = SC.incidence_matrix(2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input dimension d must be positive integer, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input rank must be positive integer, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;input dimenion cannat be larger than the dimension of the complex, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;input rank cannat be larger than the dimension of the complex, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1099,7 +1099,14 @@ document.write(`
                 <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
             <span class="p">)</span>
             <span class="n">boundary</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="k">return</span> <span class="n">boundary</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+                <span class="n">simplex_dict_d</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">simplex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="p">{},</span> <span class="n">simplex_dict_d</span><span class="p">,</span> <span class="n">boundary</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">boundary</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
         <span class="n">idx_simplices</span><span class="p">,</span> <span class="n">idx_faces</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
 
         <span class="n">simplex_dict_d</span> <span class="o">=</span> <span class="p">{</span><span class="n">simplex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">))}</span>
@@ -1239,10 +1246,82 @@ document.write(`
             <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">L_hodge</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="SimplicialComplex.dirac_operator_matrix">
+<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.dirac_operator_matrix">[docs]</a>
+    <span class="k">def</span> <span class="nf">dirac_operator_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute dirac operator matrix matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        signed : bool, default=False</span>
+<span class="sd">            Whether the returned coadjacency matrix should be signed (i.e., respect orientations) or unsigned.</span>
+<span class="sd">        weight : str, optional</span>
+<span class="sd">            If not given, all nonzero entries are 1.</span>
+<span class="sd">        index : bool, default=False</span>
+<span class="sd">            If True return will include a dictionary of node uid : row number</span>
+<span class="sd">            and cell uid : column number</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</span>
+<span class="sd">            The coadjacency matrix, if `index` is False, otherwise</span>
+<span class="sd">            lower (row) index dict, upper (col) index dict, coadjacency matrix</span>
+<span class="sd">            where the index dictionaries map from the entity (as `Hashable` or `tuple`) to the row or col index of the matrix</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from toponetx.classes import SimplicialComplex</span>
+<span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex()</span>
+<span class="sd">        &gt;&gt;&gt; SC.add_simplex([1, 2, 3, 4])</span>
+<span class="sd">        &gt;&gt;&gt; SC.add_simplex([1, 2, 4])</span>
+<span class="sd">        &gt;&gt;&gt; SC.add_simplex([3, 4, 8])</span>
+<span class="sd">        &gt;&gt;&gt; SC.dirac_operator_matrix()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">bmat</span>
+
+        <span class="n">index_set</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">incidence</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">indexi</span><span class="p">,</span> <span class="n">Bi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">index_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexi</span><span class="p">)</span>
+            <span class="n">incidence</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Bi</span>
+        <span class="n">dirac</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">incidence</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">incidence</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence</span><span class="p">[(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">dirac</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">dirac</span> <span class="o">=</span> <span class="n">bmat</span><span class="p">(</span><span class="n">dirac</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_set</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">+</span> <span class="n">shift</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">shift</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">signed</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">dirac</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dirac</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">signed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dirac</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dirac</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="SimplicialComplex.normalized_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.normalized_laplacian_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">normalized_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the normalized hodge Laplacian matrix of G.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the normalized hodge Laplacian matrix of simplicial complex .</span>
 
 <span class="sd">        The normalized hodge Laplacian is the matrix</span>
 
@@ -1317,6 +1396,13 @@ document.write(`
 <span class="sd">            return also a list : list</span>
 <span class="sd">            list identifying rows with nodes,edges or cells used to index the hodge Laplacian matrix</span>
 <span class="sd">            depending on the input dimension</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([[1, 2, 3],</span>
+<span class="sd">                                    [2, 3, 5],</span>
+<span class="sd">                                    [0, 1]])</span>
+<span class="sd">        &gt;&gt;&gt; SC.up_laplacian_matrix(1)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`weight` is not supported in this version&quot;</span><span class="p">)</span>
@@ -1326,7 +1412,7 @@ document.write(`
                 <span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="n">L_up</span> <span class="o">=</span> <span class="n">B_next</span> <span class="o">@</span> <span class="n">B_next</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="ow">and</span> <span class="n">rank</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">B_next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
                 <span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>

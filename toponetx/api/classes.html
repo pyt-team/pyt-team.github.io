@@ -50,7 +50,7 @@
     <link rel="prev" title="Datasets" href="datasets.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 13, 2023, 8:47:57 PM"/>
+    <meta name="docbuild:last-update" content="Oct 14, 2023, 9:09:02 AM"/>
   </head>
   
   
@@ -694,6 +694,35 @@ where the index dictionaries map from the entity (as <cite>Hashable</cite> or <c
 <dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.dim">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.dim" title="Link to this definition">#</a></dt>
 <dd><p>Return maximum dimension.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="toponetx.classes.cell_complex.CellComplex.dirac_operator_matrix">
+<span class="sig-name descname"><span class="pre">dirac_operator_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/cell_complex.html#CellComplex.dirac_operator_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.cell_complex.CellComplex.dirac_operator_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Compute dirac operator matrix matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signed</strong> (<em>bool, default=False</em>) – Whether the returned coadjacency matrix should be signed (i.e., respect orientations) or unsigned.</p></li>
+<li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
+<li><p><strong>index</strong> (<em>bool, default=False</em>) – If True return will include a dictionary of node uid : row number
+and cell uid : column number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</em> – The coadjacency matrix, if <cite>index</cite> is False, otherwise
+lower (row) index dict, upper (col) index dict, coadjacency matrix
+where the index dictionaries map from the entity (as <cite>Hashable</cite> or <cite>tuple</cite>) to the row or col index of the matrix</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">path_graph</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">dirac_operator_matrix</span><span class="p">()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -3120,6 +3149,36 @@ whether the method should return the matrix indices along with the adjacency mat
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="toponetx.classes.simplicial_complex.SimplicialComplex.dirac_operator_matrix">
+<span class="sig-name descname"><span class="pre">dirac_operator_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/simplicial_complex.html#SimplicialComplex.dirac_operator_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.simplicial_complex.SimplicialComplex.dirac_operator_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Compute dirac operator matrix matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signed</strong> (<em>bool, default=False</em>) – Whether the returned coadjacency matrix should be signed (i.e., respect orientations) or unsigned.</p></li>
+<li><p><strong>weight</strong> (<em>str, optional</em>) – If not given, all nonzero entries are 1.</p></li>
+<li><p><strong>index</strong> (<em>bool, default=False</em>) – If True return will include a dictionary of node uid : row number
+and cell uid : column number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</em> – The coadjacency matrix, if <cite>index</cite> is False, otherwise
+lower (row) index dict, upper (col) index dict, coadjacency matrix
+where the index dictionaries map from the entity (as <cite>Hashable</cite> or <cite>tuple</cite>) to the row or col index of the matrix</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">toponetx.classes</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SC</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SC</span><span class="o">.</span><span class="n">add_simplex</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SC</span><span class="o">.</span><span class="n">add_simplex</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SC</span><span class="o">.</span><span class="n">add_simplex</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SC</span><span class="o">.</span><span class="n">dirac_operator_matrix</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="toponetx.classes.simplicial_complex.SimplicialComplex.down_laplacian_matrix">
 <span class="sig-name descname"><span class="pre">down_laplacian_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/simplicial_complex.html#SimplicialComplex.down_laplacian_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.simplicial_complex.SimplicialComplex.down_laplacian_matrix" title="Link to this definition">#</a></dt>
 <dd><p>Compute the down Laplacian matrix of the simplicial complex.</p>
@@ -3526,7 +3585,7 @@ vertices of the triangular mesh is n_points.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="toponetx.classes.simplicial_complex.SimplicialComplex.normalized_laplacian_matrix">
 <span class="sig-name descname"><span class="pre">normalized_laplacian_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/simplicial_complex.html#SimplicialComplex.normalized_laplacian_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.simplicial_complex.SimplicialComplex.normalized_laplacian_matrix" title="Link to this definition">#</a></dt>
-<dd><p>Return the normalized hodge Laplacian matrix of G.</p>
+<dd><p>Return the normalized hodge Laplacian matrix of simplicial complex .</p>
 <p>The normalized hodge Laplacian is the matrix</p>
 <div class="math notranslate nohighlight">
 \[N_d = D^{-1/2} L_d D^{-1/2}\]</div>
@@ -3838,6 +3897,13 @@ depending on the input dimension</p></li>
 </p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SC</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="go">                            [2, 3, 5],</span>
+<span class="go">                            [0, 1]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SC</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -3906,6 +3972,7 @@ depending on the input dimension</p></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.coadjacency_matrix"><code class="docutils literal notranslate"><span class="pre">CellComplex.coadjacency_matrix()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.degree"><code class="docutils literal notranslate"><span class="pre">CellComplex.degree()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.dim"><code class="docutils literal notranslate"><span class="pre">CellComplex.dim</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.dirac_operator_matrix"><code class="docutils literal notranslate"><span class="pre">CellComplex.dirac_operator_matrix()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.down_laplacian_matrix"><code class="docutils literal notranslate"><span class="pre">CellComplex.down_laplacian_matrix()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.edges"><code class="docutils literal notranslate"><span class="pre">CellComplex.edges</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.cell_complex.CellComplex.euler_characterisitics"><code class="docutils literal notranslate"><span class="pre">CellComplex.euler_characterisitics()</span></code></a></li>
@@ -4079,6 +4146,7 @@ depending on the input dimension</p></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.simplicial_complex.SimplicialComplex.coadjacency_matrix"><code class="docutils literal notranslate"><span class="pre">SimplicialComplex.coadjacency_matrix()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.simplicial_complex.SimplicialComplex.coincidence_matrix"><code class="docutils literal notranslate"><span class="pre">SimplicialComplex.coincidence_matrix()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.simplicial_complex.SimplicialComplex.dim"><code class="docutils literal notranslate"><span class="pre">SimplicialComplex.dim</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.simplicial_complex.SimplicialComplex.dirac_operator_matrix"><code class="docutils literal notranslate"><span class="pre">SimplicialComplex.dirac_operator_matrix()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.simplicial_complex.SimplicialComplex.down_laplacian_matrix"><code class="docutils literal notranslate"><span class="pre">SimplicialComplex.down_laplacian_matrix()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.simplicial_complex.SimplicialComplex.from_gudhi"><code class="docutils literal notranslate"><span class="pre">SimplicialComplex.from_gudhi()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.classes.simplicial_complex.SimplicialComplex.from_nx_graph"><code class="docutils literal notranslate"><span class="pre">SimplicialComplex.from_nx_graph()</span></code></a></li>

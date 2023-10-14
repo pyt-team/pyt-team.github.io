@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 13, 2023, 8:47:57 PM"/>
+    <meta name="docbuild:last-update" content="Oct 14, 2023, 9:09:02 AM"/>
   </head>
   
   
@@ -607,7 +607,7 @@ document.write(`
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return boolean indicating if item is in self.nodes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return boolean indicating if item is in self.nodes, self.edges or self.cells.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -617,7 +617,7 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
-<span class="sd">            True if item is in self.nodes, False otherwise.</span>
+<span class="sd">            True if item is a cell of dim 0,1,2 is in the complex, False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
 
@@ -2358,6 +2358,65 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="n">incidence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">incidence_to_adjacency</span><span class="p">(</span><span class="n">incidence</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CellComplex.dirac_operator_matrix">
+<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.dirac_operator_matrix">[docs]</a>
+    <span class="k">def</span> <span class="nf">dirac_operator_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute dirac operator matrix matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        signed : bool, default=False</span>
+<span class="sd">            Whether the returned coadjacency matrix should be signed (i.e., respect orientations) or unsigned.</span>
+<span class="sd">        weight : str, optional</span>
+<span class="sd">            If not given, all nonzero entries are 1.</span>
+<span class="sd">        index : bool, default=False</span>
+<span class="sd">            If True return will include a dictionary of node uid : row number</span>
+<span class="sd">            and cell uid : column number</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</span>
+<span class="sd">            The coadjacency matrix, if `index` is False, otherwise</span>
+<span class="sd">            lower (row) index dict, upper (col) index dict, coadjacency matrix</span>
+<span class="sd">            where the index dictionaries map from the entity (as `Hashable` or `tuple`) to the row or col index of the matrix</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import networkx as nx</span>
+<span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
+<span class="sd">        &gt;&gt;&gt; CC = CellComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CC.dirac_operator_matrix()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">bmat</span><span class="p">,</span> <span class="n">coo_matrix</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">index0</span><span class="p">,</span> <span class="n">B0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span> <span class="n">B1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">index1</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">index0</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">index1</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">index2</span><span class="p">,</span> <span class="n">B2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">index2</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">index0</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">index1</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">index2</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="n">dirac</span> <span class="o">=</span> <span class="n">bmat</span><span class="p">([[</span><span class="kc">None</span><span class="p">,</span> <span class="n">B1</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">[</span><span class="n">B1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">B2</span><span class="p">],</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">B2</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="kc">None</span><span class="p">]])</span>
+
+        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">index0</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">index1</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">index2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">signed</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">dirac</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dirac</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">signed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dirac</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dirac</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CellComplex.restrict_to_cells">
