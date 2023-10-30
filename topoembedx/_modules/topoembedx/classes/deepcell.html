@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:46:51 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 8:47:43 AM"/>
   </head>
   
   
@@ -330,9 +330,12 @@ document.write(`
                   
   <h1>Source code for topoembedx.classes.deepcell</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;DeepCell class for embedding complex networks using DeepWalk.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">karateclub</span> <span class="kn">import</span> <span class="n">DeepWalk</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes</span> <span class="kn">import</span> <span class="n">Complex</span>
 
 <span class="kn">from</span> <span class="nn">topoembedx.neighborhood</span> <span class="kn">import</span> <span class="n">neighborhood_from_complex</span>
 
@@ -344,59 +347,35 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    walk_number : int, optional</span>
-<span class="sd">        Number of random walks to generate for each node. Defaults to 10.</span>
-<span class="sd">    walk_length : int, optional</span>
-<span class="sd">        Length of each random walk. Defaults to 80.</span>
-<span class="sd">    dimensions : int, optional</span>
-<span class="sd">        Dimensionality of embedding. Defaults to 128.</span>
-<span class="sd">    workers : int, optional</span>
-<span class="sd">        Number of parallel workers to use for training. Defaults to 4.</span>
-<span class="sd">    window_size : int, optional</span>
-<span class="sd">        Size of the sliding window. Defaults to 5.</span>
-<span class="sd">    epochs : int, optional</span>
-<span class="sd">        Number of iterations (epochs). Defaults to 1.</span>
-<span class="sd">    learning_rate : float, optional</span>
-<span class="sd">        Learning rate for the model. Defaults to 0.05.</span>
+<span class="sd">    walk_number : int, default=10</span>
+<span class="sd">        Number of random walks to generate for each node.</span>
+<span class="sd">    walk_length : int, default=80</span>
+<span class="sd">        Length of each random walk.</span>
+<span class="sd">    dimensions : int, default=128</span>
+<span class="sd">        Dimensionality of embedding.</span>
+<span class="sd">    workers : int, default=4</span>
+<span class="sd">        Number of parallel workers to use for training.</span>
+<span class="sd">    window_size : int, default=5</span>
+<span class="sd">        Size of the sliding window.</span>
+<span class="sd">    epochs : int, default=1</span>
+<span class="sd">        Number of iterations (epochs).</span>
+<span class="sd">    learning_rate : float, default=0.05</span>
+<span class="sd">        Learning rate for the model.</span>
 <span class="sd">    min_count : int, optional</span>
-<span class="sd">        Minimum count of words to consider when training the model. Defaults to 1.</span>
-<span class="sd">    seed : int, optional</span>
-<span class="sd">        Random seed to use for reproducibility. Defaults to 42.</span>
+<span class="sd">        Minimum count of words to consider when training the model.</span>
+<span class="sd">    seed : int, default=42</span>
+<span class="sd">        Random seed to use for reproducibility.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">walk_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-        <span class="n">walk_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
-        <span class="n">dimensions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
-        <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
-        <span class="n">window_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
-        <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">walk_number</span><span class="o">=</span><span class="n">walk_number</span><span class="p">,</span>
-            <span class="n">walk_length</span><span class="o">=</span><span class="n">walk_length</span><span class="p">,</span>
-            <span class="n">dimensions</span><span class="o">=</span><span class="n">dimensions</span><span class="p">,</span>
-            <span class="n">workers</span><span class="o">=</span><span class="n">workers</span><span class="p">,</span>
-            <span class="n">window_size</span><span class="o">=</span><span class="n">window_size</span><span class="p">,</span>
-            <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
-            <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
-            <span class="n">min_count</span><span class="o">=</span><span class="n">min_count</span><span class="p">,</span>
-            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ind</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">A</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+    <span class="n">ind</span><span class="p">:</span> <span class="nb">list</span>
 
 <div class="viewcode-block" id="DeepCell.fit">
 <a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.deepcell.DeepCell.fit">[docs]</a>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="nb">complex</span><span class="p">,</span>
-        <span class="n">neighborhood_type</span><span class="o">=</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span>
+        <span class="nb">complex</span><span class="p">:</span> <span class="n">Complex</span><span class="p">,</span>
+        <span class="n">neighborhood_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="s2">&quot;coadj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;adj&quot;</span><span class="p">,</span>
         <span class="n">neighborhood_dim</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;via_rank&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit the model.</span>
@@ -410,7 +389,7 @@ document.write(`
 <span class="sd">            - PathComplex</span>
 <span class="sd">            - SimplicialComplex</span>
 <span class="sd">            - ColoredHyperGraph</span>
-<span class="sd">        neighborhood_type : str</span>
+<span class="sd">        neighborhood_type : {&quot;adj&quot;, &quot;coadj&quot;}, default=&quot;adj&quot;</span>
 <span class="sd">            The type of neighborhood to compute. &quot;adj&quot; for adjacency matrix, &quot;coadj&quot; for coadjacency matrix.</span>
 <span class="sd">        neighborhood_dim : dict</span>
 <span class="sd">            The integer parmaters needed to specify the neighborhood of the cells to generate the embedding.</span>
@@ -444,14 +423,13 @@ document.write(`
 
 <div class="viewcode-block" id="DeepCell.get_embedding">
 <a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.deepcell.DeepCell.get_embedding">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_dict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get embeddings.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        get_dict : bool, optional</span>
+<span class="sd">        get_dict : bool, default=False</span>
 <span class="sd">            Return a dictionary of the embedding.</span>
-<span class="sd">            Default: False.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
