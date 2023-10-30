@@ -50,7 +50,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="dist2cycle.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:48:16 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 12:26:02 PM"/>
   </head>
   
   
@@ -448,31 +448,33 @@ document.write(`
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.hsn_layer.HSNLayer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.simplicial.hsn_layer.</span></span><span class="sig-name descname"><span class="pre">HSNLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/hsn_layer.html#HSNLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.hsn_layer.HSNLayer" title="Link to this definition">#</a></dt>
 <dd><p>Layer of a High Skip Network (HSN).</p>
-<p>Implementation of the HSN layer proposed in <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<p>Implementation of the HSN layer proposed in <a class="reference internal" href="#r55bd25c42c5e-1" id="id1">[1]</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of features on each simplicial cell.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This is the architecture proposed for node classification on simplicial complices.</p>
 <p class="rubric">References</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id3">2</a>)</span>
+<div role="list" class="citation-list">
+<div class="citation" id="r55bd25c42c5e-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Hajij, Ramamurthy, Guzmán-Sáenz, Zamzmi.
 High skip networks: a higher order generalization of skip connections.
 Geometrical and topological representation learning workshop at ICLR 2022.
 <a class="reference external" href="https://openreview.net/pdf?id=Sc8glB-k6e9">https://openreview.net/pdf?id=Sc8glB-k6e9</a></p>
-</aside>
-</aside>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>channels</strong> (<em>int</em>) – Dimension of features on each simplicial cell.</p>
-</dd>
-</dl>
+</div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.hsn_layer.HSNLayer.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjacency_0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/hsn_layer.html#HSNLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.hsn_layer.HSNLayer.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward pass.</p>
-<p>The forward pass was initially proposed in <a class="footnote-reference brackets" href="#id2" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
-Its equations are given in <a class="footnote-reference brackets" href="#id6" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> and graphically illustrated in <a class="footnote-reference brackets" href="#id7" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+<p>The forward pass was initially proposed in <a href="#id8"><span class="problematic" id="id3">[1]_</span></a>.
+Its equations are given in <a class="reference internal" href="#rb5cf416bab9b-2" id="id4">[2]</a> and graphically illustrated in <a class="reference internal" href="#rb5cf416bab9b-3" id="id5">[3]</a>.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{align*}
 &amp;🟥 \quad m_{{y \rightarrow z}}^{(0 \rightarrow 0)} = \sigma ((A_{\uparrow,0})_{xy} \cdot h^{t,(0)}_y \cdot \Theta^{t,(0)1})\\
@@ -486,36 +488,42 @@ Its equations are given in <a class="footnote-reference brackets" href="#id6" id
 \end{align*}\end{split}\]</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>torch.Tensor, shape = (n_nodes, channels)</em>) – Input features on the nodes of the simplicial complex.</p></li>
-<li><p><strong>incidence_1</strong> (<em>torch.sparse, shape = (n_nodes, n_edges)</em>) – Incidence matrix <span class="math notranslate nohighlight">\(B_1\)</span> mapping edges to nodes.</p></li>
-<li><p><strong>adjacency_0</strong> (<em>torch.sparse, shape = (n_nodes, n_nodes)</em>) – Adjacency matrix <span class="math notranslate nohighlight">\(A_0^{\uparrow}\)</span> mapping nodes to nodes via edges.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_0</strong><span class="classifier">torch.Tensor, shape = (n_nodes, channels)</span></dt><dd><p>Input features on the nodes of the simplicial complex.</p>
+</dd>
+<dt><strong>incidence_1</strong><span class="classifier">torch.sparse, shape = (n_nodes, n_edges)</span></dt><dd><p>Incidence matrix <span class="math notranslate nohighlight">\(B_1\)</span> mapping edges to nodes.</p>
+</dd>
+<dt><strong>adjacency_0</strong><span class="classifier">torch.sparse, shape = (n_nodes, n_nodes)</span></dt><dd><p>Adjacency matrix <span class="math notranslate nohighlight">\(A_0^{\uparrow}\)</span> mapping nodes to nodes via edges.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = (n_nodes, channels)</em> – Output features on the nodes of the simplicial complex.</p>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor, shape = (n_nodes, channels)</dt><dd><p>Output features on the nodes of the simplicial complex.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <p class="rubric">References</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id6" role="doc-footnote">
+<div role="list" class="citation-list">
+<div class="citation" id="rb5cf416bab9b-2" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">2</a><span class="fn-bracket">]</span></span>
 <p>Papillon, Sanborn, Hajij, Miolane.
 Equations of topological neural networks (2023).
 <a class="github reference external" href="https://github.com/awesome-tnns/awesome-tnns/">awesome-tnns/awesome-tnns</a></p>
-</aside>
-<aside class="footnote brackets" id="id7" role="doc-footnote">
+</div>
+<div class="citation" id="rb5cf416bab9b-3" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id5">3</a><span class="fn-bracket">]</span></span>
 <p>Papillon, Sanborn, Hajij, Miolane.
 Architectures of topological deep learning: a survey on topological neural networks (2023).
 <a class="reference external" href="https://arxiv.org/abs/2304.10031">https://arxiv.org/abs/2304.10031</a>.</p>
-</aside>
-</aside>
+</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.hsn_layer.HSNLayer.reset_parameters">
-<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/hsn_layer.html#HSNLayer.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.hsn_layer.HSNLayer.reset_parameters" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/hsn_layer.html#HSNLayer.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.hsn_layer.HSNLayer.reset_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Reset learnable parameters.</p>
 </dd></dl>
 

@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:48:16 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 12:26:02 PM"/>
   </head>
   
   
@@ -362,10 +362,12 @@ document.write(`
 <span class="sd">        Dimension of the input features.</span>
 <span class="sd">    out_channels : int</span>
 <span class="sd">        Dimension of the output features.</span>
-<span class="sd">    update_func : string, default = &quot;relu&quot;</span>
+<span class="sd">    update_func : str, default = &quot;relu&quot;</span>
 <span class="sd">        Update method to apply to message.</span>
 <span class="sd">    initialization : Literal[&quot;xavier_uniform&quot;, &quot;xavier_normal&quot;], default=&quot;xavier_uniform&quot;</span>
 <span class="sd">        Initialization method.</span>
+<span class="sd">    initialization_gain : float, default=1.414</span>
+<span class="sd">        Gain for the initialization.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -448,7 +450,7 @@ document.write(`
 <span class="sd">        x_target : torch.Tensor, shape = (n_target_cells, in_channels)</span>
 <span class="sd">            Input features on source cells.</span>
 <span class="sd">            Assumes that all source cells have the same rank r.</span>
-<span class="sd">        mechanism: Literal[&quot;node-level&quot;, &quot;edge-level&quot;], default = &quot;node-level&quot;</span>
+<span class="sd">        mechanism : Literal[&quot;node-level&quot;, &quot;edge-level&quot;], default = &quot;node-level&quot;</span>
 <span class="sd">            Attention mechanism as proposed in [1]. If set to &quot;node-level&quot;, will compute node-level attention,</span>
 <span class="sd">            if set to &quot;edge-level&quot;, will compute edge-level attention (see [1]).</span>
 
@@ -484,7 +486,7 @@ document.write(`
 
 <div class="viewcode-block" id="HyperGATLayer.update">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/hypergat_layer.html#topomodelx.nn.hypergraph.hypergat_layer.HyperGATLayer.update">[docs]</a>
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_message_on_target</span><span class="p">,</span> <span class="n">x_target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_message_on_target</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Update embeddings on each cell (step 4).</span>
 
 <span class="sd">        Parameters</span>
@@ -520,14 +522,14 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x : torch.Tensor</span>
+<span class="sd">        x_source : torch.Tensor</span>
 <span class="sd">            Input features.</span>
 <span class="sd">        incidence : torch.sparse</span>
 <span class="sd">            Incidence matrix between nodes and hyperedges.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        x : torch.Tensor</span>
+<span class="sd">        torch.Tensor</span>
 <span class="sd">            Output features.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">intra_aggregation</span> <span class="o">=</span> <span class="n">incidence</span><span class="o">.</span><span class="n">t</span><span class="p">()</span> <span class="o">@</span> <span class="p">(</span><span class="n">x_source</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight1</span><span class="p">)</span>

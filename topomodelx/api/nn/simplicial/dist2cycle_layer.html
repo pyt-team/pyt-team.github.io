@@ -50,7 +50,7 @@
     <link rel="prev" title="Simplicial" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:48:16 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 12:26:02 PM"/>
   </head>
   
   
@@ -447,7 +447,15 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.dist2cycle_layer.Dist2CycleLayer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.simplicial.dist2cycle_layer.</span></span><span class="sig-name descname"><span class="pre">Dist2CycleLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/dist2cycle_layer.html#Dist2CycleLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.dist2cycle_layer.Dist2CycleLayer" title="Link to this definition">#</a></dt>
-<dd><p>Layer of Dist2Cycle <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<dd><p>Layer of Dist2Cycle <a href="#id3"><span class="problematic" id="id1">[1]_</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of features.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.dist2cycle_layer.Dist2CycleLayer.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_e</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Linv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjacency</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/dist2cycle_layer.html#Dist2CycleLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.dist2cycle_layer.Dist2CycleLayer.forward" title="Link to this definition">#</a></dt>
@@ -459,32 +467,38 @@ document.write(`
 &amp;🟩 \quad m_x^{(1)}  = m^{(1 \rightarrow 1)}_x\\
 &amp;🟦 \quad h_x^{t+1,(1)} = \sigma(m_{x}^{(1)})
 \end{align*}\end{split}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_e: torch.Tensor, shape = (n_nodes, channels)</strong></dt><dd><p>Input features on the edges of the simplicial complex.</p>
+</dd>
+<dt><strong>incidence_1</strong><span class="classifier">torch.sparse, shape = (n_nodes, n_edges)</span></dt><dd><p>Incidence matrix <span class="math notranslate nohighlight">\(B_1\)</span> mapping edges to nodes.</p>
+</dd>
+<dt><strong>adjacency_0</strong><span class="classifier">torch.sparse, shape = (n_nodes, n_nodes)</span></dt><dd><p>Adjacency matrix <span class="math notranslate nohighlight">\(A_0^{\uparrow}\)</span> mapping nodes to nodes via edges.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor, shape = (n_nodes, channels)</dt><dd><p>Output features on the nodes of the simplicial complex.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 <p class="rubric">References</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<div role="list" class="citation-list">
+<div class="citation" id="r421649ca88d8-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <p>Papillon, Sanborn, Hajij, Miolane.
 Equations of topological neural networks (2023).
 <a class="github reference external" href="https://github.com/awesome-tnns/awesome-tnns/">awesome-tnns/awesome-tnns</a></p>
-</aside>
-</aside>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>torch.Tensor, shape = (n_nodes, channels)</em>) – Input features on the edges of the simplicial complex.</p></li>
-<li><p><strong>incidence_1</strong> (<em>torch.sparse, shape = (n_nodes, n_edges)</em>) – Incidence matrix <span class="math notranslate nohighlight">\(B_1\)</span> mapping edges to nodes.</p></li>
-<li><p><strong>adjacency_0</strong> (<em>torch.sparse, shape = (n_nodes, n_nodes)</em>) – Adjacency matrix <span class="math notranslate nohighlight">\(A_0^{\uparrow}\)</span> mapping nodes to nodes via edges.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = (n_nodes, channels)</em> – Output features on the nodes of the simplicial complex.</p>
-</dd>
-</dl>
+</div>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.dist2cycle_layer.Dist2CycleLayer.reset_parameters">
-<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/dist2cycle_layer.html#Dist2CycleLayer.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.dist2cycle_layer.Dist2CycleLayer.reset_parameters" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/dist2cycle_layer.html#Dist2CycleLayer.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.dist2cycle_layer.Dist2CycleLayer.reset_parameters" title="Link to this definition">#</a></dt>
 <dd><p>Reset learnable parameters.</p>
 </dd></dl>
 

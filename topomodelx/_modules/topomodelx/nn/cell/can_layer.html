@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:48:16 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 12:26:02 PM"/>
   </head>
   
   
@@ -363,12 +363,6 @@ document.write(`
 <span class="k">def</span> <span class="nf">softmax</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">num_cells</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Compute the softmax of the attention coefficients.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    There should be of a default implementation of softmax in the utils file.</span>
-<span class="sd">    Subtracting the maximum element in it from all elements to avoid overflow</span>
-<span class="sd">    and underflow.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    src : torch.Tensor, shape = (n_k_cells, heads)</span>
@@ -382,6 +376,12 @@ document.write(`
 <span class="sd">    -------</span>
 <span class="sd">    torch.Tensor, shape = (n_k_cells, heads)</span>
 <span class="sd">        Softmax of the attention coefficients.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    There should be of a default implementation of softmax in the utils file.</span>
+<span class="sd">    Subtracting the maximum element in it from all elements to avoid overflow</span>
+<span class="sd">    and underflow.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">src_max</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># (1, H)</span>
     <span class="n">src</span> <span class="o">-=</span> <span class="n">src_max</span>  <span class="c1"># (|n_k_cells|, H)</span>
@@ -398,10 +398,6 @@ document.write(`
 <span class="k">def</span> <span class="nf">add_self_loops</span><span class="p">(</span><span class="n">neighborhood</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add self-loops to the neighborhood matrix.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Add to utils file.</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    neighborhood : torch.sparse_coo_tensor, shape = (n_k_cells, n_k_cells)</span>
@@ -411,6 +407,10 @@ document.write(`
 <span class="sd">    -------</span>
 <span class="sd">    torch.sparse_coo_tensor, shape = (n_k_cells, n_k_cells)</span>
 <span class="sd">        Neighborhood matrix with self-loops.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Add to utils file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">N</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">cell_index</span><span class="p">,</span> <span class="n">cell_weight</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">_indices</span><span class="p">(),</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">_values</span><span class="p">()</span>
@@ -441,13 +441,13 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    in_channels_0: int</span>
+<span class="sd">    in_channels_0 : int</span>
 <span class="sd">        Number of input channels of the node signal.</span>
-<span class="sd">    heads: int</span>
+<span class="sd">    heads : int</span>
 <span class="sd">        Number of attention heads.</span>
-<span class="sd">    signal_lift_activation: Callable</span>
+<span class="sd">    signal_lift_activation : Callable</span>
 <span class="sd">        Activation function applied to the lifted signal.</span>
-<span class="sd">    signal_lift_dropout: float</span>
+<span class="sd">    signal_lift_dropout : float</span>
 <span class="sd">        Dropout rate applied to the lifted signal.</span>
 
 <span class="sd">    References</span>
@@ -483,19 +483,28 @@ document.write(`
 <div class="viewcode-block" id="LiftLayer.message">
 <a class="viewcode-back" href="../../../../api/nn/cell/can_layer.html#topomodelx.nn.cell.can_layer.LiftLayer.message">[docs]</a>
     <span class="k">def</span> <span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">x_target</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a message from source 0-cells to target 1-cell.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a message from source 0-cells to target 1-cell.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x_source : torch.Tensor, shape = (num_edges, in_channels_0)</span>
+<span class="sd">            Node signal of the source 0-cells.</span>
+<span class="sd">        x_target : torch.Tensor, shape = (num_edges, in_channels_0)</span>
+<span class="sd">            Node signal of the target 1-cell.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor, shape = (num_edges, heads)</span>
+<span class="sd">            Edge signal.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Concatenate source and target node feature vectors</span>
-        <span class="n">node_features_stacked</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">x_source</span><span class="p">,</span> <span class="n">x_target</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span>
-        <span class="p">)</span>  <span class="c1"># (num_edges, 2 * in_channels_0)</span>
+        <span class="n">node_features_stacked</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">x_source</span><span class="p">,</span> <span class="n">x_target</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># Compute the output edge signal by applying the activation function</span>
         <span class="n">edge_signal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
             <span class="s2">&quot;ij,jh-&gt;ih&quot;</span><span class="p">,</span> <span class="n">node_features_stacked</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">att_parameter</span>
         <span class="p">)</span>  <span class="c1"># (num_edges, heads)</span>
-        <span class="n">edge_signal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_lift_activation</span><span class="p">(</span><span class="n">edge_signal</span><span class="p">)</span>  <span class="c1"># (num_edges, heads)</span>
-
-        <span class="k">return</span> <span class="n">edge_signal</span>  <span class="c1"># (num_edges, heads)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_lift_activation</span><span class="p">(</span><span class="n">edge_signal</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="LiftLayer.forward">
@@ -505,9 +514,9 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0: torch.Tensor, shape = (num_nodes, in_channels_0)</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (num_nodes, in_channels_0)</span>
 <span class="sd">            Node signal.</span>
-<span class="sd">        neighborhood_0_to_0: torch.Tensor, shape = (num_nodes, num_nodes)</span>
+<span class="sd">        neighborhood_0_to_0 : torch.Tensor, shape = (num_nodes, num_nodes)</span>
 <span class="sd">            Sparse neighborhood matrix.</span>
 
 <span class="sd">        Returns</span>
@@ -537,15 +546,15 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    in_channels_0: int</span>
+<span class="sd">    in_channels_0 : int</span>
 <span class="sd">        Number of input channels.</span>
-<span class="sd">    heads: int, optional</span>
+<span class="sd">    heads : int, optional</span>
 <span class="sd">        Number of attention heads.</span>
-<span class="sd">    signal_lift_activation: Callable, optional</span>
+<span class="sd">    signal_lift_activation : Callable, optional</span>
 <span class="sd">        Activation function to apply to the output edge signal.</span>
-<span class="sd">    signal_lift_dropout: float, optional</span>
+<span class="sd">    signal_lift_dropout : float, optional</span>
 <span class="sd">        Dropout rate to apply to the output edge signal.</span>
-<span class="sd">    signal_lift_readout: str, optional</span>
+<span class="sd">    signal_lift_readout : str, optional</span>
 <span class="sd">        Readout method to apply to the output edge signal.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -594,17 +603,17 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0: torch.Tensor</span>
-<span class="sd">            Node signal of shape (num_nodes, in_channels_0)</span>
-<span class="sd">        neighborhood_0_to_0: torch.Tensor</span>
-<span class="sd">            Edge index of shape (2, num_edges)</span>
-<span class="sd">        x_1: torch.Tensor, optional</span>
-<span class="sd">            Node signal of shape (num_edges, in_channels_1)</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (num_nodes, in_channels_0)</span>
+<span class="sd">            Node signal.</span>
+<span class="sd">        neighborhood_0_to_0 : torch.Tensor, shape = (2, num_edges)</span>
+<span class="sd">            Edge index.</span>
+<span class="sd">        x_1 : torch.Tensor, shape = (num_edges, in_channels_1), optional</span>
+<span class="sd">            Edge signal.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        _: torch.Tensor</span>
-<span class="sd">            Lifted node signal of shape (num_edges, heads + in_channels_1)</span>
+<span class="sd">        torch.Tensor, shape = (num_edges, heads + in_channels_1)</span>
+<span class="sd">            Lifted node signal.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -653,13 +662,13 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    k_pool: float</span>
-<span class="sd">        The pooling ratio i.e, the fraction of edges to keep after the pooling operation. (0,1]</span>
-<span class="sd">    in_channels_0: int</span>
+<span class="sd">    k_pool : float in (0, 1]</span>
+<span class="sd">        The pooling ratio i.e, the fraction of edges to keep after the pooling operation.</span>
+<span class="sd">    in_channels_0 : int</span>
 <span class="sd">        Number of input channels of the input signal.</span>
-<span class="sd">    signal_pool_activation: Callable</span>
+<span class="sd">    signal_pool_activation : Callable</span>
 <span class="sd">        Activation function applied to the pooled signal.</span>
-<span class="sd">    readout: bool, optional</span>
+<span class="sd">    readout : bool, optional</span>
 <span class="sd">        Whether to apply a readout operation to the pooled signal.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -697,16 +706,16 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0: torch.Tensor, shape = (num_nodes, in_channels_0)</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (num_nodes, in_channels_0)</span>
 <span class="sd">            Node signal.</span>
-<span class="sd">        lower_neighborhood: torch.Tensor</span>
+<span class="sd">        lower_neighborhood : torch.Tensor</span>
 <span class="sd">            Lower neighborhood matrix.</span>
-<span class="sd">        upper_neighborhood: torch.Tensor</span>
+<span class="sd">        upper_neighborhood : torch.Tensor</span>
 <span class="sd">            Upper neighbourhood matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        out: torch.Tensor</span>
+<span class="sd">        torch.Tensor</span>
 <span class="sd">            Pooled node signal of shape (num_pooled_nodes, in_channels_0).</span>
 
 <span class="sd">        Notes</span>
@@ -769,6 +778,8 @@ document.write(`
 <span class="sd">        Number of input channels.</span>
 <span class="sd">    out_channels : int</span>
 <span class="sd">        Number of output channels.</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate applied to the output signal.</span>
 <span class="sd">    heads : int</span>
 <span class="sd">        Number of attention heads.</span>
 <span class="sd">    concat : bool</span>
@@ -872,15 +883,15 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_source : torch.Tensor</span>
-<span class="sd">            Source node features. Shape: [n_k_cells, in_channels]</span>
-<span class="sd">        x_target : torch.Tensor</span>
-<span class="sd">            Target node features. Shape: [n_k_cells, in_channels]</span>
+<span class="sd">        x_source : torch.Tensor, shape = [n_k_cells, in_channels]</span>
+<span class="sd">            Source node features.</span>
+<span class="sd">        x_target : torch.Tensor, shape = [n_k_cells, in_channels]</span>
+<span class="sd">            Target node features.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor</span>
-<span class="sd">            Attention weights. Shape: [n_k_cells, heads]</span>
+<span class="sd">        torch.Tensor, shape = [n_k_cells, heads]</span>
+<span class="sd">            Attention weights.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Compute attention coefficients</span>
         <span class="n">alpha_src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span>
@@ -914,7 +925,7 @@ document.write(`
 <span class="sd">        x_source : torch.Tensor, shape = (n_k_cells, channels)</span>
 <span class="sd">            Input features on the r-cell of the cell complex.</span>
 <span class="sd">        neighborhood : torch.sparse, shape = (n_k_cells, n_k_cells)</span>
-<span class="sd">            Neighborhood matrix mapping r-cells to r-cells (A_k). [up, down]</span>
+<span class="sd">            Neighborhood matrix mapping r-cells to r-cells (A_k).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -971,6 +982,8 @@ document.write(`
 <span class="sd">        Number of input channels.</span>
 <span class="sd">    out_channels : int</span>
 <span class="sd">        Number of output channels.</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate applied to the output signal.</span>
 <span class="sd">    heads : int</span>
 <span class="sd">        Number of attention heads.</span>
 <span class="sd">    concat : bool</span>
@@ -1104,7 +1117,7 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        alpha : torch.Tensor, shape = (n_k_cells, heads)</span>
+<span class="sd">        torch.Tensor, shape = (n_k_cells, heads)</span>
 <span class="sd">            Attention weights.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Apply activation function</span>
@@ -1191,19 +1204,19 @@ document.write(`
 <span class="sd">    in_channels : int</span>
 <span class="sd">        Dimension of input features on n-cells.</span>
 <span class="sd">    out_channels : int</span>
-<span class="sd">        Dimension of output</span>
+<span class="sd">        Dimension of output.</span>
 <span class="sd">    heads : int, default=1</span>
-<span class="sd">        Number of attention heads</span>
+<span class="sd">        Number of attention heads.</span>
 <span class="sd">    dropout : float, optional</span>
 <span class="sd">        Dropout probability of the normalized attention coefficients.</span>
 <span class="sd">    concat : bool, default=True</span>
 <span class="sd">        If True, the output of each head is concatenated. Otherwise, the output of each head is averaged.</span>
 <span class="sd">    skip_connection : bool, default=True</span>
 <span class="sd">        If True, skip connection is added.</span>
-<span class="sd">    add_self_loops : bool, optional</span>
-<span class="sd">        If True, self-loops are added to the neighborhood matrix.</span>
 <span class="sd">    att_activation : Callable, default=torch.nn.LeakyReLU()</span>
 <span class="sd">        Activation function applied to the attention coefficients.</span>
+<span class="sd">    add_self_loops : bool, optional</span>
+<span class="sd">        If True, self-loops are added to the neighborhood matrix.</span>
 <span class="sd">    aggr_func : Literal[&quot;mean&quot;, &quot;sum&quot;], default=&quot;sum&quot;</span>
 <span class="sd">        Between-neighborhood aggregation function applied to the messages.</span>
 <span class="sd">    update_func : Literal[&quot;relu&quot;, &quot;sigmoid&quot;, &quot;tanh&quot;, None], default=&quot;relu&quot;</span>
@@ -1235,7 +1248,6 @@ document.write(`
         <span class="n">update_func</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;relu&quot;</span><span class="p">,</span> <span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
         <span class="n">version</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;v1&quot;</span><span class="p">,</span> <span class="s2">&quot;v2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;v1&quot;</span><span class="p">,</span>
         <span class="n">share_weights</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -1327,16 +1339,15 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        x : torch.Tensor, shape = (n_k_cells, channels)</span>
 <span class="sd">            Input features on the r-cell of the cell complex.</span>
-<span class="sd">        lower_neighborhood : torch.sparse</span>
-<span class="sd">            shape = (n_k_cells, n_k_cells)</span>
+<span class="sd">        lower_neighborhood : torch.sparse, shape = (n_k_cells, n_k_cells)</span>
 <span class="sd">            Lower neighborhood matrix mapping r-cells to r-cells (A_k_low).</span>
-<span class="sd">        upper_neighborhood : torch.sparse</span>
-<span class="sd">            shape = (n_k_cells, n_k_cells)</span>
+<span class="sd">        upper_neighborhood : torch.sparse, shape = (n_k_cells, n_k_cells)</span>
 <span class="sd">            Upper neighborhood matrix mapping r-cells to r-cells (A_k_up).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        torch.Tensor, shape = (n_k_cells, out_channels)</span>
+<span class="sd">            Output features on the r-cell of the cell complex.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1354,7 +1365,6 @@ document.write(`
 <span class="sd">            &amp;🟦 \quad h_x^{t+1,(r)}</span>
 <span class="sd">                = \phi^{t}(h_x^t, m_{x}^{(r)})</span>
 <span class="sd">            \end{align*}</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># message and within-neighborhood aggregation</span>
         <span class="n">lower_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_att</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lower_neighborhood</span><span class="p">)</span>

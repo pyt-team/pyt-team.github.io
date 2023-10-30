@@ -48,7 +48,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="sca_cmps_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:48:16 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 12:26:02 PM"/>
   </head>
   
   
@@ -448,12 +448,18 @@ document.write(`
 <dd><p>SCA with CMPS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>channels_list</strong> (<em>list[int]</em>) – Dimension of features on each node, edge, simplex, tetahedron,… respectively</p></li>
-<li><p><strong>complex_dimension</strong> (<em>int</em>) – Highest dimension of simplicial complex feature being trained on.</p></li>
-<li><p><strong>n_classes</strong> (<em>int</em>) – Dimension to which the complex embeddings will be projected.</p></li>
-<li><p><strong>att</strong> (<em>bool</em>) – Whether to use attention.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>channels_list</strong><span class="classifier">list[int]</span></dt><dd><p>Dimension of features on each node, edge, simplex, tetahedron,… respectively</p>
+</dd>
+<dt><strong>complex_dim</strong><span class="classifier">int</span></dt><dd><p>Highest dimension of simplicial complex feature being trained on.</p>
+</dd>
+<dt><strong>n_classes</strong><span class="classifier">int</span></dt><dd><p>Dimension to which the complex embeddings will be projected.</p>
+</dd>
+<dt><strong>n_layers</strong><span class="classifier">int, default = 2</span></dt><dd><p>Amount of message passing layers.</p>
+</dd>
+<dt><strong>att</strong><span class="classifier">bool</span></dt><dd><p>Whether to use attention.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="py method">
@@ -462,14 +468,20 @@ document.write(`
 <dd><p>Forward computation through layers, then linear layers, then avg pooling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x_list</strong> (<em>list[torch.Tensor]</em>) – List of tensor inputs for each dimension of the complex (nodes, edges, etc.).</p></li>
-<li><p><strong>laplacian_down_list</strong> (<em>list[torch.Tensor]</em>) – List of the down laplacian matrix for each dimension in the complex starting at edges.</p></li>
-<li><p><strong>incidence_t_list</strong> (<em>list[torch.Tensor]</em>) – List of the transpose incidence matrices for the edges and faces.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_list</strong><span class="classifier">list[torch.Tensor]</span></dt><dd><p>List of tensor inputs for each dimension of the complex (nodes, edges, etc.).</p>
+</dd>
+<dt><strong>laplacian_down_list</strong><span class="classifier">list[torch.Tensor]</span></dt><dd><p>List of the down laplacian matrix for each dimension in the complex starting at edges.</p>
+</dd>
+<dt><strong>incidence_t_list</strong><span class="classifier">list[torch.Tensor]</span></dt><dd><p>List of the transpose incidence matrices for the edges and faces.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = (1)</em> – Label assigned to whole complex.</p>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor, shape = (1)</dt><dd><p>Label assigned to whole complex.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>

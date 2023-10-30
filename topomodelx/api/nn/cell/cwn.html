@@ -48,7 +48,7 @@
     <link rel="prev" title="Cwn_Layer" href="cwn_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:48:16 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 12:26:02 PM"/>
   </head>
   
   
@@ -447,46 +447,61 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.cell.cwn.CWN">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.cell.cwn.</span></span><span class="sig-name descname"><span class="pre">CWN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_channels_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hid_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/cwn.html#CWN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.cwn.CWN" title="Link to this definition">#</a></dt>
-<dd><p>Implementation of a specific version of CW network <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+<dd><p>Implementation of a specific version of CW network <a class="reference internal" href="#r0b6d22842d00-1" id="id1">[1]</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_channels_0</strong> (<em>int</em>) – Dimension of input features on nodes (0-cells).</p></li>
-<li><p><strong>in_channels_1</strong> (<em>int</em>) – Dimension of input features on edges (1-cells).</p></li>
-<li><p><strong>in_channels_2</strong> (<em>int</em>) – Dimension of input features on faces (2-cells).</p></li>
-<li><p><strong>hid_channels</strong> (<em>int</em>) – Dimension of hidden features.</p></li>
-<li><p><strong>num_classes</strong> (<em>int</em>) – Number of classes.</p></li>
-<li><p><strong>n_layers</strong> (<em>int</em>) – Number of CWN layers.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>in_channels_0</strong><span class="classifier">int</span></dt><dd><p>Dimension of input features on nodes (0-cells).</p>
+</dd>
+<dt><strong>in_channels_1</strong><span class="classifier">int</span></dt><dd><p>Dimension of input features on edges (1-cells).</p>
+</dd>
+<dt><strong>in_channels_2</strong><span class="classifier">int</span></dt><dd><p>Dimension of input features on faces (2-cells).</p>
+</dd>
+<dt><strong>hid_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of hidden features.</p>
+</dd>
+<dt><strong>num_classes</strong><span class="classifier">int</span></dt><dd><p>Number of classes.</p>
+</dd>
+<dt><strong>n_layers</strong><span class="classifier">int</span></dt><dd><p>Number of CWN layers.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <p class="rubric">References</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="doc-footnote">
+<div role="list" class="citation-list">
+<div class="citation" id="r0b6d22842d00-1" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
 <p>Bodnar, et al.
 Weisfeiler and Lehman go cellular: CW networks.
 NeurIPS 2021.
 <a class="reference external" href="https://arxiv.org/abs/2106.12575">https://arxiv.org/abs/2106.12575</a></p>
-</aside>
-</aside>
+</div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.cell.cwn.CWN.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_1_to_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_2_to_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighborhood_0_to_1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/cell/cwn.html#CWN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.cell.cwn.CWN.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward computation through projection, convolutions, linear layers and average pooling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x_0</strong> (<em>torch.Tensor, shape = (n_nodes, in_channels_0)</em>) – Input features on the nodes (0-cells).</p></li>
-<li><p><strong>x_1</strong> (<em>torch.Tensor, shape = (n_edges, in_channels_1)</em>) – Input features on the edges (1-cells).</p></li>
-<li><p><strong>x_2</strong> (<em>torch.Tensor, shape = (n_faces, in_channels_2)</em>) – Input features on the faces (2-cells).</p></li>
-<li><p><strong>neighborhood_1_to_1</strong> (<em>torch.Tensor, shape = (n_edges, n_edges)</em>) – Upper-adjacency matrix of rank 1.</p></li>
-<li><p><strong>neighborhood_2_to_1</strong> (<em>torch.Tensor, shape = (n_edges, n_faces)</em>) – Boundary matrix of rank 2.</p></li>
-<li><p><strong>neighborhood_0_to_1</strong> (<em>torch.Tensor, shape = (n_edges, n_nodes)</em>) – Coboundary matrix of rank 1.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_0</strong><span class="classifier">torch.Tensor, shape = (n_nodes, in_channels_0)</span></dt><dd><p>Input features on the nodes (0-cells).</p>
+</dd>
+<dt><strong>x_1</strong><span class="classifier">torch.Tensor, shape = (n_edges, in_channels_1)</span></dt><dd><p>Input features on the edges (1-cells).</p>
+</dd>
+<dt><strong>x_2</strong><span class="classifier">torch.Tensor, shape = (n_faces, in_channels_2)</span></dt><dd><p>Input features on the faces (2-cells).</p>
+</dd>
+<dt><strong>neighborhood_1_to_1</strong><span class="classifier">torch.Tensor, shape = (n_edges, n_edges)</span></dt><dd><p>Upper-adjacency matrix of rank 1.</p>
+</dd>
+<dt><strong>neighborhood_2_to_1</strong><span class="classifier">torch.Tensor, shape = (n_edges, n_faces)</span></dt><dd><p>Boundary matrix of rank 2.</p>
+</dd>
+<dt><strong>neighborhood_0_to_1</strong><span class="classifier">torch.Tensor, shape = (n_edges, n_nodes)</span></dt><dd><p>Coboundary matrix of rank 1.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = (1)</em> – Label assigned to whole complex.</p>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor, shape = (1)</dt><dd><p>Label assigned to whole complex.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>

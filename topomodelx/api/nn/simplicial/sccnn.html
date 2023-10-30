@@ -48,7 +48,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="sccnn_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 26, 2023, 1:48:16 PM"/>
+    <meta name="docbuild:last-update" content="Oct 30, 2023, 12:26:02 PM"/>
   </head>
   
   
@@ -450,14 +450,26 @@ document.write(`
 which of course can be amended by a readout layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_channels_all</strong> (<em>tuple of int</em>) – Dimension of input features on (nodes, edges, faces).</p></li>
-<li><p><strong>intermediate_channels_all</strong> (<em>tuple of int</em>) – Dimension of features of intermediate layers on (nodes, edges, faces).</p></li>
-<li><p><strong>out_channels_all</strong> (<em>tuple of int</em>) – Dimension of output features on (nodes, edges, faces).</p></li>
-<li><p><strong>conv_order</strong> (<em>int</em>) – Order of convolutions, we consider the same order for all convolutions.</p></li>
-<li><p><strong>sc_order</strong> (<em>int</em>) – SC order.</p></li>
-<li><p><strong>n_layers</strong> (<em>int</em>) – Number of layers.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>in_channels_all</strong><span class="classifier">tuple of int</span></dt><dd><p>Dimension of input features on (nodes, edges, faces).</p>
+</dd>
+<dt><strong>intermediate_channels_all</strong><span class="classifier">tuple of int</span></dt><dd><p>Dimension of features of intermediate layers on (nodes, edges, faces).</p>
+</dd>
+<dt><strong>out_channels_all</strong><span class="classifier">tuple of int</span></dt><dd><p>Dimension of output features on (nodes, edges, faces).</p>
+</dd>
+<dt><strong>conv_order</strong><span class="classifier">int</span></dt><dd><p>Order of convolutions, we consider the same order for all convolutions.</p>
+</dd>
+<dt><strong>sc_order</strong><span class="classifier">int</span></dt><dd><p>SC order.</p>
+</dd>
+<dt><strong>aggr_norm</strong><span class="classifier">bool</span></dt><dd><p>Whether to normalize the aggregation.</p>
+</dd>
+<dt><strong>update_func</strong><span class="classifier">str</span></dt><dd><p>Activation function used in aggregation layers.</p>
+</dd>
+<dt><strong>num_classes</strong><span class="classifier">int</span></dt><dd><p>Number of classes.</p>
+</dd>
+<dt><strong>n_layers</strong><span class="classifier">int</span></dt><dd><p>Number of layers.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="py method">
@@ -466,21 +478,26 @@ which of course can be amended by a readout layer.</p>
 <dd><p>Forward computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x_all</strong> (<em>tuple of tensors, shape = (node, edge, face)</em>) – Tuple of feature tensors.
-Each entry shape = (n_simplices, channels).</p></li>
-<li><p><strong>laplacian_all</strong> (<em>tuple of tensors, shape = (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</em>) – Tuple of Laplacian tensors.
-Each entry shape = (n_simplices,n_simplices).</p></li>
-<li><p><strong>incidence_all</strong> (<em>tuple of tensors</em>) – Tuple of order 1 and 2 incidence matrices:</p>
-<ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_all</strong><span class="classifier">tuple of tensors, shape = (node, edge, face)</span></dt><dd><p>Tuple of feature tensors.
+Each entry shape = (n_simplices, channels).</p>
+</dd>
+<dt><strong>laplacian_all</strong><span class="classifier">tuple of tensors, shape = (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</span></dt><dd><p>Tuple of Laplacian tensors.
+Each entry shape = (n_simplices,n_simplices).</p>
+</dd>
+<dt><strong>incidence_all</strong><span class="classifier">tuple of tensors</span></dt><dd><p>Tuple of order 1 and 2 incidence matrices:</p>
+<ul class="simple">
 <li><p>Shape of B1 = [n_nodes, n_edges],</p></li>
 <li><p>Shape of B2 = [n_edges, n_faces].</p></li>
 </ul>
-</li>
-</ul>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = (1)</em> – Label assigned to whole complex.</p>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor, shape = (1)</dt><dd><p>Label assigned to whole complex.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -495,14 +512,20 @@ Each entry shape = (n_simplices,n_simplices).</p></li>
 classification task, which of course can be amended by a readout layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>in_channels_all</strong> (<em>tuple of int</em>) – Dimension of input features on (nodes, edges, faces).</p></li>
-<li><p><strong>intermediate_channels_all</strong> (<em>tuple of int</em>) – Dimension of features of intermediate layers on (nodes, edges, faces).</p></li>
-<li><p><strong>out_channels_all</strong> (<em>tuple of int</em>) – Dimension of output features on (nodes, edges, faces)</p></li>
-<li><p><strong>conv_order</strong> (<em>int</em>) – Order of convolutions, we consider the same order for all convolutions.</p></li>
-<li><p><strong>sc_order</strong> (<em>int</em>) – Order of simplicial complex.</p></li>
-<li><p><strong>n_layers</strong> (<em>int</em>) – Number of layers.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>in_channels_all: tuple of int</strong></dt><dd><p>Dimension of input features on (nodes, edges, faces).</p>
+</dd>
+<dt><strong>intermediate_channels_all: tuple of int</strong></dt><dd><p>Dimension of features of intermediate layers on (nodes, edges, faces).</p>
+</dd>
+<dt><strong>out_channels_all: tuple of int</strong></dt><dd><p>Dimension of output features on (nodes, edges, faces)</p>
+</dd>
+<dt><strong>conv_order: int</strong></dt><dd><p>Order of convolutions, we consider the same order for all convolutions.</p>
+</dd>
+<dt><strong>sc_order: int</strong></dt><dd><p>Order of simplicial complex.</p>
+</dd>
+<dt><strong>n_layers: int</strong></dt><dd><p>Number of layers.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="py method">
@@ -511,18 +534,24 @@ classification task, which of course can be amended by a readout layer.</p>
 <dd><p>Forward computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x_all</strong> (<em>tuple of tensors</em>) – Tuple of feature tensors (node, edge, face).
-Each entry shape = (n_simplices, channels).</p></li>
-<li><p><strong>laplacian_all</strong> (<em>tuple of tensors</em>) – Tuple of Laplacian tensors (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2).
-Each entry shape = (n_simplices,n_simplices).</p></li>
-<li><p><strong>incidence_all</strong> (<em>tuple of tensors</em>) – Tuple of order 1 and 2 incidence matrices.
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x_all</strong><span class="classifier">tuple of tensors</span></dt><dd><p>Tuple of feature tensors (node, edge, face).
+Each entry shape = (n_simplices, channels).</p>
+</dd>
+<dt><strong>laplacian_all</strong><span class="classifier">tuple of tensors</span></dt><dd><p>Tuple of Laplacian tensors (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2).
+Each entry shape = (n_simplices,n_simplices).</p>
+</dd>
+<dt><strong>incidence_all</strong><span class="classifier">tuple of tensors</span></dt><dd><p>Tuple of order 1 and 2 incidence matrices.
 Shape of B1 = [n_nodes, n_edges].
-Shape of B2 = [n_edges, n_faces].</p></li>
-</ul>
+Shape of B2 = [n_edges, n_faces].</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><em>torch.Tensor, shape = (n_nodes, 2)</em> – One-hot labels assigned to nodes.</p>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor, shape = (n_nodes, 2)</dt><dd><p>One-hot labels assigned to nodes.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
