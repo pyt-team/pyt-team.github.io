@@ -17,12 +17,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=c5ced968eda925caa686" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=c5ced968eda925caa686" rel="stylesheet" />
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -31,9 +31,9 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=61a4c737" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686" />
-  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=c5ced968eda925caa686"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script src="../../../_static/documentation_options.js?v=c6e86fd7"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 30, 2023, 4:24:37 PM"/>
+    <meta name="docbuild:last-update" content="Oct 31, 2023, 4:59:58 AM"/>
   </head>
   
   
@@ -331,25 +331,16 @@ document.write(`
   <h1>Source code for toponetx.classes.combinatorial_complex</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Creation and manipulation of a combinatorial complex.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Literal</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">Graph</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
 
 <span class="kn">from</span> <span class="nn">toponetx.classes.colored_hypergraph</span> <span class="kn">import</span> <span class="n">ColoredHyperGraph</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.hyperedge</span> <span class="kn">import</span> <span class="n">HyperEdge</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">HyperEdgeView</span><span class="p">,</span> <span class="n">NodeView</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.simplex</span> <span class="kn">import</span> <span class="n">Simplex</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.simplicial_complex</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
-<span class="kn">from</span> <span class="nn">toponetx.utils.structure</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">compute_set_incidence</span><span class="p">,</span>
-    <span class="n">incidence_to_adjacency</span><span class="p">,</span>
-    <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">toponetx.utils.structure</span> <span class="kn">import</span> <span class="n">compute_set_incidence</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CombinatorialComplex&quot;</span><span class="p">]</span>
 
@@ -369,36 +360,33 @@ document.write(`
 
 <span class="sd">    A CCC is a generlization of graphs, hypergraphs, cellular and simplicial complexes.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    cells : Collection, optional</span>
-<span class="sd">    name : str, optional</span>
-<span class="sd">        An identifiable name for the combinatorial complex.</span>
-<span class="sd">    ranks : Collection, optional</span>
-<span class="sd">        when cells is an iterable or dictionary, ranks cannot be None and it must be iterable/dict of the same</span>
-<span class="sd">        size as cells.</span>
-<span class="sd">    weight : array-like, optional</span>
-<span class="sd">        User specified weight corresponding to setsytem of type pandas.DataFrame,</span>
-<span class="sd">        length must equal number of rows in dataframe.</span>
-<span class="sd">        If None, weight for all rows is assumed to be 1.</span>
-<span class="sd">    graph_based : bool, default=False</span>
-<span class="sd">        When true rank 1 edges must have cardinality equals to 1</span>
-<span class="sd">    kwargs : keyword arguments, optional</span>
-<span class="sd">        Attributes to add to the complex as key=value pairs.</span>
+<span class="sd">    Mathematical Example:</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    complex : dict</span>
-<span class="sd">        A dictionary that can be used to store additional information about the complex.</span>
-
-<span class="sd">    Mathematical example</span>
-<span class="sd">    --------------------</span>
 <span class="sd">    Let S = {1, 2, 3, 4} be a set of abstract entities.</span>
 <span class="sd">    Let X = {{1, 2}, {1, 2, 3}, {1, 3}, {1, 4}} be a subset of the power set of S.</span>
 <span class="sd">    Let rk be the ranking function that assigns the</span>
 <span class="sd">    length of a set as its rank, i.e. rk({1, 2}) = 2, rk({1, 2, 3}) = 3, etc.</span>
 
 <span class="sd">    Then, (S, X, rk) is a combinatorial complex.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cells : Collection, optional</span>
+<span class="sd">        A collection of cells to add to the combinatorial complex.</span>
+<span class="sd">    name : str, optional</span>
+<span class="sd">        An identifiable name for the combinatorial complex.</span>
+<span class="sd">    ranks : Collection, optional</span>
+<span class="sd">        When cells is an iterable or dictionary, ranks cannot be None and it must be iterable/dict of the same</span>
+<span class="sd">        size as cells.</span>
+<span class="sd">    graph_based : bool, default=False</span>
+<span class="sd">        When true rank 1 edges must have cardinality equals to 1.</span>
+<span class="sd">    **kwargs : keyword arguments, optional</span>
+<span class="sd">        Attributes to add to the complex as key=value pairs.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    complex : dict</span>
+<span class="sd">        A dictionary that can be used to store additional information about the complex.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -435,7 +423,7 @@ document.write(`
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Input cells must be given as Iterable, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
                 <span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">Graph</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cells</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">ranks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
@@ -517,14 +505,14 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
+<span class="sd">            The number of nodes in node_set belonging to this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(</span><span class="n">node_set</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Object associated with self.elements.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Object associated with self.elements.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -536,8 +524,7 @@ document.write(`
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Object associated with self._cells.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Object associated with self._cells.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -558,6 +545,7 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
+<span class="sd">            The number of cells in cell_set belonging to this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">number_of_cells</span><span class="p">(</span><span class="n">cell_set</span><span class="p">)</span></div>
 
@@ -577,25 +565,56 @@ document.write(`
 
 <div class="viewcode-block" id="CombinatorialComplex.skeleton">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.skeleton">[docs]</a>
-    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Skeleton of the CCC.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">level</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+            <span class="s2">&quot;equal&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;upper&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;up&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lower&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;down&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;uppereq&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;upeq&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lowereq&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;downeq&quot;</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;equal&quot;</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Skeleton of the CCC.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rank : int</span>
+<span class="sd">            The rank of the skeleton.</span>
+<span class="sd">        level : str, default=&quot;equal&quot;</span>
+<span class="sd">            Level of the skeleton.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of HyperEdge</span>
+<span class="sd">            The skeleton of the CCC.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">level</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CombinatorialComplex.order">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.order">[docs]</a>
-    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in the CCC.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        order : int</span>
+<span class="sd">        int</span>
+<span class="sd">            The number of nodes in this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">order</span><span class="p">()</span></div>
 
 
     <span class="k">def</span> <span class="nf">_remove_node_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove node from cells. Assumes node is present in the CCC.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove node from cells.</span>
+
+<span class="sd">        This function assumes that the node is present in the CCC.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Removing node in hyperedgeview</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="k">for</span> <span class="n">key_rank</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
@@ -619,9 +638,9 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        node_set : an iterable of hashables</span>
-<span class="sd">            Nodes in CCC</span>
+<span class="sd">            The nodes to remove from this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove_nodes</span><span class="p">(</span><span class="n">node_set</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove_nodes</span><span class="p">(</span><span class="n">node_set</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CombinatorialComplex.remove_node">
@@ -635,10 +654,7 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        node : hashable or HyperEdge</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Combinatorial Complex : CombinatorialComplex</span>
+<span class="sd">            The node to remove from this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
 
@@ -653,11 +669,7 @@ document.write(`
 <span class="sd">        values : dict</span>
 <span class="sd">            Dictionary of cell attributes to set keyed by cell name.</span>
 <span class="sd">        name : str, optional</span>
-<span class="sd">           Attribute name</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None.</span>
+<span class="sd">           Attribute name.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -667,7 +679,7 @@ document.write(`
 
 <span class="sd">        &gt;&gt;&gt; CCC = CombinatorialComplex()</span>
 <span class="sd">        &gt;&gt;&gt; CCC.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CCC.add_cell([1, 2, 4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CCC.add_cell([1, 2, 4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CCC.add_cell([3, 4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; d = {(1, 2, 3, 4): &#39;red&#39;, (1, 2, 3): &#39;blue&#39;, (3, 4): &#39;green&#39;}</span>
 <span class="sd">        &gt;&gt;&gt; CCC.set_cell_attributes(d, name=&#39;color&#39;)</span>
@@ -693,17 +705,18 @@ document.write(`
 
 <div class="viewcode-block" id="CombinatorialComplex.get_node_attributes">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_node_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        name : str</span>
-<span class="sd">           Attribute name</span>
+<span class="sd">           Attribute name.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Dictionary of attributes keyed by node.</span>
+<span class="sd">        dict[Hashable, Any]</span>
+<span class="sd">            Dictionary mapping each node to the value of the given attribute name.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -726,7 +739,7 @@ document.write(`
 
 <div class="viewcode-block" id="CombinatorialComplex.get_cell_attributes">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.get_cell_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from graph.</span>
 
 <span class="sd">        Parameters</span>
@@ -734,11 +747,12 @@ document.write(`
 <span class="sd">        name : str</span>
 <span class="sd">           Attribute name.</span>
 <span class="sd">        rank : int</span>
-<span class="sd">            rank of the k-cell</span>
+<span class="sd">            Restrict the returned attribute values to cells of a specific rank.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Dictionary of attributes keyed by cell or k-cells if k is not None</span>
+<span class="sd">        dict</span>
+<span class="sd">            Dictionary of attributes keyed by cell or k-cells if k is not None.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -763,7 +777,15 @@ document.write(`
 <div class="viewcode-block" id="CombinatorialComplex.add_node">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_node">[docs]</a>
     <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node to a CCC.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node to a CCC.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node : Hashable</span>
+<span class="sd">            The node to add to this combinatorial complex.</span>
+<span class="sd">        **attr : keyword arguments, optional</span>
+<span class="sd">            Attributes to add to the node as key=value pairs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
 
@@ -957,16 +979,19 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        rank : int</span>
+<span class="sd">            For which rank of cells to compute the incidence matrix.</span>
 <span class="sd">        to_rank: int, optional</span>
 <span class="sd">        incidence_type : {&#39;up&#39;, &#39;down&#39;}, default=&#39;up&#39;</span>
+<span class="sd">            Whether to compute the up or down incidence matrix.</span>
 <span class="sd">        sparse : bool, default=True</span>
+<span class="sd">            Whether to return a sparse or dense incidence matrix.</span>
 <span class="sd">        index : bool, default=False</span>
-<span class="sd">            If True return will include a dictionary of children uid : row number</span>
-<span class="sd">            and element uid : column number</span>
+<span class="sd">            Whether to return the indices of the rows and columns of the incidence</span>
+<span class="sd">            matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        incidence_matrix : scipy.sparse.csr.csr_matrix or np.ndarray</span>
+<span class="sd">        incidence_matrix : scipy.sparse.csr.csr_matrix or numpy.ndarray</span>
 <span class="sd">        row dictionary : dict</span>
 <span class="sd">            Dictionary identifying row with item in entityset&#39;s children</span>
 <span class="sd">        column dictionary : dict</span>
@@ -1022,10 +1047,10 @@ document.write(`
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.incidence_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">rank</span><span class="p">,</span>
+        <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">to_rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">incidence_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">,</span>
-        <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">incidence_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;up&quot;</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">,</span>
+        <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sparse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
@@ -1033,25 +1058,26 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rank : int</span>
-<span class="sd">        to_rank: int, optional</span>
-<span class="sd">        incidence_type : {&#39;up&#39;, &#39;down&#39;}, default=&#39;up&#39;</span>
+<span class="sd">        rank, to_rank : int</span>
+<span class="sd">            For which rank of cells to compute the incidence matrix.</span>
+<span class="sd">        incidence_type : {&quot;up&quot;, &quot;down&quot;}, default=&quot;up&quot;</span>
+<span class="sd">            Whether to compute the up or down incidence matrix.</span>
 <span class="sd">        weight : bool, default=False</span>
-<span class="sd">            If False all nonzero entries are 1.</span>
-<span class="sd">            If True and self.static all nonzero entries are filled by</span>
-<span class="sd">            self.cells.cell_weight dictionary values.</span>
+<span class="sd">            The name of the cell attribute to use as weights for the incidence matrix.</span>
+<span class="sd">            If `None`, all cell weights are considered to be one.</span>
 <span class="sd">        sparse : bool, default=True</span>
-<span class="sd">        index : bool, optional</span>
-<span class="sd">            If True return will include a dictionary of node uid : row number</span>
-<span class="sd">            and cell uid : column number</span>
+<span class="sd">            Whether to return a sparse or dense incidence matrix.</span>
+<span class="sd">        index : bool, default=False</span>
+<span class="sd">            Whether to return the indices of the rows and columns of the incidence</span>
+<span class="sd">            matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        incidence_matrix : scipy.sparse.csr.csr_matrix or np.ndarray</span>
-<span class="sd">        row dictionary : dict</span>
-<span class="sd">            Dictionary identifying rows with nodes</span>
-<span class="sd">        column dictionary : dict</span>
-<span class="sd">            Dictionary identifying columns with cells</span>
+<span class="sd">        row_indices, col_indices : dict</span>
+<span class="sd">            Dictionary assigning each row and column of the incidence matrix to a</span>
+<span class="sd">            cell.</span>
+<span class="sd">        incidence_matrix : scipy.sparse.csr.csr_matrix</span>
+<span class="sd">            The incidence matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incidence_matrix</span><span class="p">(</span>
             <span class="n">rank</span><span class="p">,</span> <span class="n">to_rank</span><span class="p">,</span> <span class="n">incidence_type</span><span class="o">=</span><span class="n">incidence_type</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span>
@@ -1066,21 +1092,20 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        rank, via_rank : int</span>
-<span class="sd">            Two ranks for skeletons in the input combinatorial complex</span>
-<span class="sd">        s : int, list, default=1</span>
+<span class="sd">            Two ranks for skeletons in the input combinatorial complex.</span>
+<span class="sd">        s : int, default=1</span>
 <span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-<span class="sd">        index: bool, default=False</span>
-<span class="sd">            If True return will include a dictionary of node uid : row number</span>
-<span class="sd">            and cell uid : column number</span>
+<span class="sd">        index : bool, default=False</span>
+<span class="sd">            Whether to return the indices of the rows and columns of the adjacency</span>
+<span class="sd">            matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If index is True</span>
-<span class="sd">            adjacency_matrix : scipy.sparse.csr.csr_matrix</span>
-<span class="sd">            row dictionary : dict</span>
-
-<span class="sd">        If index if False</span>
-<span class="sd">            adjacency_matrix : scipy.sparse.csr.csr_matrix</span>
+<span class="sd">        indices : list</span>
+<span class="sd">            List identifying the rows and columns of the adjacency matrix with the</span>
+<span class="sd">            cells of the combinatorial complex. Only returned if `index` is True.</span>
+<span class="sd">        adjacency_matrix : scipy.sparse.csr.csr_matrix</span>
+<span class="sd">            The adjacency matrix of this combinatorial complex.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1109,29 +1134,21 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rank , via_rank : two ranks for skeletons in the input combinatorial complex , such that r&gt;k</span>
-
-<span class="sd">        s : int, list, optional</span>
+<span class="sd">        rank, via_rank : int</span>
+<span class="sd">            Two ranks for skeletons in the input combinatorial complex , such that r&gt;k.</span>
+<span class="sd">        s : int, optional</span>
 <span class="sd">            Minimum number of edges shared by neighbors with node.</span>
-
-<span class="sd">        index: bool, optional</span>
-<span class="sd">            If True return will include a dictionary of node uid : row number</span>
-<span class="sd">            and cell uid : column number</span>
-
-<span class="sd">        weight: bool, default=True</span>
-<span class="sd">            If False all nonzero entries are 1.</span>
-<span class="sd">            If True coadjacency matrix will depend on weighted incidence matrix,</span>
+<span class="sd">        index : bool, default=False</span>
+<span class="sd">            Whether to return the indices of the rows and columns of the coadjacency</span>
+<span class="sd">            matrix.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If index is True</span>
-<span class="sd">            coadjacency_matrix : scipy.sparse.csr.csr_matrix</span>
-
-<span class="sd">            row dictionary : dict</span>
-
-<span class="sd">        If index if False</span>
-
-<span class="sd">            coadjacency_matrix : scipy.sparse.csr.csr_matrix</span>
+<span class="sd">        indices : list</span>
+<span class="sd">            List identifying the rows and columns of the coadjacency matrix with the</span>
+<span class="sd">            cells of the combinatorial complex. Only returned if `index` is True.</span>
+<span class="sd">        coadjacency_matrix : scipy.sparse.csr.csr_matrix</span>
+<span class="sd">            The coadjacency matrix of this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">via_rank</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="n">via_rank</span><span class="p">:</span>
@@ -1141,18 +1158,15 @@ document.write(`
 
 <div class="viewcode-block" id="CombinatorialComplex.add_cells_from">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_cells_from">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_cells_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">ranks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add_cells_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">ranks</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add cells to combinatorial complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cells : iterable of hashables</span>
 <span class="sd">            For hashables the cells returned will be empty.</span>
-<span class="sd">        ranks: Iterable or int. When iterable, len(ranks) == len(cells)</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        CombinatorialComplex</span>
+<span class="sd">        ranks : iterable or int, optional</span>
+<span class="sd">            When iterable, len(ranks) == len(cells).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ranks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
@@ -1193,18 +1207,17 @@ document.write(`
 
 <div class="viewcode-block" id="CombinatorialComplex.add_cell">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.add_cell">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">add_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single cells to combinatorial complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cell : hashable, iterable or HyperEdge</span>
 <span class="sd">            If hashable the cell returned will be empty.</span>
-<span class="sd">        rank : rank of a cell</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Combinatorial Complex : CombinatorialComplex</span>
+<span class="sd">        rank : int</span>
+<span class="sd">            Rank of the cell.</span>
+<span class="sd">        **attr : keyword arguments, optional</span>
+<span class="sd">            Attributes to add to the cell as key=value pairs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_based</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1228,10 +1241,7 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cell : hashable or RankedEntity</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        Combinatorial Complex : CombinatorialComplex</span>
+<span class="sd">            The cell to remove from this combinatorial complex.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1250,10 +1260,7 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cell_set : iterable of hashables</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        CombinatorialComplex : Combinatorial Complex</span>
+<span class="sd">            The cells to remove from this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove_cells</span><span class="p">(</span><span class="n">cell_set</span><span class="p">)</span></div>
 
@@ -1270,6 +1277,7 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        CombinatorialComplex</span>
+<span class="sd">            A copy of this combinatorial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">CCC</span> <span class="o">=</span> <span class="n">CombinatorialComplex</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">graph_based</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_based</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
@@ -1287,17 +1295,16 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        singles : list</span>
+<span class="sd">        list</span>
 <span class="sd">            A list of cells uids.</span>
 
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; CCC = CombinatorialComplex()</span>
 <span class="sd">        &gt;&gt;&gt; CCC.add_cell([1, 2], rank=1)</span>
 <span class="sd">        &gt;&gt;&gt; CCC.add_cell([3, 4], rank=1)</span>
 <span class="sd">        &gt;&gt;&gt; CCC.add_cell([9],rank=9)</span>
 <span class="sd">        &gt;&gt;&gt; CCC.singletons()</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">singletons</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">cells</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1314,16 +1321,13 @@ document.write(`
 
 <div class="viewcode-block" id="CombinatorialComplex.remove_singletons">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.remove_singletons">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct new CCC with singleton cells removed.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        name: str, optional</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        CombinatorialComplex</span>
+<span class="sd">            A copy of this combinatorial complex with singleton cells removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">cell</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span> <span class="k">if</span> <span class="n">cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">singletons</span><span class="p">()]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">restrict_to_cells</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span></div>
@@ -1358,8 +1362,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=c5ced968eda925caa686"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=c5ced968eda925caa686"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1389,7 +1393,7 @@ document.write(`
     <div class="footer-items__end">
       
         <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.2.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.3.
 </p></div>
       
     </div>
