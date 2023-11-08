@@ -48,7 +48,7 @@
     <link rel="prev" title="Transform" href="transform.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 31, 2023, 2:54:44 PM"/>
+    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:35:55 AM"/>
   </head>
   
   
@@ -294,6 +294,7 @@ document.write(`
 <li class="toctree-l1"><a class="reference internal" href="transform.html">Transform</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Algorithms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="generators.html">Generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transform.html">Transform</a></li>
 </ul>
 </div>
 </nav></div>
@@ -351,9 +352,438 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="module-toponetx.algorithms.spectrum">
-<span id="algorithms"></span><h1>Algorithms<a class="headerlink" href="#module-toponetx.algorithms.spectrum" title="Link to this heading">#</a></h1>
-<p>Module to compute spectra.</p>
+  <section id="module-toponetx.algorithms.components">
+<span id="algorithms"></span><h1>Algorithms<a class="headerlink" href="#module-toponetx.algorithms.components" title="Link to this heading">#</a></h1>
+<p>Module to compute connected components on topological domains.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.components.connected_component_subcomplexes">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.components.</span></span><span class="sig-name descname"><span class="pre">connected_component_subcomplexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_singletons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.12)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/components.html#connected_component_subcomplexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.components.connected_component_subcomplexes" title="Link to this definition">#</a></dt>
+<dd><p>Compute connected component subcomplexes with s=1.</p>
+<p>Same as <a class="reference internal" href="#toponetx.algorithms.components.s_component_subcomplexes" title="toponetx.algorithms.components.s_component_subcomplexes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">s_component_subcomplexes()</span></code></a> with s=1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>return_singletons</strong><span class="classifier">bool, optional</span></dt><dd><p>When True, returns singletons connected components</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Complex</dt><dd><p>The subcomplexes obtained as the resstriction of the input complex on its connected components.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#toponetx.algorithms.components.s_component_subcomplexes" title="toponetx.algorithms.components.s_component_subcomplexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s_component_subcomplexes</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">connected_component_subcomplexes</span><span class="p">(</span><span class="n">CC</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">connected_component_subcomplexes</span><span class="p">(</span><span class="n">CC</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.components.connected_components">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.components.</span></span><span class="sig-name descname"><span class="pre">connected_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_singletons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.12)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable" title="(in Python v3.12)"><span class="pre">Hashable</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable" title="(in Python v3.12)"><span class="pre">Hashable</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/components.html#connected_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.components.connected_components" title="Link to this definition">#</a></dt>
+<dd><p>Compute s-connected components with s=1.</p>
+<p>Same as s_connected_component` with s=1, but nodes returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>cells</strong><span class="classifier">bool, optional</span></dt><dd><p>If True will return cell components, if False will return node components.</p>
+</dd>
+<dt><strong>return_singletons</strong><span class="classifier">bool, optional</span></dt><dd><p>When True, returns singletons connected components.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>set[Hashable] or set[tuple[Hashable, …]]</dt><dd><p>Returns subcomplexes generated by the cells (or nodes) in the
+cell(node) components of complex.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#toponetx.algorithms.components.s_connected_components" title="toponetx.algorithms.components.s_connected_components"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s_connected_components</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">connected_components</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">CC</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.components.s_component_subcomplexes">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.components.</span></span><span class="sig-name descname"><span class="pre">s_component_subcomplexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_singletons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.12)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/components.html#s_component_subcomplexes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.components.s_component_subcomplexes" title="Link to this definition">#</a></dt>
+<dd><p>Return a generator for the induced subcomplexes of s_connected components.</p>
+<p>Removes singletons unless return_singletons is set to True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>s</strong><span class="classifier">int, optional</span></dt><dd><p>The number of intersections between pairwise consecutive cells.</p>
+</dd>
+<dt><strong>cells</strong><span class="classifier">bool, optional</span></dt><dd><p>Determines if cell or node components are desired. Returns
+subcomplexes equal to the cell complex restricted to each set of nodes(cells) in the
+s-connected components or s-cell-connected components.</p>
+</dd>
+<dt><strong>return_singletons</strong><span class="classifier">bool, optional</span></dt><dd><p>When True, returns singletons connected components.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Complex</dt><dd><p>Returns subcomplexes generated by the cells (or nodes) in the
+s-cell(node) components of complex.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_component_subcomplexes</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_component_subcomplexes</span><span class="p">(</span><span class="n">CCC</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_component_subcomplexes</span><span class="p">(</span><span class="n">CHG</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_component_subcomplexes</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.components.s_connected_components">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.components.</span></span><span class="sig-name descname"><span class="pre">s_connected_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_singletons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Generator" title="(in Python v3.12)"><span class="pre">Generator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable" title="(in Python v3.12)"><span class="pre">Hashable</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable" title="(in Python v3.12)"><span class="pre">Hashable</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/components.html#s_connected_components"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.components.s_connected_components" title="Link to this definition">#</a></dt>
+<dd><p>Return generator for the s-connected components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>s</strong><span class="classifier">int, optional</span></dt><dd><p>The number of intersections between pairwise consecutive cells.</p>
+</dd>
+<dt><strong>cells</strong><span class="classifier">bool, optional</span></dt><dd><p>If True will return cell components, if False will return node components.</p>
+</dd>
+<dt><strong>return_singletons</strong><span class="classifier">bool, optional</span></dt><dd><p>When True, returns singletons connected components.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>set[Hashable] or set[tuple[Hashable, …]]</dt><dd><p>Returns sets of uids of the cells (or nodes) in the s-cells(node)
+components of the complex.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>If cells=True, this method returns the s-cell-connected components as
+lists of lists of cell uids.
+An s-cell-component has the property that for any two cells e1 and e2
+there is a sequence of cells starting with e1 and ending with e2
+such that pairwise adjacent cells in the sequence intersect in at least
+s nodes. If s=1 these are the path components of the cell complex.</p>
+<p>If cells=False this method returns s-node-connected components.
+A list of sets of uids of the nodes which are s-walk connected.
+Two nodes v1 and v2 are s-walk-connected if there is a
+sequence of nodes starting with v1 and ending with v2 such that pairwise
+adjacent nodes in the sequence share s cells. If s=1 these are the
+path components of the cell complex .</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1">#  [{2, 3, 4}, {5, 6, 7}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># [{(2, 3), (2, 3, 4), (2, 4), (3, 4)},</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># {(5, 6), (5, 6, 7), (5, 7), (6, 7)}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">CHG</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># [{2, 3, 4, 5, 6, 7}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s_connected_components</span><span class="p">(</span><span class="n">CCC</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">cells</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p id="module-toponetx.algorithms.distance_measures">Module to distance measures on topological domains.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.distance_measures.cell_diameter">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.distance_measures.</span></span><span class="sig-name descname"><span class="pre">cell_diameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/distance_measures.html#cell_diameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.distance_measures.cell_diameter" title="Link to this definition">#</a></dt>
+<dd><p>Return the length of the longest shortest s-walk between cells.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>s</strong><span class="classifier">int, optional</span></dt><dd><p>The number of intersections between pairwise consecutive cells.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>RuntimeError</dt><dd><p>If cell complex is not s-cell-connected</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Two cells are s-coadjacent if they share s nodes.
+Two nodes e_start and e_end are s-walk connected if there is a sequence of
+cells (one or two dimensional) e_start, e_1, e_2, … e_n-1, e_end such that consecutive cells
+are s-coadjacent. If the cell complex is not connected, an error will be raised.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell_diameter</span><span class="p">(</span><span class="n">CC</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell_diameter</span><span class="p">(</span><span class="n">CCC</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell_diameter</span><span class="p">(</span><span class="n">CHG</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.distance_measures.cell_diameters">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.distance_measures.</span></span><span class="sig-name descname"><span class="pre">cell_diameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/distance_measures.html#cell_diameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.distance_measures.cell_diameters" title="Link to this definition">#</a></dt>
+<dd><p>Return the cell diameters of the s_cell_connected component subgraphs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>s</strong><span class="classifier">int, optional</span></dt><dd><p>The number of intersections between pairwise consecutive cells.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>list of diameters</strong><span class="classifier">list</span></dt><dd><p>List of cell_diameters for s-cell component subcomplexes in the cell complex.</p>
+</dd>
+<dt><strong>list of component</strong><span class="classifier">list</span></dt><dd><p>List of the cell uids in the s-cell component subcomplexes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cell_diameters</span><span class="p">(</span><span class="n">CC</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cell_diameters</span><span class="p">(</span><span class="n">CCC</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">cell_diameters</span><span class="p">(</span><span class="n">CHG</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.distance_measures.diameter">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.distance_measures.</span></span><span class="sig-name descname"><span class="pre">diameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/distance_measures.html#diameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.distance_measures.diameter" title="Link to this definition">#</a></dt>
+<dd><p>Return length of the longest shortest s-walk between nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>diameter</strong><span class="classifier">int</span></dt><dd></dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>RuntimeError</dt><dd><p>If the cell complex is not s-cell-connected</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Two nodes are s-adjacent if they share s cells.
+Two nodes v_start and v_end are s-walk connected if there is a sequence of
+nodes v_start, v_1, v_2, … v_n-1, v_end such that consecutive nodes
+are s-adjacent. If the cell complex is not connected, an error will be raised.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">diameter</span><span class="p">(</span><span class="n">CC</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">diameter</span><span class="p">(</span><span class="n">CCC</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">diameter</span><span class="p">(</span><span class="n">CHG</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.distance_measures.node_diameters">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.distance_measures.</span></span><span class="sig-name descname"><span class="pre">node_diameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.12)"><span class="pre">set</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable" title="(in Python v3.12)"><span class="pre">Hashable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/distance_measures.html#node_diameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.distance_measures.node_diameters" title="Link to this definition">#</a></dt>
+<dd><p>Return the node diameters of the connected components in cell complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>diameters</strong><span class="classifier">list</span></dt><dd><p>List of the diameters of the s-components.</p>
+</dd>
+<dt><strong>components</strong><span class="classifier">list</span></dt><dd><p>List of the s-component nodes.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">node_diameters</span><span class="p">(</span><span class="n">CC</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">node_diameters</span><span class="p">(</span><span class="n">CCC</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">node_diameters</span><span class="p">(</span><span class="n">CHG</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p id="module-toponetx.algorithms.distance">Module to compute distance between nodes or cells on topological domains.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.distance.cell_distance">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.distance.</span></span><span class="sig-name descname"><span class="pre">cell_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><span class="pre">Iterable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="classes.html#toponetx.classes.hyperedge.HyperEdge" title="toponetx.classes.hyperedge.HyperEdge"><span class="pre">HyperEdge</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="classes.html#toponetx.classes.cell.Cell" title="toponetx.classes.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.12)"><span class="pre">Iterable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="classes.html#toponetx.classes.hyperedge.HyperEdge" title="toponetx.classes.hyperedge.HyperEdge"><span class="pre">HyperEdge</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="classes.html#toponetx.classes.cell.Cell" title="toponetx.classes.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/distance.html#cell_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.distance.cell_distance" title="Link to this definition">#</a></dt>
+<dd><p>Return the shortest s-walk distance between two cells in the cell complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>source</strong><span class="classifier">Iterable or HyperEdge or Cell</span></dt><dd><p>An Iterable representing a cell in the input complex cell complex.</p>
+</dd>
+<dt><strong>target</strong><span class="classifier">Iterable or HyperEdge or Cell</span></dt><dd><p>An Iterable representing a cell in the input complex cell complex.</p>
+</dd>
+<dt><strong>s</strong><span class="classifier">int</span></dt><dd><p>The number of intersections between pairwise consecutive cells.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd><p>Shortest s-walk cell distance between <cite>source</cite> and <cite>target</cite>.
+A shortest s-walk is computed as a sequence of cells,
+the s-walk distance is the number of cells in the sequence
+minus 1. If no such path exists returns np.inf.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#toponetx.algorithms.distance.distance" title="toponetx.algorithms.distance.distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">distance</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The s-distance is the shortest s-walk length between the cells.
+An s-walk between cells is a sequence of cells such that consecutive pairwise
+cells intersect in at least s nodes. The length of the shortest s-walk is 1 less than
+the number of cells in the path sequence.</p>
+<p>Uses the networkx shortest_path_length method on the graph
+generated by the s-cell_adjacency matrix.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell_distance</span><span class="p">(</span><span class="n">CC</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="p">,[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell_distance</span><span class="p">(</span><span class="n">CHG</span><span class="p">,</span> <span class="p">(</span><span class="nb">frozenset</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">}),</span> <span class="mi">0</span><span class="p">)</span> <span class="p">,(</span><span class="nb">frozenset</span><span class="p">({</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">}),</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell_distance</span><span class="p">(</span><span class="n">CCC</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">})</span> <span class="p">,</span><span class="nb">frozenset</span><span class="p">({</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">}))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="toponetx.algorithms.distance.distance">
+<span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.distance.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.complex.Complex" title="toponetx.classes.complex.Complex"><span class="pre">Complex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable" title="(in Python v3.12)"><span class="pre">Hashable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Hashable" title="(in Python v3.12)"><span class="pre">Hashable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></span><a class="reference internal" href="../_modules/toponetx/algorithms/distance.html#distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.distance.distance" title="Link to this definition">#</a></dt>
+<dd><p>Return shortest s-walk distance between two nodes in the cell complex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>domain</strong><span class="classifier">Complex.</span></dt><dd><p>Supported complexes are cell/combintorial and hypegraphs.</p>
+</dd>
+<dt><strong>source</strong><span class="classifier">Hashable</span></dt><dd><p>A node in the input complex.</p>
+</dd>
+<dt><strong>target</strong><span class="classifier">Hashable</span></dt><dd><p>A node in the input complex.</p>
+</dd>
+<dt><strong>s</strong><span class="classifier">int, optional</span></dt><dd><p>The number of intersections between pairwise consecutive cells.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>int</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#toponetx.algorithms.distance.cell_distance" title="toponetx.algorithms.distance.cell_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell_distance</span></code></a></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Notes</p>
+<p>The s-distance is the shortest s-walk length between the nodes.
+An s-walk between nodes is a sequence of nodes that pairwise share
+at least s cells. The length of the shortest s-walk is 1 less than
+the number of nodes in the path sequence.</p>
+<p>Uses the networkx shortest_path_length method on the graph
+generated by the s-adjacency matrix.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CC</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">node_diameters</span><span class="p">(</span><span class="n">CC</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CCC</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_combinatorial_complex</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">node_diameters</span><span class="p">(</span><span class="n">CCC</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">CC</span><span class="o">.</span><span class="n">to_colored_hypergraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">node_diameters</span><span class="p">(</span><span class="n">CHG</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p id="module-toponetx.algorithms.spectrum">Module to compute spectra.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="toponetx.algorithms.spectrum.cell_complex_adjacency_spectrum">
 <span class="sig-prename descclassname"><span class="pre">toponetx.algorithms.spectrum.</span></span><span class="sig-name descname"><span class="pre">cell_complex_adjacency_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">CC</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="classes.html#toponetx.classes.cell_complex.CellComplex" title="toponetx.classes.cell_complex.CellComplex"><span class="pre">CellComplex</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/algorithms/spectrum.html#cell_complex_adjacency_spectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.algorithms.spectrum.cell_complex_adjacency_spectrum" title="Link to this definition">#</a></dt>
@@ -655,6 +1085,16 @@ Currently, no cells of rank &gt; 2 are supported.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.components.connected_component_subcomplexes"><code class="docutils literal notranslate"><span class="pre">connected_component_subcomplexes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.components.connected_components"><code class="docutils literal notranslate"><span class="pre">connected_components()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.components.s_component_subcomplexes"><code class="docutils literal notranslate"><span class="pre">s_component_subcomplexes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.components.s_connected_components"><code class="docutils literal notranslate"><span class="pre">s_connected_components()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.distance_measures.cell_diameter"><code class="docutils literal notranslate"><span class="pre">cell_diameter()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.distance_measures.cell_diameters"><code class="docutils literal notranslate"><span class="pre">cell_diameters()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.distance_measures.diameter"><code class="docutils literal notranslate"><span class="pre">diameter()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.distance_measures.node_diameters"><code class="docutils literal notranslate"><span class="pre">node_diameters()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.distance.cell_distance"><code class="docutils literal notranslate"><span class="pre">cell_distance()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.distance.distance"><code class="docutils literal notranslate"><span class="pre">distance()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.spectrum.cell_complex_adjacency_spectrum"><code class="docutils literal notranslate"><span class="pre">cell_complex_adjacency_spectrum()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.spectrum.cell_complex_hodge_laplacian_spectrum"><code class="docutils literal notranslate"><span class="pre">cell_complex_hodge_laplacian_spectrum()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#toponetx.algorithms.spectrum.combinatorial_complex_adjacency_spectrum"><code class="docutils literal notranslate"><span class="pre">combinatorial_complex_adjacency_spectrum()</span></code></a></li>
