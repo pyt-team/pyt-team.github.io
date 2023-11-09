@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:58:29 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 9:18:50 PM"/>
   </head>
   
   
@@ -348,26 +348,26 @@ document.write(`
 <div class="viewcode-block" id="CombinatorialComplex">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex">[docs]</a>
 <span class="k">class</span> <span class="nc">CombinatorialComplex</span><span class="p">(</span><span class="n">ColoredHyperGraph</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for Combinatorial Complex.</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class for Combinatorial Complex.</span>
 
-<span class="sd">    A Combinatorial Complex (CCC) is a triple CCC = (S, X, rk) where:</span>
-<span class="sd">    - S is an abstract set of entities,</span>
-<span class="sd">    - X a subset of the power set of X, and</span>
-<span class="sd">    - rk is the a rank function that associates for every set x in X a rank, a positive integer.</span>
+<span class="sd">    A Combinatorial Complex (CCC) is a triple $CCC = (S, X, rk)$ where:</span>
+<span class="sd">    - $S$ is an abstract set of entities,</span>
+<span class="sd">    - $X$ a subset of the power set of $X$, and</span>
+<span class="sd">    - $rk$ is the a rank function that associates for every set x in X a rank, a positive integer.</span>
 
-<span class="sd">    The rank function rk must satisfy x &lt;= y then rk(x) &lt;= rk(y).</span>
+<span class="sd">    The rank function $rk$ must satisfy $x \leq y$ then $rk(x) \leq rk(y)$.</span>
 <span class="sd">    We call this condition the CCC condition.</span>
 
 <span class="sd">    A CCC is a generlization of graphs, hypergraphs, cellular and simplicial complexes.</span>
 
 <span class="sd">    Mathematical Example:</span>
 
-<span class="sd">    Let S = {1, 2, 3, 4} be a set of abstract entities.</span>
-<span class="sd">    Let X = {{1, 2}, {1, 2, 3}, {1, 3}, {1, 4}} be a subset of the power set of S.</span>
+<span class="sd">    Let $S = \{1, 2, 3, 4\}$ be a set of abstract entities.</span>
+<span class="sd">    Let $X = \{\{1, 2\}, \{1, 2, 3\}, \{1, 3\}, \{1, 4\}\}$ be a subset of the power set of $S$.</span>
 <span class="sd">    Let rk be the ranking function that assigns the</span>
-<span class="sd">    length of a set as its rank, i.e. rk({1, 2}) = 2, rk({1, 2, 3}) = 3, etc.</span>
+<span class="sd">    length of a set as its rank, i.e. $rk(\{1, 2\}) = 2$, $rk(\{1, 2, 3\}) = 3$, etc.</span>
 
-<span class="sd">    Then, (S, X, rk) is a combinatorial complex.</span>
+<span class="sd">    Then, $(S, X, rk)$ is a combinatorial complex.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1128,7 +1128,7 @@ document.write(`
 <div class="viewcode-block" id="CombinatorialComplex.coadjacency_matrix">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.coadjacency_matrix">[docs]</a>
     <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coadjacency matrix.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coadjacency matrix of self.</span>
 
 <span class="sd">        The sparse weighted :term:`s-coadjacency matrix`</span>
 
@@ -1154,6 +1154,77 @@ document.write(`
             <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="n">via_rank</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rank must be greater than via_rank&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CombinatorialComplex.dirac_operator_matrix">
+<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.combinatorial_complex.CombinatorialComplex.dirac_operator_matrix">[docs]</a>
+    <span class="k">def</span> <span class="nf">dirac_operator_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute dirac operator matrix of self.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        weight : str, optional</span>
+<span class="sd">            The name of the cell attribute to use as weights for the dirac operator</span>
+<span class="sd">            matrix. If `None`, the matrix is binary.</span>
+<span class="sd">        index : bool, default=False</span>
+<span class="sd">            If True return will include a dictionary of all cells in the complex uid</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scipy.sparse.csr.csc_matrix | tuple[dict, dict, scipy.sparse.csc_matrix]</span>
+<span class="sd">            The dirac operator matrix, if `index` is False, otherwise</span>
+<span class="sd">        row_indices, col_indices : dict</span>
+<span class="sd">            List identifying rows and columns of the dirac operator matrix. Only</span>
+<span class="sd">            returned if `index` is True.</span>
+<span class="sd">        dirac_matrix : scipy.sparse.csr.csc_matrix</span>
+<span class="sd">            The dirac operator matrix of this combinatorial complex.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from toponetx.classes import CombinatorialComplex</span>
+<span class="sd">        &gt;&gt;&gt; CCC = CombinatorialComplex()</span>
+<span class="sd">        &gt;&gt;&gt; CCC.add_cell([1, 2, 3, 4], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CCC.add_cell([1, 2], rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; CCC.add_cell([2, 3], rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; CCC.add_cell([1, 4], rank=1)</span>
+<span class="sd">        &gt;&gt;&gt; CCC.add_cell([3, 4, 8], rank=2)</span>
+<span class="sd">        &gt;&gt;&gt; CCC.dirac_operator_matrix()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">bmat</span>
+
+        <span class="n">index_set</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">incidence</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">indexj</span><span class="p">,</span> <span class="n">indexi</span><span class="p">,</span> <span class="n">Bij</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
+                    <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+                <span class="n">incidence</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)]</span> <span class="o">=</span> <span class="n">Bij</span>
+            <span class="n">index_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexj</span><span class="p">)</span>
+        <span class="n">index_set</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indexi</span><span class="p">)</span>
+        <span class="n">dirac</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">in</span> <span class="n">incidence</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence</span><span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)])</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">incidence</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">incidence</span><span class="p">[(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">dirac</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">dirac_mat</span> <span class="o">=</span> <span class="n">bmat</span><span class="p">(</span><span class="n">dirac</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index_set</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">+</span> <span class="n">shift</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">shift</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">d</span><span class="p">,</span> <span class="n">dirac_mat</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dirac_mat</span></div>
 
 
 <div class="viewcode-block" id="CombinatorialComplex.add_cells_from">
