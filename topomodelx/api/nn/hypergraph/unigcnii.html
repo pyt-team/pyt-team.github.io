@@ -48,7 +48,7 @@
     <link rel="prev" title="Unigcnii_Layer" href="unigcnii_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -445,20 +445,24 @@ document.write(`
 <p>UniGCNII class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.hypergraph.unigcnii.UniGCNII">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.unigcnii.</span></span><span class="sig-name descname"><span class="pre">UniGCNII</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_classes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/unigcnii.html#UniGCNII"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.unigcnii.UniGCNII" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.unigcnii.</span></span><span class="sig-name descname"><span class="pre">UniGCNII</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_drop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_drop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/unigcnii.html#UniGCNII"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.unigcnii.UniGCNII" title="Link to this definition">#</a></dt>
 <dd><p>Hypergraph neural network utilizing the UniGCNII layer <a class="reference internal" href="#r3e31ba81468b-1" id="id1">[1]</a> for node-level classification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>num_classes</strong><span class="classifier">int, default=2</span></dt><dd><p>Number of classes used for node classification.</p>
+<dt><strong>in_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of the input features.</p>
 </dd>
-<dt><strong>in_features</strong><span class="classifier">int, default=1</span></dt><dd><p>Number of input features on the nodes.</p>
+<dt><strong>hidden_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of the hidden features.</p>
 </dd>
-<dt><strong>num_layers</strong><span class="classifier">int, default=2</span></dt><dd><p>Number of UniGCNII message passing layers.</p>
+<dt><strong>n_layers</strong><span class="classifier">int, default=2</span></dt><dd><p>Number of UniGCNII message passing layers.</p>
 </dd>
 <dt><strong>alpha</strong><span class="classifier">float, default=0.5</span></dt><dd><p>Parameter of the UniGCNII layer.</p>
 </dd>
 <dt><strong>beta</strong><span class="classifier">float, default=0.5</span></dt><dd><p>Parameter of the UniGCNII layer.</p>
+</dd>
+<dt><strong>input_drop</strong><span class="classifier">float, default=0.2</span></dt><dd><p>Dropout rate for the input features.</p>
+</dd>
+<dt><strong>layer_drop</strong><span class="classifier">float, default=0.2</span></dt><dd><p>Dropout rate for the hidden features.</p>
 </dd>
 </dl>
 </dd>
@@ -489,7 +493,9 @@ It is expected that the incidence matrix contains self-loops for all nodes.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>torch.Tensor, shape = (num_nodes, num_classes)</dt><dd><p>Contains the logits for classification for every node.</p>
+<dt><strong>x_0</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Output node features.</p>
+</dd>
+<dt><strong>x_1</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Output hyperedge features.</p>
 </dd>
 </dl>
 </dd>

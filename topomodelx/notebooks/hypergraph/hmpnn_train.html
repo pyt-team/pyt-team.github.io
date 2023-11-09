@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a DHGCN TNN" href="dhgcn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -342,10 +342,6 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="hnhn_train_bis.html">Train a Hypergraph Network with Hyperedge Neurons (HNHN)</a></li>
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="hypergat_train.html">Train a Hypergraph Neural Network</a></li>
 
 
@@ -358,6 +354,7 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="unigcnii_train.html">Train a hypergraph neural network using UniGCNII layers</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="unigin_train.html">Train a UNIGIN TNN</a></li>
 
 
@@ -484,10 +481,14 @@ document.write(`
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">torch_geometric.datasets</span> <span class="kn">import</span> <span class="n">Planetoid</span>
+<span class="kn">import</span> <span class="nn">torch_geometric.datasets</span> <span class="k">as</span> <span class="nn">geom_datasets</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.hypergraph.hmpnn</span> <span class="kn">import</span> <span class="n">HMPNN</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -506,37 +507,20 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-cpu
+cuda
 </pre></div></div>
 </div>
 </section>
 <section id="Pre-processing">
 <h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
 <p>Here we download the dataset. It contains initial representation of nodes, the adjacency information, category labels and train-val-test masks.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">Planetoid</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;cora&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">geom_datasets</span><span class="o">.</span><span class="n">Planetoid</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s2">&quot;tmp/&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cora&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.x
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.tx
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.allx
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.y
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ty
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ally
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.graph
-Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.test.index
-Processing...
-Done!
-</pre></div></div>
 </div>
 <p>Below, we construct the incidence matrix (<span class="math notranslate nohighlight">\(B_1\)</span>) which is of shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times n_\text{edges}\)</span>.</p>
 <div class="nbinput nblast docutils container">
@@ -550,57 +534,154 @@ Done!
 </pre></div>
 </div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0s</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span>
+<span class="n">incidence_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;incidence_1&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We then specify the hyperparameters and construct the model, the loss and optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">41</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Network class that initializes the base model and readout layer.</span>
 
-<span class="n">in_features</span> <span class="o">=</span> <span class="mi">1433</span>
-<span class="n">hidden_features</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">num_classes</span> <span class="o">=</span> <span class="mi">7</span>
-<span class="n">n_layers</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="sd">    Base model parameters:</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Reqired:</span>
+<span class="sd">    in_channels : int</span>
+<span class="sd">        Dimension of the input features.</span>
+<span class="sd">    hidden_channels : int</span>
+<span class="sd">        Dimension of the hidden features.</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">HMPNN</span><span class="p">(</span><span class="n">in_features</span><span class="p">,</span> <span class="p">(</span><span class="mi">256</span><span class="p">,</span> <span class="n">hidden_features</span><span class="p">),</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="sd">    Optitional:</span>
+<span class="sd">    **kwargs : dict</span>
+<span class="sd">        Additional arguments for the base model.</span>
+
+<span class="sd">    Readout layer parameters:</span>
+<span class="sd">    ----------</span>
+<span class="sd">    out_channels : int</span>
+<span class="sd">        Dimension of the output features.</span>
+<span class="sd">    task_level : str</span>
+<span class="sd">        Level of the task. Either &quot;graph&quot; or &quot;node&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">task_level</span><span class="o">=</span><span class="s2">&quot;graph&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Define the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">HMPNN</span><span class="p">(</span>
+            <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Readout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_pool</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">task_level</span> <span class="o">==</span> <span class="s2">&quot;graph&quot;</span> <span class="k">else</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
+        <span class="c1"># Base model</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+
+        <span class="c1"># Pool over all nodes in the hypergraph</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_pool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x_0</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Initialize the model</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Base model hyperparameters</span>
+<span class="n">in_channels</span> <span class="o">=</span> <span class="n">x_0s</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">hidden_channels</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">n_layers</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># Readout hyperparameters</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">task_level</span> <span class="o">=</span> <span class="s2">&quot;graph&quot;</span> <span class="k">if</span> <span class="n">out_channels</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;node&quot;</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span>
+    <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+    <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+    <span class="n">task_level</span><span class="o">=</span><span class="n">task_level</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+
+
+<span class="n">train_mask</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train_mask&quot;</span><span class="p">]</span>
+<span class="n">val_mask</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;val_mask&quot;</span><span class="p">]</span>
+<span class="n">test_mask</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;test_mask&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <p>Now it’s time to train the model, looping over the network for a low amount of epochs. We keep training minimal for the purpose of rapid testing.</p>
+<p><strong>Note: The number of epochs below have been kept low to facilitate debugging and testing. Real use cases should likely require more epochs.</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">train_y_true</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train_mask&quot;</span><span class="p">]]</span>
-<span class="n">val_y_true</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;val_mask&quot;</span><span class="p">]]</span>
-<span class="n">initial_x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
-<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">test_interval</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">5</span>
+
+
+<span class="n">initial_x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_0s</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-    <span class="n">y_pred_logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">initial_x_1</span><span class="p">,</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;incidence_1&quot;</span><span class="p">])</span>
-    <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_pred_logits</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train_mask&quot;</span><span class="p">]],</span> <span class="n">train_y_true</span><span class="p">)</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0s</span><span class="p">,</span> <span class="n">initial_x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">[</span><span class="n">train_mask</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train_mask</span><span class="p">])</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
     <span class="n">train_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_pred_logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">train_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">train_y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;train_mask&quot;</span><span class="p">]])</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">train_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">train_mask</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">train_mask</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
 
-    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-        <span class="n">y_pred_logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">initial_x_1</span><span class="p">,</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;incidence_1&quot;</span><span class="p">])</span>
-    <span class="n">val_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_pred_logits</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;val_mask&quot;</span><span class="p">]],</span> <span class="n">val_y_true</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_pred_logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">val_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">val_y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;val_mask&quot;</span><span class="p">]])</span>
-    <span class="nb">print</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> train loss: </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> train acc: </span><span class="si">{</span><span class="n">train_acc</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;val loss: </span><span class="si">{</span><span class="n">val_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> val acc: </span><span class="si">{</span><span class="n">val_acc</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+        <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0s</span><span class="p">,</span> <span class="n">initial_x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+        <span class="n">val_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">[</span><span class="n">val_mask</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">val_mask</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">val_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">val_mask</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">val_mask</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
+
+        <span class="n">test_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_hat</span><span class="p">[</span><span class="n">test_mask</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test_mask</span><span class="p">])</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_hat</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">test_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test_mask</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">test_mask</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> train loss: </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> train acc: </span><span class="si">{</span><span class="n">train_acc</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; val loss: </span><span class="si">{</span><span class="n">val_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> val acc: </span><span class="si">{</span><span class="n">val_acc</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; test loss: </span><span class="si">{</span><span class="n">test_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> val acc: </span><span class="si">{</span><span class="n">test_acc</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -609,132 +690,35 @@ Done!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 train loss: 2.1079 train acc: 0.14 val loss: 2.1436 val acc: 0.16
-Epoch: 2 train loss: 2.0234 train acc: 0.15 val loss: 2.1016 val acc: 0.16
-Epoch: 3 train loss: 1.9800 train acc: 0.15 val loss: 2.0681 val acc: 0.16
-Epoch: 4 train loss: 1.9504 train acc: 0.18 val loss: 2.0389 val acc: 0.16
-Epoch: 5 train loss: 1.9194 train acc: 0.21 val loss: 2.0137 val acc: 0.16
-Epoch: 6 train loss: 1.9241 train acc: 0.19 val loss: 1.9917 val acc: 0.16
-Epoch: 7 train loss: 1.8917 train acc: 0.19 val loss: 1.9729 val acc: 0.16
-Epoch: 8 train loss: 1.8710 train acc: 0.23 val loss: 1.9556 val acc: 0.16
-Epoch: 9 train loss: 1.8574 train acc: 0.29 val loss: 1.9402 val acc: 0.17
-Epoch: 10 train loss: 1.8646 train acc: 0.29 val loss: 1.9265 val acc: 0.17
-Epoch: 11 train loss: 1.8540 train acc: 0.33 val loss: 1.9137 val acc: 0.19
-Epoch: 12 train loss: 1.8430 train acc: 0.36 val loss: 1.9012 val acc: 0.22
-Epoch: 13 train loss: 1.8336 train acc: 0.38 val loss: 1.8886 val acc: 0.25
-Epoch: 14 train loss: 1.8405 train acc: 0.34 val loss: 1.8775 val acc: 0.30
-Epoch: 15 train loss: 1.8264 train acc: 0.34 val loss: 1.8668 val acc: 0.34
-Epoch: 16 train loss: 1.8065 train acc: 0.38 val loss: 1.8562 val acc: 0.37
-Epoch: 17 train loss: 1.8158 train acc: 0.37 val loss: 1.8456 val acc: 0.38
-Epoch: 18 train loss: 1.7957 train acc: 0.44 val loss: 1.8346 val acc: 0.39
-Epoch: 19 train loss: 1.8028 train acc: 0.40 val loss: 1.8249 val acc: 0.41
-Epoch: 20 train loss: 1.7882 train acc: 0.37 val loss: 1.8156 val acc: 0.42
-Epoch: 21 train loss: 1.7912 train acc: 0.36 val loss: 1.8070 val acc: 0.42
-Epoch: 22 train loss: 1.7610 train acc: 0.46 val loss: 1.7985 val acc: 0.41
-Epoch: 23 train loss: 1.7617 train acc: 0.47 val loss: 1.7903 val acc: 0.42
-Epoch: 24 train loss: 1.7596 train acc: 0.41 val loss: 1.7827 val acc: 0.41
-Epoch: 25 train loss: 1.7391 train acc: 0.38 val loss: 1.7737 val acc: 0.42
-Epoch: 26 train loss: 1.7316 train acc: 0.44 val loss: 1.7650 val acc: 0.42
-Epoch: 27 train loss: 1.7364 train acc: 0.42 val loss: 1.7559 val acc: 0.43
-Epoch: 28 train loss: 1.7184 train acc: 0.48 val loss: 1.7454 val acc: 0.44
-Epoch: 29 train loss: 1.7086 train acc: 0.44 val loss: 1.7362 val acc: 0.45
-Epoch: 30 train loss: 1.6815 train acc: 0.46 val loss: 1.7276 val acc: 0.46
-Epoch: 31 train loss: 1.6673 train acc: 0.50 val loss: 1.7178 val acc: 0.46
-Epoch: 32 train loss: 1.6846 train acc: 0.51 val loss: 1.7080 val acc: 0.45
-Epoch: 33 train loss: 1.6483 train acc: 0.51 val loss: 1.7007 val acc: 0.47
-Epoch: 34 train loss: 1.6435 train acc: 0.54 val loss: 1.6982 val acc: 0.44
-Epoch: 35 train loss: 1.6354 train acc: 0.54 val loss: 1.6998 val acc: 0.43
-Epoch: 36 train loss: 1.6336 train acc: 0.54 val loss: 1.6982 val acc: 0.43
-Epoch: 37 train loss: 1.5937 train acc: 0.60 val loss: 1.6972 val acc: 0.43
-Epoch: 38 train loss: 1.5885 train acc: 0.56 val loss: 1.6962 val acc: 0.42
-Epoch: 39 train loss: 1.5970 train acc: 0.55 val loss: 1.6861 val acc: 0.42
-Epoch: 40 train loss: 1.5597 train acc: 0.52 val loss: 1.6673 val acc: 0.44
-Epoch: 41 train loss: 1.5444 train acc: 0.64 val loss: 1.6510 val acc: 0.45
-Epoch: 42 train loss: 1.5500 train acc: 0.60 val loss: 1.6320 val acc: 0.46
-Epoch: 43 train loss: 1.5396 train acc: 0.54 val loss: 1.6160 val acc: 0.48
-Epoch: 44 train loss: 1.5096 train acc: 0.59 val loss: 1.6032 val acc: 0.48
-Epoch: 45 train loss: 1.4991 train acc: 0.59 val loss: 1.5924 val acc: 0.47
-Epoch: 46 train loss: 1.5020 train acc: 0.58 val loss: 1.5830 val acc: 0.49
-Epoch: 47 train loss: 1.4710 train acc: 0.64 val loss: 1.5741 val acc: 0.49
-Epoch: 48 train loss: 1.4607 train acc: 0.67 val loss: 1.5691 val acc: 0.48
-Epoch: 49 train loss: 1.4339 train acc: 0.62 val loss: 1.5616 val acc: 0.48
-Epoch: 50 train loss: 1.4425 train acc: 0.66 val loss: 1.5615 val acc: 0.49
-Epoch: 51 train loss: 1.4206 train acc: 0.66 val loss: 1.5477 val acc: 0.49
-Epoch: 52 train loss: 1.4142 train acc: 0.64 val loss: 1.5281 val acc: 0.50
-Epoch: 53 train loss: 1.4085 train acc: 0.66 val loss: 1.5042 val acc: 0.50
-Epoch: 54 train loss: 1.4017 train acc: 0.62 val loss: 1.4884 val acc: 0.50
-Epoch: 55 train loss: 1.3852 train acc: 0.65 val loss: 1.4838 val acc: 0.50
-Epoch: 56 train loss: 1.3908 train acc: 0.61 val loss: 1.4847 val acc: 0.50
-Epoch: 57 train loss: 1.3434 train acc: 0.71 val loss: 1.4878 val acc: 0.49
-Epoch: 58 train loss: 1.3259 train acc: 0.69 val loss: 1.4851 val acc: 0.50
-Epoch: 59 train loss: 1.3378 train acc: 0.66 val loss: 1.4907 val acc: 0.50
-Epoch: 60 train loss: 1.2930 train acc: 0.69 val loss: 1.4966 val acc: 0.50
-Epoch: 61 train loss: 1.3125 train acc: 0.69 val loss: 1.5017 val acc: 0.50
-Epoch: 62 train loss: 1.3093 train acc: 0.65 val loss: 1.4984 val acc: 0.50
-Epoch: 63 train loss: 1.2770 train acc: 0.67 val loss: 1.4915 val acc: 0.51
-Epoch: 64 train loss: 1.2753 train acc: 0.65 val loss: 1.4854 val acc: 0.50
-Epoch: 65 train loss: 1.2741 train acc: 0.69 val loss: 1.4831 val acc: 0.50
-Epoch: 66 train loss: 1.2784 train acc: 0.67 val loss: 1.4728 val acc: 0.50
-Epoch: 67 train loss: 1.2445 train acc: 0.67 val loss: 1.4712 val acc: 0.50
-Epoch: 68 train loss: 1.2020 train acc: 0.69 val loss: 1.4743 val acc: 0.48
-Epoch: 69 train loss: 1.1976 train acc: 0.69 val loss: 1.4705 val acc: 0.48
-Epoch: 70 train loss: 1.1895 train acc: 0.71 val loss: 1.4638 val acc: 0.48
-Epoch: 71 train loss: 1.2016 train acc: 0.71 val loss: 1.4672 val acc: 0.48
-Epoch: 72 train loss: 1.1565 train acc: 0.74 val loss: 1.4450 val acc: 0.50
-Epoch: 73 train loss: 1.1744 train acc: 0.69 val loss: 1.4279 val acc: 0.50
-Epoch: 74 train loss: 1.1863 train acc: 0.72 val loss: 1.4286 val acc: 0.49
-Epoch: 75 train loss: 1.1765 train acc: 0.72 val loss: 1.4333 val acc: 0.49
-Epoch: 76 train loss: 1.1773 train acc: 0.66 val loss: 1.4499 val acc: 0.49
-Epoch: 77 train loss: 1.1232 train acc: 0.74 val loss: 1.4701 val acc: 0.50
-Epoch: 78 train loss: 1.0667 train acc: 0.76 val loss: 1.4692 val acc: 0.49
-Epoch: 79 train loss: 1.0716 train acc: 0.76 val loss: 1.4593 val acc: 0.50
-Epoch: 80 train loss: 1.0567 train acc: 0.77 val loss: 1.4450 val acc: 0.50
-Epoch: 81 train loss: 1.0626 train acc: 0.72 val loss: 1.4309 val acc: 0.50
-Epoch: 82 train loss: 1.0453 train acc: 0.73 val loss: 1.4244 val acc: 0.50
-Epoch: 83 train loss: 1.0300 train acc: 0.78 val loss: 1.4135 val acc: 0.50
-Epoch: 84 train loss: 1.0505 train acc: 0.74 val loss: 1.4152 val acc: 0.51
-Epoch: 85 train loss: 1.0212 train acc: 0.74 val loss: 1.4340 val acc: 0.52
-Epoch: 86 train loss: 1.0401 train acc: 0.76 val loss: 1.4580 val acc: 0.50
-Epoch: 87 train loss: 0.9888 train acc: 0.81 val loss: 1.4668 val acc: 0.50
-Epoch: 88 train loss: 1.0185 train acc: 0.74 val loss: 1.4771 val acc: 0.50
-Epoch: 89 train loss: 0.9739 train acc: 0.78 val loss: 1.4710 val acc: 0.49
-Epoch: 90 train loss: 0.9517 train acc: 0.83 val loss: 1.4661 val acc: 0.50
-Epoch: 91 train loss: 0.9341 train acc: 0.79 val loss: 1.4519 val acc: 0.50
-Epoch: 92 train loss: 0.9642 train acc: 0.80 val loss: 1.4457 val acc: 0.50
-Epoch: 93 train loss: 0.9191 train acc: 0.77 val loss: 1.4126 val acc: 0.51
-Epoch: 94 train loss: 0.8985 train acc: 0.79 val loss: 1.4001 val acc: 0.51
-Epoch: 95 train loss: 0.8884 train acc: 0.84 val loss: 1.3864 val acc: 0.51
-Epoch: 96 train loss: 0.9020 train acc: 0.82 val loss: 1.3875 val acc: 0.52
-Epoch: 97 train loss: 0.8673 train acc: 0.84 val loss: 1.3893 val acc: 0.53
-Epoch: 98 train loss: 0.9479 train acc: 0.78 val loss: 1.3814 val acc: 0.52
-Epoch: 99 train loss: 0.8873 train acc: 0.81 val loss: 1.3855 val acc: 0.51
-Epoch: 100 train loss: 0.8565 train acc: 0.86 val loss: 1.3936 val acc: 0.52
+Epoch: 6 train loss: 1.2665 train acc: 0.82  val loss: 1.9848 val acc: 0.23 test loss: 0.2270 val acc: 0.23
+Epoch: 11 train loss: 0.8439 train acc: 0.99  val loss: 1.7569 val acc: 0.38 test loss: 0.3970 val acc: 0.40
+Epoch: 16 train loss: 0.5119 train acc: 1.00  val loss: 1.6846 val acc: 0.39 test loss: 0.4160 val acc: 0.42
+Epoch: 21 train loss: 0.2717 train acc: 1.00  val loss: 1.5872 val acc: 0.43 test loss: 0.4500 val acc: 0.45
+Epoch: 26 train loss: 0.1571 train acc: 1.00  val loss: 1.6143 val acc: 0.41 test loss: 0.4230 val acc: 0.42
+Epoch: 31 train loss: 0.0816 train acc: 1.00  val loss: 1.5894 val acc: 0.45 test loss: 0.4490 val acc: 0.45
+Epoch: 36 train loss: 0.0478 train acc: 1.00  val loss: 1.6020 val acc: 0.46 test loss: 0.4630 val acc: 0.46
+Epoch: 41 train loss: 0.0298 train acc: 1.00  val loss: 1.6153 val acc: 0.47 test loss: 0.4670 val acc: 0.47
+Epoch: 46 train loss: 0.0214 train acc: 1.00  val loss: 1.6499 val acc: 0.47 test loss: 0.4720 val acc: 0.47
+Epoch: 51 train loss: 0.0160 train acc: 1.00  val loss: 1.6764 val acc: 0.48 test loss: 0.4830 val acc: 0.48
+Epoch: 56 train loss: 0.0149 train acc: 1.00  val loss: 1.6986 val acc: 0.48 test loss: 0.4900 val acc: 0.49
+Epoch: 61 train loss: 0.0123 train acc: 1.00  val loss: 1.6888 val acc: 0.47 test loss: 0.4920 val acc: 0.49
+Epoch: 66 train loss: 0.0097 train acc: 1.00  val loss: 1.6670 val acc: 0.48 test loss: 0.4970 val acc: 0.50
+Epoch: 71 train loss: 0.0078 train acc: 1.00  val loss: 1.6547 val acc: 0.49 test loss: 0.5030 val acc: 0.50
+Epoch: 76 train loss: 0.0072 train acc: 1.00  val loss: 1.6484 val acc: 0.49 test loss: 0.5030 val acc: 0.50
+Epoch: 81 train loss: 0.0066 train acc: 1.00  val loss: 1.6378 val acc: 0.49 test loss: 0.5100 val acc: 0.51
+Epoch: 86 train loss: 0.0064 train acc: 1.00  val loss: 1.6507 val acc: 0.49 test loss: 0.5110 val acc: 0.51
+Epoch: 91 train loss: 0.0060 train acc: 1.00  val loss: 1.6745 val acc: 0.50 test loss: 0.5100 val acc: 0.51
+Epoch: 96 train loss: 0.0051 train acc: 1.00  val loss: 1.6682 val acc: 0.50 test loss: 0.5150 val acc: 0.52
+Epoch: 101 train loss: 0.0047 train acc: 1.00  val loss: 1.6412 val acc: 0.50 test loss: 0.5190 val acc: 0.52
 </pre></div></div>
 </div>
-<p>Finally, we evaluate the model against the test data.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_y_true</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">][</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;test_mask&quot;</span><span class="p">]]</span>
-<span class="n">initial_x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">])</span>
-<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
-<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-    <span class="n">y_pred_logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="n">initial_x_1</span><span class="p">,</span> <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;incidence_1&quot;</span><span class="p">])</span>
-<span class="n">test_loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_pred_logits</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;test_mask&quot;</span><span class="p">]],</span> <span class="n">test_y_true</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_pred_logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">test_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">test_y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">[</span><span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;test_mask&quot;</span><span class="p">]])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> test acc: </span><span class="si">{</span><span class="n">test_acc</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Test loss: 1.3152 test acc: 0.55
-</pre></div></div>
 </div>
 </section>
 

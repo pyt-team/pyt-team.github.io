@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -360,9 +360,9 @@ document.write(`
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    in_channels : int</span>
-<span class="sd">        Dimension of input features.</span>
-<span class="sd">    out_channels : int</span>
-<span class="sd">        Dimension of output features.</span>
+<span class="sd">        Dimension of the input features.</span>
+<span class="sd">    hidden_channels : int</span>
+<span class="sd">        Dimension of the hidden features.</span>
 <span class="sd">    use_bn : bool, default=False</span>
 <span class="sd">        Whether to use bathnorm after the linear transformation.</span>
 <span class="sd">    aggr_norm : bool, default=False</span>
@@ -383,25 +383,29 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">aggr_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">use_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_channels</span><span class="p">,</span>
+        <span class="n">hidden_channels</span><span class="p">,</span>
+        <span class="n">aggr_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
+
+        <span class="n">with_linear_transform</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">in_channels</span> <span class="o">==</span> <span class="n">hidden_channels</span> <span class="k">else</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conv_level1_0_to_1</span> <span class="o">=</span> <span class="n">Conv</span><span class="p">(</span>
             <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
-            <span class="n">out_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+            <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
             <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
             <span class="n">update_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-            <span class="n">with_linear_transform</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">with_linear_transform</span><span class="o">=</span><span class="n">with_linear_transform</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">conv_level2_1_to_0</span> <span class="o">=</span> <span class="n">Conv</span><span class="p">(</span>
-            <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
-            <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
+            <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+            <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
             <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
             <span class="n">update_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_bn</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_bn</span> <span class="k">else</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="UniGCNLayer.reset_parameters">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/unigcn_layer.html#topomodelx.nn.hypergraph.unigcn_layer.UniGCNLayer.reset_parameters">[docs]</a>
@@ -455,8 +459,10 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape = (n_nodes, out_channels)</span>
-<span class="sd">            Output features on the nodes of the hypergraph.</span>
+<span class="sd">        x_0 : torch.Tensor</span>
+<span class="sd">            Output node features.</span>
+<span class="sd">        x_1 : torch.Tensor</span>
+<span class="sd">            Output hyperedge features.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -464,11 +470,11 @@ document.write(`
             <span class="p">)</span>
 
         <span class="n">incidence_1_transpose</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">m_0_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_level1_0_to_1</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1_transpose</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_level1_0_to_1</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1_transpose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">m_0_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">m_0_1</span><span class="p">)</span>
-        <span class="n">m_1_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_level2_1_to_0</span><span class="p">(</span><span class="n">m_0_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">m_1_0</span></div>
+            <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_level2_1_to_0</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span></div>
 </div>
 
 </pre></div>

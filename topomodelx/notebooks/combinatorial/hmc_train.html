@@ -49,7 +49,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -443,6 +443,24 @@ implementation, attention matrices are computed using the LeakyReLU activation f
 </pre></div>
 </div>
 </div>
+<p>If GPU’s are available, we will make use of them. Otherwise, this will run on CPU.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+cuda
+</pre></div></div>
+</div>
 </section>
 <section id="Pre-processing">
 <h1>Pre-processing<a class="headerlink" href="#Pre-processing" title="Link to this heading">#</a></h1>
@@ -450,7 +468,7 @@ implementation, attention matrices are computed using the LeakyReLU activation f
 <h2>Import data<a class="headerlink" href="#Import-data" title="Link to this heading">#</a></h2>
 <p>We first create a class for the SHREC 2016 dataset. This class will be used to load the data and create the necessary neighborhood matrices for each combinatorial complex in the dataset.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SHRECDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
@@ -575,7 +593,7 @@ implementation, attention matrices are computed using the LeakyReLU activation f
 </div>
 <p>We load the data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec_training</span><span class="p">,</span> <span class="n">shrec_testing</span> <span class="o">=</span> <span class="n">shrec_16</span><span class="p">()</span>
@@ -594,7 +612,7 @@ done!
 </div>
 <p>Creating the train dataset and dataloader.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_dataset</span> <span class="o">=</span> <span class="n">SHRECDataset</span><span class="p">(</span><span class="n">shrec_training</span><span class="p">)</span>
@@ -604,7 +622,7 @@ done!
 </div>
 <p>Creating the train dataset and dataloader.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">testing_dataset</span> <span class="o">=</span> <span class="n">SHRECDataset</span><span class="p">(</span><span class="n">shrec_testing</span><span class="p">)</span>
@@ -623,7 +641,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We create the trainer class. The model is trained using the Adam optimizer and the Cross Entropy Loss function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Trainer</span><span class="p">:</span>
@@ -800,7 +818,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </div>
 <p>We define the parameters for the model. We use softmax activation for the attention layers. Moreover, we use relu activation for the update and the aggregation steps. We set the negative slope parameter for the Leaky ReLU activation to 0.2. We only use one higher order attention layer as it already achieves almost perfect test accuracy, although more layers could be added.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">training_dataset</span><span class="o">.</span><span class="n">channels_dim</span><span class="p">()</span>
@@ -822,10 +840,10 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </div>
 <p>We train the HoanMeshClassifier using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">test_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -834,47 +852,26 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 0 loss: 3.5354 Train_acc: 0.0521
-Epoch: 1 loss: 3.1654 Train_acc: 0.0688
-Epoch: 2 loss: 2.9049 Train_acc: 0.1229
-Epoch: 3 loss: 2.6443 Train_acc: 0.1917
-Epoch: 4 loss: 2.3331 Train_acc: 0.2604
+Epoch: 0 loss: 3.6020 Train_acc: 0.0333
+Test_acc: 0.0917
+Epoch: 1 loss: 3.2161 Train_acc: 0.0750
+Test_acc: 0.1333
+Epoch: 2 loss: 2.9366 Train_acc: 0.1437
+Test_acc: 0.1583
+Epoch: 3 loss: 2.6148 Train_acc: 0.2167
+Test_acc: 0.2500
+Epoch: 4 loss: 2.3257 Train_acc: 0.2875
+Test_acc: 0.2750
 </pre></div></div>
 </div>
 <p>Letting the model train for longer, we can see that the model achieves an outstanding performance on both the training and testing sets.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># trainer.train(num_epochs=5, test_interval=10)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># trainer.train(num_epochs=30, test_interval=10)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Epoch: 0 loss: 2.0427 Train_acc: 0.3438
-Epoch: 1 loss: 1.7749 Train_acc: 0.4167
-Epoch: 2 loss: 1.5524 Train_acc: 0.4958
-Epoch: 3 loss: 1.4013 Train_acc: 0.5333
-Epoch: 4 loss: 1.2587 Train_acc: 0.6042
-Epoch: 5 loss: 1.1615 Train_acc: 0.6208
-Epoch: 6 loss: 1.0356 Train_acc: 0.6292
-Epoch: 7 loss: 1.0127 Train_acc: 0.6604
-Epoch: 8 loss: 0.9019 Train_acc: 0.6937
-Epoch: 9 loss: 0.8633 Train_acc: 0.7083
-Test_acc: 0.6750
-Epoch: 10 loss: 0.7822 Train_acc: 0.7354
-Epoch: 11 loss: 0.7564 Train_acc: 0.7479
-Epoch: 12 loss: 0.7253 Train_acc: 0.7500
-Epoch: 13 loss: 0.6240 Train_acc: 0.8063
-Epoch: 14 loss: 0.6154 Train_acc: 0.7979
-Epoch: 15 loss: 0.6222 Train_acc: 0.8021
-Epoch: 16 loss: 0.5450 Train_acc: 0.8042
-Epoch: 17 loss: 0.5201 Train_acc: 0.8396
-</pre></div></div>
 </div>
 </section>
 

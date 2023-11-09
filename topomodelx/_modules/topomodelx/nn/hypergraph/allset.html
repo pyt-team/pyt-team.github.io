@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -363,18 +363,16 @@ document.write(`
 <span class="sd">        Dimension of the input features.</span>
 <span class="sd">    hidden_channels : int</span>
 <span class="sd">        Dimension of the hidden features.</span>
-<span class="sd">    out_channels : int</span>
-<span class="sd">        Dimension of the output features.</span>
 <span class="sd">    n_layers : int, default: 2</span>
 <span class="sd">        Number of AllSet layers in the network.</span>
-<span class="sd">    dropout : float</span>
-<span class="sd">        Dropout probability.</span>
+<span class="sd">    layer_dropout: float, default: 0.2</span>
+<span class="sd">        Dropout probability for the AllSet layer.</span>
 <span class="sd">    mlp_num_layers : int, default: 2</span>
 <span class="sd">        Number of layers in the MLP.</span>
-<span class="sd">    mlp_activation : torch.nn.Module, default: None</span>
-<span class="sd">        Activation function for the MLP.</span>
 <span class="sd">    mlp_dropout : float, default: 0.0</span>
 <span class="sd">        Dropout probability for the MLP.</span>
+<span class="sd">    mlp_activation : torch.nn.Module, default: None</span>
+<span class="sd">        Activation function in the MLP.</span>
 <span class="sd">    mlp_norm : bool, default: False</span>
 <span class="sd">        Whether to apply input normalization in the MLP.</span>
 
@@ -390,9 +388,8 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_channels</span><span class="p">,</span>
         <span class="n">hidden_channels</span><span class="p">,</span>
-        <span class="n">out_channels</span><span class="p">,</span>
         <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-        <span class="n">dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">layer_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
         <span class="n">mlp_num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">mlp_activation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">mlp_dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -403,7 +400,7 @@ document.write(`
             <span class="n">AllSetLayer</span><span class="p">(</span>
                 <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
                 <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
-                <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+                <span class="n">dropout</span><span class="o">=</span><span class="n">layer_dropout</span><span class="p">,</span>
                 <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
                 <span class="n">mlp_activation</span><span class="o">=</span><span class="n">mlp_activation</span><span class="p">,</span>
                 <span class="n">mlp_dropout</span><span class="o">=</span><span class="n">mlp_dropout</span><span class="p">,</span>
@@ -414,9 +411,9 @@ document.write(`
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">AllSetLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+                    <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
                     <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
-                    <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+                    <span class="n">dropout</span><span class="o">=</span><span class="n">layer_dropout</span><span class="p">,</span>
                     <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
                     <span class="n">mlp_activation</span><span class="o">=</span><span class="n">mlp_activation</span><span class="p">,</span>
                     <span class="n">mlp_dropout</span><span class="o">=</span><span class="n">mlp_dropout</span><span class="p">,</span>
@@ -424,7 +421,6 @@ document.write(`
                 <span class="p">)</span>
             <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AllSet.forward">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/allset.html#topomodelx.nn.hypergraph.allset.AllSet.forward">[docs]</a>
@@ -440,18 +436,15 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor</span>
-<span class="sd">            Output prediction.</span>
+<span class="sd">        x_0 : torch.Tensor</span>
+<span class="sd">            Output node features.</span>
+<span class="sd">        x_1 : torch.Tensor</span>
+<span class="sd">            Output hyperedge features.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># cidx = edge_index[1].min()</span>
-        <span class="c1"># edge_index[1] -= cidx</span>
-        <span class="c1"># reversed_edge_index = torch.stack(</span>
-        <span class="c1">#     [edge_index[1], edge_index[0]], dim=0)</span>
-
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
-        <span class="n">pooled_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">pooled_x</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></div>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span></div>
 </div>
 
 </pre></div>

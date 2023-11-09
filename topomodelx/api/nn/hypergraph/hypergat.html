@@ -48,7 +48,7 @@
     <link rel="prev" title="Hypergat_Layer" href="hypergat_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -445,16 +445,16 @@ document.write(`
 <p>HyperGat Layer.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.hypergraph.hypergat.HyperGAT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.hypergat.</span></span><span class="sig-name descname"><span class="pre">HyperGAT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hypergat.html#HyperGAT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hypergat.HyperGAT" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.hypergat.</span></span><span class="sig-name descname"><span class="pre">HyperGAT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hypergat.html#HyperGAT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hypergat.HyperGAT" title="Link to this definition">#</a></dt>
 <dd><p>Neural network implementation of Template for hypergraph classification <a class="reference internal" href="#r80238672e852-1" id="id1">[1]</a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>in_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of the input features.</p>
 </dd>
-<dt><strong>out_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of the output features.</p>
+<dt><strong>hidden_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of the hidden features.</p>
 </dd>
-<dt><strong>n_layer</strong><span class="classifier">int, default = 2</span></dt><dd><p>Amount of message passing layers.</p>
+<dt><strong>n_layers</strong><span class="classifier">int, default = 2</span></dt><dd><p>Amount of message passing layers.</p>
 </dd>
 </dl>
 </dd>
@@ -470,7 +470,7 @@ EMNLP, 2020.
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.hypergraph.hypergat.HyperGAT.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hypergat.html#HyperGAT.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hypergat.HyperGAT.forward" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hypergat.html#HyperGAT.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hypergat.HyperGAT.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward computation through layers, then linear layer, then global max pooling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -483,7 +483,9 @@ EMNLP, 2020.
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>torch.Tensor, shape = (1)</dt><dd><p>Label assigned to whole complex.</p>
+<dt><strong>x_0</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Output node features.</p>
+</dd>
+<dt><strong>x_1</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Output hyperedge features.</p>
 </dd>
 </dl>
 </dd>

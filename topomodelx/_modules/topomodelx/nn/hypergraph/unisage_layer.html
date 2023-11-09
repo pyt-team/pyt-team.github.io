@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -349,6 +349,8 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">torch</span>
 
+<span class="kn">from</span> <span class="nn">topomodelx.base.conv</span> <span class="kn">import</span> <span class="n">Conv</span>
+
 
 <div class="viewcode-block" id="UniSAGELayer">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/unisage_layer.html#topomodelx.nn.hypergraph.unisage_layer.UniSAGELayer">[docs]</a>
@@ -359,11 +361,11 @@ document.write(`
 <span class="sd">    ----------</span>
 <span class="sd">    in_channels : int</span>
 <span class="sd">        Dimension of input features.</span>
-<span class="sd">    out_channels : int</span>
+<span class="sd">    hidden_channels : int</span>
 <span class="sd">        Dimension of output features.</span>
-<span class="sd">    e_aggr : Literal[&quot;sum&quot;, &quot;mean&quot;, &quot;amax&quot;, &quot;amin&quot;], default=&quot;sum&quot;</span>
+<span class="sd">    e_aggr : Literal[&quot;sum&quot;, &quot;mean&quot;,], default=&quot;sum&quot;</span>
 <span class="sd">        Aggregator function for hyperedges.</span>
-<span class="sd">    v_aggr : Literal[&quot;sum&quot;, &quot;mean&quot;, &quot;amax&quot;, &quot;amin&quot;], default=&quot;mean&quot;</span>
+<span class="sd">    v_aggr : Literal[&quot;sum&quot;, &quot;mean&quot;,], default=&quot;mean&quot;</span>
 <span class="sd">        Aggregator function for nodes.</span>
 <span class="sd">    use_bn : boolean</span>
 <span class="sd">        Whether to use bathnorm after the linear transformation.</span>
@@ -383,29 +385,54 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_validate_aggr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggr</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">aggr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;amax&quot;</span><span class="p">,</span> <span class="s2">&quot;amin&quot;</span><span class="p">}:</span>
+        <span class="k">if</span> <span class="n">aggr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+        <span class="p">}:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Unsupported aggregator: </span><span class="si">{</span><span class="n">aggr</span><span class="si">}</span><span class="s2">, should be &#39;sum&#39;, &#39;mean&#39;, &#39;amax&#39;, or &#39;amin&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Unsupported aggregator: </span><span class="si">{</span><span class="n">aggr</span><span class="si">}</span><span class="s2">, should be &#39;sum&#39;, &#39;mean&#39;,&quot;</span>
             <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_channels</span><span class="p">,</span>
-        <span class="n">out_channels</span><span class="p">,</span>
-        <span class="n">e_aggr</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;amax&quot;</span><span class="p">,</span> <span class="s2">&quot;amin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
-        <span class="n">v_aggr</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;amax&quot;</span><span class="p">,</span> <span class="s2">&quot;amin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+        <span class="n">hidden_channels</span><span class="p">,</span>
+        <span class="n">e_aggr</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+            <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+        <span class="n">v_aggr</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+            <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
         <span class="n">use_bn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">out_channels</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_bn</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_channels</span> <span class="o">=</span> <span class="n">hidden_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_bn</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">v_aggr</span> <span class="o">=</span> <span class="n">v_aggr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">e_aggr</span> <span class="o">=</span> <span class="n">e_aggr</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_aggr</span><span class="p">(</span><span class="n">v_aggr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_aggr</span><span class="p">(</span><span class="n">e_aggr</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">vertex2edge</span> <span class="o">=</span> <span class="n">Conv</span><span class="p">(</span>
+            <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+            <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+            <span class="n">aggr_norm</span><span class="o">=</span><span class="kc">False</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">e_aggr</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">with_linear_transform</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge2vertex</span> <span class="o">=</span> <span class="n">Conv</span><span class="p">(</span>
+            <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+            <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+            <span class="n">aggr_norm</span><span class="o">=</span><span class="kc">False</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_aggr</span> <span class="o">==</span> <span class="s2">&quot;sum&quot;</span> <span class="k">else</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">with_linear_transform</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="UniSAGELayer.reset_parameters">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/unisage_layer.html#topomodelx.nn.hypergraph.unisage_layer.UniSAGELayer.reset_parameters">[docs]</a>
@@ -458,25 +485,20 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, out_channels)</span>
-<span class="sd">            Output features on the nodes of the hypergraph.</span>
+<span class="sd">        x_0 : torch.Tensor</span>
+<span class="sd">            Output node features.</span>
+<span class="sd">        x_1 : torch.Tensor</span>
+<span class="sd">            Output hyperedge features.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bn</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
 
-        <span class="c1"># Use sparse CSR to enable reduce operation</span>
-        <span class="k">if</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">layout</span> <span class="o">!=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse_csr</span><span class="p">:</span>
-            <span class="n">incidence_1_transpose</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">to_sparse_csr</span><span class="p">()</span>
-            <span class="n">incidence_1</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">to_sparse_csr</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Transpose generates CSC tensor, thus we have to convert to csr</span>
-            <span class="n">incidence_1_transpose</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_sparse_csr</span><span class="p">()</span>
-        <span class="c1"># First pass fills in features of edges by adding features of constituent nodes</span>
-        <span class="n">m_0_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_1_transpose</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">e_aggr</span><span class="p">)</span>
-        <span class="c1"># Second pass fills in features of nodes by adding features of the incident edges</span>
-        <span class="n">m_1_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">m_0_1</span><span class="p">,</span> <span class="n">reduce</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_aggr</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x_0</span> <span class="o">+</span> <span class="n">m_1_0</span></div>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertex2edge</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">m_1_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge2vertex</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="n">x_0</span> <span class="o">+</span> <span class="n">m_1_0</span>
+
+        <span class="k">return</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span></div>
 </div>
 
 </pre></div>

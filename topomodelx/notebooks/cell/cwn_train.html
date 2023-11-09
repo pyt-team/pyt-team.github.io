@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Convolutional Cell Complex Network (CCXN)" href="ccxn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -342,10 +342,6 @@ document.write(`
 
 
 
-<li class="toctree-l1"><a class="reference internal" href="../hypergraph/hnhn_train_bis.html">Train a Hypergraph Network with Hyperedge Neurons (HNHN)</a></li>
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/hypergat_train.html">Train a Hypergraph Neural Network</a></li>
 
 
@@ -358,6 +354,7 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/unigcnii_train.html">Train a hypergraph neural network using UniGCNII layers</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="../hypergraph/unigin_train.html">Train a UNIGIN TNN</a></li>
 
 
@@ -508,6 +505,9 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.cell.cwn</span> <span class="kn">import</span> <span class="n">CWN</span>
 <span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -526,7 +526,7 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-cpu
+cuda
 </pre></div></div>
 </div>
 </section>
@@ -694,7 +694,7 @@ The dimensions of input features on nodes, edges and faces are 6, 10 and 7, resp
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="n">criterion</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -764,9 +764,9 @@ The dimensions of input features on nodes, edges and faces are 6, 10 and 7, resp
         <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
         <span class="n">epoch_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2">, Train Loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">train_mean_loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">adjacency_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">,</span> <span class="n">incidence_1_t</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="n">x_0_test</span><span class="p">,</span>
                 <span class="n">x_1_test</span><span class="p">,</span>
@@ -789,7 +789,10 @@ The dimensions of input features on nodes, edges and faces are 6, 10 and 7, resp
 
                 <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">adjacency_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">,</span> <span class="n">incidence_1_t</span><span class="p">)</span>
                 <span class="n">test_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test Loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Epoch:</span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2">, Train Loss: </span><span class="si">{</span><span class="n">train_mean_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Test Loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -798,12 +801,11 @@ The dimensions of input features on nodes, edges and faces are 6, 10 and 7, resp
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1, Train Loss: 107.6411
-Epoch: 2, Train Loss: 84.9619
-Test Loss: 51.5892
-Epoch: 3, Train Loss: 84.2476
-Epoch: 4, Train Loss: 83.7038
-Test Loss: 50.7303
+Epoch:2, Train Loss: 83.8053 Test Loss: 73.7517
+Epoch:4, Train Loss: 81.9552 Test Loss: 50.2781
+Epoch:6, Train Loss: 78.3991 Test Loss: 49.9034
+Epoch:8, Train Loss: 75.8107 Test Loss: 45.7201
+Epoch:10, Train Loss: 74.3833 Test Loss: 40.5558
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">

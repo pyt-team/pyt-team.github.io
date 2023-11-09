@@ -48,7 +48,7 @@
     <link rel="prev" title="Unigcn_Layer" href="unigcn_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -445,14 +445,14 @@ document.write(`
 <p>UniGCN class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.hypergraph.unigcn.UniGCN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.unigcn.</span></span><span class="sig-name descname"><span class="pre">UniGCN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/unigcn.html#UniGCN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.unigcn.UniGCN" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.unigcn.</span></span><span class="sig-name descname"><span class="pre">UniGCN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/unigcn.html#UniGCN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.unigcn.UniGCN" title="Link to this definition">#</a></dt>
 <dd><p>Neural network implementation of UniGCN <a class="reference internal" href="#rf7594bd17e04-1" id="id1">[1]</a> for hypergraph classification.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>channels_edge</strong><span class="classifier">int</span></dt><dd><p>Dimension of edge features.</p>
+<dt><strong>in_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of the input features.</p>
 </dd>
-<dt><strong>channels_node</strong><span class="classifier">int</span></dt><dd><p>Dimension of node features.</p>
+<dt><strong>hidden_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of the hidden features.</p>
 </dd>
 <dt><strong>n_layers</strong><span class="classifier">int, default = 2</span></dt><dd><p>Amount of message passing layers.</p>
 </dd>
@@ -471,12 +471,12 @@ IJCAI 2021.
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.hypergraph.unigcn.UniGCN.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/unigcn.html#UniGCN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.unigcn.UniGCN.forward" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/unigcn.html#UniGCN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.unigcn.UniGCN.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward computation through layers, then linear layer, then global max pooling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>x_1</strong><span class="classifier">torch.Tensor, shape = (n_edges, channels_edge)</span></dt><dd><p>Edge features.</p>
+<dt><strong>x_0</strong><span class="classifier">torch.Tensor, shape = (n_edges, channels_edge)</span></dt><dd><p>Edge features.</p>
 </dd>
 <dt><strong>incidence_1</strong><span class="classifier">torch.Tensor, shape = (n_nodes, n_edges)</span></dt><dd><p>Boundary matrix of rank 1.</p>
 </dd>
@@ -484,7 +484,9 @@ IJCAI 2021.
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
-<dt>torch.Tensor, shape = (1)</dt><dd><p>Label assigned to whole complex.</p>
+<dt><strong>x_0</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Output node features.</p>
+</dd>
+<dt><strong>x_1</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Output hyperedge features.</p>
 </dd>
 </dl>
 </dd>

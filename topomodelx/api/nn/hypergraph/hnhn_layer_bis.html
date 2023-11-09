@@ -48,7 +48,7 @@
     <link rel="prev" title="HMPNN" href="hmpnn.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:05:18 PM"/>
   </head>
   
   
@@ -440,68 +440,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="module-topomodelx.nn.hypergraph.hnhn_layer_bis">
-<span id="hnhn-layer-bis"></span><h1>HNHN_Layer_Bis<a class="headerlink" href="#module-topomodelx.nn.hypergraph.hnhn_layer_bis" title="Link to this heading">#</a></h1>
-<p>HNHN (Hypergraph Network with Hyperedge Neurons) Layer introduced in Dong et al. 2020.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="topomodelx.nn.hypergraph.hnhn_layer_bis.HNHNLayer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.hypergraph.hnhn_layer_bis.</span></span><span class="sig-name descname"><span class="pre">HNHNLayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_func=&lt;function</span> <span class="pre">relu&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization_param_alpha:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization_param_beta:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hnhn_layer_bis.html#HNHNLayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hnhn_layer_bis.HNHNLayer" title="Link to this definition">#</a></dt>
-<dd><p>HNHN Layer <a class="reference internal" href="#r97e4446c5f8e-1" id="id1">[1]</a>.</p>
-<p>Given the input representation of nodes, this layer returns a new representation using hyperedges
-as a relay. In other words it makes a intermediary representation for hyperedges with those of the nodes
-and then makes the final representation of the nodes using the representation of the hyperedges.
-During building the representation for a hyperedge/node, this layer multiplies a normalized weight to the
-features of the neighboring nodes/hyperedges, reflecting different levels of importance across the neighbors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>in_features</strong><span class="classifier">int</span></dt><dd><p>The input dimension of node features.</p>
-</dd>
-<dt><strong>incidence_1</strong><span class="classifier">torch.sparse.Tensor, shape = (n_nodes, n_edges)</span></dt><dd><p>Incidence matrix mapping hyperedges to nodes (B_1).</p>
-</dd>
-<dt><strong>activation_func</strong><span class="classifier">Callable</span></dt><dd><p>Called on the new representations.</p>
-</dd>
-<dt><strong>normalization_param_alpha</strong><span class="classifier">float</span></dt><dd><p>The param that weights multiplied into hyperedge representations are powered to beforehand.</p>
-</dd>
-<dt><strong>normalization_param_beta</strong><span class="classifier">float</span></dt><dd><p>The param that weights multiplied into node representations are powered to beforehand.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">References</p>
-<div role="list" class="citation-list">
-<div class="citation" id="r97e4446c5f8e-1" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
-<p>Dong, Sawin, Bengio.
-HNHN: hypergraph networks with hyperedge neurons.
-Graph Representation Learning and Beyond Workshop at ICML 2020.
-<a class="reference external" href="https://grlplus.github.io/papers/40.pdf">https://grlplus.github.io/papers/40.pdf</a></p>
-</div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="topomodelx.nn.hypergraph.hnhn_layer_bis.HNHNLayer.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/hypergraph/hnhn_layer_bis.html#HNHNLayer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.hypergraph.hnhn_layer_bis.HNHNLayer.forward" title="Link to this definition">#</a></dt>
-<dd><p>Forward computation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>x_0</strong><span class="classifier">torch.Tensor, shape = (n_nodes, in_features)</span></dt><dd><p>Input features of the nodes.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>x_0</strong><span class="classifier">torch.Tensor, shape = (n_nodes, in_features)</span></dt><dd><p>Output features of the nodes.</p>
-</dd>
-<dt><strong>x_1</strong><span class="classifier">torch.Tensor, shape = (n_hyperedges, in_features)</span></dt><dd><p>Output features of the hyperedges.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="hnhn-layer-bis">
+<h1>HNHN_Layer_Bis<a class="headerlink" href="#hnhn-layer-bis" title="Link to this heading">#</a></h1>
 </section>
 
 
@@ -540,19 +480,6 @@ Graph Representation Learning and Beyond Workshop at ICML 2020.
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.hypergraph.hnhn_layer_bis.HNHNLayer"><code class="docutils literal notranslate"><span class="pre">HNHNLayer</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topomodelx.nn.hypergraph.hnhn_layer_bis.HNHNLayer.forward"><code class="docutils literal notranslate"><span class="pre">HNHNLayer.forward()</span></code></a></li>
-</ul>
-</li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
