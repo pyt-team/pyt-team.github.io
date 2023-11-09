@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial Complex Convolutional Network (SCCN)" href="sccn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -509,24 +509,36 @@ document.write(`
 </section>
 <section id="1.-Complex-Classification">
 <h1>1. Complex Classification<a class="headerlink" href="#1.-Complex-Classification" title="Link to this heading">#</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">import</span> <span class="nn">toponetx.datasets</span> <span class="k">as</span> <span class="nn">datasets</span>
-<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn</span> <span class="kn">import</span> <span class="n">SCCNN</span><span class="p">,</span> <span class="n">SCCNNComplex</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn</span> <span class="kn">import</span> <span class="n">SCCNN</span>
 <span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
+
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
 </div>
 <section id="Import-shrec-dataset">
 <h2>Import shrec dataset<a class="headerlink" href="#Import-shrec-dataset" title="Link to this heading">#</a></h2>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
@@ -551,7 +563,7 @@ done!
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -577,7 +589,7 @@ done!
 <p>Get incidence matrices <span class="math notranslate nohighlight">\(\mathbf{B}_1,\mathbf{B}_2\)</span> and Hodge Laplacians <span class="math notranslate nohighlight">\(\mathbf{L}_0, \mathbf{L}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{L}_2\)</span>.</p>
 <p>Note that the original paper considered the weighted versions of these operators. However, the current TOPONETX package does not provide such feature yet.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_rank</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># the order of the SC is two</span>
@@ -618,22 +630,72 @@ done!
 <section id="Create-and-Train-the-Neural-Network">
 <h1>Create and Train the Neural Network<a class="headerlink" href="#Create-and-Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_channels_all</span><span class="p">,</span>
+        <span class="n">hidden_channels_all</span><span class="p">,</span>
+        <span class="n">out_channels</span><span class="p">,</span>
+        <span class="n">conv_order</span><span class="p">,</span>
+        <span class="n">max_rank</span><span class="p">,</span>
+        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">SCCNN</span><span class="p">(</span>
+            <span class="n">in_channels_all</span><span class="o">=</span><span class="n">in_channels_all</span><span class="p">,</span>
+            <span class="n">hidden_channels_all</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
+            <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
+            <span class="n">sc_order</span><span class="o">=</span><span class="n">max_rank</span><span class="p">,</span>
+            <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">out_channels_0</span><span class="p">,</span> <span class="n">out_channels_1</span><span class="p">,</span> <span class="n">out_channels_2</span> <span class="o">=</span> <span class="n">hidden_channels_all</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_0</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_1</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_2</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">):</span>
+        <span class="n">x_all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
+
+        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
+
+        <span class="c1"># Take the average of the 2D, 1D, and 0D cell features. If they are NaN, convert them to 0.</span>
+        <span class="n">two_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">two_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">two_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">one_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">one_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">one_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">zero_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">zero_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">zero_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Return the sum of the averages</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">two_dimensional_cells_mean</span>
+            <span class="o">+</span> <span class="n">one_dimensional_cells_mean</span>
+            <span class="o">+</span> <span class="n">zero_dimensional_cells_mean</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">conv_order</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">intermediate_channels_all</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
-<span class="n">out_channels_all</span> <span class="o">=</span> <span class="n">intermediate_channels_all</span>
 <span class="n">num_layers</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># num classes</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">SCCNN</span><span class="p">(</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span>
     <span class="n">in_channels_all</span><span class="o">=</span><span class="n">in_channels_all</span><span class="p">,</span>
-    <span class="n">intermediate_channels_all</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
-    <span class="n">out_channels_all</span><span class="o">=</span><span class="n">out_channels_all</span><span class="p">,</span>
+    <span class="n">hidden_channels_all</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
+    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
     <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
-    <span class="n">sc_order</span><span class="o">=</span><span class="n">max_rank</span><span class="p">,</span>
-    <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">max_rank</span><span class="o">=</span><span class="n">max_rank</span><span class="p">,</span>
     <span class="n">n_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -648,12 +710,14 @@ done!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-SCCNN(
-  (in_linear_0): Linear(in_features=6, out_features=16, bias=True)
-  (in_linear_1): Linear(in_features=10, out_features=16, bias=True)
-  (in_linear_2): Linear(in_features=7, out_features=16, bias=True)
-  (layers): ModuleList(
-    (0-1): 2 x SCCNNLayer()
+Network(
+  (base_model): SCCNN(
+    (in_linear_0): Linear(in_features=6, out_features=16, bias=True)
+    (in_linear_1): Linear(in_features=10, out_features=16, bias=True)
+    (in_linear_2): Linear(in_features=7, out_features=16, bias=True)
+    (layers): ModuleList(
+      (0-1): 2 x SCCNNLayer()
+    )
   )
   (out_linear_0): Linear(in_features=16, out_features=1, bias=True)
   (out_linear_1): Linear(in_features=16, out_features=1, bias=True)
@@ -666,12 +730,12 @@ SCCNN(
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/ninamiolane/opt/anaconda3/envs/tmx/lib/python3.11/site-packages/torch/nn/_reduction.py:42: UserWarning: size_average and reduce args will be deprecated, please use reduction=&#39;mean&#39; instead.
+/Users/gbg141/Documents/TopoProjectX/TopoModelX/venv_modelx/lib/python3.11/site-packages/torch/nn/_reduction.py:42: UserWarning: size_average and reduce args will be deprecated, please use reduction=&#39;mean&#39; instead.
   warnings.warn(warning.format(ret))
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -704,7 +768,7 @@ SCCNN(
 </div>
 <p>We train the SCCNN using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
@@ -809,7 +873,7 @@ SCCNN(
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/ninamiolane/opt/anaconda3/envs/tmx/lib/python3.11/site-packages/torch/nn/modules/loss.py:536: UserWarning: Using a target size (torch.Size([])) that is different to the input size (torch.Size([1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+/Users/gbg141/Documents/TopoProjectX/TopoModelX/venv_modelx/lib/python3.11/site-packages/torch/nn/modules/loss.py:536: UserWarning: Using a target size (torch.Size([])) that is different to the input size (torch.Size([1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
   return F.mse_loss(input, target, reduction=self.reduction)
 </pre></div></div>
 </div>
@@ -818,30 +882,42 @@ SCCNN(
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 944857.9959
-Test_loss: 214.5353
-Epoch: 2 loss: 2055.6737
-Test_loss: 8.6187
-Epoch: 3 loss: 1060.7969
-Test_loss: 1.4612
-Epoch: 4 loss: 635.5951
-Test_loss: 15.8349
-Epoch: 5 loss: 408.8397
-Test_loss: 45.9482
+Epoch: 1 loss: 399008.0930
+Test_loss: 926.6080
+Epoch: 2 loss: 477.8325
+Test_loss: 204.4115
+Epoch: 3 loss: 299.4982
+Test_loss: 243.1712
+Epoch: 4 loss: 202.5915
+Test_loss: 302.4839
+Epoch: 5 loss: 147.9002
+Test_loss: 311.9497
 </pre></div></div>
 </div>
 </section>
 <section id="2.-Node-Classification">
 <h1>2. Node Classification<a class="headerlink" href="#2.-Node-Classification" title="Link to this heading">#</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">toponetx.datasets.graph</span> <span class="k">as</span> <span class="nn">graph</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.sccnn</span> <span class="kn">import</span> <span class="n">SCCNN</span>
+
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
 </div>
 </section>
 <section id="Pre-processing">
@@ -849,7 +925,7 @@ Test_loss: 45.9482
 <p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to two different social groups. We will use these groups for the task of node-level binary classification.</p>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">karate_club</span><span class="p">(</span><span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">)</span>
@@ -873,7 +949,7 @@ Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 <p>Get incidence matrices <span class="math notranslate nohighlight">\(\mathbf{B}_1,\mathbf{B}_2\)</span> and Hodge Laplacians <span class="math notranslate nohighlight">\(\mathbf{L}_0, \mathbf{L}_1\)</span> and <span class="math notranslate nohighlight">\(\mathbf{L}_2\)</span>.</p>
 <p>Note that the original paper considered the weighted versions of these operators. However, the current TOPONETX package does not provide such feature yet.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -893,8 +969,8 @@ The incidence matrix B1 has shape: (34, 78).
 The incidence matrix B2 has shape: (78, 45).
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -902,26 +978,11 @@ The incidence matrix B2 has shape: (78, 45).
 <span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">laplacian_down_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">laplacian_up_1</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">laplacian_down_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">coadjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">laplacian_up_2</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/Users/ninamiolane/opt/anaconda3/envs/tmx/lib/python3.11/site-packages/scipy/sparse/_index.py:143: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
-  self._set_arrayXarray(i, j, x)
-</pre></div></div>
-</div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">laplacian_0</span><span class="p">)</span>
@@ -937,9 +998,9 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 <section id="Import-signal">
 <h3>Import signal<a class="headerlink" href="#Import-signal" title="Link to this heading">#</a></h3>
-<p>Since our task will be node classification, we must retrieve an input signal on the nodes. The signal will have shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times\)</span> in_channels, where in_channels is the dimension of each cell’s feature. Here, we have in_channels = channels_nodes $ = 34$. This is because the Karate dataset encodes the identity of each of the 34 nodes as a one hot encoder.</p>
+<p>Since our task will be node classification, we must retrieve an input signal on the nodes. The signal will have shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times\)</span> in_channels, where in_channels is the dimension of each cell’s feature. Here, we have in_channels = channels_nodes $ = 2$.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;A function to obtain features based on the input: rank</span>
@@ -967,15 +1028,28 @@ The incidence matrix B2 has shape: (78, 45).
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span> <span class="o">=</span> <span class="n">get_simplicial_features</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">x_1</span> <span class="o">=</span> <span class="n">get_simplicial_features</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">x_2</span> <span class="o">=</span> <span class="n">get_simplicial_features</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes with features of dimension </span><span class="si">{</span><span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges with features of dimension </span><span class="si">{</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> faces with features of dimension </span><span class="si">{</span><span class="n">x_2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+There are 34 nodes with features of dimension 2.
+There are 78 edges with features of dimension 2.
+There are 45 faces with features of dimension 2.
+</pre></div></div>
 </div>
 </section>
 <section id="Define-binary-labels">
@@ -983,7 +1057,7 @@ The incidence matrix B2 has shape: (78, 45).
 <p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
 <p>We convert the binary labels into one-hot encoder form, and keep the first four nodes’ true labels for the purpose of testing.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -1027,8 +1101,8 @@ The incidence matrix B2 has shape: (78, 45).
 <span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">34</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="n">y_true</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
 <span class="n">y_true</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">y</span>
-<span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[:</span><span class="mi">30</span><span class="p">]</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
 
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
 <span class="n">y_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
@@ -1042,7 +1116,48 @@ The incidence matrix B2 has shape: (78, 45).
 <h1>Create and Train the Neural Network<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_channels_all</span><span class="p">,</span>
+        <span class="n">hidden_channels_all</span><span class="p">,</span>
+        <span class="n">out_channels</span><span class="p">,</span>
+        <span class="n">conv_order</span><span class="p">,</span>
+        <span class="n">max_rank</span><span class="p">,</span>
+        <span class="n">update_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">SCCNN</span><span class="p">(</span>
+            <span class="n">in_channels_all</span><span class="o">=</span><span class="n">in_channels_all</span><span class="p">,</span>
+            <span class="n">hidden_channels_all</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
+            <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
+            <span class="n">sc_order</span><span class="o">=</span><span class="n">max_rank</span><span class="p">,</span>
+            <span class="n">update_func</span><span class="o">=</span><span class="n">update_func</span><span class="p">,</span>
+            <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">out_channels_0</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">hidden_channels_all</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_0</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">):</span>
+        <span class="n">x_all</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x_all</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        We pass the output on the nodes to a linear layer and use that to generate a probability label for nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x_all</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [46]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Obtain the initial features on all simplices&quot;&quot;&quot;</span>
@@ -1051,8 +1166,8 @@ The incidence matrix B2 has shape: (78, 45).
 <span class="n">conv_order</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">in_channels_all</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x_2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">intermediate_channels_all</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
-<span class="n">out_channels_all</span> <span class="o">=</span> <span class="n">intermediate_channels_all</span>
 <span class="n">num_layers</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># num classes</span>
 
 <span class="n">laplacian_all</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">laplacian_0</span><span class="p">,</span>
@@ -1064,30 +1179,35 @@ The incidence matrix B2 has shape: (78, 45).
 
 <span class="n">incidence_all</span> <span class="o">=</span> <span class="p">(</span><span class="n">incidence_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">)</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">SCCNNComplex</span><span class="p">(</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span>
     <span class="n">in_channels_all</span><span class="o">=</span><span class="n">in_channels_all</span><span class="p">,</span>
-    <span class="n">intermediate_channels_all</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
-    <span class="n">out_channels_all</span><span class="o">=</span><span class="n">out_channels_all</span><span class="p">,</span>
+    <span class="n">hidden_channels_all</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
+    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
     <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
-    <span class="n">sc_order</span><span class="o">=</span><span class="n">max_rank</span><span class="p">,</span>
+    <span class="n">max_rank</span><span class="o">=</span><span class="n">max_rank</span><span class="p">,</span>
+    <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
     <span class="n">n_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [47]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">5</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
     <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
+    <span class="c1"># We project the edge-level output of the model to the node-level</span>
+    <span class="c1"># and apply softmax fn to get the final node-level classification output</span>
+    <span class="c1"># y_hat = torch.softmax(torch.sparse.mm(incidence_1, y_hat_edge), dim=1)</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">y_hat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">binary_cross_entropy</span><span class="p">(</span>
         <span class="n">y_hat</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)]</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
     <span class="p">)</span>
@@ -1096,7 +1216,7 @@ The incidence matrix B2 has shape: (78, 45).
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
     <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_hat</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)]</span> <span class="o">==</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1104,6 +1224,8 @@ The incidence matrix B2 has shape: (78, 45).
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
             <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
+            <span class="c1"># Projection to node-level</span>
+            <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">y_hat_test</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">y_pred_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                 <span class="n">y_hat_test</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="p">)</span>
@@ -1123,16 +1245,116 @@ The incidence matrix B2 has shape: (78, 45).
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 31.6361 Train_acc: 0.6000
-Test_acc: 0.7500
-Epoch: 2 loss: 17.7911 Train_acc: 0.5667
-Test_acc: 0.7500
-Epoch: 3 loss: 6.6667 Train_acc: 0.6333
-Test_acc: 0.7500
-Epoch: 4 loss: 6.6667 Train_acc: 0.6333
-Test_acc: 1.0000
-Epoch: 5 loss: 5.0000 Train_acc: 0.7000
-Test_acc: 1.0000
+Epoch: 1 loss: 0.6788 Train_acc: 0.4667
+Epoch: 2 loss: 0.6248 Train_acc: 0.8000
+Epoch: 3 loss: 0.6677 Train_acc: 0.7667
+Epoch: 4 loss: 0.5903 Train_acc: 0.8000
+Epoch: 5 loss: 0.5934 Train_acc: 0.8000
+Epoch: 6 loss: 0.5666 Train_acc: 0.8000
+Epoch: 7 loss: 0.5496 Train_acc: 0.8000
+Epoch: 8 loss: 0.5381 Train_acc: 0.8000
+Epoch: 9 loss: 0.5306 Train_acc: 0.8000
+Epoch: 10 loss: 0.5257 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 11 loss: 0.5223 Train_acc: 0.8000
+Epoch: 12 loss: 0.5198 Train_acc: 0.8000
+Epoch: 13 loss: 0.5182 Train_acc: 0.8000
+Epoch: 14 loss: 0.5170 Train_acc: 0.8000
+Epoch: 15 loss: 0.5162 Train_acc: 0.8000
+Epoch: 16 loss: 0.5156 Train_acc: 0.8000
+Epoch: 17 loss: 0.5151 Train_acc: 0.8000
+Epoch: 18 loss: 0.5147 Train_acc: 0.8000
+Epoch: 19 loss: 0.5144 Train_acc: 0.8000
+Epoch: 20 loss: 0.5142 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 21 loss: 0.5140 Train_acc: 0.8000
+Epoch: 22 loss: 0.5139 Train_acc: 0.8000
+Epoch: 23 loss: 0.5138 Train_acc: 0.8000
+Epoch: 24 loss: 0.5137 Train_acc: 0.8000
+Epoch: 25 loss: 0.5136 Train_acc: 0.8000
+Epoch: 26 loss: 0.5135 Train_acc: 0.8000
+Epoch: 27 loss: 0.5135 Train_acc: 0.8000
+Epoch: 28 loss: 0.5134 Train_acc: 0.8000
+Epoch: 29 loss: 0.5134 Train_acc: 0.8000
+Epoch: 30 loss: 0.5133 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 31 loss: 0.5133 Train_acc: 0.8000
+Epoch: 32 loss: 0.5133 Train_acc: 0.8000
+Epoch: 33 loss: 0.5132 Train_acc: 0.8000
+Epoch: 34 loss: 0.5132 Train_acc: 0.8000
+Epoch: 35 loss: 0.5132 Train_acc: 0.8000
+Epoch: 36 loss: 0.5132 Train_acc: 0.8000
+Epoch: 37 loss: 0.5131 Train_acc: 0.8000
+Epoch: 38 loss: 0.5131 Train_acc: 0.8000
+Epoch: 39 loss: 0.5131 Train_acc: 0.8000
+Epoch: 40 loss: 0.5131 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 41 loss: 0.5130 Train_acc: 0.8000
+Epoch: 42 loss: 0.5130 Train_acc: 0.8000
+Epoch: 43 loss: 0.5130 Train_acc: 0.8000
+Epoch: 44 loss: 0.5130 Train_acc: 0.8000
+Epoch: 45 loss: 0.5129 Train_acc: 0.8000
+Epoch: 46 loss: 0.5129 Train_acc: 0.8000
+Epoch: 47 loss: 0.5129 Train_acc: 0.8000
+Epoch: 48 loss: 0.5128 Train_acc: 0.8000
+Epoch: 49 loss: 0.5128 Train_acc: 0.8000
+Epoch: 50 loss: 0.5128 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 51 loss: 0.5127 Train_acc: 0.8000
+Epoch: 52 loss: 0.5127 Train_acc: 0.8000
+Epoch: 53 loss: 0.5126 Train_acc: 0.8000
+Epoch: 54 loss: 0.5126 Train_acc: 0.8000
+Epoch: 55 loss: 0.5125 Train_acc: 0.8000
+Epoch: 56 loss: 0.5124 Train_acc: 0.8000
+Epoch: 57 loss: 0.5124 Train_acc: 0.8000
+Epoch: 58 loss: 0.5123 Train_acc: 0.8000
+Epoch: 59 loss: 0.5122 Train_acc: 0.8000
+Epoch: 60 loss: 0.5121 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 61 loss: 0.5120 Train_acc: 0.8000
+Epoch: 62 loss: 0.5119 Train_acc: 0.8000
+Epoch: 63 loss: 0.5118 Train_acc: 0.8000
+Epoch: 64 loss: 0.5116 Train_acc: 0.8000
+Epoch: 65 loss: 0.5115 Train_acc: 0.8000
+Epoch: 66 loss: 0.5113 Train_acc: 0.8000
+Epoch: 67 loss: 0.5111 Train_acc: 0.8000
+Epoch: 68 loss: 0.5109 Train_acc: 0.8000
+Epoch: 69 loss: 0.5107 Train_acc: 0.8000
+Epoch: 70 loss: 0.5105 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 71 loss: 0.5103 Train_acc: 0.8000
+Epoch: 72 loss: 0.5101 Train_acc: 0.8000
+Epoch: 73 loss: 0.5099 Train_acc: 0.8000
+Epoch: 74 loss: 0.5098 Train_acc: 0.8000
+Epoch: 75 loss: 0.5096 Train_acc: 0.8000
+Epoch: 76 loss: 0.5094 Train_acc: 0.8000
+Epoch: 77 loss: 0.5092 Train_acc: 0.8000
+Epoch: 78 loss: 0.5089 Train_acc: 0.8000
+Epoch: 79 loss: 0.5085 Train_acc: 0.8000
+Epoch: 80 loss: 0.5082 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 81 loss: 0.5078 Train_acc: 0.8000
+Epoch: 82 loss: 0.5075 Train_acc: 0.8000
+Epoch: 83 loss: 0.5071 Train_acc: 0.8000
+Epoch: 84 loss: 0.5068 Train_acc: 0.8000
+Epoch: 85 loss: 0.5064 Train_acc: 0.8000
+Epoch: 86 loss: 0.5060 Train_acc: 0.8000
+Epoch: 87 loss: 0.5056 Train_acc: 0.8000
+Epoch: 88 loss: 0.5051 Train_acc: 0.8000
+Epoch: 89 loss: 0.5046 Train_acc: 0.8000
+Epoch: 90 loss: 0.5041 Train_acc: 0.8000
+Test_acc: 0.5000
+Epoch: 91 loss: 0.5037 Train_acc: 0.8000
+Epoch: 92 loss: 0.5032 Train_acc: 0.8000
+Epoch: 93 loss: 0.5027 Train_acc: 0.8000
+Epoch: 94 loss: 0.5022 Train_acc: 0.8000
+Epoch: 95 loss: 0.5016 Train_acc: 0.8000
+Epoch: 96 loss: 0.5011 Train_acc: 0.8000
+Epoch: 97 loss: 0.5005 Train_acc: 0.8000
+Epoch: 98 loss: 0.5000 Train_acc: 0.8000
+Epoch: 99 loss: 0.4994 Train_acc: 0.8000
+Epoch: 100 loss: 0.4989 Train_acc: 0.8000
+Test_acc: 0.5000
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">

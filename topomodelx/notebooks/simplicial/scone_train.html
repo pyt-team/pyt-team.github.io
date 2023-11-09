@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial Convolutional Neural Network (SCNN)" href="scnn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -522,6 +522,9 @@ document.write(`
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">Delaunay</span><span class="p">,</span> <span class="n">distance</span>
 
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scone</span> <span class="kn">import</span> <span class="n">SCoNe</span>
+
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
 </pre></div>
 </div>
 </div>
@@ -543,7 +546,7 @@ document.write(`
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;torch._C.Generator at 0x1664f0f50&gt;
+&lt;torch._C.Generator at 0x13507d2d0&gt;
 </pre></div></div>
 </div>
 </section>
@@ -837,13 +840,57 @@ to the network, we need to create a vector representation of it. We will do this
 <h1>Creating the Neural Network<a class="headerlink" href="#Creating-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We are now ready to define the trajectory prediction network using the <code class="docutils literal notranslate"><span class="pre">SCoNeLayer</span></code> class. First, we stack multiple SCoNe layers to obtain a map <span class="math notranslate nohighlight">\(C_1\to C_1\)</span> where <span class="math notranslate nohighlight">\(C_1\)</span> is the vector space of <span class="math notranslate nohighlight">\(1\)</span>-chains. Note that the feature dimension of the first and last SCoNe layer are both <span class="math notranslate nohighlight">\(1\)</span>. We then apply the last linear operation and the boundary operator <span class="math notranslate nohighlight">\(\partial_1\)</span> going from <span class="math notranslate nohighlight">\(C_1\)</span> to <span class="math notranslate nohighlight">\(C_0\)</span>. That is, we have now assigned a scalar value to each node in the
 simplicial complex. The final step consists of applying the softmax operator over the neighbors of <span class="math notranslate nohighlight">\(i_{m-1}\)</span> and the highest scoring neighbor will be our prediction <span class="math notranslate nohighlight">\(\hat{i}_m\)</span> for <span class="math notranslate nohighlight">\(i_m\)</span>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">hidden_channels</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">n_layers</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="n">incidence_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="n">incidence_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="n">adjacency</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">SCoNe</span><span class="p">(</span>
+            <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+            <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+            <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Weights for the last layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">parameter</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">)</span>
+        <span class="c1"># Last layer going from edges to nodes using the boundary operator</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">incidence_1</span> <span class="o">@</span> <span class="n">x</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights</span>
+        <span class="c1"># Take softmax only over neighbors by setting the logits of non-neighbors to approximately -inf</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1e-15</span> <span class="o">+</span> <span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="Training-the-Neural-Network">
 <h1>Training the Neural Network<a class="headerlink" href="#Training-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We will train the network for <span class="math notranslate nohighlight">\(10\)</span> epochs using the Adam optimizer with hyper-parameters given below. We choose a network with <span class="math notranslate nohighlight">\(6\)</span> hidden layers, each having feature dimension <span class="math notranslate nohighlight">\(16\)</span>. We use the negative log likelihood loss function penalizing the cases where <span class="math notranslate nohighlight">\(\hat{i}_m \neq i_m\)</span>.</p>
 <p><strong>Note: The number of epochs below have been kept low to facilitate debugging and testing. Real use cases should likely require more epochs.</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Hyper-parameters</span>
@@ -851,9 +898,8 @@ simplicial complex. The final step consists of applying the softmax operator ove
 <span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
 <span class="n">weight_decay</span> <span class="o">=</span> <span class="mf">5e-5</span>
 <span class="n">betas</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
-<span class="n">hidden_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
 
-<span class="n">model</span> <span class="o">=</span> <span class="n">SCoNe</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">hidden_dims</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">)</span>
 <span class="n">loss_function</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">NLLLoss</span><span class="p">()</span>  <span class="c1"># Use NLL loss since we take softmax in the SCoNe network</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">betas</span><span class="o">=</span><span class="n">betas</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">)</span>
 
@@ -868,7 +914,7 @@ simplicial complex. The final step consists of applying the softmax operator ove
         <span class="c1"># Train step</span>
         <span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">last_nodes</span> <span class="o">=</span> <span class="n">batch</span>
         <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">last_nodes</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
         <span class="n">correct</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">last_nodes</span><span class="p">)</span>
@@ -885,7 +931,7 @@ simplicial complex. The final step consists of applying the softmax operator ove
     <span class="n">val_losses</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">val_dl</span><span class="p">:</span>
         <span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">last_nodes</span> <span class="o">=</span> <span class="n">batch</span>
-        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
         <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_function</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">last_nodes</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
         <span class="n">correct</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">last_nodes</span><span class="p">)</span>
@@ -915,7 +961,7 @@ Epoch 10/10
 </div>
 <p>We take a quick look at the loss and accuracy plots for training and validation data to confirm that everything looks reasonable and the that the network is learning.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -935,7 +981,7 @@ Epoch 10/10
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/notebooks_simplicial_scone_train_26_0.png" src="../../_images/notebooks_simplicial_scone_train_26_0.png" />
+<img alt="../../_images/notebooks_simplicial_scone_train_28_0.png" src="../../_images/notebooks_simplicial_scone_train_28_0.png" />
 </div>
 </div>
 </section>
@@ -943,14 +989,14 @@ Epoch 10/10
 <h1>Evaluating the model on test data<a class="headerlink" href="#Evaluating-the-model-on-test-data" title="Link to this heading">#</a></h1>
 <p>We now evaluate the final model on our test dataset. The average number of neighbors in our simplicial complex is approximately <span class="math notranslate nohighlight">\(5.5\)</span>, meaning that accuracies above <span class="math notranslate nohighlight">\(0.19\)</span> should be better than random guessing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">test_dl</span><span class="p">:</span>
     <span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">last_nodes</span> <span class="o">=</span> <span class="n">batch</span>
-    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">traj</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">incidence_2</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
     <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
     <span class="n">correct</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">last_nodes</span><span class="p">)</span>
 
@@ -963,7 +1009,7 @@ Epoch 10/10
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Test accuracy: 0.613
+Test accuracy: 0.600
 </pre></div></div>
 </div>
 </section>
@@ -975,6 +1021,14 @@ Test accuracy: 0.613
 <li><p>Test the generalization capabilities of the network by making the test data differ more from the training data. For example, by reversing the trajectories in the test data.</p></li>
 <li><p>Change the underlying simplicial complex. Or, go to the <a class="reference external" href="https://github.com/nglaze00/SCoNe_GCN">original implementation by the authors</a> and take a look at the real-world dataset called Ocean Drifters.</p></li>
 </ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </section>
 
 

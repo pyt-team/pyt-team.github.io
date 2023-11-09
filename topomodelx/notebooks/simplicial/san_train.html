@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial High-Skip Network (HSN)" href="hsn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -522,8 +522,8 @@ a_k(h_x^{t}, h_y^{t}) \cdot \psi_k^t(h_x^{t})\quad \forall \mathcal N_k \in \mat
 \end{align}</span></p></li>
 </ul>
 <p><span class="math notranslate nohighlight">\(W\)</span>, <span class="math notranslate nohighlight">\(a_\downarrow\)</span>, <span class="math notranslate nohighlight">\(a_\uparrow\)</span>, {<span class="math notranslate nohighlight">\(W_{\downarrow,p}\}_{p=1}^P\)</span> and <span class="math notranslate nohighlight">\(\{W_{\uparrow,p}\}_{p=1}^P\)</span> are learnable weights.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -540,8 +540,17 @@ a_k(h_x^{t}, h_y^{t}) \cdot \psi_k^t(h_x^{t})\quad \forall \mathcal N_k \in \mat
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
@@ -564,7 +573,7 @@ cpu
 <p>The first step is to import the Karate Club (<a class="reference external" href="https://www.jstor.org/stable/3629752">https://www.jstor.org/stable/3629752</a>) dataset. This is a singular graph with 34 nodes that belong to two different social groups. We will use these groups for the task of node-level binary classification.</p>
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">karate_club</span><span class="p">(</span><span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">)</span>
@@ -581,7 +590,7 @@ Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span><span class="o">.</span><span class="n">shape</span>
@@ -589,7 +598,7 @@ Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [21]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -601,7 +610,7 @@ Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 and 2. Please notice that the binary adjacencies <span class="math notranslate nohighlight">\(A_{\downarrow,1}^p\)</span> and <span class="math notranslate nohighlight">\(A_{\uparrow,1}^p\)</span> encoding the <span class="math notranslate nohighlight">\(p\)</span>-hops neighborhoods are given by the support (the non-zeros pattern) of <span class="math notranslate nohighlight">\(L_{\downarrow,1}^p\)</span> and <span class="math notranslate nohighlight">\(L_{\uparrow,1}^p\)</span>, respectively. We also convert the neighborhood structures to torch tensors.</p>
 <p><strong>Remark.</strong> In the case of rank-0 simplices (nodes), there is no lower Laplacian; in this case, we just initialize the down laplacian as a 0-matrix, and SAN automatically becomes a GAT-like architecture. In the case of simplices of maxium rank (the order of the complex), there is no upper Laplacian. In this case we can also initialize it as a 0 matrix and SAN will only consider the lower adjacencies.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simplex_order_k</span> <span class="o">=</span> <span class="mi">1</span>
@@ -625,7 +634,7 @@ and 2. Please notice that the binary adjacencies <span class="math notranslate n
 <p>We define edge features to be the gradient of the nodes features, i.e. given the node feature matrix <span class="math notranslate nohighlight">\(X_0\)</span>, we compute the edge features matrix as <span class="math notranslate nohighlight">\(X_1 = B_1^TX_0\)</span>. We will finally obtain the estimated node labels from the updated edge features by multiplying them again with <span class="math notranslate nohighlight">\(B_1\)</span>, i.e. the final nodes features are computed as the divergence of the final edge features.</p>
 <p><strong>Remark.</strong> Please notice that also this way of deriving edges/nodes features from nodes/edges features could be seen as a (non-learnable) message passing between rank-0/1 cells (nodes/edges) and rank-1/0 cells (nodes).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span> <span class="o">=</span> <span class="p">[]</span>
@@ -661,7 +670,7 @@ There are 45 faces with features of dimension 2.
 </div>
 <p>We use the incidence matrix between nodes-edges:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">incidence_0_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
@@ -670,7 +679,7 @@ There are 45 faces with features of dimension 2.
 </div>
 <p>The final edge features are obtained summing the original features of those edges plus the projection of the node features onto edges (using the incidence matrix accordingly):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">x_1</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_0_1</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
@@ -679,7 +688,7 @@ There are 45 faces with features of dimension 2.
 </div>
 <p>Hence, the final input features are defined by this sum, and we also pre-define the number of hidden and output channels of the model.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -691,7 +700,7 @@ There are 45 faces with features of dimension 2.
 <p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
 <p>We convert one-hot encode the binary labels, and keep the first four nodes for the purpose of testing.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [42]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -735,8 +744,8 @@ There are 45 faces with features of dimension 2.
 <span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">34</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="n">y_true</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
 <span class="n">y_true</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">y</span>
-<span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
-<span class="n">y_train</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="o">-</span><span class="mi">30</span><span class="p">:]</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[:</span><span class="mi">30</span><span class="p">]</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
 
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
 <span class="n">y_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
@@ -746,9 +755,30 @@ There are 45 faces with features of dimension 2.
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Using the SAN class, we create our neural network with stacked layers. A linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
+<p>Using the SAN class, we create our neural network with stacked layers. Given the considered dataset and task (Karate Club, node classification), a linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">SAN</span><span class="p">(</span>
+            <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+            <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+            <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">laplacian_up</span><span class="p">,</span> <span class="n">laplacian_down</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">laplacian_up</span><span class="p">,</span> <span class="n">laplacian_down</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [44]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_up</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">laplacian_down</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x_1</span><span class="o">.</span><span class="n">shape</span>
@@ -756,7 +786,7 @@ There are 45 faces with features of dimension 2.
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [44]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -764,24 +794,31 @@ There are 45 faces with features of dimension 2.
 (torch.Size([78, 78]), torch.Size([78, 78]), torch.Size([78, 2]))
 </pre></div></div>
 </div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_layers</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span>
+    <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
+    <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>The following cell performs the training, looping over the network for a low number of epochs.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [48]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SAN</span><span class="p">(</span>
-    <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
-    <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
-    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
-<span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">10</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">200</span>
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
@@ -792,14 +829,14 @@ There are 45 faces with features of dimension 2.
     <span class="c1"># and apply softmax fn to get the final node-level classification output</span>
     <span class="n">y_hat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_0_1</span><span class="p">,</span> <span class="n">y_hat_edge</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">binary_cross_entropy_with_logits</span><span class="p">(</span>
-        <span class="n">y_hat</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+        <span class="n">y_hat</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)]</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
     <span class="p">)</span>
     <span class="n">epoch_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
     <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_hat</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)]</span> <span class="o">==</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -818,7 +855,7 @@ There are 45 faces with features of dimension 2.
             <span class="p">)</span>
             <span class="c1"># _pred_test = torch.softmax(y_hat_test,dim=1).ge(0.5).float()</span>
             <span class="n">test_accuracy</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">torch</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">y_pred_test</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)],</span> <span class="n">y_test</span><span class="p">)</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">y_pred_test</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span> <span class="p">:],</span> <span class="n">y_test</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">float</span><span class="p">()</span>
                 <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -833,22 +870,235 @@ There are 45 faces with features of dimension 2.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 0.7322 Train_acc: 0.3667
-Epoch: 2 loss: 0.7208 Train_acc: 0.7333
-Test_acc: 0.0000
-Epoch: 3 loss: 0.7070 Train_acc: 0.7333
-Epoch: 4 loss: 0.6918 Train_acc: 0.7333
-Test_acc: 0.0000
-Epoch: 5 loss: 0.6814 Train_acc: 0.7333
-Epoch: 6 loss: 0.6753 Train_acc: 0.7333
-Test_acc: 0.0000
-Epoch: 7 loss: 0.6717 Train_acc: 0.7333
-Epoch: 8 loss: 0.6695 Train_acc: 0.7333
-Test_acc: 0.0000
-Epoch: 9 loss: 0.6682 Train_acc: 0.7333
-Epoch: 10 loss: 0.6674 Train_acc: 0.7333
-Test_acc: 0.0000
+Epoch: 1 loss: 0.7225 Train_acc: 0.7000
+Epoch: 2 loss: 0.7185 Train_acc: 0.7000
+Epoch: 3 loss: 0.7139 Train_acc: 0.7000
+Epoch: 4 loss: 0.7091 Train_acc: 0.7333
+Epoch: 5 loss: 0.7044 Train_acc: 0.7333
+Epoch: 6 loss: 0.6999 Train_acc: 0.7333
+Epoch: 7 loss: 0.6958 Train_acc: 0.7333
+Epoch: 8 loss: 0.6922 Train_acc: 0.7333
+Epoch: 9 loss: 0.6890 Train_acc: 0.7333
+Epoch: 10 loss: 0.6862 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 11 loss: 0.6837 Train_acc: 0.7333
+Epoch: 12 loss: 0.6816 Train_acc: 0.7333
+Epoch: 13 loss: 0.6798 Train_acc: 0.7333
+Epoch: 14 loss: 0.6782 Train_acc: 0.7333
+Epoch: 15 loss: 0.6768 Train_acc: 0.7333
+Epoch: 16 loss: 0.6756 Train_acc: 0.7333
+Epoch: 17 loss: 0.6746 Train_acc: 0.7333
+Epoch: 18 loss: 0.6737 Train_acc: 0.7333
+Epoch: 19 loss: 0.6730 Train_acc: 0.7333
+Epoch: 20 loss: 0.6723 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 21 loss: 0.6717 Train_acc: 0.7333
+Epoch: 22 loss: 0.6712 Train_acc: 0.7333
+Epoch: 23 loss: 0.6708 Train_acc: 0.7333
+Epoch: 24 loss: 0.6704 Train_acc: 0.7333
+Epoch: 25 loss: 0.6700 Train_acc: 0.7333
+Epoch: 26 loss: 0.6697 Train_acc: 0.7333
+Epoch: 27 loss: 0.6694 Train_acc: 0.7333
+Epoch: 28 loss: 0.6692 Train_acc: 0.7333
+Epoch: 29 loss: 0.6689 Train_acc: 0.7333
+Epoch: 30 loss: 0.6687 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 31 loss: 0.6685 Train_acc: 0.7333
+Epoch: 32 loss: 0.6683 Train_acc: 0.7333
+Epoch: 33 loss: 0.6682 Train_acc: 0.7333
+Epoch: 34 loss: 0.6680 Train_acc: 0.7333
+Epoch: 35 loss: 0.6678 Train_acc: 0.7333
+Epoch: 36 loss: 0.6677 Train_acc: 0.7333
+Epoch: 37 loss: 0.6676 Train_acc: 0.7333
+Epoch: 38 loss: 0.6674 Train_acc: 0.7333
+Epoch: 39 loss: 0.6673 Train_acc: 0.7333
+Epoch: 40 loss: 0.6672 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 41 loss: 0.6670 Train_acc: 0.7333
+Epoch: 42 loss: 0.6669 Train_acc: 0.7333
+Epoch: 43 loss: 0.6668 Train_acc: 0.7333
+Epoch: 44 loss: 0.6666 Train_acc: 0.7333
+Epoch: 45 loss: 0.6665 Train_acc: 0.7333
+Epoch: 46 loss: 0.6664 Train_acc: 0.7333
+Epoch: 47 loss: 0.6663 Train_acc: 0.7333
+Epoch: 48 loss: 0.6661 Train_acc: 0.7333
+Epoch: 49 loss: 0.6660 Train_acc: 0.7333
+Epoch: 50 loss: 0.6659 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 51 loss: 0.6657 Train_acc: 0.7333
+Epoch: 52 loss: 0.6656 Train_acc: 0.7333
+Epoch: 53 loss: 0.6654 Train_acc: 0.7333
+Epoch: 54 loss: 0.6653 Train_acc: 0.7333
+Epoch: 55 loss: 0.6652 Train_acc: 0.7333
+Epoch: 56 loss: 0.6650 Train_acc: 0.7333
+Epoch: 57 loss: 0.6648 Train_acc: 0.7333
+Epoch: 58 loss: 0.6647 Train_acc: 0.7333
+Epoch: 59 loss: 0.6645 Train_acc: 0.7333
+Epoch: 60 loss: 0.6644 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 61 loss: 0.6642 Train_acc: 0.7333
+Epoch: 62 loss: 0.6640 Train_acc: 0.7333
+Epoch: 63 loss: 0.6638 Train_acc: 0.7333
+Epoch: 64 loss: 0.6637 Train_acc: 0.7333
+Epoch: 65 loss: 0.6635 Train_acc: 0.7333
+Epoch: 66 loss: 0.6633 Train_acc: 0.7333
+Epoch: 67 loss: 0.6631 Train_acc: 0.7333
+Epoch: 68 loss: 0.6629 Train_acc: 0.7333
+Epoch: 69 loss: 0.6627 Train_acc: 0.7333
+Epoch: 70 loss: 0.6624 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 71 loss: 0.6622 Train_acc: 0.7333
+Epoch: 72 loss: 0.6620 Train_acc: 0.7333
+Epoch: 73 loss: 0.6618 Train_acc: 0.7333
+Epoch: 74 loss: 0.6615 Train_acc: 0.7333
+Epoch: 75 loss: 0.6613 Train_acc: 0.7333
+Epoch: 76 loss: 0.6610 Train_acc: 0.7333
+Epoch: 77 loss: 0.6608 Train_acc: 0.7333
+Epoch: 78 loss: 0.6605 Train_acc: 0.7333
+Epoch: 79 loss: 0.6603 Train_acc: 0.7333
+Epoch: 80 loss: 0.6600 Train_acc: 0.7333
+Test_acc: 0.2500
+Epoch: 81 loss: 0.6597 Train_acc: 0.7333
+Epoch: 82 loss: 0.6594 Train_acc: 0.7333
+Epoch: 83 loss: 0.6592 Train_acc: 0.7333
+Epoch: 84 loss: 0.6589 Train_acc: 0.7333
+Epoch: 85 loss: 0.6586 Train_acc: 0.7333
+Epoch: 86 loss: 0.6583 Train_acc: 0.7667
+Epoch: 87 loss: 0.6580 Train_acc: 0.7667
+Epoch: 88 loss: 0.6577 Train_acc: 0.7667
+Epoch: 89 loss: 0.6574 Train_acc: 0.7667
+Epoch: 90 loss: 0.6571 Train_acc: 0.7667
+Test_acc: 0.2500
+Epoch: 91 loss: 0.6568 Train_acc: 0.7667
+Epoch: 92 loss: 0.6565 Train_acc: 0.7667
+Epoch: 93 loss: 0.6562 Train_acc: 0.7667
+Epoch: 94 loss: 0.6559 Train_acc: 0.7667
+Epoch: 95 loss: 0.6556 Train_acc: 0.7667
+Epoch: 96 loss: 0.6553 Train_acc: 0.8000
+Epoch: 97 loss: 0.6550 Train_acc: 0.8000
+Epoch: 98 loss: 0.6548 Train_acc: 0.8000
+Epoch: 99 loss: 0.6545 Train_acc: 0.8000
+Epoch: 100 loss: 0.6543 Train_acc: 0.8000
+Test_acc: 0.2500
+Epoch: 101 loss: 0.6541 Train_acc: 0.8000
+Epoch: 102 loss: 0.6539 Train_acc: 0.8333
+Epoch: 103 loss: 0.6537 Train_acc: 0.8333
+Epoch: 104 loss: 0.6535 Train_acc: 0.8333
+Epoch: 105 loss: 0.6534 Train_acc: 0.8333
+Epoch: 106 loss: 0.6532 Train_acc: 0.8333
+Epoch: 107 loss: 0.6531 Train_acc: 0.8333
+Epoch: 108 loss: 0.6529 Train_acc: 0.8333
+Epoch: 109 loss: 0.6528 Train_acc: 0.8333
+Epoch: 110 loss: 0.6526 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 111 loss: 0.6525 Train_acc: 0.8333
+Epoch: 112 loss: 0.6524 Train_acc: 0.8333
+Epoch: 113 loss: 0.6522 Train_acc: 0.8333
+Epoch: 114 loss: 0.6521 Train_acc: 0.8333
+Epoch: 115 loss: 0.6520 Train_acc: 0.8333
+Epoch: 116 loss: 0.6518 Train_acc: 0.8333
+Epoch: 117 loss: 0.6517 Train_acc: 0.8333
+Epoch: 118 loss: 0.6516 Train_acc: 0.8333
+Epoch: 119 loss: 0.6515 Train_acc: 0.8333
+Epoch: 120 loss: 0.6513 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 121 loss: 0.6512 Train_acc: 0.8333
+Epoch: 122 loss: 0.6511 Train_acc: 0.8333
+Epoch: 123 loss: 0.6510 Train_acc: 0.8333
+Epoch: 124 loss: 0.6509 Train_acc: 0.8333
+Epoch: 125 loss: 0.6508 Train_acc: 0.8333
+Epoch: 126 loss: 0.6507 Train_acc: 0.8333
+Epoch: 127 loss: 0.6506 Train_acc: 0.8333
+Epoch: 128 loss: 0.6505 Train_acc: 0.8333
+Epoch: 129 loss: 0.6504 Train_acc: 0.8333
+Epoch: 130 loss: 0.6504 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 131 loss: 0.6503 Train_acc: 0.8333
+Epoch: 132 loss: 0.6502 Train_acc: 0.8333
+Epoch: 133 loss: 0.6501 Train_acc: 0.8333
+Epoch: 134 loss: 0.6500 Train_acc: 0.8333
+Epoch: 135 loss: 0.6500 Train_acc: 0.8333
+Epoch: 136 loss: 0.6499 Train_acc: 0.8333
+Epoch: 137 loss: 0.6498 Train_acc: 0.8333
+Epoch: 138 loss: 0.6498 Train_acc: 0.8333
+Epoch: 139 loss: 0.6497 Train_acc: 0.8333
+Epoch: 140 loss: 0.6496 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 141 loss: 0.6495 Train_acc: 0.8333
+Epoch: 142 loss: 0.6495 Train_acc: 0.8333
+Epoch: 143 loss: 0.6494 Train_acc: 0.8333
+Epoch: 144 loss: 0.6494 Train_acc: 0.8333
+Epoch: 145 loss: 0.6493 Train_acc: 0.8333
+Epoch: 146 loss: 0.6492 Train_acc: 0.8333
+Epoch: 147 loss: 0.6492 Train_acc: 0.8333
+Epoch: 148 loss: 0.6491 Train_acc: 0.8333
+Epoch: 149 loss: 0.6491 Train_acc: 0.8333
+Epoch: 150 loss: 0.6490 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 151 loss: 0.6490 Train_acc: 0.8333
+Epoch: 152 loss: 0.6489 Train_acc: 0.8333
+Epoch: 153 loss: 0.6489 Train_acc: 0.8333
+Epoch: 154 loss: 0.6488 Train_acc: 0.8333
+Epoch: 155 loss: 0.6488 Train_acc: 0.8333
+Epoch: 156 loss: 0.6487 Train_acc: 0.8333
+Epoch: 157 loss: 0.6487 Train_acc: 0.8333
+Epoch: 158 loss: 0.6486 Train_acc: 0.8333
+Epoch: 159 loss: 0.6486 Train_acc: 0.8333
+Epoch: 160 loss: 0.6485 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 161 loss: 0.6485 Train_acc: 0.8333
+Epoch: 162 loss: 0.6484 Train_acc: 0.8333
+Epoch: 163 loss: 0.6484 Train_acc: 0.8333
+Epoch: 164 loss: 0.6483 Train_acc: 0.8333
+Epoch: 165 loss: 0.6483 Train_acc: 0.8333
+Epoch: 166 loss: 0.6483 Train_acc: 0.8333
+Epoch: 167 loss: 0.6482 Train_acc: 0.8333
+Epoch: 168 loss: 0.6482 Train_acc: 0.8333
+Epoch: 169 loss: 0.6481 Train_acc: 0.8333
+Epoch: 170 loss: 0.6481 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 171 loss: 0.6481 Train_acc: 0.8333
+Epoch: 172 loss: 0.6480 Train_acc: 0.8333
+Epoch: 173 loss: 0.6480 Train_acc: 0.8333
+Epoch: 174 loss: 0.6480 Train_acc: 0.8333
+Epoch: 175 loss: 0.6479 Train_acc: 0.8333
+Epoch: 176 loss: 0.6479 Train_acc: 0.8333
+Epoch: 177 loss: 0.6479 Train_acc: 0.8333
+Epoch: 178 loss: 0.6478 Train_acc: 0.8333
+Epoch: 179 loss: 0.6478 Train_acc: 0.8333
+Epoch: 180 loss: 0.6477 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 181 loss: 0.6477 Train_acc: 0.8333
+Epoch: 182 loss: 0.6477 Train_acc: 0.8333
+Epoch: 183 loss: 0.6477 Train_acc: 0.8333
+Epoch: 184 loss: 0.6476 Train_acc: 0.8333
+Epoch: 185 loss: 0.6476 Train_acc: 0.8333
+Epoch: 186 loss: 0.6476 Train_acc: 0.8333
+Epoch: 187 loss: 0.6475 Train_acc: 0.8333
+Epoch: 188 loss: 0.6475 Train_acc: 0.8333
+Epoch: 189 loss: 0.6475 Train_acc: 0.8333
+Epoch: 190 loss: 0.6474 Train_acc: 0.8333
+Test_acc: 0.2500
+Epoch: 191 loss: 0.6474 Train_acc: 0.8333
+Epoch: 192 loss: 0.6474 Train_acc: 0.8333
+Epoch: 193 loss: 0.6474 Train_acc: 0.8333
+Epoch: 194 loss: 0.6473 Train_acc: 0.8333
+Epoch: 195 loss: 0.6473 Train_acc: 0.8333
+Epoch: 196 loss: 0.6473 Train_acc: 0.8333
+Epoch: 197 loss: 0.6472 Train_acc: 0.8333
+Epoch: 198 loss: 0.6472 Train_acc: 0.8333
+Epoch: 199 loss: 0.6472 Train_acc: 0.8333
+Epoch: 200 loss: 0.6472 Train_acc: 0.8333
+Test_acc: 0.2500
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 

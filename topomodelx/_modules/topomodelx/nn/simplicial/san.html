@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -376,7 +376,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_channels</span><span class="p">,</span>
         <span class="n">hidden_channels</span><span class="p">,</span>
-        <span class="n">out_channels</span><span class="p">,</span>
+        <span class="n">out_channels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">n_filters</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">order_harmonic</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
         <span class="n">epsilon_harmonic</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span>
@@ -385,10 +385,13 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden_channels</span> <span class="o">=</span> <span class="n">hidden_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="n">out_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_channels</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">out_channels</span> <span class="k">if</span> <span class="n">out_channels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">hidden_channels</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_filters</span> <span class="o">=</span> <span class="n">n_filters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">order_harmonic</span> <span class="o">=</span> <span class="n">order_harmonic</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_harmonic</span> <span class="o">=</span> <span class="n">epsilon_harmonic</span>
+
         <span class="k">if</span> <span class="n">n_layers</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">SANLayer</span><span class="p">(</span>
@@ -420,7 +423,6 @@ document.write(`
                     <span class="n">n_filters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_filters</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SAN.compute_projection_matrix">
 <a class="viewcode-back" href="../../../../api/nn/simplicial/san.html#topomodelx.nn.simplicial.san.SAN.compute_projection_matrix">[docs]</a>
@@ -462,8 +464,8 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape = (n_nodes, 2)</span>
-<span class="sd">            One-hot labels assigned to edges.</span>
+<span class="sd">        torch.Tensor, shape = (n_edges, out_channels)</span>
+<span class="sd">            Final hidden representations of edges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Compute the projection matrix for the harmonic component</span>
         <span class="n">laplacian</span> <span class="o">=</span> <span class="n">laplacian_up</span> <span class="o">+</span> <span class="n">laplacian_down</span>
@@ -472,7 +474,7 @@ document.write(`
         <span class="c1"># Forward computation</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">laplacian_up</span><span class="p">,</span> <span class="n">laplacian_down</span><span class="p">,</span> <span class="n">projection_mat</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">x</span></div>
 </div>
 
 </pre></div>

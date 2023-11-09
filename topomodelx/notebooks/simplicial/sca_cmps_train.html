@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial Attention Network (SAN)" href="san_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -484,7 +484,7 @@ document.write(`
 <p>🟦 <span class="math notranslate nohighlight">\(\quad h_{x}^{t+1, (r)} = U(h_x^{t, (r)}, m_{x}^{(r)})\)</span></p>
 <p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -500,7 +500,7 @@ document.write(`
 </div>
 <p>If GPUs are available we will make use of them. Otherwise, we will use CPU.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
@@ -524,7 +524,7 @@ cpu
 <p>The first step is to import the dataset, shrec16, a benchmark dataset for 3D mesh classification. We then lift each graph into our domain of choice, a simplicial complex.</p>
 <p>We also retrieve: - input signals <code class="docutils literal notranslate"><span class="pre">x_0</span></code>, <code class="docutils literal notranslate"><span class="pre">x_1</span></code>, and <code class="docutils literal notranslate"><span class="pre">x_2</span></code> on the nodes (0-cells), edges (1-cells), and faces (2-cells) for each complex: these will be the model’s inputs, - a scalar classification label <code class="docutils literal notranslate"><span class="pre">y</span></code> associated to the simplicial complex.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
@@ -550,7 +550,7 @@ done!
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i_complex</span> <span class="o">=</span> <span class="mi">6</span>
@@ -583,7 +583,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <h3>Coadjacency Message Passing Scheme (CMPS):<a class="headerlink" href="#Coadjacency-Message-Passing-Scheme-(CMPS):" title="Link to this heading">#</a></h3>
 <p>This will require features from faces, and edges again, but outputs features on the edges. The first neighborhood matrix will be the level 2 lower Laplacian, <span class="math notranslate nohighlight">\(L_{\downarrow, 2}\)</span>, and the second neighborhood matrix will be the transpose of the incidence matrix of the faces, <span class="math notranslate nohighlight">\(B_{2}^T\)</span>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_down_1_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -616,7 +616,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <h1>Create the Neural Networks<a class="headerlink" href="#Create-the-Neural-Networks" title="Link to this heading">#</a></h1>
 <p>Using the SCACMPSLayer class, we create a neural network with a modifiable number of layers each following the CMPS at each level.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">channels_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_0s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x_1s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">x_2s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
@@ -626,7 +626,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0s</span><span class="o">.</span><span class="n">shape</span>
@@ -634,7 +634,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -646,7 +646,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <section id="Train-and-Test-Split">
 <h1>Train and Test Split<a class="headerlink" href="#Train-and-Test-Split" title="Link to this heading">#</a></h1>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -673,7 +673,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -686,7 +686,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <h1>Training and Testing Model<a class="headerlink" href="#Training-and-Testing-Model" title="Link to this heading">#</a></h1>
 <p>Because the SCA implementation in [HZPMC22]_ was used for clustering, we did the same in one dimension to train on the int classification labels provided my the shrec16 dataset.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SCACMPS</span><span class="p">(</span>
@@ -699,6 +699,14 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>

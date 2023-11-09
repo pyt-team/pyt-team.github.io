@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Uni-sage TNN" href="../hypergraph/unisage_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -496,6 +496,9 @@ document.write(`
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.dist2cycle</span> <span class="kn">import</span> <span class="n">Dist2Cycle</span>
 <span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
 <span class="kn">import</span> <span class="nn">numpy.linalg</span> <span class="k">as</span> <span class="nn">npla</span>
+
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
 </pre></div>
 </div>
 </div>
@@ -555,7 +558,7 @@ The adjacency matrix A0 has shape: torch.Size([34, 34]).
 <section id="Import-signal">
 <h2>Import signal<a class="headerlink" href="#Import-signal" title="Link to this heading">#</a></h2>
 <p>Since our task will be node classification, we must retrieve an input signal on the nodes. The signal will have shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times\)</span> in_channels, where in_channels is the dimension of each cell’s feature. Here, we have in_channels = channels_nodes $ = 34$. This is because the Karate dataset encodes the identity of each of the 34 nodes as a one hot encoder.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
@@ -567,6 +570,14 @@ The adjacency matrix A0 has shape: torch.Size([34, 34]).
 <span class="nb">print</span><span class="p">(</span><span class="n">channels_nodes</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
@@ -601,7 +612,6 @@ There are 34 nodes with features of dimension 2.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges with features of dimension </span><span class="si">{</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -688,15 +698,11 @@ There are 45 faces with features of dimension 2.
         <span class="mi">0</span><span class="p">,</span>
     <span class="p">]</span>
 <span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">78</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">34</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 <span class="n">y_true</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
 <span class="n">y_true</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">y</span>
-<span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[:</span><span class="mi">30</span><span class="p">]</span>
+<span class="n">y_test</span> <span class="o">=</span> <span class="n">y_true</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
 
 <span class="n">y_train</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span>
 <span class="n">y_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span>
@@ -741,6 +747,8 @@ torch.Size([30, 2])
 <span class="nb">print</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
 
 <span class="n">x_1e</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">to_sparse</span><span class="p">()</span>
+
+<span class="n">incidence_0_1</span> <span class="o">=</span> <span class="n">from_sparse</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -840,84 +848,84 @@ tensor(indices=tensor([[ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
                        0.0693, -0.0607,  0.0693, -0.0607,  0.0746, -0.0553,
                        0.0754, -0.0546,  0.0720, -0.0580,  0.0762, -0.0537]),
        size=(78, 78), nnz=270, layout=torch.sparse_coo)
-[[-3.56771909e-02 -2.49643084e-02]
- [-6.13434650e-02  7.60154799e-03]
- [-2.73820292e-02 -7.65885226e-03]
- [-3.04038181e-08  6.51925802e-09]
- [ 1.73643677e-08 -1.95577741e-08]
- [-6.09312067e-08  1.39698386e-08]
- [-3.11006736e-02 -6.25540316e-03]
- [ 5.87149896e-02  6.65674657e-02]
- [-1.43987098e-08 -2.79396772e-09]
- [-6.00662204e-08  7.45058060e-09]
- [-1.36910174e-02 -3.82942520e-03]
- [-2.24798042e-02 -1.85055751e-02]
- [-1.78386103e-02 -1.24821486e-02]
- [ 3.81510593e-02 -1.07917011e-01]
- [-1.78386103e-02 -1.24821486e-02]
- [ 1.30485535e-01  1.19925834e-01]
- [-2.56662779e-02  3.25658545e-02]
- [ 8.29514395e-03  1.73054542e-02]
- [ 4.57650283e-03  1.87089108e-02]
- [ 1.31973699e-02  6.45874534e-03]
- [ 1.78385898e-02  1.24821523e-02]
- [ 7.38282800e-02 -8.29527006e-02]
- [ 1.78385898e-02  1.24821542e-02]
- [-1.45585343e-01 -4.20149602e-02]
- [ 3.39614227e-02 -1.52603984e-02]
- [ 3.02427802e-02 -1.38569428e-02]
- [ 1.20058507e-01  5.89658767e-02]
- [-1.67997003e-01  2.90682733e-01]
- [ 3.88636552e-02 -2.61071175e-02]
- [-8.75768661e-02 -2.22418800e-01]
- [-2.07488209e-01 -1.26928225e-01]
- [ 1.52925774e-01  9.50903371e-02]
- [-3.71863856e-03  1.40345353e-03]
- [ 1.36909867e-02  3.82943824e-03]
- [ 4.90223058e-03 -1.08467136e-02]
- [-1.43380561e-07  4.27135092e-08]
- [ 1.31898531e-07 -4.01219751e-08]
- [ 9.78963115e-08 -2.97890193e-08]
- [-1.49229891e-07  4.67953214e-08]
- [ 7.75078206e-08 -2.75904313e-08]
- [-8.03583546e-08  2.12457962e-08]
- [ 8.10897127e-02  4.18870673e-02]
- [ 3.28672193e-02  3.61245163e-02]
- [ 6.48166016e-02  4.75217551e-02]
- [-1.67996958e-01  2.90682673e-01]
- [ 3.44834775e-02 -4.90006804e-02]
- [-1.59747154e-02 -5.69860917e-03]
- [ 1.59747209e-02  5.69862127e-03]
- [-1.59747284e-02 -5.69861429e-03]
- [ 1.59747191e-02  5.69862127e-03]
- [-1.59747247e-02 -5.69860823e-03]
- [ 1.59747135e-02  5.69862127e-03]
- [ 1.11979373e-01 -1.90869734e-01]
- [-1.59747228e-02 -5.69860823e-03]
- [ 1.59747209e-02  5.69860637e-03]
- [-1.59747303e-02 -5.69861010e-03]
- [ 1.59747116e-02  5.69860637e-03]
- [-1.17587730e-01 -1.43268425e-02]
- [ 1.43105909e-01  7.32787512e-03]
- [-5.03376685e-03  2.44168448e-03]
- [-2.62169540e-02 -3.41996737e-03]
- [ 5.73246880e-03  7.97727704e-03]
- [ 1.03496753e-01 -6.71378374e-02]
- [-1.92902595e-01  2.15740368e-01]
- [ 8.94057676e-02 -1.48602486e-01]
- [-1.40909785e-02 -8.14646482e-02]
- [-5.38315065e-03 -2.76777497e-03]
- [ 5.38311899e-03  2.76780128e-03]
- [-1.37373477e-01  6.49392605e-04]
- [-1.30545244e-01 -3.10224779e-02]
- [-7.69429579e-02 -9.59057510e-02]
- [-2.11831834e-02 -5.86165255e-03]
- [ 1.07662510e-02  5.53556532e-03]
- [-4.82225195e-02 -5.76254632e-03]
- [-1.62731223e-02  5.63466549e-03]
- [ 2.16528196e-02 -7.62805045e-02]
- [ 5.36022410e-02 -6.48832843e-02]
- [ 3.19494419e-02  1.13972221e-02]]
+[[ 2.40770523e-02  6.11494370e-02]
+ [-4.97384816e-02  9.02294368e-02]
+ [-1.64641943e-02  4.86156419e-02]
+ [-4.83606968e-08 -1.49915427e-01]
+ [-5.00650188e-08 -1.83463633e-01]
+ [-5.75156136e-08 -1.83463678e-01]
+ [-1.05313901e-02  4.90156896e-02]
+ [-1.20998740e-01  8.07190537e-02]
+ [-4.09101162e-08 -1.49915427e-01]
+ [ 1.62092721e-08 -4.98118326e-02]
+ [-8.23208503e-03  7.53657054e-03]
+ [-5.43603450e-02  7.50192329e-02]
+ [ 1.20385336e-02  1.53667741e-02]
+ [ 1.72664091e-01  8.49207789e-02]
+ [ 1.20385485e-02  1.53667741e-02]
+ [ 3.95071507e-02  2.25182593e-01]
+ [-7.38155320e-02  2.95849722e-02]
+ [-4.05412391e-02 -1.36992298e-02]
+ [-3.46084312e-02 -1.20638106e-02]
+ [-7.84373805e-02  1.39397243e-02]
+ [-1.20385038e-02 -3.50549929e-02]
+ [ 1.48587048e-01  3.44989747e-02]
+ [-1.20385019e-02 -3.50550078e-02]
+ [ 1.26969576e-01  7.39617124e-02]
+ [ 3.32742967e-02 -4.32841964e-02]
+ [ 3.92070971e-02 -4.09105867e-02]
+ [-7.12601468e-02  1.28915999e-02]
+ [ 1.50366500e-01  3.93094122e-02]
+ [-4.62186569e-03 -1.49070593e-02]
+ [-3.30901868e-03  5.55232428e-02]
+ [-1.51894227e-01  2.22967193e-02]
+ [-1.15316376e-01  6.22131526e-02]
+ [ 5.93280513e-03  1.29361625e-03]
+ [ 8.23212508e-03 -3.29043306e-02]
+ [-3.78961600e-02  2.72971559e-02]
+ [-2.76038641e-08 -3.18312794e-02]
+ [ 1.32374076e-08  5.55317712e-08]
+ [ 9.97262095e-09  3.42880568e-08]
+ [-1.96564454e-09  3.18312198e-02]
+ [-2.07279651e-08 -8.27834606e-02]
+ [-4.21484074e-08 -8.27835426e-02]
+ [-7.98071399e-02  5.66642778e-03]
+ [-4.40563001e-02  4.23841551e-02]
+ [-6.83955252e-02  2.74787247e-02]
+ [ 1.50366411e-01  2.16282904e-03]
+ [-1.75315768e-01  8.67087543e-02]
+ [ 1.21695530e-02 -2.16733683e-02]
+ [-1.21695669e-02 -2.97473371e-02]
+ [ 1.21695530e-02 -2.16734018e-02]
+ [-1.21695707e-02 -2.97473222e-02]
+ [ 1.21695530e-02 -2.16733590e-02]
+ [-1.21695707e-02 -2.97473371e-02]
+ [ 3.21251035e-01  1.11335017e-01]
+ [ 1.21695511e-02 -2.16733608e-02]
+ [-1.21695651e-02 -2.97473371e-02]
+ [ 1.21695530e-02 -2.16733944e-02]
+ [-1.21695725e-02 -2.97473520e-02]
+ [ 5.66296689e-02 -1.70098506e-02]
+ [ 8.54005478e-03 -1.45874349e-02]
+ [-1.84309315e-02  1.33008221e-02]
+ [-1.11998310e-02 -1.11719538e-02]
+ [-3.55389528e-02 -2.02689916e-02]
+ [-2.43989541e-03  7.58042466e-03]
+ [-4.93099503e-02 -2.70438008e-03]
+ [ 5.17499000e-02 -4.70586307e-02]
+ [ 5.41898049e-02 -5.46390563e-02]
+ [ 8.55402555e-03 -1.45243965e-02]
+ [-8.55398457e-03 -4.46499884e-02]
+ [-4.40789945e-02 -3.23143601e-03]
+ [-8.49792436e-02 -2.31365804e-02]
+ [-6.69150501e-02  1.28155053e-02]
+ [ 7.23110419e-03 -2.44727693e-02]
+ [-1.71080101e-02 -3.37488726e-02]
+ [ 3.57507989e-02  3.30902189e-02]
+ [ 1.14116156e-02  2.18122974e-02]
+ [ 4.24033478e-02  4.10169996e-02]
+ [ 1.80642232e-02  3.59393880e-02]
+ [-2.43391562e-02 -9.89420712e-03]]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -925,43 +933,70 @@ tensor(indices=tensor([[ 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-c:\Users\zia003\Anaconda3\envs\topox2\lib\site-packages\scipy\sparse\_index.py:143: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
+/Users/gbg141/Documents/TopoProjectX/TopoModelX/venv_modelx/lib/python3.11/site-packages/scipy/sparse/_index.py:143: SparseEfficiencyWarning: Changing the sparsity structure of a csr_matrix is expensive. lil_matrix is more efficient.
   self._set_arrayXarray(i, j, x)
 </pre></div></div>
 </div>
 </section>
 <section id="Create-the-Neural-Network">
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
-<p>Using the Dist2Cycle class, we create a neural network with stacked layers. A linear layer at the end produces an output, so we can compare with our binary labels.</p>
+<p>Using the SAN class, we create our neural network with stacked layers. Given the considered dataset and task (Karate Club, node classification), a linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">Dist2Cycle</span><span class="p">(</span>
+            <span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">,</span>
+            <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">out_channels</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">n_layers</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span>
+    <span class="n">channels</span><span class="o">=</span><span class="n">channels_nodes</span><span class="p">,</span>
+    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels</span><span class="p">,</span>
+    <span class="n">n_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
 <section id="Train-the-Neural-Network">
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Dist2Cycle</span><span class="p">(</span>
-    <span class="n">channels</span><span class="o">=</span><span class="n">channels_nodes</span><span class="p">,</span>
-    <span class="n">n_layers</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <p>The following cell performs the training, looping over the network for a low number of epochs.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [23]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">60</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
 
-    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1e</span><span class="p">,</span> <span class="n">Linv</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">)</span>
+    <span class="n">y_hat_edge</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1e</span><span class="p">,</span> <span class="n">Linv</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">)</span>
+    <span class="c1"># We project the edge-level output of the model to the node-level</span>
+    <span class="c1"># and apply softmax fn to get the final node-level classification output</span>
+    <span class="n">y_hat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_0_1</span><span class="p">,</span> <span class="n">y_hat_edge</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">binary_cross_entropy_with_logits</span><span class="p">(</span>
         <span class="n">y_hat</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)]</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
     <span class="p">)</span>
@@ -970,17 +1005,22 @@ c:\Users\zia003\Anaconda3\envs\topox2\lib\site-packages\scipy\sparse\_index.py:1
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
     <span class="n">y_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_hat</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_train</span><span class="p">)]</span> <span class="o">==</span> <span class="n">y_train</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch_i</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> Train_acc: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
         <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">epoch_i</span> <span class="o">%</span> <span class="n">test_interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-            <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1e</span><span class="p">,</span> <span class="n">Linv</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">)</span>
+            <span class="n">y_hat_edge_test</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_1e</span><span class="p">,</span> <span class="n">Linv</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">)</span>
+            <span class="c1"># Projection to node-level</span>
+            <span class="n">y_hat_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_0_1</span><span class="p">,</span> <span class="n">y_hat_edge_test</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span>
+            <span class="p">)</span>
             <span class="n">y_pred_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                 <span class="n">y_hat_test</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="p">)</span>
+            <span class="c1"># _pred_test = torch.softmax(y_hat_test,dim=1).ge(0.5).float()</span>
             <span class="n">test_accuracy</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">y_pred_test</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span> <span class="p">:],</span> <span class="n">y_test</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -997,97 +1037,125 @@ c:\Users\zia003\Anaconda3\envs\topox2\lib\site-packages\scipy\sparse\_index.py:1
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 0.7231 Train_acc: 0.6000
-Epoch: 2 loss: 0.6989 Train_acc: 0.5667
+Epoch: 1 loss: 0.7234 Train_acc: 0.6333
+Epoch: 2 loss: 0.6930 Train_acc: 0.6667
+Epoch: 3 loss: 0.6769 Train_acc: 0.7000
+Epoch: 4 loss: 0.6718 Train_acc: 0.7000
+Epoch: 5 loss: 0.6701 Train_acc: 0.7000
+Epoch: 6 loss: 0.6694 Train_acc: 0.7000
+Epoch: 7 loss: 0.6691 Train_acc: 0.7000
+Epoch: 8 loss: 0.6689 Train_acc: 0.7000
+Epoch: 9 loss: 0.6689 Train_acc: 0.7000
+Epoch: 10 loss: 0.6688 Train_acc: 0.7000
 Test_acc: 0.2500
-Epoch: 3 loss: 0.6879 Train_acc: 0.5667
-Epoch: 4 loss: 0.6737 Train_acc: 0.5667
+Epoch: 11 loss: 0.6688 Train_acc: 0.7000
+Epoch: 12 loss: 0.6688 Train_acc: 0.7000
+Epoch: 13 loss: 0.6688 Train_acc: 0.7000
+Epoch: 14 loss: 0.6688 Train_acc: 0.7000
+Epoch: 15 loss: 0.6688 Train_acc: 0.7000
+Epoch: 16 loss: 0.6688 Train_acc: 0.7000
+Epoch: 17 loss: 0.6688 Train_acc: 0.7000
+Epoch: 18 loss: 0.6688 Train_acc: 0.7000
+Epoch: 19 loss: 0.6688 Train_acc: 0.7000
+Epoch: 20 loss: 0.6688 Train_acc: 0.7000
 Test_acc: 0.2500
-Epoch: 5 loss: 0.6564 Train_acc: 0.5667
-Epoch: 6 loss: 0.6434 Train_acc: 0.5667
-Test_acc: 0.0000
-Epoch: 7 loss: 0.6362 Train_acc: 0.6000
-Epoch: 8 loss: 0.6290 Train_acc: 0.4333
-Test_acc: 0.0000
-Epoch: 9 loss: 0.6199 Train_acc: 0.6000
-Epoch: 10 loss: 0.6117 Train_acc: 0.6000
-Test_acc: 0.0000
-Epoch: 11 loss: 0.6057 Train_acc: 0.6000
-Epoch: 12 loss: 0.6011 Train_acc: 0.5667
-Test_acc: 0.0000
-Epoch: 13 loss: 0.5964 Train_acc: 0.6000
-Epoch: 14 loss: 0.5911 Train_acc: 0.6000
-Test_acc: 0.0000
-Epoch: 15 loss: 0.5855 Train_acc: 0.6000
-Epoch: 16 loss: 0.5805 Train_acc: 0.6000
-Test_acc: 0.7500
-Epoch: 17 loss: 0.5764 Train_acc: 0.4000
-Epoch: 18 loss: 0.5730 Train_acc: 0.4000
-Test_acc: 0.7500
-Epoch: 19 loss: 0.5696 Train_acc: 0.4000
-Epoch: 20 loss: 0.5660 Train_acc: 0.4000
-Test_acc: 0.7500
-Epoch: 21 loss: 0.5624 Train_acc: 0.4000
-Epoch: 22 loss: 0.5593 Train_acc: 0.4000
-Test_acc: 0.7500
-Epoch: 23 loss: 0.5567 Train_acc: 0.4000
-Epoch: 24 loss: 0.5544 Train_acc: 0.4000
-Test_acc: 0.7500
-Epoch: 25 loss: 0.5520 Train_acc: 0.4000
-Epoch: 26 loss: 0.5496 Train_acc: 0.4000
-Test_acc: 0.7500
-Epoch: 27 loss: 0.5472 Train_acc: 0.4000
-Epoch: 28 loss: 0.5451 Train_acc: 0.4000
-Test_acc: 0.7500
-Epoch: 29 loss: 0.5432 Train_acc: 0.4000
-Epoch: 30 loss: 0.5414 Train_acc: 0.4000
-Test_acc: 0.7500
-Epoch: 31 loss: 0.5397 Train_acc: 0.4333
-Epoch: 32 loss: 0.5379 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 33 loss: 0.5362 Train_acc: 0.4333
-Epoch: 34 loss: 0.5346 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 35 loss: 0.5333 Train_acc: 0.4333
-Epoch: 36 loss: 0.5320 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 37 loss: 0.5308 Train_acc: 0.4333
-Epoch: 38 loss: 0.5295 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 39 loss: 0.5284 Train_acc: 0.4333
-Epoch: 40 loss: 0.5273 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 41 loss: 0.5264 Train_acc: 0.4333
-Epoch: 42 loss: 0.5255 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 43 loss: 0.5246 Train_acc: 0.4333
-Epoch: 44 loss: 0.5238 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 45 loss: 0.5230 Train_acc: 0.4333
-Epoch: 46 loss: 0.5223 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 47 loss: 0.5216 Train_acc: 0.4333
-Epoch: 48 loss: 0.5210 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 49 loss: 0.5204 Train_acc: 0.4333
-Epoch: 50 loss: 0.5198 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 51 loss: 0.5193 Train_acc: 0.4333
-Epoch: 52 loss: 0.5188 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 53 loss: 0.5183 Train_acc: 0.4333
-Epoch: 54 loss: 0.5178 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 55 loss: 0.5174 Train_acc: 0.4333
-Epoch: 56 loss: 0.5170 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 57 loss: 0.5166 Train_acc: 0.4333
-Epoch: 58 loss: 0.5163 Train_acc: 0.4333
-Test_acc: 0.7500
-Epoch: 59 loss: 0.5159 Train_acc: 0.4333
-Epoch: 60 loss: 0.5156 Train_acc: 0.4333
-Test_acc: 0.7500
+Epoch: 21 loss: 0.6688 Train_acc: 0.7000
+Epoch: 22 loss: 0.6688 Train_acc: 0.7000
+Epoch: 23 loss: 0.6688 Train_acc: 0.7000
+Epoch: 24 loss: 0.6688 Train_acc: 0.7000
+Epoch: 25 loss: 0.6688 Train_acc: 0.7000
+Epoch: 26 loss: 0.6688 Train_acc: 0.7000
+Epoch: 27 loss: 0.6688 Train_acc: 0.7000
+Epoch: 28 loss: 0.6688 Train_acc: 0.7000
+Epoch: 29 loss: 0.6688 Train_acc: 0.7000
+Epoch: 30 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
+Epoch: 31 loss: 0.6688 Train_acc: 0.7000
+Epoch: 32 loss: 0.6688 Train_acc: 0.7000
+Epoch: 33 loss: 0.6688 Train_acc: 0.7000
+Epoch: 34 loss: 0.6688 Train_acc: 0.7000
+Epoch: 35 loss: 0.6688 Train_acc: 0.7000
+Epoch: 36 loss: 0.6688 Train_acc: 0.7000
+Epoch: 37 loss: 0.6688 Train_acc: 0.7000
+Epoch: 38 loss: 0.6688 Train_acc: 0.7000
+Epoch: 39 loss: 0.6688 Train_acc: 0.7000
+Epoch: 40 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
+Epoch: 41 loss: 0.6688 Train_acc: 0.7000
+Epoch: 42 loss: 0.6688 Train_acc: 0.7000
+Epoch: 43 loss: 0.6688 Train_acc: 0.7000
+Epoch: 44 loss: 0.6688 Train_acc: 0.7000
+Epoch: 45 loss: 0.6688 Train_acc: 0.7000
+Epoch: 46 loss: 0.6688 Train_acc: 0.7000
+Epoch: 47 loss: 0.6688 Train_acc: 0.7000
+Epoch: 48 loss: 0.6688 Train_acc: 0.7000
+Epoch: 49 loss: 0.6688 Train_acc: 0.7000
+Epoch: 50 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
+Epoch: 51 loss: 0.6688 Train_acc: 0.7000
+Epoch: 52 loss: 0.6688 Train_acc: 0.7000
+Epoch: 53 loss: 0.6688 Train_acc: 0.7000
+Epoch: 54 loss: 0.6688 Train_acc: 0.7000
+Epoch: 55 loss: 0.6688 Train_acc: 0.7000
+Epoch: 56 loss: 0.6688 Train_acc: 0.7000
+Epoch: 57 loss: 0.6688 Train_acc: 0.7000
+Epoch: 58 loss: 0.6688 Train_acc: 0.7000
+Epoch: 59 loss: 0.6688 Train_acc: 0.7000
+Epoch: 60 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
+Epoch: 61 loss: 0.6688 Train_acc: 0.7000
+Epoch: 62 loss: 0.6688 Train_acc: 0.7000
+Epoch: 63 loss: 0.6688 Train_acc: 0.7000
+Epoch: 64 loss: 0.6688 Train_acc: 0.7000
+Epoch: 65 loss: 0.6688 Train_acc: 0.7000
+Epoch: 66 loss: 0.6688 Train_acc: 0.7000
+Epoch: 67 loss: 0.6688 Train_acc: 0.7000
+Epoch: 68 loss: 0.6688 Train_acc: 0.7000
+Epoch: 69 loss: 0.6688 Train_acc: 0.7000
+Epoch: 70 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
+Epoch: 71 loss: 0.6688 Train_acc: 0.7000
+Epoch: 72 loss: 0.6688 Train_acc: 0.7000
+Epoch: 73 loss: 0.6688 Train_acc: 0.7000
+Epoch: 74 loss: 0.6688 Train_acc: 0.7000
+Epoch: 75 loss: 0.6688 Train_acc: 0.7000
+Epoch: 76 loss: 0.6688 Train_acc: 0.7000
+Epoch: 77 loss: 0.6688 Train_acc: 0.7000
+Epoch: 78 loss: 0.6688 Train_acc: 0.7000
+Epoch: 79 loss: 0.6688 Train_acc: 0.7000
+Epoch: 80 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
+Epoch: 81 loss: 0.6688 Train_acc: 0.7000
+Epoch: 82 loss: 0.6688 Train_acc: 0.7000
+Epoch: 83 loss: 0.6688 Train_acc: 0.7000
+Epoch: 84 loss: 0.6688 Train_acc: 0.7000
+Epoch: 85 loss: 0.6688 Train_acc: 0.7000
+Epoch: 86 loss: 0.6688 Train_acc: 0.7000
+Epoch: 87 loss: 0.6688 Train_acc: 0.7000
+Epoch: 88 loss: 0.6688 Train_acc: 0.7000
+Epoch: 89 loss: 0.6688 Train_acc: 0.7000
+Epoch: 90 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
+Epoch: 91 loss: 0.6688 Train_acc: 0.7000
+Epoch: 92 loss: 0.6688 Train_acc: 0.7000
+Epoch: 93 loss: 0.6688 Train_acc: 0.7000
+Epoch: 94 loss: 0.6688 Train_acc: 0.7000
+Epoch: 95 loss: 0.6688 Train_acc: 0.7000
+Epoch: 96 loss: 0.6688 Train_acc: 0.7000
+Epoch: 97 loss: 0.6688 Train_acc: 0.7000
+Epoch: 98 loss: 0.6688 Train_acc: 0.7000
+Epoch: 99 loss: 0.6688 Train_acc: 0.7000
+Epoch: 100 loss: 0.6688 Train_acc: 0.7000
+Test_acc: 0.2500
 </pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 

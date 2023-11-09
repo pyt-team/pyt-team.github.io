@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -354,143 +354,6 @@ document.write(`
 <span class="k">class</span> <span class="nc">SCCNN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SCCNN implementation for complex classification.</span>
 
-<span class="sd">    Note: In this task, we can consider the output on any order of simplices for the classification task,</span>
-<span class="sd">    which of course can be amended by a readout layer.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    in_channels_all : tuple of int</span>
-<span class="sd">        Dimension of input features on (nodes, edges, faces).</span>
-<span class="sd">    intermediate_channels_all : tuple of int</span>
-<span class="sd">        Dimension of features of intermediate layers on (nodes, edges, faces).</span>
-<span class="sd">    out_channels_all : tuple of int</span>
-<span class="sd">        Dimension of output features on (nodes, edges, faces).</span>
-<span class="sd">    conv_order : int</span>
-<span class="sd">        Order of convolutions, we consider the same order for all convolutions.</span>
-<span class="sd">    sc_order : int</span>
-<span class="sd">        SC order.</span>
-<span class="sd">    aggr_norm : bool</span>
-<span class="sd">        Whether to normalize the aggregation.</span>
-<span class="sd">    update_func : str</span>
-<span class="sd">        Activation function used in aggregation layers.</span>
-<span class="sd">    num_classes : int</span>
-<span class="sd">        Number of classes.</span>
-<span class="sd">    n_layers : int</span>
-<span class="sd">        Number of layers.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">in_channels_all</span><span class="p">,</span>
-        <span class="n">intermediate_channels_all</span><span class="p">,</span>
-        <span class="n">out_channels_all</span><span class="p">,</span>
-        <span class="n">conv_order</span><span class="p">,</span>
-        <span class="n">sc_order</span><span class="p">,</span>
-        <span class="n">aggr_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">update_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="c1"># first layer</span>
-        <span class="c1"># we use an MLP to map the features on simplices of different dimensions to the same dimension</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="p">)</span>
-
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SCCNNLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels_all</span><span class="p">,</span>
-                    <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
-                    <span class="n">sc_order</span><span class="o">=</span><span class="n">sc_order</span><span class="p">,</span>
-                    <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
-                    <span class="n">update_func</span><span class="o">=</span><span class="n">update_func</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-
-        <span class="n">out_channels_0</span><span class="p">,</span> <span class="n">out_channels_1</span><span class="p">,</span> <span class="n">out_channels_2</span> <span class="o">=</span> <span class="n">out_channels_all</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_0</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-
-<div class="viewcode-block" id="SCCNN.forward">
-<a class="viewcode-back" href="../../../../api/nn/simplicial/sccnn.html#topomodelx.nn.simplicial.sccnn.SCCNN.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x_all : tuple of tensors, shape = (node, edge, face)</span>
-<span class="sd">            Tuple of feature tensors.</span>
-<span class="sd">            Each entry shape = (n_simplices, channels).</span>
-
-<span class="sd">        laplacian_all : tuple of tensors, shape = (graph laplacian L0, down edge laplacian L1_d, upper edge laplacian L1_u, face laplacian L2)</span>
-<span class="sd">            Tuple of Laplacian tensors.</span>
-<span class="sd">            Each entry shape = (n_simplices,n_simplices).</span>
-
-<span class="sd">        incidence_all : tuple of tensors</span>
-<span class="sd">            Tuple of order 1 and 2 incidence matrices:</span>
-
-<span class="sd">            - Shape of B1 = [n_nodes, n_edges],</span>
-<span class="sd">            - Shape of B2 = [n_edges, n_faces].</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape = (1)</span>
-<span class="sd">            Label assigned to whole complex.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
-        <span class="n">in_x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">in_x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">in_x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="c1"># Forward through SCCNN</span>
-        <span class="n">x_all</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_x_0</span><span class="p">,</span> <span class="n">in_x_1</span><span class="p">,</span> <span class="n">in_x_2</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_all</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
-
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        We pass the output on the nodes, edges and triangles to a linear layer and use the sum of the averages of outputs on each simplex for labels of complex</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
-
-        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="c1"># Take the average of the 2D, 1D, and 0D cell features. If they are NaN, convert them to 0.</span>
-        <span class="n">two_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">two_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">two_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">one_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">one_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">one_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">zero_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">zero_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">zero_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="c1"># Return the sum of the averages</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">two_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">one_dimensional_cells_mean</span>
-            <span class="o">+</span> <span class="n">zero_dimensional_cells_mean</span>
-        <span class="p">)</span></div>
-</div>
-
-
-
-<div class="viewcode-block" id="SCCNNComplex">
-<a class="viewcode-back" href="../../../../api/nn/simplicial/sccnn.html#topomodelx.nn.simplicial.sccnn.SCCNNComplex">[docs]</a>
-<span class="k">class</span> <span class="nc">SCCNNComplex</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;SCCNN implementation for complex classification.</span>
-
 <span class="sd">    Note: In this task, we can consider the output on any order of simplices for the</span>
 <span class="sd">    classification task, which of course can be amended by a readout layer.</span>
 
@@ -498,14 +361,16 @@ document.write(`
 <span class="sd">    ----------</span>
 <span class="sd">    in_channels_all: tuple of int</span>
 <span class="sd">        Dimension of input features on (nodes, edges, faces).</span>
-<span class="sd">    intermediate_channels_all: tuple of int</span>
-<span class="sd">        Dimension of features of intermediate layers on (nodes, edges, faces).</span>
-<span class="sd">    out_channels_all: tuple of int</span>
-<span class="sd">        Dimension of output features on (nodes, edges, faces)</span>
+<span class="sd">    hidden_channels_all: tuple of int</span>
+<span class="sd">        Dimension of features of hidden layers on (nodes, edges, faces).</span>
 <span class="sd">    conv_order: int</span>
 <span class="sd">        Order of convolutions, we consider the same order for all convolutions.</span>
 <span class="sd">    sc_order: int</span>
 <span class="sd">        Order of simplicial complex.</span>
+<span class="sd">    aggr_norm: bool</span>
+<span class="sd">        Whether to normalize the aggregation.</span>
+<span class="sd">    update_func: str</span>
+<span class="sd">        Update function for the simplicial complex convolution.</span>
 <span class="sd">    n_layers: int</span>
 <span class="sd">        Number of layers.</span>
 
@@ -514,8 +379,7 @@ document.write(`
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_channels_all</span><span class="p">,</span>
-        <span class="n">intermediate_channels_all</span><span class="p">,</span>
-        <span class="n">out_channels_all</span><span class="p">,</span>
+        <span class="n">hidden_channels_all</span><span class="p">,</span>
         <span class="n">conv_order</span><span class="p">,</span>
         <span class="n">sc_order</span><span class="p">,</span>
         <span class="n">aggr_norm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -525,22 +389,16 @@ document.write(`
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="c1"># first layer</span>
         <span class="c1"># we use an MLP to map the features on simplices of different dimensions to the same dimension</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
-            <span class="n">in_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">intermediate_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">hidden_channels_all</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hidden_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">hidden_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">SCCNNLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">intermediate_channels_all</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">out_channels_all</span><span class="p">,</span>
+                    <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
+                    <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
                     <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
                     <span class="n">sc_order</span><span class="o">=</span><span class="n">sc_order</span><span class="p">,</span>
                     <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
@@ -550,11 +408,8 @@ document.write(`
 
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
 
-        <span class="n">out_channels_0</span><span class="p">,</span> <span class="n">out_channels_1</span><span class="p">,</span> <span class="n">out_channels_2</span> <span class="o">=</span> <span class="n">out_channels_all</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">out_channels_0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-
-<div class="viewcode-block" id="SCCNNComplex.forward">
-<a class="viewcode-back" href="../../../../api/nn/simplicial/sccnn.html#topomodelx.nn.simplicial.sccnn.SCCNNComplex.forward">[docs]</a>
+<div class="viewcode-block" id="SCCNN.forward">
+<a class="viewcode-back" href="../../../../api/nn/simplicial/sccnn.html#topomodelx.nn.simplicial.sccnn.SCCNN.forward">[docs]</a>
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
 
@@ -575,8 +430,9 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape = (n_nodes, 2)</span>
-<span class="sd">            One-hot labels assigned to nodes.</span>
+<span class="sd">        x_all : tuple of tensors</span>
+<span class="sd">            Tuple of final hidden state tensors (node, edge, face).</span>
+<span class="sd">            Each entry shape = (n_simplices, channels).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_all</span>
         <span class="n">in_x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
@@ -588,14 +444,7 @@ document.write(`
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
             <span class="n">x_all</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_all</span><span class="p">,</span> <span class="n">laplacian_all</span><span class="p">,</span> <span class="n">incidence_all</span><span class="p">)</span>
 
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        We pass the output on the nodes to a linear layer and use that to generate a probability label for nodes</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">x_all</span>
-        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">label</span></div>
+        <span class="k">return</span> <span class="n">x_all</span></div>
 </div>
 
 </pre></div>

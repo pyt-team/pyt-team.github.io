@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial 2-complex convolutional neural network (SCConv)" href="scconv_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 8, 2023, 7:49:59 AM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 2:41:17 PM"/>
   </head>
   
   
@@ -485,8 +485,8 @@ document.write(`
 <p>Ruochen Yang, Frederic Sala, and Paul Bogdan. Efficient Representation Learning for Higher-Order Data with Simplicial Complexes. In Bastian Rieck and Razvan Pascanu, editors, Proceedings of the First Learning on Graphs Conference, volume 198 of Proceedings of Machine Learning Research, pages 13:1–13:21. PMLR, 09–12 Dec 2022a. <a class="reference external" href="https://proceedings.mlr.press/v198/yang22a.html">https://proceedings.mlr.press/v198/yang22a.html</a>.</p>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -496,11 +496,23 @@ document.write(`
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scn2</span> <span class="kn">import</span> <span class="n">SCN2</span>
 <span class="kn">from</span> <span class="nn">topomodelx.utils.sparse</span> <span class="kn">import</span> <span class="n">from_sparse</span>
+
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
@@ -524,7 +536,7 @@ cpu
 <h2>Import dataset<a class="headerlink" href="#Import-dataset" title="Link to this heading">#</a></h2>
 <p>According to the original paper, SCN is good at simplex classification. Thus, I chose shrec_16, a benchmark dataset for 3D mesh classification.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="s2">&quot;small&quot;</span><span class="p">)</span>
@@ -551,7 +563,7 @@ done!
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i_complex</span> <span class="o">=</span> <span class="mi">6</span>
@@ -582,7 +594,7 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <h2>Define neighborhood structures.<a class="headerlink" href="#Define-neighborhood-structures." title="Link to this heading">#</a></h2>
 <p>Now we retrieve the neighborhood structures (i.e. their representative matrices) that we will use to send messges on the domain. In this case, we need the normalized Laplacian matrix on nodes, edges, and faces. We also convert the neighborhood structures to torch tensors.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">laplacian_0s</span> <span class="o">=</span> <span class="p">[]</span>
@@ -609,28 +621,76 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We specify the model with our pre-made neighborhood structures and specify an optimizer.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels_0</span> <span class="o">=</span> <span class="n">x_0s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">in_channels_1</span> <span class="o">=</span> <span class="n">x_1s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">in_channels_2</span> <span class="o">=</span> <span class="n">x_2s</span><span class="p">[</span><span class="n">i_complex</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="mi">1</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">SCN2</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Network</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">SCN2</span><span class="p">(</span>
+            <span class="n">in_channels_0</span><span class="o">=</span><span class="n">in_channels_0</span><span class="p">,</span>
+            <span class="n">in_channels_1</span><span class="o">=</span><span class="n">in_channels_1</span><span class="p">,</span>
+            <span class="n">in_channels_2</span><span class="o">=</span><span class="n">in_channels_2</span><span class="p">,</span>
+            <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_0</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_2</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span><span class="p">):</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">laplacian_0</span><span class="p">,</span> <span class="n">laplacian_1</span><span class="p">,</span> <span class="n">laplacian_2</span>
+        <span class="p">)</span>
+
+        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
+
+        <span class="c1"># Take the average of the 2D, 1D, and 0D cell features. If they are NaN, convert them to 0.</span>
+        <span class="n">two_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">two_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">two_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">one_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">one_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">one_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">zero_dimensional_cells_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">zero_dimensional_cells_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">zero_dimensional_cells_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Return the sum of the averages</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">two_dimensional_cells_mean</span>
+            <span class="o">+</span> <span class="n">one_dimensional_cells_mean</span>
+            <span class="o">+</span> <span class="n">zero_dimensional_cells_mean</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_layers</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span>
+    <span class="n">in_channels_0</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="n">n_layers</span>
+<span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span>
@@ -654,11 +714,11 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 <p>The following cell performs the training, looping over the network for a low number of epochs.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">8</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="k">for</span> <span class="n">epoch_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="n">epoch_loss</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
@@ -725,27 +785,117 @@ The 6th simplicial complex has 500 faces with features of dimension 7.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 1 loss: 304.6056
-Epoch: 2 loss: 282.2707
-Test_loss: 514.9831
-Epoch: 3 loss: 232.8605
-Epoch: 4 loss: 147.0164
-Test_loss: 227.0106
-Epoch: 5 loss: 87.9957
-Epoch: 6 loss: 77.5624
-Test_loss: 104.0872
-Epoch: 7 loss: 77.0871
-Epoch: 8 loss: 77.0391
-Test_loss: 97.5802
+Epoch: 1 loss: 106.0943
+Epoch: 2 loss: 85.9616
+Epoch: 3 loss: 83.0319
+Epoch: 4 loss: 80.9816
+Epoch: 5 loss: 79.5344
+Epoch: 6 loss: 78.9647
+Epoch: 7 loss: 78.0454
+Epoch: 8 loss: 77.2352
+Epoch: 9 loss: 77.0969
+Epoch: 10 loss: 76.4979
+Test_loss: 27.4806
+Epoch: 11 loss: 76.7194
+Epoch: 12 loss: 76.1580
+Epoch: 13 loss: 78.0519
+Epoch: 14 loss: 75.5705
+Epoch: 15 loss: 76.1465
+Epoch: 16 loss: 76.5432
+Epoch: 17 loss: 78.0466
+Epoch: 18 loss: 77.0446
+Epoch: 19 loss: 80.5840
+Epoch: 20 loss: 75.3278
+Test_loss: 35.2363
+Epoch: 21 loss: 75.6831
+Epoch: 22 loss: 74.5437
+Epoch: 23 loss: 75.6770
+Epoch: 24 loss: 78.6057
+Epoch: 25 loss: 75.3240
+Epoch: 26 loss: 74.4333
+Epoch: 27 loss: 75.4743
+Epoch: 28 loss: 76.0289
+Epoch: 29 loss: 75.6414
+Epoch: 30 loss: 76.2671
+Test_loss: 20.8572
+Epoch: 31 loss: 75.7918
+Epoch: 32 loss: 74.1627
+Epoch: 33 loss: 73.6667
+Epoch: 34 loss: 72.9490
+Epoch: 35 loss: 72.8358
+Epoch: 36 loss: 73.0702
+Epoch: 37 loss: 73.5069
+Epoch: 38 loss: 73.7774
+Epoch: 39 loss: 73.2788
+Epoch: 40 loss: 73.7978
+Test_loss: 21.3558
+Epoch: 41 loss: 74.9096
+Epoch: 42 loss: 73.2390
+Epoch: 43 loss: 72.4291
+Epoch: 44 loss: 73.3779
+Epoch: 45 loss: 72.3256
+Epoch: 46 loss: 72.9241
+Epoch: 47 loss: 72.3715
+Epoch: 48 loss: 72.1551
+Epoch: 49 loss: 72.7596
+Epoch: 50 loss: 72.3155
+Test_loss: 13.5706
+Epoch: 51 loss: 73.5445
+Epoch: 52 loss: 72.3427
+Epoch: 53 loss: 74.1711
+Epoch: 54 loss: 72.1126
+Epoch: 55 loss: 71.3567
+Epoch: 56 loss: 69.5716
+Epoch: 57 loss: 70.7865
+Epoch: 58 loss: 70.4044
+Epoch: 59 loss: 69.9258
+Epoch: 60 loss: 69.7257
+Test_loss: 11.6862
+Epoch: 61 loss: 68.8615
+Epoch: 62 loss: 69.6709
+Epoch: 63 loss: 69.1890
+Epoch: 64 loss: 70.6630
+Epoch: 65 loss: 68.8225
+Epoch: 66 loss: 68.8715
+Epoch: 67 loss: 68.1793
+Epoch: 68 loss: 68.7412
+Epoch: 69 loss: 71.5032
+Epoch: 70 loss: 70.2721
+Test_loss: 6.6078
+Epoch: 71 loss: 68.2701
+Epoch: 72 loss: 69.6752
+Epoch: 73 loss: 64.3450
+Epoch: 74 loss: 62.4395
+Epoch: 75 loss: 62.2776
+Epoch: 76 loss: 67.0761
+Epoch: 77 loss: 63.7860
+Epoch: 78 loss: 60.9918
+Epoch: 79 loss: 60.4742
+Epoch: 80 loss: 60.2551
+Test_loss: 0.2153
+Epoch: 81 loss: 60.0425
+Epoch: 82 loss: 59.4667
+Epoch: 83 loss: 58.2843
+Epoch: 84 loss: 57.9831
+Epoch: 85 loss: 57.4091
+Epoch: 86 loss: 56.9356
+Epoch: 87 loss: 57.3874
+Epoch: 88 loss: 57.6860
+Epoch: 89 loss: 56.4505
+Epoch: 90 loss: 56.2496
+Test_loss: 0.6815
+Epoch: 91 loss: 56.8954
+Epoch: 92 loss: 55.0596
+Epoch: 93 loss: 55.2672
+Epoch: 94 loss: 55.1773
+Epoch: 95 loss: 55.1011
+Epoch: 96 loss: 54.5242
+Epoch: 97 loss: 54.0988
+Epoch: 98 loss: 54.5479
+Epoch: 99 loss: 54.0969
+Epoch: 100 loss: 54.7246
+Test_loss: 0.0298
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
