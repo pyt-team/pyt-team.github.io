@@ -51,7 +51,7 @@
     <link rel="prev" title="Simplicial Complexes" href="01_simplicial_complexes.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 9:18:50 PM"/>
+    <meta name="docbuild:last-update" content="Nov 9, 2023, 10:07:48 PM"/>
   </head>
   
   
@@ -393,11 +393,39 @@ document.write(`
 </section>
 <section id="Cell-Complex">
 <h2>Cell Complex<a class="headerlink" href="#Cell-Complex" title="Link to this heading">#</a></h2>
-<p>In mathematics, a <em>cell complex</em> is a space that is constructed by attaching lower-dimensional cells to a topological space to form a new space. The cells are attached to the space in a specific way, and the resulting space has a well-defined structure.</p>
-<p>For example, a cell complex can be used to represent a simplicial complex, which is a collection of points, line segments, triangles, and higher-dimensional simplices that are connected in a specific way. Each simplex in the simplicial complex is called a cell, and the cell complex consists of all of these cells <em>and</em> the way they are connected.</p>
-<p>In other words, a cell complex X is a mathematical structure consisting of a set of points (called vertices or 0-cells), a set of line segments (called edges or 1-cells), and a set of polygons (called faces or 2-cells), such that the vertices, edges, and faces are connected in a consistent way <span class="math notranslate nohighlight">\([2]\)</span>.</p>
-<p>The dimension of a cell c ∈ X is denoted by d(c), and the dimension of a cell complex is the largest dimension of one of its cells. <span class="math notranslate nohighlight">\([1]\)</span></p>
+<section id="The-General-Definition-of-a-Cell-Complex:">
+<h3>The General Definition of a Cell Complex:<a class="headerlink" href="#The-General-Definition-of-a-Cell-Complex:" title="Link to this heading">#</a></h3>
+<p>The general definition of a cell complex is a mathematical structure that is used in algebraic topology and geometry. It is constructed from simple building blocks called cells. The cells are generalized versions of familiar geometric shapes, such as points, line segments, triangles, and disks.</p>
+<p>A cell complex is defined by specifying how these cells are glued together. The gluing process involves attaching lower-dimensional cells to higher-dimensional ones according to certain rules or attaching maps. This gluing process allows for the creation of more complex geometrical objects.</p>
+<p>Formally, a cell complex is defined as follows:</p>
+<p>A cell complex is a topological space <span class="math notranslate nohighlight">\(X\)</span> equipped with a collection of cells <span class="math notranslate nohighlight">\(\{e_\alpha\}\)</span> satisfying the following conditions:</p>
+<ol class="arabic simple">
+<li><p><span class="math">\textbf{Disjoint Union:}</span> The space <span class="math notranslate nohighlight">\(X\)</span> is the disjoint union of the cells <span class="math notranslate nohighlight">\(\{e_\alpha\}\)</span>.</p></li>
+<li><p><span class="math">\textbf{Homeomorphisms:}</span> Each cell <span class="math notranslate nohighlight">\(e_\alpha\)</span> is homeomorphic to a standard geometric cell <span class="math notranslate nohighlight">\(D^n\)</span> (e.g., a closed <span class="math notranslate nohighlight">\(n\)</span>-dimensional ball or an <span class="math notranslate nohighlight">\(n\)</span>-dimensional cube).</p></li>
+<li><p><span class="math">\textbf{Gluing Maps:}</span> For each pair of cells <span class="math notranslate nohighlight">\(e_\alpha\)</span> and <span class="math notranslate nohighlight">\(e_\beta\)</span>, if their intersection is non-empty, there is a continuous map <span class="math notranslate nohighlight">\(f_{\alpha\beta}: e_\alpha \cap e_\beta \to X\)</span> such that the restriction of <span class="math notranslate nohighlight">\(f_{\alpha\beta}\)</span> to <span class="math notranslate nohighlight">\(e_\alpha \cap e_\beta\)</span> is a homeomorphism onto its image in <span class="math notranslate nohighlight">\(X\)</span>.</p></li>
+</ol>
+<p>The cells <span class="math notranslate nohighlight">\(\{e_\alpha\}\)</span> are often labeled with their dimensions, and the gluing maps capture how lower-dimensional cells are attached to higher-dimensional ones.</p>
+<p>This definition allows for the creation of complex topological spaces by gluing together cells in a prescribed manner, providing a powerful framework for studying the topology and geometry of various mathematical objects.</p>
+</section>
+<section id="Regular-Cell-Complexes">
+<h3>Regular Cell Complexes<a class="headerlink" href="#Regular-Cell-Complexes" title="Link to this heading">#</a></h3>
+<p>A regular cell complex is a cell complex <span class="math notranslate nohighlight">\(X\)</span> such that each <span class="math notranslate nohighlight">\(n\)</span>-cell <span class="math notranslate nohighlight">\(e_\alpha\)</span> in <span class="math notranslate nohighlight">\(X\)</span> has a unique set of vertices <span class="math notranslate nohighlight">\(\{v_{\alpha,1}, \ldots, v_{\alpha,k}\}\)</span> that form the boundary of <span class="math notranslate nohighlight">\(e_\alpha\)</span>, and any permutation of this set is also a set of vertices forming the boundary of <span class="math notranslate nohighlight">\(e_\alpha\)</span>. Formally, for any <span class="math notranslate nohighlight">\(i, j \in \{1, \ldots, k\}\)</span>, the cells <span class="math notranslate nohighlight">\(e_\alpha\)</span> and <span class="math notranslate nohighlight">\(e_\beta\)</span> have a common face if and only if
+<span class="math notranslate nohighlight">\(\{v_{\alpha,1}, \ldots, v_{\alpha,k}\} = \{v_{\beta,1}, \ldots, v_{\beta,k}\}\)</span>.</p>
+<p>This ensures that each <span class="math notranslate nohighlight">\(n\)</span>-cell has a consistent and unique arrangement of vertices along its boundary.</p>
+</section>
+<section id="Cell-Complexes-in-TopoNetX">
+<h3>Cell Complexes in TopoNetX<a class="headerlink" href="#Cell-Complexes-in-TopoNetX" title="Link to this heading">#</a></h3>
+<p>As mentioned earlier, a cell complex is a mathematical structure that is built up from simple building blocks called cells. These cells can be thought of as generalized versions of familiar shapes, such as points, line segments, triangles, and disks. By gluing these cells together in a prescribed way, one can create complex geometrical objects that are of interest in topology and geometry.</p>
+<p>In TopoNetX (TNX), the class <code class="docutils literal notranslate"><span class="pre">CellComplex</span></code> supports building a regular or non-regular 2D cell complex. A cell complex is represented as a triplet</p>
+<div class="math notranslate nohighlight">
+\[(V, E, C)\]</div>
+<p>where <span class="math notranslate nohighlight">\(V\)</span> is a set of nodes, <span class="math notranslate nohighlight">\(E\)</span> is a set of edges, and <span class="math notranslate nohighlight">\(C\)</span> is a set of 2-cells. Each 2-cell <span class="math notranslate nohighlight">\(C\)</span> consists of a finite sequence of nodes <span class="math notranslate nohighlight">\(C = (n_1, \ldots, n_k, n_1)\)</span> with <span class="math notranslate nohighlight">\(k \geq 2\)</span>. All edges between two consecutive nodes in <span class="math notranslate nohighlight">\(C\)</span> belong to <span class="math notranslate nohighlight">\(E\)</span>. Regular cells have unique nodes in <span class="math notranslate nohighlight">\(C\)</span>, whereas non-regular cells allow for duplication.</p>
+</section>
+<section id="Intuition-and-Motivation:">
+<h3>Intuition and Motivation:<a class="headerlink" href="#Intuition-and-Motivation:" title="Link to this heading">#</a></h3>
+<p>Cell complexes provide a flexible way to represent various mathematical objects, such as graphs, manifolds, and discrete geometric shapes. The motivation behind using cell complexes lies in their ability to capture the structure and properties of these objects in a way that is conducive to mathematical analysis.</p>
 <p>For further reading on cell complexes, look at <span class="math notranslate nohighlight">\([4]\)</span>.</p>
+</section>
 </section>
 <section id="Example-of-a-Cell-Complex">
 <h2>Example of a Cell Complex<a class="headerlink" href="#Example-of-a-Cell-Complex" title="Link to this heading">#</a></h2>
@@ -764,7 +792,13 @@ added to <span class="math notranslate nohighlight">\(\mathcal{L}_p(i,j)\)</span
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Cell Complexes</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Setup">Setup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Cell-Complex">Cell Complex</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Cell-Complex">Cell Complex</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#The-General-Definition-of-a-Cell-Complex:">The General Definition of a Cell Complex:</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Regular-Cell-Complexes">Regular Cell Complexes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Cell-Complexes-in-TopoNetX">Cell Complexes in TopoNetX</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Intuition-and-Motivation:">Intuition and Motivation:</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Example-of-a-Cell-Complex">Example of a Cell Complex</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Example-Continued">Example Continued</a></li>
 </ul>
