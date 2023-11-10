@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>toponetx.transform.graph_to_cell_complex &#8212; TopoNetX latest documentation</title>
+    <title>toponetx.generators.random_cell_complexes &#8212; TopoNetX latest documentation</title>
   
   
   
@@ -39,8 +39,8 @@
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/toponetx/transform/graph_to_cell_complex';</script>
-    <link rel="canonical" href="pyt-team.github.io/_modules/toponetx/transform/graph_to_cell_complex.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/toponetx/generators/random_cell_complexes';</script>
+    <link rel="canonical" href="pyt-team.github.io/_modules/toponetx/generators/random_cell_complexes.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -311,7 +311,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">toponetx.tra...</li>
+    <li class="breadcrumb-item active" aria-current="page">toponetx.gen...</li>
   </ul>
 </nav>
 </div>
@@ -328,38 +328,43 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <h1>Source code for toponetx.transform.graph_to_cell_complex</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Methods to lift a graph to a cell complex.&quot;&quot;&quot;</span>
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;homology_cycle_cell_complex&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
+  <h1>Source code for toponetx.generators.random_cell_complexes</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Generators for random cell complexes.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
-<span class="kn">from</span> <span class="nn">toponetx.classes.cell_complex</span> <span class="kn">import</span> <span class="n">CellComplex</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes</span> <span class="kn">import</span> <span class="n">CellComplex</span>
+<span class="kn">from</span> <span class="nn">toponetx.transform.graph_to_cell_complex</span> <span class="kn">import</span> <span class="n">homology_cycle_cell_complex</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;np_cell_complex&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 
-<div class="viewcode-block" id="homology_cycle_cell_complex">
-<a class="viewcode-back" href="../../../api/transform.html#toponetx.transform.graph_to_cell_complex.homology_cycle_cell_complex">[docs]</a>
-<span class="k">def</span> <span class="nf">homology_cycle_cell_complex</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the cell complex obtained by adding homology cycles of a graph.</span>
+<div class="viewcode-block" id="np_cell_complex">
+<a class="viewcode-back" href="../../../api/generators.html#toponetx.generators.random_cell_complexes.np_cell_complex">[docs]</a>
+<span class="k">def</span> <span class="nf">np_cell_complex</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellComplex</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate $CC_{(n,p)}$ complex.</span>
+
+<span class="sd">    In an $(n,p)$ cell complex, a sample from an Erdős-Rényi graph is drawn, also called $G_{n,p}$,</span>
+<span class="sd">    and all basis cycles are identified with a cell of a cell complex.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    G : networkx graph</span>
-<span class="sd">        Input graph.</span>
+<span class="sd">    n : int</span>
+<span class="sd">        The number of nodes.</span>
+<span class="sd">    p : float</span>
+<span class="sd">        The probability of an edge between two nodes.</span>
+<span class="sd">    seed : int or random_state (optional)</span>
+<span class="sd">        Indicator of random number generation state.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    CellComplex</span>
-<span class="sd">        the cell complex obtained by adding the homology cycles of the graph</span>
+<span class="sd">        An (n,p) cell complex.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cycles</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">cycle_basis</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-    <span class="n">cx</span> <span class="o">=</span> <span class="n">CellComplex</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
-    <span class="n">cx</span><span class="o">.</span><span class="n">add_cells_from</span><span class="p">(</span><span class="n">cycles</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">cx</span></div>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">gnp_random_graph</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">homology_cycle_cell_complex</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span></div>
 
 </pre></div>
 
