@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 14, 2023, 1:31:52 AM"/>
+    <meta name="docbuild:last-update" content="Nov 14, 2023, 7:35:19 AM"/>
   </head>
   
   
@@ -394,6 +394,25 @@ document.write(`
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">regular</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize class representing a 2D cell.</span>
+
+<span class="sd">        A 2D cell is an elementary building block used to build a 2D cell complex, whether regular or non-regular.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        elements : Collection[Hashable]</span>
+<span class="sd">            An iterable that contains hashable objects representing the nodes of the cell. The order of the elements is important</span>
+<span class="sd">            and defines the cell up to cyclic permutation.</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            A string representing the name of the cell.</span>
+<span class="sd">        regular : bool, optional</span>
+<span class="sd">            A boolean indicating whether the cell satisfies the regularity condition. The default value is True.</span>
+<span class="sd">            A 2D cell is regular if and only if there is no repetition in the boundary edges that define the cell.</span>
+<span class="sd">            By default, the cell is assumed to be regular unless otherwise specified. Self-loops are not allowed in the boundary</span>
+<span class="sd">            of the cell. If a cell violates the cell complex regularity condition, a ValueError is raised.</span>
+<span class="sd">        **kwargs : keyword arguments, optional</span>
+<span class="sd">            Attributes belonging to the cell can be added as key-value pairs. Both the key and value must be hashable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">elements</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_regular</span> <span class="o">=</span> <span class="n">regular</span>
@@ -484,7 +503,7 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
-<span class="sd">            True if the Cell is regular, and False otherwise</span>
+<span class="sd">            True if the Cell is regular, and False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regular</span><span class="p">:</span>  <span class="c1"># condition enforced</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -545,7 +564,13 @@ document.write(`
 
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of regular cell.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of regular cell.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The string representation of the regular cell.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Cell(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="nd">@property</span>
@@ -556,7 +581,8 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Iterator of tuple representing boundary edges given in cyclic order.</span>
+<span class="sd">        Iterable[tuple[int, int]]</span>
+<span class="sd">            Iterator of tuple representing boundary edges given in cyclic order.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -610,11 +636,14 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        cell1 : Cell</span>
-<span class="sd">        cell : tuple, list or Cell</span>
+<span class="sd">            First cell to check for homotopy.</span>
+<span class="sd">        cell : tuple | list | Cell</span>
+<span class="sd">            Second cell to check for homotopy.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        return True is self is homotopic to input cell and False otherwise.</span>
+<span class="sd">        bool</span>
+<span class="sd">            Returns True is self is homotopic to input cell and False otherwise.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -652,7 +681,13 @@ document.write(`
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of regular cell.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of regular cell.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Returns string representation of regular cell.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Nodes set:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">, boundary edges:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="si">}</span><span class="s2">, attrs:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 </pre></div>
