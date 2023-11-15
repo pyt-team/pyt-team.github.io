@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:37:08 PM"/>
+    <meta name="docbuild:last-update" content="Nov 15, 2023, 1:38:12 AM"/>
   </head>
   
   
@@ -346,7 +346,6 @@ document.write(`
 <span></span><span class="sd">&quot;&quot;&quot;Simplicial 2-Complex Convolutional Network Implementation for binary node classification.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="kn">from</span> <span class="nn">topomodelx.base.aggregation</span> <span class="kn">import</span> <span class="n">Aggregation</span>
 <span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scconv_layer</span> <span class="kn">import</span> <span class="n">SCConvLayer</span>
 
 
@@ -373,32 +372,25 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">node_channels</span><span class="p">,</span> <span class="n">edge_channels</span><span class="p">,</span> <span class="n">face_channels</span><span class="p">,</span> <span class="n">n_classes</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">node_channels</span><span class="p">,</span> <span class="n">edge_channels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_channels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_channels</span> <span class="o">=</span> <span class="n">node_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">edge_channels</span> <span class="o">=</span> <span class="n">edge_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">face_channels</span> <span class="o">=</span> <span class="n">face_channels</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="n">n_classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_channels</span> <span class="o">=</span> <span class="n">node_channels</span> <span class="k">if</span> <span class="n">edge_channels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">edge_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_channels</span> <span class="o">=</span> <span class="n">node_channels</span> <span class="k">if</span> <span class="n">face_channels</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">face_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
 
         <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
             <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">SCConvLayer</span><span class="p">(</span>
-                    <span class="n">node_channels</span><span class="o">=</span><span class="n">node_channels</span><span class="p">,</span>
-                    <span class="n">edge_channels</span><span class="o">=</span><span class="n">edge_channels</span><span class="p">,</span>
-                    <span class="n">face_channels</span><span class="o">=</span><span class="n">face_channels</span><span class="p">,</span>
+                    <span class="n">node_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">node_channels</span><span class="p">,</span>
+                    <span class="n">edge_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_channels</span><span class="p">,</span>
+                    <span class="n">face_channels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">face_channels</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">node_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">edge_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">linear_x2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">face_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aggr</span> <span class="o">=</span> <span class="n">Aggregation</span><span class="p">(</span>
-            <span class="n">aggr_func</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
-            <span class="n">update_func</span><span class="o">=</span><span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
 
 <div class="viewcode-block" id="SCConv.forward">
 <a class="viewcode-back" href="../../../../api/nn/simplicial/scconv.html#topomodelx.nn.simplicial.scconv.SCConv.forward">[docs]</a>
@@ -464,24 +456,7 @@ document.write(`
                 <span class="n">adjacency_down_2_norm</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
-        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
-        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_x2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
-
-        <span class="n">node_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">node_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">edge_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">edge_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="n">face_mean</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">face_mean</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">node_mean</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">edge_mean</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">face_mean</span><span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span></div>
 </div>
 
 </pre></div>

@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Simplicial High-Skip Network (HSN)" href="hsn_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:37:08 PM"/>
+    <meta name="docbuild:last-update" content="Nov 15, 2023, 1:38:12 AM"/>
   </head>
   
   
@@ -382,7 +382,6 @@ document.write(`
 
 
 
-
 <li class="toctree-l1"><a class="reference internal" href="sccn_train.html">Train a Simplicial Complex Convolutional Network (SCCN)</a></li>
 
 
@@ -394,6 +393,7 @@ document.write(`
 
 
 <li class="toctree-l1"><a class="reference internal" href="scconv_train.html">Train a Simplicial 2-complex convolutional neural network (SCConv)</a></li>
+
 
 
 
@@ -650,7 +650,7 @@ and 2. Please notice that the binary adjacencies <span class="math notranslate n
 <span class="n">x_2</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_simplex_attributes</span><span class="p">(</span><span class="s2">&quot;face_feat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
     <span class="n">x_2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-<span class="n">x_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
+<span class="n">x_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x_2</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> faces with features of dimension </span><span class="si">{</span><span class="n">x_2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -850,7 +850,6 @@ There are 45 faces with features of dimension 2.
             <span class="n">y_pred_test</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                 <span class="n">y_hat_test</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="c1"># _pred_test = torch.softmax(y_hat_test,dim=1).ge(0.5).float()</span>
             <span class="n">test_accuracy</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">y_pred_test</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span> <span class="p">:],</span> <span class="n">y_test</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>

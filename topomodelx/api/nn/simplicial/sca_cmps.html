@@ -48,7 +48,7 @@
     <link rel="prev" title="&lt;no title&gt;" href="sca_cmps_layer.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 9, 2023, 5:37:08 PM"/>
+    <meta name="docbuild:last-update" content="Nov 15, 2023, 1:38:12 AM"/>
   </head>
   
   
@@ -443,16 +443,14 @@ document.write(`
   <p id="module-topomodelx.nn.simplicial.sca_cmps">SCA with CMPS.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.sca_cmps.SCACMPS">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.simplicial.sca_cmps.</span></span><span class="sig-name descname"><span class="pre">SCACMPS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channels_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">att</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/sca_cmps.html#SCACMPS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.sca_cmps.SCACMPS" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topomodelx.nn.simplicial.sca_cmps.</span></span><span class="sig-name descname"><span class="pre">SCACMPS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels_all</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">att</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/sca_cmps.html#SCACMPS"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.sca_cmps.SCACMPS" title="Link to this definition">#</a></dt>
 <dd><p>SCA with CMPS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>channels_list</strong><span class="classifier">list[int]</span></dt><dd><p>Dimension of features on each node, edge, simplex, tetahedron,… respectively</p>
+<dt><strong>in_channels_all</strong><span class="classifier">list[int]</span></dt><dd><p>Dimension of features on each node, edge, simplex, tetahedron,… respectively</p>
 </dd>
 <dt><strong>complex_dim</strong><span class="classifier">int</span></dt><dd><p>Highest dimension of simplicial complex feature being trained on.</p>
-</dd>
-<dt><strong>n_classes</strong><span class="classifier">int</span></dt><dd><p>Dimension to which the complex embeddings will be projected.</p>
 </dd>
 <dt><strong>n_layers</strong><span class="classifier">int, default = 2</span></dt><dd><p>Amount of message passing layers.</p>
 </dd>
@@ -463,12 +461,12 @@ document.write(`
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="topomodelx.nn.simplicial.sca_cmps.SCACMPS.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laplacian_down_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_t_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/sca_cmps.html#SCACMPS.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.sca_cmps.SCACMPS.forward" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">laplacian_down_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incidence_t_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topomodelx/nn/simplicial/sca_cmps.html#SCACMPS.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topomodelx.nn.simplicial.sca_cmps.SCACMPS.forward" title="Link to this definition">#</a></dt>
 <dd><p>Forward computation through layers, then linear layers, then avg pooling.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>x_list</strong><span class="classifier">list[torch.Tensor]</span></dt><dd><p>List of tensor inputs for each dimension of the complex (nodes, edges, etc.).</p>
+<dt><strong>x</strong><span class="classifier">list[torch.Tensor]</span></dt><dd><p>Tensor inputs for each dimension of the complex (nodes, edges, etc.).</p>
 </dd>
 <dt><strong>laplacian_down_list</strong><span class="classifier">list[torch.Tensor]</span></dt><dd><p>List of the down laplacian matrix for each dimension in the complex starting at edges.</p>
 </dd>
