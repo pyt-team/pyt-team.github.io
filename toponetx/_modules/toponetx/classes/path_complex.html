@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 18, 2023, 5:52:07 AM"/>
+    <meta name="docbuild:last-update" content="Nov 19, 2023, 8:47:57 AM"/>
   </head>
   
   
@@ -376,7 +376,7 @@ document.write(`
 <span class="sd">        or the last index is omitted), and any sub-sequences of the truncated subsequences in a recursive manner.</span>
 <span class="sd">    max_rank : int, default=3</span>
 <span class="sd">        The maximal length of a path in the path complex.</span>
-<span class="sd">    attr: keyword arguments, optional</span>
+<span class="sd">    **kwargs : keyword arguments, optional</span>
 <span class="sd">        Additional attributes to be associated with the path complex.</span>
 
 <span class="sd">    Notes</span>
@@ -398,7 +398,6 @@ document.write(`
 <span class="sd">    .. [2] Grigor&#39;yan, Lin, Muranov, and Yau.</span>
 <span class="sd">        Homologies of path complexes and digraphs.</span>
 <span class="sd">        https://arxiv.org/pdf/1207.2834.pdf</span>
-
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -424,6 +423,71 @@ document.write(`
         <span class="n">max_rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an object of class representing a path complex based on simple paths as proposed in [1]_.</span>
+
+<span class="sd">        The original path complex is defined in [2]_.</span>
+
+<span class="sd">        A path complex contains elementary p-paths that span the space of simple paths. Path complexes are a topological structure whose</span>
+<span class="sd">        building blocks are paths, which are essentially different from simplicial complexes and cell complexes. If certain conditions are met, path complexes can generalize</span>
+<span class="sd">        simplicial complexes.</span>
+
+<span class="sd">        For example, a triangle with three vertices 1, 2, and 3 can be represented as a simplicial complex (1, 2, 3). Similarly, it can be represented as a path complex (1, 2, 3) whose</span>
+<span class="sd">        boundary 1-paths are (1, 2), (2, 3), and (1, 3). Another example is a simple path (1, 2, 3). In this case, we cannot lift the simple path to a 2-dimensional simplicial complex, as</span>
+<span class="sd">        triangle does not exist. However, we can still represent the simple path as a path complex (1, 2, 3) whose boundary 1-paths are (1, 2) and (2, 3) (1-path (1,3) does not exist).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        paths : nx.Graph or Iterable[Sequence[Hashable]]</span>
+<span class="sd">            The paths in the path complex. If a graph is provided, the path complex will be constructed from the graph, and allowed paths are automatically computed.</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            A name for the path complex.</span>
+<span class="sd">        reserve_sequence_order : bool, default=False</span>
+<span class="sd">            If True, reserve the order of the sub-sequence of nodes in the elementary p-path. Else, the sub-sequence of nodes in the elementary p-path will</span>
+<span class="sd">            be reversed if the first index is larger than the last index.</span>
+<span class="sd">        allowed_paths : Iterable[tuple[Hashable]], optional</span>
+<span class="sd">            An iterable of allowed boundaries.</span>
+<span class="sd">            If None and the input is a Graph, allowed paths are automatically computed by enumerating all simple paths in the graph whose length is less than or equal to max_rank.</span>
+<span class="sd">            If None and the input is not a Graph, allowed paths contain the input paths, their truncated subsequences (sub-sequences where the first</span>
+<span class="sd">            or the last index is omitted), and any sub-sequences of the truncated subsequences in a recursive manner.</span>
+<span class="sd">        max_rank : int, default=3</span>
+<span class="sd">            The maximal length of a path in the path complex.</span>
+<span class="sd">        **kwargs : keyword arguments, optional</span>
+<span class="sd">            Additional attributes to be associated with the path complex.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - By the definition established by [2]_, a path complex P is a non-empty collection of elementary p-paths such that for any sequence</span>
+<span class="sd">        of vertices in a finite non-empty set V that belong to P, the truncated sequence of vertices (which is sometimes referred to as obvious boundaries) also belongs to P.</span>
+<span class="sd">        The truncated sequences are sub-sequences of the original elementary p-path where the first or the last index is omitted. For instance, if we have an elementary p-path (1, 2, 3),</span>
+<span class="sd">        the truncated sequences are (1,2) and (2,3).</span>
+<span class="sd">        - Path complex in [1]_ is different from the path complex defined in [2]_ in the sense that elementary p-paths span the space of simple paths.</span>
+<span class="sd">        The path complex originally proposed has elementary p-paths that span the space of boundary-invariant paths.</span>
+<span class="sd">        - The path complex is a simplicial complex if certain conditions are met [2]_.</span>
+<span class="sd">        - Unlike hypergraphs, combinatorial, simplicial, and cell complexes, path complexes take into account the order of sequences.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        .. [1] Truong and Chin.</span>
+<span class="sd">            Generalizing Topological Graph Neural Networks with Paths.</span>
+<span class="sd">            https://arxiv.org/abs/2308.06838.pdf</span>
+<span class="sd">        .. [2] Grigor&#39;yan, Lin, Muranov, and Yau.</span>
+<span class="sd">            Homologies of path complexes and digraphs.</span>
+<span class="sd">            https://arxiv.org/pdf/1207.2834.pdf</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; PC = PathComplex([(1, 2, 3)])</span>
+<span class="sd">        &gt;&gt;&gt; PC.paths</span>
+<span class="sd">        PathView([(1,), (2,), (3,), (1, 2), (2, 3), (1, 2, 3)])</span>
+<span class="sd">        &gt;&gt;&gt; PC.add_paths_from([(1, 2, 4), (1, 2, 5), (4,5)])</span>
+<span class="sd">        &gt;&gt;&gt; PC.paths</span>
+<span class="sd">        PathView([(1,), (2,), (3,), (4,), (5,), (1, 2), (2, 3), (2, 4), (2, 5), (4, 5), (1, 2, 3), (1, 2, 4), (1, 2, 5)])</span>
+<span class="sd">        &gt;&gt;&gt; G = nx.Graph()</span>
+<span class="sd">        &gt;&gt;&gt; G.add_edges_from([(1, 2), (2, 3), (1, 3)])</span>
+<span class="sd">        &gt;&gt;&gt; PC = PathComplex(G)</span>
+<span class="sd">        &gt;&gt;&gt; PC.paths</span>
+<span class="sd">        PathView([(1,), (2,), (3,), (1, 2), (1, 3), (2, 3), (1, 3, 2), (1, 2, 3), (2, 1, 3)])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span> <span class="o">=</span> <span class="n">PathView</span><span class="p">()</span>
@@ -492,7 +556,7 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        paths : Iterable[Sequence[Hashable] or Path]</span>
-<span class="sd">            an iterable of paths as lists, tuples, or Path objects.</span>
+<span class="sd">            An iterable of paths as lists, tuples, or Path objects.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -522,8 +586,9 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        path : Hashable or Sequence[Hashable] or Path</span>
-<span class="sd">            a Hashable or Sequence[Hashable] or Path representing a path in a path complex.</span>
-<span class="sd">        attr : keyword arguments, optional</span>
+<span class="sd">            A Hashable or Sequence[Hashable] or Path representing a path in a path complex.</span>
+<span class="sd">        **attr : keyword arguments, optional</span>
+<span class="sd">            Additional keyword arguments to be passed to the method.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -650,7 +715,8 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        tuple of ints</span>
+<span class="sd">        tuple[int, ...]</span>
+<span class="sd">            Returns a tuple representing the shape of the path complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">shape</span>
 
@@ -665,6 +731,7 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        PathComplex</span>
+<span class="sd">            Returns a copy of the PathComplex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">PathComplex</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paths</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span></div>
 
@@ -673,6 +740,11 @@ document.write(`
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.path_complex.PathComplex.skeleton">[docs]</a>
     <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute skeleton.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rank : int</span>
+<span class="sd">            The rank to be used to generate the skeleton of elementary p-paths.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -697,7 +769,9 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        node : Hashable or Path</span>
-<span class="sd">            a Hashable or singleton Path representing a node in a path complex.</span>
+<span class="sd">            A Hashable or singleton Path representing a node in a path complex.</span>
+<span class="sd">        **attr : keyword arguments</span>
+<span class="sd">            Additional attributes to be provided as keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input node must be Hashable, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span><span class="p">)</span>
@@ -759,8 +833,9 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If `index` is True, return a tuple of (idx_p_minus_1, idx_p, incidence_matrix).</span>
-<span class="sd">        If `index` is False, return incidence_matrix.</span>
+<span class="sd">        tuple[dict, dict, sp.sparse.lil_matrix] | sp.sparse.lil_matrix</span>
+<span class="sd">            If `index` is True, return a tuple of (idx_p_minus_1, idx_p, incidence_matrix) otherwise</span>
+<span class="sd">            if `index` is False, return incidence_matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input dimension d must be positive integer, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -849,8 +924,9 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If `index` is True, return a tuple of (idx_p, up_laplacian_matrix).</span>
-<span class="sd">        If `index` is False, return up_laplacian_matrix.</span>
+<span class="sd">        tuple[dict, sp.sparse.lil_matrix] | sp.sparse.lil_matrix</span>
+<span class="sd">            If `index` is True, return a tuple of (idx_p, up_laplacian_matrix) otherwise</span>
+<span class="sd">            if `index` is False, return up_laplacian_matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Weighted Laplacian is not supported in this version.&quot;</span><span class="p">)</span>
@@ -897,8 +973,9 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If `index` is True, return a tuple of (idx_p, down_laplacian_matrix).</span>
-<span class="sd">        If `index` is False, return down_laplacian_matrix.</span>
+<span class="sd">        tuple[dict, sp.sparse.lil_matrix] | sp.sparse.lil_matrix</span>
+<span class="sd">            If `index` is True, return a tuple of (idx_p, down_laplacian_matrix) otherwise</span>
+<span class="sd">            if `index` is False, return down_laplacian_matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Weighted Laplacian is not supported in this version.&quot;</span><span class="p">)</span>
@@ -942,9 +1019,8 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Laplacian: scipy.sparse.lil_matrix</span>
-<span class="sd">        when index is True, return a tuple of (idx_p, Laplacian)</span>
-<span class="sd">        when index is False, return Laplacian</span>
+<span class="sd">        tuple[dict, sp.sparse.lil_matrix] | sp.sparse.lil_matrix</span>
+<span class="sd">            When index is True, return a tuple of (idx_p, Laplacian) else return Laplacian.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">B_next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span>
@@ -1001,13 +1077,15 @@ document.write(`
 <span class="sd">            The dimension of the adjacency matrix.</span>
 <span class="sd">        signed : bool, default=False</span>
 <span class="sd">            If True, return signed adjacency matrix. Else, return absolute adjacency matrix.</span>
+<span class="sd">        weight : str, default=None, optional</span>
+<span class="sd">            The weight to be used for the adjacency matrix.</span>
 <span class="sd">        index : bool, default=False</span>
 <span class="sd">            If True, return adjacency matrix with indices. Else, return adjacency matrix without indices.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If `index` is True, return a tuple of (idx_p, adjacency_matrix).</span>
-<span class="sd">        If `index` is False, return adjacency_matrix.</span>
+<span class="sd">        tuple[dict, sp.sparse.lil_matrix] | sp.sparse.lil_matrix</span>
+<span class="sd">            If `index` is True, return a tuple of (idx_p, adjacency_matrix) else return adjacency_matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ind</span><span class="p">,</span> <span class="n">L_up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">L_up</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -1036,13 +1114,15 @@ document.write(`
 <span class="sd">            The dimension of the coadjacency matrix.</span>
 <span class="sd">        signed : bool, default=False</span>
 <span class="sd">            If True, return signed coadjacency matrix. Else, return absolute coadjacency matrix.</span>
+<span class="sd">        weight : str, default=None, optional</span>
+<span class="sd">            The weight to be used for the adjacency matrix.</span>
 <span class="sd">        index : bool, default=False</span>
 <span class="sd">            If True, return coadjacency matrix with indices. Else, return coadjacency matrix without indices.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        If `index` is True, return a tuple of (idx_p, coadjacency_matrix).</span>
-<span class="sd">        If `index` is False, return coadjacency_matrix.</span>
+<span class="sd">        tuple[dict, sp.sparse.lil_matrix] | sp.sparse.lil_matrix</span>
+<span class="sd">            If `index` is True, return a tuple of (idx_p, coadjacency_matrix) else return coadjacency_matrix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ind</span><span class="p">,</span> <span class="n">L_down</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">down_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="n">signed</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">L_down</span><span class="o">.</span><span class="n">setdiag</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -1057,6 +1137,18 @@ document.write(`
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.path_complex.PathComplex.restrict_to_nodes">[docs]</a>
     <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new path complex restricted to a subset of nodes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node_set : Iterable[Hashable]</span>
+<span class="sd">            The nodes to be used for the new restricted path complex.</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the new path complex to be used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PathComplex</span>
+<span class="sd">            The new path complex restricted to the provided subset of nodes.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1079,6 +1171,18 @@ document.write(`
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.path_complex.PathComplex.restrict_to_paths">[docs]</a>
     <span class="k">def</span> <span class="nf">restrict_to_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a new path complex restricted to a subset of paths.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path_set : Iterable[Sequence[Hashable]]</span>
+<span class="sd">            The paths to be used for the new restricted path complex.</span>
+<span class="sd">        name : str</span>
+<span class="sd">            The name of the new path complex to be used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PathComplex</span>
+<span class="sd">            The new path complex restricted to the provided subset of paths.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1373,6 +1477,13 @@ document.write(`
 
 
     <span class="k">def</span> <span class="nf">_remove_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove path from the Path Complex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : tuple[Hashable]</span>
+<span class="sd">            The path to be removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">path</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_paths</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span>
@@ -1382,12 +1493,31 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">max_dim</span> <span class="o">-=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_update_faces_dict_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update length of dict faces in the Path Complex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : tuple[Hashable]</span>
+<span class="sd">            The path to be used for the update.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">):</span>
             <span class="n">diff</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
 
     <span class="k">def</span> <span class="nf">_update_faces_dict_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the dict entry for faces.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : tuple[Hashable]</span>
+<span class="sd">            The path to update faces dict entry for.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PathComlex | None</span>
+<span class="sd">            The return value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">dim</span><span class="p">]:</span>  <span class="c1"># Not in faces_dict</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1396,6 +1526,15 @@ document.write(`
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_update_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the attributes of path.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : tuple[Hashable]</span>
+<span class="sd">            The path to update attributes for.</span>
+<span class="sd">        **attr : keyword arguments</span>
+<span class="sd">            The attributes to update.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>  <span class="c1"># path is a list or tuple</span>
             <span class="n">path_</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># path is a Path object</span>
@@ -1419,6 +1558,12 @@ document.write(`
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        item : Sequence[Hashable] | Hashable</span>
+<span class="sd">            The item to check for.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            `True` if item is contained else `False`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span>
 
@@ -1429,6 +1574,11 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        item : Sequence[Hashable] | Hashable</span>
 <span class="sd">            An elementary p-path or a node in the path complex.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PathView</span>
+<span class="sd">            The pathview based on the item provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path_set</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
@@ -1440,7 +1590,8 @@ document.write(`
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        dict_keyiterator</span>
+<span class="sd">        Iterator</span>
+<span class="sd">            Iterator for iterating over all faces of the path complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
@@ -1450,15 +1601,28 @@ document.write(`
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
+<span class="sd">            The number of elementary p-paths in the path complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()))</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return detailed string representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return detailed string representation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The __str__ representation of the Path Complex.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Path Complex with shape </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and dimension </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The __repr__ representation of the Path Complex.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;PathComplex(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;)&quot;</span>
 
 <div class="viewcode-block" id="PathComplex.compute_allowed_paths">

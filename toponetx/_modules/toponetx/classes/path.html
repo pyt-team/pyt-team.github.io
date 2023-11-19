@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Nov 18, 2023, 5:52:07 AM"/>
+    <meta name="docbuild:last-update" content="Nov 19, 2023, 8:47:57 AM"/>
   </head>
   
   
@@ -353,7 +353,7 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    elements: Sequence[Hashable]</span>
+<span class="sd">    elements : Sequence[Hashable]</span>
 <span class="sd">        The nodes in the elementary p-path.</span>
 <span class="sd">    name : str, optional</span>
 <span class="sd">        A name for the elementary p-path.</span>
@@ -364,7 +364,7 @@ document.write(`
 <span class="sd">        Else, the sub-sequence of nodes in the elementary p-path will be reversed if the first index is larger than the last index.</span>
 <span class="sd">    allowed_paths : Iterable[tuple[Hashable]], optional</span>
 <span class="sd">        A list of allowed boundaries of an elementary p-path. If None, all possible boundaries are constructed (similarly to simplex).</span>
-<span class="sd">    **kwargs: keyword arguments, optional</span>
+<span class="sd">    **kwargs : keyword arguments, optional</span>
 <span class="sd">        Additional attributes to be associated with the elementary p-path.</span>
 
 <span class="sd">    Notes</span>
@@ -415,6 +415,69 @@ document.write(`
         <span class="n">allowed_paths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Path class.</span>
+
+<span class="sd">        A class representing an elementary p-path in a path complex, which is the building block for a path complex. By the definition established</span>
+<span class="sd">        in the original paper [2]_, an elementary p-path on a non-empty set of vertices V is any sequence of vertices</span>
+<span class="sd">        with length p + 1.</span>
+
+<span class="sd">        Unlike the original paper [2]_ where elementary p-paths span the regular space of boundary-invariant paths,</span>
+<span class="sd">        the elementary p-paths represented by this class span the space of simple paths with length p as proposed in [1]_.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        elements : Sequence[Hashable]</span>
+<span class="sd">            The nodes in the elementary p-path.</span>
+<span class="sd">        name : str, optional</span>
+<span class="sd">            A name for the elementary p-path.</span>
+<span class="sd">        construct_boundaries : bool, default=False</span>
+<span class="sd">            If True, construct the entire boundary of the elementary p-path.</span>
+<span class="sd">        reserve_sequence_order : bool, default=False</span>
+<span class="sd">            If True, reserve the order of the sub-sequence of nodes in the elementary p-path.</span>
+<span class="sd">            Else, the sub-sequence of nodes in the elementary p-path will be reversed if the first index is larger than the last index.</span>
+<span class="sd">        allowed_paths : Iterable[tuple[Hashable]], optional</span>
+<span class="sd">            A list of allowed boundaries of an elementary p-path. If None, all possible boundaries are constructed (similarly to simplex).</span>
+<span class="sd">        **kwargs : keyword arguments, optional</span>
+<span class="sd">            Additional attributes to be associated with the elementary p-path.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - An elementary p-path is defined as an ordered sequence of nodes (n1, ..., np) if we reserve the sequence order. Thus, for this case, (n1, ..., np) is different</span>
+<span class="sd">        from (np, ..., n1). If we do not reserve the sequence order, then (n1, ..., np) is the same as (np, ..., n1). For this case, the first index must be smaller</span>
+<span class="sd">        than the last index so that we can discard the other duplicate elementary p-path. As elementary p-paths may contain characters and numbers at the same time, we leverage</span>
+<span class="sd">        lexicographical order to compare two indices.</span>
+<span class="sd">        - Similarly to simplex, in order to find the boundary of an elementary p-path, we remove one node at a time from the elementary p-path. However, unlike simplex</span>
+<span class="sd">        where order does not matter, the process of omitting nodes from an elementary p-path may result some non-existing paths. For instance, if we have an elementary</span>
+<span class="sd">        p-path (1, 2, 3) and there is no path (1, 3), then applying boundary operation on the elementary p-path results in [(2,3), (1,3), (1,2)]. In order to avoid this,</span>
+<span class="sd">        we can provide a list of allowed boundaries. If the boundary of an elementary p-path is not in the list of allowed boundaries,</span>
+<span class="sd">        then it will not be included in the boundary of the elementary p-path.</span>
+<span class="sd">        - When an elementary p-path is created and allowed paths are not specified, its boundary is automatically created by iteratively removing one node at a time</span>
+<span class="sd">        from the elementary p-path, which is identical to a simplex.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        .. [1] Truong and Chin.</span>
+<span class="sd">            Generalizing Topological Graph Neural Networks with Paths.</span>
+<span class="sd">            https://arxiv.org/abs/2308.06838.pdf</span>
+<span class="sd">        .. [2] Grigor&#39;yan, Lin, Muranov, and Yau.</span>
+<span class="sd">            Homologies of path complexes and digraphs.</span>
+<span class="sd">            https://arxiv.org/pdf/1207.2834.pdf</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; path1 = Path((1, 2, 3))</span>
+<span class="sd">        &gt;&gt;&gt; list(path1.boundary)</span>
+<span class="sd">        []</span>
+<span class="sd">        &gt;&gt;&gt; path2 = Path((1, 2, 3), construct_boundaries=True)</span>
+<span class="sd">        &gt;&gt;&gt; list(path2.boundary)</span>
+<span class="sd">        [(2, 3), (1, 3), (1, 2)]</span>
+<span class="sd">        &gt;&gt;&gt; path3 = Path((1, 2, 3), construct_boundaries=True, allowed_paths=[(1, 2), (2, 3)])</span>
+<span class="sd">        &gt;&gt;&gt; list(path3.boundary)</span>
+<span class="sd">        [(2, 3), (1, 2)]</span>
+<span class="sd">        &gt;&gt;&gt; path4 = Path((1, 2, 3), construct_boundaries=True, allowed_paths=[(1, 3), (2, 3)])</span>
+<span class="sd">        &gt;&gt;&gt; list(path4.boundary)</span>
+<span class="sd">        [(2, 3), (1, 3)]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_inputs</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">reserve_sequence_order</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">elements</span><span class="p">]</span>
@@ -445,7 +508,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elements: Sequence[Hashable]</span>
+<span class="sd">        elements : Sequence[Hashable]</span>
 <span class="sd">            The nodes in the elementary p-path.</span>
 <span class="sd">        reserve_sequence_order : bool, default=False</span>
 <span class="sd">            If True, reserve the order of the sub-sequence of nodes in the elementary p-path.</span>
@@ -523,7 +586,7 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        elements: Any</span>
+<span class="sd">        elements : Any</span>
 <span class="sd">            The nodes in the elementary p-path.</span>
 <span class="sd">        reserve_sequence_order : bool</span>
 <span class="sd">            If True, reserve the order of the sub-sequence of nodes in the elementary p-path.</span>
@@ -549,11 +612,23 @@ document.write(`
                 <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of elementary p-paths.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of elementary p-paths.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The __repr__ representation of the Path object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Path(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of elementary p-paths.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of elementary p-paths.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The __str__ representation of the Path object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Node set: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">, Boundaries: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="si">}</span><span class="s2">, Attributes: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="si">}</span><span class="s2">&quot;</span></div>
 
 </pre></div>
