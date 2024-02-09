@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Feb 9, 2024, 9:01:40 AM"/>
+    <meta name="docbuild:last-update" content="Feb 9, 2024, 9:13:36 AM"/>
   </head>
   
   
@@ -388,31 +388,28 @@ document.write(`
                 <span class="p">)</span>
 
             <span class="c1"># If there is only one cell with these elements, return its attributes</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">k</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">_attributes</span>
 
             <span class="c1"># If there are multiple cells with these elements, return the attributes of all cells</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">_attributes</span>
-                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
-                <span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">_attributes</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
+            <span class="p">]</span>
 
         <span class="c1"># If a tuple or list is passed in, assume it represents a cell</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">k</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">_attributes</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">_attributes</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">_attributes</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]]</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a tuple, list or a cell.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a tuple, list or a cell.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CellView.raw">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.reportviews.CellView.raw">[docs]</a>
@@ -438,33 +435,27 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="si">}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="si">!r}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
 
             <span class="c1"># If there is only one cell with these elements, return its attributes</span>
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">k</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
 
             <span class="c1"># If there are multiple cells with these elements, return the attributes of all cells</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
-                <span class="p">]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">]]</span>
 
         <span class="c1"># If a tuple or list is passed in, assume it represents a cell</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">k</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]]</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the cell dictionary&quot;</span><span class="p">)</span>
 
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a tuple, list or a cell.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be a tuple, list or a cell.&quot;</span><span class="p">)</span></div>
 
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -507,7 +498,7 @@ document.write(`
 <span class="sd">            Whether or not the element is in the cell view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="p">(</span><span class="n">Cell</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Cell</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="k">break</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Input must be of type: tuple, list or a cell.&quot;</span><span class="p">)</span>
 
@@ -533,7 +524,7 @@ document.write(`
 <span class="sd">        str</span>
 <span class="sd">            The __str__ representation of the cell view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;CellView(</span><span class="si">{</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">cell</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="ow">in</span><span class="w">  </span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]]</span><span class="w"> </span><span class="si">}</span><span class="s2">)&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;CellView(</span><span class="si">{</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">key</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">cell</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]]</span><span class="si">}</span><span class="s2">)&quot;</span></div>
 
 
 
@@ -572,14 +563,13 @@ document.write(`
 <span class="sd">        dict or list or dicts</span>
 <span class="sd">            Return dict of attributes associated with that hyperedges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-                    <span class="n">hyperedge_elements</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">hyperedge</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
-                        <span class="s2">&quot;Input hyperedge must of the form (Iterable representing elements of hyperedge, key)&quot;</span>
-                    <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">hyperedge_elements</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">hyperedge</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+                    <span class="s2">&quot;Input hyperedge must of the form (Iterable representing elements of hyperedge, key)&quot;</span>
+                <span class="p">)</span>
         <span class="n">hyperedge</span> <span class="o">=</span> <span class="n">HyperEdgeView</span><span class="p">()</span><span class="o">.</span><span class="n">_to_frozen_set</span><span class="p">(</span><span class="n">hyperedge_elements</span><span class="p">)</span>
         <span class="n">hyperedge_elements</span> <span class="o">=</span> <span class="n">hyperedge</span>
         <span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">hyperedge_elements</span><span class="p">)</span>
@@ -596,7 +586,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allranks</span><span class="p">:</span>
-            <span class="n">sm</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="n">sm</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">shape</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sm</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
@@ -680,10 +670,9 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_ranks</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge_elements</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge_elements</span><span class="p">)]:</span>
-                            <span class="k">return</span> <span class="kc">True</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">return</span> <span class="kc">False</span>
+                        <span class="k">return</span> <span class="p">(</span>
+                            <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge_elements</span><span class="p">)]</span>
+                        <span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge_elements</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hyperedge_elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -854,7 +843,7 @@ document.write(`
             <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">([</span><span class="n">hyperedge</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">hyperedge_</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get item.</span>
 
 <span class="sd">        Parameters</span>
@@ -932,10 +921,7 @@ document.write(`
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_ranks</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                        <span class="k">return</span> <span class="kc">True</span>
-                <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">all_ranks</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">e</span><span class="p">})</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -1179,9 +1165,8 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">simplex</span><span class="si">}</span><span class="s2"> is not in the simplex dictionary&quot;</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">simplex</span><span class="p">})</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">simplex</span><span class="p">})]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">simplex</span><span class="p">})</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">simplex</span><span class="p">})]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
@@ -1232,7 +1217,7 @@ document.write(`
 <span class="sd">        Check if a node is in the simplex view:</span>
 
 <span class="sd">        &gt;&gt;&gt; view = SimplexView()</span>
-<span class="sd">        &gt;&gt;&gt; view.faces_dict.append({frozenset({1}): {&#39;weight&#39;: 1}})</span>
+<span class="sd">        &gt;&gt;&gt; view.faces_dict.append({frozenset({1}): {&quot;weight&quot;: 1}})</span>
 <span class="sd">        &gt;&gt;&gt; view.max_dim = 0</span>
 <span class="sd">        &gt;&gt;&gt; 1 in view</span>
 <span class="sd">        True</span>
@@ -1241,7 +1226,7 @@ document.write(`
 
 <span class="sd">        Check if a simplex is in the simplex view:</span>
 
-<span class="sd">        &gt;&gt;&gt; view.faces_dict.append({frozenset({1, 2}): {&#39;weight&#39;: 1}})</span>
+<span class="sd">        &gt;&gt;&gt; view.faces_dict.append({frozenset({1, 2}): {&quot;weight&quot;: 1}})</span>
 <span class="sd">        &gt;&gt;&gt; view.max_dim = 1</span>
 <span class="sd">        &gt;&gt;&gt; {1, 2} in view</span>
 <span class="sd">        True</span>
@@ -1335,7 +1320,7 @@ document.write(`
 <span class="sd">        str</span>
 <span class="sd">            Returns the __repr__ representation of the object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">all_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="n">all_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;NodeView(</span><span class="si">{</span><span class="n">all_nodes</span><span class="si">}</span><span class="s2">)&quot;</span>
 
@@ -1362,25 +1347,21 @@ document.write(`
 <span class="sd">        dict or list</span>
 <span class="sd">            Dict of attributes associated with that cells.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_type</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">colored_nodes</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the node set of the complex&quot;</span><span class="p">)</span>
-
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">colored_nodes</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">cell</span><span class="p">})][</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">({</span><span class="n">cell</span><span class="p">})]</span>
+
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the node set of the complex&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes.</span>
@@ -1444,19 +1425,14 @@ document.write(`
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">elements</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">path</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not in the path dictionary&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
             <span class="n">path</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">path</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not in the path dictionary&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">path</span><span class="p">,)</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][(</span><span class="n">path</span><span class="p">,)]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not in the path dictionary&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">path</span><span class="p">,)</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][(</span><span class="n">path</span><span class="p">,)]</span>
+
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not in the path dictionary&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="n">Hashable</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a path is in the path view.</span>

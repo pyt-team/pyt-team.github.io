@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Feb 9, 2024, 9:01:40 AM"/>
+    <meta name="docbuild:last-update" content="Feb 9, 2024, 9:13:36 AM"/>
   </head>
   
   
@@ -330,6 +330,7 @@ document.write(`
   <h1>Source code for toponetx.classes.colored_hypergraph</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Creation and manipulation of a Colored Hypergraph.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
@@ -414,11 +415,19 @@ document.write(`
 <span class="sd">        Create a Colored Hypergraph and add groups of friends with corresponding ranks:</span>
 
 <span class="sd">        &gt;&gt;&gt; CHG = ColoredHyperGraph()</span>
-<span class="sd">        &gt;&gt;&gt; CHG.add_cell([&quot;Alice&quot;, &quot;Bob&quot;], rank=1)  # Alice and Bob are in a close-knit group.</span>
-<span class="sd">        &gt;&gt;&gt; CHG.add_cell([&quot;Charlie&quot;, &quot;David&quot;], rank=1)  # Another closely connected group.</span>
-<span class="sd">        &gt;&gt;&gt; CHG.add_cell([&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;, &quot;David&quot;], rank=2)  # Both groups together form a higher-ranked community.</span>
+<span class="sd">        &gt;&gt;&gt; CHG.add_cell(</span>
+<span class="sd">        ...     [&quot;Alice&quot;, &quot;Bob&quot;], rank=1</span>
+<span class="sd">        ... )  # Alice and Bob are in a close-knit group.</span>
+<span class="sd">        &gt;&gt;&gt; CHG.add_cell(</span>
+<span class="sd">        ...     [&quot;Charlie&quot;, &quot;David&quot;], rank=1</span>
+<span class="sd">        ... )  # Another closely connected group.</span>
+<span class="sd">        &gt;&gt;&gt; CHG.add_cell(</span>
+<span class="sd">        ...     [&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;, &quot;David&quot;], rank=2</span>
+<span class="sd">        ... )  # Both groups together form a higher-ranked community.</span>
 <span class="sd">        &gt;&gt;&gt; CHG.add_cell([&quot;Alice&quot;, &quot;Bob&quot;, &quot;David&quot;], rank=2)  # Overlapping connections.</span>
-<span class="sd">        &gt;&gt;&gt; CHG.add_cell([&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;, &quot;David&quot;, &quot;Eve&quot;, &quot;Frank&quot;, &quot;Grace&quot;], rank=3)  # A larger, more influential community.</span>
+<span class="sd">        &gt;&gt;&gt; CHG.add_cell(</span>
+<span class="sd">        ...     [&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;, &quot;David&quot;, &quot;Eve&quot;, &quot;Frank&quot;, &quot;Grace&quot;], rank=3</span>
+<span class="sd">        ... )  # A larger, more influential community.</span>
 
 <span class="sd">        The code demonstrates how to represent social relationships using a Colored Hypergraph, where each group of friends (hyperedge) is assigned a rank based on the strength of the connection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -688,9 +697,7 @@ document.write(`
 <span class="sd">            If the input cell is not in the cells of the colored hypergraph.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Input cell is not in cells of the </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__shortstr__</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input cell is not in cells of the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__shortstr__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="p">[</span><span class="n">cell</span><span class="p">])</span></div>
 
 
@@ -772,13 +779,13 @@ document.write(`
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2"> not in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">__shortstr__</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rank</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">rank</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">rank</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">rank</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">:</span>
                     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
                         <span class="p">[</span>
                             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
                             <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">x</span>
                             <span class="k">else</span> <span class="mi">0</span>
-                            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span>
                             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">s</span>
                         <span class="p">]</span>
                     <span class="p">)</span>
@@ -797,13 +804,11 @@ document.write(`
                     <span class="k">continue</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span>
-                        <span class="p">[</span>
-                            <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
-                            <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">x</span>
-                            <span class="k">else</span> <span class="mi">0</span>
-                            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-                            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">s</span>
-                        <span class="p">]</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">x</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">x</span>
+                        <span class="k">else</span> <span class="mi">0</span>
+                        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">s</span>
                     <span class="p">)</span>
             <span class="k">return</span> <span class="n">value</span></div>
 
@@ -963,7 +968,7 @@ document.write(`
             <span class="k">if</span> <span class="n">rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rank must be zero for hashables, got rank </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">hyperedge_set</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="n">hyperedge</span><span class="p">})</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="p">(</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">)):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span> <span class="o">|</span> <span class="n">HyperEdge</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
                 <span class="n">hyperedge_set</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">elements</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1073,17 +1078,13 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">pass</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">pass</span>
             <span class="k">return</span></div>
 
 
@@ -1112,11 +1113,11 @@ document.write(`
 
 <span class="sd">        &gt;&gt;&gt; CHG = ColoredHyperGraph()</span>
 <span class="sd">        &gt;&gt;&gt; CHG.add_cell([1, 2, 3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CHG.add_cell([1, 2, 4], rank=2,)</span>
+<span class="sd">        &gt;&gt;&gt; CHG.add_cell([1, 2, 4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CHG.add_cell([3, 4], rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; d = {((1, 2, 3, 4),0): &#39;red&#39;, ((1, 2, 4),0): &#39;blue&#39;, ((3, 4),0): &#39;green&#39;}</span>
-<span class="sd">        &gt;&gt;&gt; CHG.set_cell_attributes(d, name=&#39;color&#39;)</span>
-<span class="sd">        &gt;&gt;&gt; CHG.cells[((3, 4),0)][&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; d = {((1, 2, 3, 4), 0): &quot;red&quot;, ((1, 2, 4), 0): &quot;blue&quot;, ((3, 4), 0): &quot;green&quot;}</span>
+<span class="sd">        &gt;&gt;&gt; CHG.set_cell_attributes(d, name=&quot;color&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; CHG.cells[((3, 4), 0)][&quot;color&quot;]</span>
 <span class="sd">        &#39;green&#39;</span>
 
 <span class="sd">        If you provide a dictionary of dictionaries as the second argument,</span>
@@ -1124,9 +1125,12 @@ document.write(`
 
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
 <span class="sd">        &gt;&gt;&gt; CHG = ColoredHyperGraph(G)</span>
-<span class="sd">        &gt;&gt;&gt; d = {((1, 2),0): {&#39;color&#39;: &#39;red&#39;,&#39;attr2&#39;: 1}, ((0, 1),0): {&#39;color&#39;: &#39;blue&#39;, &#39;attr2&#39;: 3}}</span>
+<span class="sd">        &gt;&gt;&gt; d = {</span>
+<span class="sd">        ...     ((1, 2), 0): {&quot;color&quot;: &quot;red&quot;, &quot;attr2&quot;: 1},</span>
+<span class="sd">        ...     ((0, 1), 0): {&quot;color&quot;: &quot;blue&quot;, &quot;attr2&quot;: 3},</span>
+<span class="sd">        ... }</span>
 <span class="sd">        &gt;&gt;&gt; CHG.set_cell_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CHG.cells[((0, 1),0)][&#39;color&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; CHG.cells[((0, 1), 0)][&quot;color&quot;]</span>
 <span class="sd">        &#39;blue&#39;</span>
 <span class="sd">        3</span>
 
@@ -1135,16 +1139,12 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cell</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">[</span><span class="n">cell</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="k">pass</span>
             <span class="k">return</span></div>
 
 
@@ -1167,15 +1167,15 @@ document.write(`
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
 <span class="sd">        &gt;&gt;&gt; CHG = ColoredHyperGraph(G)</span>
-<span class="sd">        &gt;&gt;&gt; d = {0: {&#39;color&#39;: &#39;red&#39;, &#39;attr2&#39;: 1 },1: {&#39;color&#39;: &#39;blue&#39;, &#39;attr2&#39;: 3} }</span>
+<span class="sd">        &gt;&gt;&gt; d = {0: {&quot;color&quot;: &quot;red&quot;, &quot;attr2&quot;: 1}, 1: {&quot;color&quot;: &quot;blue&quot;, &quot;attr2&quot;: 3}}</span>
 <span class="sd">        &gt;&gt;&gt; CHG.set_node_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; CHG.get_node_attributes(&#39;color&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; CHG.get_node_attributes(&quot;color&quot;)</span>
 <span class="sd">        {0: &#39;red&#39;, 1: &#39;blue&#39;}</span>
 
 <span class="sd">        &gt;&gt;&gt; G = nx.Graph()</span>
 <span class="sd">        &gt;&gt;&gt; G.add_nodes_from([1, 2, 3], color=&quot;blue&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; CHG = ColoredHyperGraph(G)</span>
-<span class="sd">        &gt;&gt;&gt; nodes_color = CHG.get_node_attributes(&#39;color&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; nodes_color = CHG.get_node_attributes(&quot;color&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; nodes_color[1]</span>
 <span class="sd">        &#39;blue&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1208,9 +1208,12 @@ document.write(`
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; G = nx.path_graph(3)</span>
 <span class="sd">        &gt;&gt;&gt; CHG = ColoredHyperGraph(G)</span>
-<span class="sd">        &gt;&gt;&gt; d = {((1, 2), 0): {&#39;color&#39;: &#39;red&#39;, &#39;attr2&#39;: 1}, ((0, 1), 0): {&#39;color&#39;: &#39;blue&#39;, &#39;attr2&#39;: 3}}</span>
+<span class="sd">        &gt;&gt;&gt; d = {</span>
+<span class="sd">        ...     ((1, 2), 0): {&quot;color&quot;: &quot;red&quot;, &quot;attr2&quot;: 1},</span>
+<span class="sd">        ...     ((0, 1), 0): {&quot;color&quot;: &quot;blue&quot;, &quot;attr2&quot;: 3},</span>
+<span class="sd">        ... }</span>
 <span class="sd">        &gt;&gt;&gt; CHG.set_cell_attributes(d)</span>
-<span class="sd">        &gt;&gt;&gt; cell_color = CHG.get_cell_attributes(&#39;color&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; cell_color = CHG.get_cell_attributes(&quot;color&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; cell_color[(frozenset({0, 1}), 0)]</span>
 <span class="sd">        &#39;blue&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1873,7 +1876,11 @@ document.write(`
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; import trimesh</span>
-<span class="sd">        &gt;&gt;&gt; mesh = trimesh.Trimesh(vertices=[[0, 0, 0], [0, 0, 1], [0, 1, 0]], faces=[[0, 1, 2]], process=False)</span>
+<span class="sd">        &gt;&gt;&gt; mesh = trimesh.Trimesh(</span>
+<span class="sd">        ...     vertices=[[0, 0, 0], [0, 0, 1], [0, 1, 0]],</span>
+<span class="sd">        ...     faces=[[0, 1, 2]],</span>
+<span class="sd">        ...     process=False,</span>
+<span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; CHG = ColoredHyperGraph.from_trimesh(mesh)</span>
 <span class="sd">        &gt;&gt;&gt; CHG.nodes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1928,10 +1935,7 @@ document.write(`
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ranks</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">):</span>
-                        <span class="n">c_set</span> <span class="o">=</span> <span class="n">cell</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">c_set</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">c_set</span> <span class="o">=</span> <span class="n">cell</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">)</span> <span class="k">else</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">c_set</span> <span class="o">&lt;=</span> <span class="n">node_set</span><span class="p">:</span>
                         <span class="n">chg</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">c_set</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">chg</span></div>

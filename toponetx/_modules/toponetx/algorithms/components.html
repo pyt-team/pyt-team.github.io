@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Feb 9, 2024, 9:01:40 AM"/>
+    <meta name="docbuild:last-update" content="Feb 9, 2024, 9:13:36 AM"/>
   </head>
   
   
@@ -329,8 +329,7 @@ document.write(`
                   
   <h1>Source code for toponetx.algorithms.components</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Module to compute connected components on topological domains.&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Hashable</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Hashable</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
@@ -390,22 +389,22 @@ document.write(`
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CC, s=1,cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([2, 3, 4], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([5, 6, 7], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CC, s=1, cells=False))</span>
 <span class="sd">    &gt;&gt;&gt; #  [{2, 3, 4}, {5, 6, 7}]</span>
-<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CC, s=1,cells=True))</span>
+<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CC, s=1, cells=True))</span>
 <span class="sd">    &gt;&gt;&gt; # [{(2, 3), (2, 3, 4), (2, 4), (3, 4)},</span>
 <span class="sd">    &gt;&gt;&gt; # {(5, 6), (5, 6, 7), (5, 7), (6, 7)}]</span>
 <span class="sd">    &gt;&gt;&gt; CHG = CC.to_colored_hypergraph()</span>
-<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CHG, s=1,cells=False))</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
-<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CC, s=1,cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CHG, s=1, cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([4, 5], rank=1)</span>
+<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CC, s=1, cells=False))</span>
 <span class="sd">    &gt;&gt;&gt; # [{2, 3, 4, 5, 6, 7}]</span>
 <span class="sd">    &gt;&gt;&gt; CCC = CC.to_combinatorial_complex()</span>
-<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CCC, s=1,cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; list(s_connected_components(CCC, s=1, cells=False))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="p">(</span><span class="n">CellComplex</span><span class="p">,</span> <span class="n">ColoredHyperGraph</span><span class="p">,</span> <span class="n">CombinatorialComplex</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">CellComplex</span> <span class="o">|</span> <span class="n">ColoredHyperGraph</span> <span class="o">|</span> <span class="n">CombinatorialComplex</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input complex </span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2"> is not supported.&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">cells</span><span class="p">:</span>
@@ -431,9 +430,8 @@ document.write(`
             <span class="n">node_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">node_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_scipy_sparse_array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">return_singletons</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">return_singletons</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">CellComplex</span><span class="p">):</span>
                 <span class="k">yield</span> <span class="p">{</span><span class="n">node_dict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">c</span><span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
@@ -472,15 +470,15 @@ document.write(`
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CC,1,cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([2, 3, 4], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([5, 6, 7], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CC, 1, cells=False))</span>
 <span class="sd">    &gt;&gt;&gt; CCC = CC.to_combinatorial_complex()</span>
-<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CCC, s=1,cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CCC, s=1, cells=False))</span>
 <span class="sd">    &gt;&gt;&gt; CHG = CC.to_colored_hypergraph()</span>
-<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CHG, s=1,cells=False))</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
-<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CC,s=1,cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CHG, s=1, cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([4, 5], rank=1)</span>
+<span class="sd">    &gt;&gt;&gt; list(s_component_subcomplexes(CC, s=1, cells=False))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
         <span class="n">s_connected_components</span><span class="p">(</span>
@@ -526,11 +524,11 @@ document.write(`
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; list(connected_components(CC,cells=False))</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
-<span class="sd">    &gt;&gt;&gt; list(CC.connected_components(CC,cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([2, 3, 4], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([5, 6, 7], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; list(connected_components(CC, cells=False))</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([4, 5], rank=1)</span>
+<span class="sd">    &gt;&gt;&gt; list(CC.connected_components(CC, cells=False))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">yield from</span> <span class="n">s_connected_components</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="n">cells</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
@@ -565,10 +563,10 @@ document.write(`
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; CC = CellComplex()</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([2,3,4],rank=2)</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([5,6,7],rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([2, 3, 4], rank=2)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([5, 6, 7], rank=2)</span>
 <span class="sd">    &gt;&gt;&gt; list(connected_component_subcomplexes(CC))</span>
-<span class="sd">    &gt;&gt;&gt; CC.add_cell([4,5],rank=1)</span>
+<span class="sd">    &gt;&gt;&gt; CC.add_cell([4, 5], rank=1)</span>
 <span class="sd">    &gt;&gt;&gt; list(connected_component_subcomplexes(CC))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">yield from</span> <span class="n">s_component_subcomplexes</span><span class="p">(</span><span class="n">domain</span><span class="p">,</span> <span class="n">return_singletons</span><span class="o">=</span><span class="n">return_singletons</span><span class="p">)</span></div>
