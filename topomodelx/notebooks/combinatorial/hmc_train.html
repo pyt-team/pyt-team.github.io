@@ -49,7 +49,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Feb 1, 2024, 2:15:12 PM"/>
+    <meta name="docbuild:last-update" content="Feb 20, 2024, 3:47:04 PM"/>
   </head>
   
   
@@ -457,7 +457,7 @@ implementation, attention matrices are computed using the LeakyReLU activation f
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-cuda
+cpu
 </pre></div></div>
 </div>
 </section>
@@ -815,9 +815,64 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </pre></div>
 </div>
 </div>
-<p>We define the parameters for the model. We use softmax activation for the attention layers. Moreover, we use relu activation for the update and the aggregation steps. We set the negative slope parameter for the Leaky ReLU activation to 0.2. We only use one higher order attention layer as it already achieves almost perfect test accuracy, although more layers could be added.</p>
+<p>We generate our Network, combining HOAN model with the appropriate readout for the considered task</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">channels_per_layer</span><span class="p">,</span>
+        <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span> <span class="o">=</span> <span class="n">HMC</span><span class="p">(</span>
+            <span class="n">channels_per_layer</span><span class="p">,</span>
+            <span class="n">negative_slope</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_per_layer</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_per_layer</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">num_classes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">channels_per_layer</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">],</span> <span class="n">num_classes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">x_0</span><span class="p">,</span>
+        <span class="n">x_1</span><span class="p">,</span>
+        <span class="n">x_2</span><span class="p">,</span>
+        <span class="n">neighborhood_0_to_0</span><span class="p">,</span>
+        <span class="n">neighborhood_1_to_1</span><span class="p">,</span>
+        <span class="n">neighborhood_2_to_2</span><span class="p">,</span>
+        <span class="n">neighborhood_0_to_1</span><span class="p">,</span>
+        <span class="n">neighborhood_1_to_2</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span>
+            <span class="n">x_0</span><span class="p">,</span>
+            <span class="n">x_1</span><span class="p">,</span>
+            <span class="n">x_2</span><span class="p">,</span>
+            <span class="n">neighborhood_0_to_0</span><span class="p">,</span>
+            <span class="n">neighborhood_1_to_1</span><span class="p">,</span>
+            <span class="n">neighborhood_2_to_2</span><span class="p">,</span>
+            <span class="n">neighborhood_0_to_1</span><span class="p">,</span>
+            <span class="n">neighborhood_1_to_2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+        <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">l2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
+
+        <span class="c1"># Sum all the elements in the dimension zero</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">x_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">x_2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x_0</span> <span class="o">+</span> <span class="n">x_1</span> <span class="o">+</span> <span class="n">x_2</span>
+</pre></div>
+</div>
+</div>
+<p>We define the parameters for the model. We use softmax activation for the attention layers. Moreover, we use relu activation for the update and the aggregation steps. We set the negative slope parameter for the Leaky ReLU activation to 0.2. We only use one higher order attention layer as it already achieves almost perfect test accuracy, although more layers could be added.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">training_dataset</span><span class="o">.</span><span class="n">channels_dim</span><span class="p">()</span>
@@ -826,7 +881,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 
 <span class="n">channels_per_layer</span> <span class="o">=</span> <span class="p">[[</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">intermediate_channels</span><span class="p">,</span> <span class="n">final_channels</span><span class="p">]]</span>
 <span class="c1"># defube HOAN mesh classifier</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">HMC</span><span class="p">(</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Network</span><span class="p">(</span>
     <span class="n">channels_per_layer</span><span class="p">,</span> <span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">training_dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">()</span>
 <span class="p">)</span>
 
@@ -837,30 +892,87 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </pre></div>
 </div>
 </div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> Out [10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Network(
+  (base_model): HMC(
+    (layers): ModuleList(
+      (0): HMCLayer(
+        (hbs_0_level1): HBS(
+          (weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 6x60])
+          (att_weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 120x1])
+        )
+        (hbns_0_1_level1): HBNS()
+        (hbns_1_2_level1): HBNS()
+        (hbs_0_level2): HBS(
+          (weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 60x60])
+          (att_weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 120x1])
+        )
+        (hbns_0_1_level2): HBNS()
+        (hbs_1_level2): HBS(
+          (weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 60x60])
+          (att_weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 120x1])
+        )
+        (hbns_1_2_level2): HBNS()
+        (hbs_2_level2): HBS(
+          (weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 60x60])
+          (att_weight): ParameterList(  (0): Parameter containing: [torch.float32 of size 120x1])
+        )
+        (aggr): Aggregation()
+      )
+    )
+  )
+  (l0): Linear(in_features=60, out_features=30, bias=True)
+  (l1): Linear(in_features=60, out_features=30, bias=True)
+  (l2): Linear(in_features=60, out_features=30, bias=True)
+)
+</pre></div></div>
+</div>
 <p>We train the HoanMeshClassifier using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">test_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/gbg141/Documents/Projects/TopoModelX/topomodelx/nn/combinatorial/hmc_layer.py:683: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:56.)
+  A_p = torch.sparse.mm(A_p, neighborhood)
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch: 0 loss: 3.6020 Train_acc: 0.0333
-Test_acc: 0.0917
-Epoch: 1 loss: 3.2161 Train_acc: 0.0750
-Test_acc: 0.1333
-Epoch: 2 loss: 2.9366 Train_acc: 0.1437
+Epoch: 0 loss: 3.5569 Train_acc: 0.0292
+Test_acc: 0.0667
+Epoch: 1 loss: 3.2807 Train_acc: 0.0688
 Test_acc: 0.1583
-Epoch: 3 loss: 2.6148 Train_acc: 0.2167
-Test_acc: 0.2500
-Epoch: 4 loss: 2.3257 Train_acc: 0.2875
-Test_acc: 0.2750
+Epoch: 2 loss: 2.9899 Train_acc: 0.1125
+Test_acc: 0.1417
+Epoch: 3 loss: 2.6567 Train_acc: 0.1792
+Test_acc: 0.1583
+Epoch: 4 loss: 2.3474 Train_acc: 0.2583
+Test_acc: 0.3250
 </pre></div></div>
 </div>
 <p>Letting the model train for longer, we can see that the model achieves an outstanding performance on both the training and testing sets.</p>
