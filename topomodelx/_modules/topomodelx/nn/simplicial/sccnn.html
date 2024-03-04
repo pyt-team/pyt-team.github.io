@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Feb 20, 2024, 3:47:04 PM"/>
+    <meta name="docbuild:last-update" content="Mar 4, 2024, 9:52:54 AM"/>
   </head>
   
   
@@ -392,20 +392,17 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">hidden_channels_all</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_linear_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">hidden_channels_all</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 
-        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">):</span>
-            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                <span class="n">SCCNNLayer</span><span class="p">(</span>
-                    <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
-                    <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
-                    <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
-                    <span class="n">sc_order</span><span class="o">=</span><span class="n">sc_order</span><span class="p">,</span>
-                    <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
-                    <span class="n">update_func</span><span class="o">=</span><span class="n">update_func</span><span class="p">,</span>
-                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="n">SCCNNLayer</span><span class="p">(</span>
+                <span class="n">in_channels</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
+                <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels_all</span><span class="p">,</span>
+                <span class="n">conv_order</span><span class="o">=</span><span class="n">conv_order</span><span class="p">,</span>
+                <span class="n">sc_order</span><span class="o">=</span><span class="n">sc_order</span><span class="p">,</span>
+                <span class="n">aggr_norm</span><span class="o">=</span><span class="n">aggr_norm</span><span class="p">,</span>
+                <span class="n">update_func</span><span class="o">=</span><span class="n">update_func</span><span class="p">,</span>
             <span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">)</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="SCCNN.forward">
 <a class="viewcode-back" href="../../../../api/nn/simplicial/sccnn.html#topomodelx.nn.simplicial.sccnn.SCCNN.forward">[docs]</a>
