@@ -50,7 +50,7 @@
     <link rel="prev" title="Datasets" href="datasets.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Feb 17, 2024, 3:16:42 PM"/>
+    <meta name="docbuild:last-update" content="Mar 6, 2024, 11:38:00 AM"/>
   </head>
   
   
@@ -2345,6 +2345,11 @@ counterclockwise direction around the cell and -1 if it is in the clockwise dire
 <dt class="sig sig-object py" id="toponetx.classes.colored_hypergraph.ColoredHyperGraph">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">toponetx.classes.colored_hypergraph.</span></span><span class="sig-name descname"><span class="pre">ColoredHyperGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><span class="pre">Collection</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ranks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Collection" title="(in Python v3.12)"><span class="pre">Collection</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/toponetx/classes/colored_hypergraph.html#ColoredHyperGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#toponetx.classes.colored_hypergraph.ColoredHyperGraph" title="Link to this definition">#</a></dt>
 <dd><p>Class for ColoredHyperGraph Complex.</p>
+<p>A Colored Hypergraph (CHG) is a triplet CHG = (S, X, c) where:
+- S is an abstract set of entities,
+- X is a subset of the power set of S, and
+- c is the color function that associates a positive integer color or rank to each set x in X.</p>
+<p>A CHG is a generalization of graphs, combinatorial complexes, hypergraphs, cellular, and simplicial complexes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
@@ -2353,6 +2358,47 @@ counterclockwise direction around the cell and -1 if it is in the clockwise dire
 <dt><strong>ranks</strong><span class="classifier">Collection, optional</span></dt><dd><p>Represents the color of cells.</p>
 </dd>
 <dt><strong>**kwargs</strong><span class="classifier">keyword arguments, optional</span></dt><dd><p>Attributes to add to the complex as key=value pairs.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Define an empty colored hypergraph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">ColoredHyperGraph</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Add cells to the colored hypergraph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">toponetx.classes.colored_hypergraph</span> <span class="kn">import</span> <span class="n">ColoredHyperGraph</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">ColoredHyperGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Create a Colored Hypergraph and add groups of friends with corresponding ranks:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span> <span class="o">=</span> <span class="n">ColoredHyperGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span>
+<span class="gp">... </span><span class="p">)</span>  <span class="c1"># Alice and Bob are in a close-knit group.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;Charlie&quot;</span><span class="p">,</span> <span class="s2">&quot;David&quot;</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">1</span>
+<span class="gp">... </span><span class="p">)</span>  <span class="c1"># Another closely connected group.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;Charlie&quot;</span><span class="p">,</span> <span class="s2">&quot;David&quot;</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>  <span class="c1"># Both groups together form a higher-ranked community.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">([</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;David&quot;</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Overlapping connections.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CHG</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;Charlie&quot;</span><span class="p">,</span> <span class="s2">&quot;David&quot;</span><span class="p">,</span> <span class="s2">&quot;Eve&quot;</span><span class="p">,</span> <span class="s2">&quot;Frank&quot;</span><span class="p">,</span> <span class="s2">&quot;Grace&quot;</span><span class="p">],</span> <span class="n">rank</span><span class="o">=</span><span class="mi">3</span>
+<span class="gp">... </span><span class="p">)</span>  <span class="c1"># A larger, more influential community.</span>
+</pre></div>
+</div>
+<p>The code demonstrates how to represent social relationships using a Colored Hypergraph, where each group of friends (hyperedge) is assigned a rank based on the strength of the connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>complex</strong><span class="classifier">dict</span></dt><dd><p>A dictionary that can be used to store additional information about the complex.</p>
 </dd>
 </dl>
 </dd>
@@ -3387,6 +3433,16 @@ size as cells.</p>
 <dt><strong>graph_based</strong><span class="classifier">bool, default=False</span></dt><dd><p>When true rank 1 edges must have cardinality equals to 1.</p>
 </dd>
 <dt><strong>**kwargs</strong><span class="classifier">keyword arguments, optional</span></dt><dd><p>Attributes to add to the complex as key=value pairs.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>TypeError</dt><dd><p>If cells is not given as an Iterable.</p>
+</dd>
+<dt>ValueError</dt><dd><p>If input cells is not an instance of HyperEdge when rank is None.
+If input HyperEdge has None rank when rank is specified.
+If cells and ranks do not have an equal number of elements.</p>
 </dd>
 </dl>
 </dd>
