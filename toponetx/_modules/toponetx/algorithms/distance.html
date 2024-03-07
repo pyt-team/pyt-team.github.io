@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Mar 6, 2024, 11:38:00 AM"/>
+    <meta name="docbuild:last-update" content="Mar 7, 2024, 2:21:22 PM"/>
   </head>
   
   
@@ -339,21 +339,26 @@ document.write(`
 <span class="kn">from</span> <span class="nn">toponetx.classes.cell_complex</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.colored_hypergraph</span> <span class="kn">import</span> <span class="n">ColoredHyperGraph</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.combinatorial_complex</span> <span class="kn">import</span> <span class="n">CombinatorialComplex</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.hyperedge</span> <span class="kn">import</span> <span class="n">HyperEdge</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;distance&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_distance&quot;</span><span class="p">]</span>
 
+<span class="c1"># In this module, only cell complexes, combinatorial complexes and colored</span>
+<span class="c1"># hypergraphs are supported.</span>
+<span class="n">ComplexType</span> <span class="o">=</span> <span class="n">CellComplex</span> <span class="o">|</span> <span class="n">CombinatorialComplex</span> <span class="o">|</span> <span class="n">ColoredHyperGraph</span>
+
 
 <div class="viewcode-block" id="distance">
 <a class="viewcode-back" href="../../../api/algorithms.html#toponetx.algorithms.distance.distance">[docs]</a>
-<span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="n">domain</span><span class="p">:</span> <span class="n">Complex</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">distance</span><span class="p">(</span>
+    <span class="n">domain</span><span class="p">:</span> <span class="n">ComplexType</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return shortest s-walk distance between two nodes in the cell complex.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    domain : Complex</span>
-<span class="sd">        Supported complexes are cell/combintorial and hypegraphs.</span>
+<span class="sd">    domain : CellComplex or CombinaorialComplex or ColoredHyperGraph</span>
+<span class="sd">        The domain on which to compute the s-walk distance between source and target.</span>
 <span class="sd">    source : Hashable</span>
 <span class="sd">        A node in the input complex.</span>
 <span class="sd">    target : Hashable</span>
@@ -416,7 +421,7 @@ document.write(`
 <div class="viewcode-block" id="cell_distance">
 <a class="viewcode-back" href="../../../api/algorithms.html#toponetx.algorithms.distance.cell_distance">[docs]</a>
 <span class="k">def</span> <span class="nf">cell_distance</span><span class="p">(</span>
-    <span class="n">domain</span><span class="p">:</span> <span class="n">Complex</span><span class="p">,</span>
+    <span class="n">domain</span><span class="p">:</span> <span class="n">ComplexType</span><span class="p">,</span>
     <span class="n">source</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">|</span> <span class="n">HyperEdge</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span>
     <span class="n">target</span><span class="p">:</span> <span class="n">Iterable</span> <span class="o">|</span> <span class="n">HyperEdge</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span>
     <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -425,8 +430,8 @@ document.write(`
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    domain : Complex</span>
-<span class="sd">        Supported complexes are cell/combintorial and hypegraphs.</span>
+<span class="sd">    domain : CellComplex or CombinatorialComplex or ColoredHyperGraph</span>
+<span class="sd">        The domain on which to compute the s-walk distance between source and target cells.</span>
 <span class="sd">    source : Iterable or HyperEdge or Cell</span>
 <span class="sd">        An Iterable representing a cell in the input complex cell complex.</span>
 <span class="sd">    target : Iterable or HyperEdge or Cell</span>
