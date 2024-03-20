@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Mar 6, 2024, 12:05:48 PM"/>
+    <meta name="docbuild:last-update" content="Mar 20, 2024, 12:35:20 PM"/>
   </head>
   
   
@@ -408,7 +408,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">in_channels</span><span class="p">,</span>
         <span class="n">hidden_channels</span><span class="p">,</span>
-        <span class="n">incidence_1</span><span class="p">,</span>
+        <span class="n">incidence_1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">use_bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">use_normalized_incidence</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span>
@@ -422,7 +422,8 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">bias_gain</span> <span class="o">=</span> <span class="n">bias_gain</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_normalized_incidence</span> <span class="o">=</span> <span class="n">use_normalized_incidence</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">incidence_1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1_transpose</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">incidence_1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1_transpose</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">conv_0_to_1</span> <span class="o">=</span> <span class="n">Conv</span><span class="p">(</span>
             <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span>
@@ -444,9 +445,10 @@ document.write(`
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_normalized_incidence</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">shape</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">compute_normalization_matrices</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">normalize_incidence_matrices</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">incidence_1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">shape</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">compute_normalization_matrices</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">normalize_incidence_matrices</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HNHNLayer.compute_normalization_matrices">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/hnhn_layer.html#topomodelx.nn.hypergraph.hnhn_layer.HNHNLayer.compute_normalization_matrices">[docs]</a>
@@ -518,7 +520,7 @@ document.write(`
 
 <div class="viewcode-block" id="HNHNLayer.forward">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/hnhn_layer.html#topomodelx.nn.hypergraph.hnhn_layer.HNHNLayer.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Forward computation.</span>
 
 <span class="sd">        The forward pass was initially proposed in [1]_.</span>
@@ -542,8 +544,8 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, channels_node)</span>
 <span class="sd">            Input features on the hypernodes.</span>
-<span class="sd">        x_1 : torch.Tensor, shape = (n_edges, channels_edge)</span>
-<span class="sd">            Input features on the hyperedges.</span>
+<span class="sd">        incidence_1: torch.Tensor, shape = (n_nodes, n_edges)</span>
+<span class="sd">            Incidence matrix mapping edges to nodes (B_1).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -552,6 +554,13 @@ document.write(`
 <span class="sd">        x_1 : torch.Tensor, shape = (n_edges, channels_edge)</span>
 <span class="sd">            Output features on the hyperedges.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">incidence_1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span> <span class="o">=</span> <span class="n">incidence_1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1_transpose</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_normalized_incidence</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_edges</span> <span class="o">=</span> <span class="n">incidence_1</span><span class="o">.</span><span class="n">shape</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">compute_normalization_matrices</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">normalize_incidence_matrices</span><span class="p">()</span>
         <span class="c1"># Move incidence matrices to device</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x_0</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1_transpose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_1_transpose</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">x_0</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
