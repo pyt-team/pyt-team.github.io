@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Mar 11, 2024, 11:23:56 AM"/>
+    <meta name="docbuild:last-update" content="Apr 4, 2024, 6:58:32 AM"/>
   </head>
   
   
@@ -333,7 +333,7 @@ document.write(`
 <span class="sd">The class also supports attaching arbitrary attributes and data to cells.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">combinations</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
@@ -436,15 +436,6 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the simplicial complex.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        simplices : iterable, optional</span>
-<span class="sd">            Iterable of maximal simplices that define the simplicial complex.</span>
-<span class="sd">        **kwargs : keyword arguments, optional</span>
-<span class="sd">            Attributes to add to the complex as key=value pairs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span> <span class="o">=</span> <span class="n">SimplexView</span><span class="p">()</span>
@@ -644,7 +635,7 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the data associated with the given simplex.</span>
 
 <span class="sd">        Parameters</span>
@@ -790,12 +781,12 @@ document.write(`
 
 <div class="viewcode-block" id="SimplicialComplex.remove_maximal_simplex">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.remove_maximal_simplex">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_maximal_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">remove_maximal_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove maximal simplex from simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        simplex : Iterable</span>
+<span class="sd">        simplex : Collection</span>
 <span class="sd">            The simplex to be removed from the simplicial complex.</span>
 
 <span class="sd">        Raises</span>
@@ -907,12 +898,12 @@ document.write(`
 
 <div class="viewcode-block" id="SimplicialComplex.add_simplex">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.add_simplex">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add simplex to simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        simplex : Hashable or Iterable or Simplex or str</span>
+<span class="sd">        simplex : Collection</span>
 <span class="sd">            The simplex to be added to the simplicial complex.</span>
 <span class="sd">        **kwargs : keyword arguments, optional</span>
 <span class="sd">            Additional attributes to be associated with the simplex.</span>
@@ -1859,7 +1850,7 @@ document.write(`
 <div class="viewcode-block" id="SimplicialComplex.to_hasse_graph">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplicial_complex.SimplicialComplex.to_hasse_graph">[docs]</a>
     <span class="k">def</span> <span class="nf">to_hasse_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Hasse graph of self.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the hasse graph corresponding to this simplicial complex.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2032,14 +2023,16 @@ document.write(`
                 <span class="s2">&quot;input simplicial complex has dimension higher than 2 and hence it cannot be converted to a trimesh object&quot;</span>
             <span class="p">)</span>
 
-        <span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="nb">dict</span><span class="p">(</span>
-                <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="n">vertex_position_name</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="n">vertex_position_name</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">)</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span><span class="p">(</span>
-            <span class="n">faces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">(),</span> <span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="kc">False</span>
+            <span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">(),</span> <span class="n">process</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span></div>
 
 
@@ -2160,7 +2153,6 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">edge</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">node</span><span class="p">)))</span>
@@ -2238,11 +2230,12 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; SC.to_hypergraph()</span>
 <span class="sd">        Hypergraph({&#39;e0&#39;: [1, 2], &#39;e1&#39;: [1, 3], &#39;e2&#39;: [1, 4], &#39;e3&#39;: [2, 3], &#39;e4&#39;: [2, 4], &#39;e5&#39;: [2, 5], &#39;e6&#39;: [1, 2, 3], &#39;e7&#39;: [1, 2, 4]},name=)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="n">edge</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)]</span>
-            <span class="n">G</span> <span class="o">=</span> <span class="n">G</span> <span class="o">+</span> <span class="n">edge</span>
-        <span class="k">return</span> <span class="n">Hypergraph</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="n">hyperedges</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">Hypergraph</span><span class="p">(</span><span class="n">hyperedges</span><span class="p">,</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.to_combinatorial_complex">
