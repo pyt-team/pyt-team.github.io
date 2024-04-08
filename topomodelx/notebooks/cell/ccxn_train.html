@@ -51,7 +51,7 @@
     <link rel="prev" title="Train a Cell Attention Network (CAN)" href="can_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Mar 20, 2024, 12:35:20 PM"/>
+    <meta name="docbuild:last-update" content="Apr 8, 2024, 2:38:12 PM"/>
   </head>
   
   
@@ -668,10 +668,8 @@ The 6th cell complex has an adjacency_0 matrix of shape torch.Size([252, 252]).
         <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_1</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels_2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">neighborhood_0_to_0</span><span class="p">,</span> <span class="n">neighborhood_1_to_2</span><span class="p">):</span>
-        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span>
-            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">neighborhood_0_to_0</span><span class="p">,</span> <span class="n">neighborhood_1_to_2</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">,</span> <span class="n">incidence_2_t</span><span class="p">):</span>
+        <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_model</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">adjacency_0</span><span class="p">,</span> <span class="n">incidence_2_t</span><span class="p">)</span>
         <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
         <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
         <span class="n">x_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin_2</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
@@ -852,7 +850,7 @@ Epoch:2, Train Loss: 83.8803 Test Loss: 72.8717
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/gbg141/Documents/TopoProjectX/TopoModelX/venv_modelx/lib/python3.11/site-packages/torch/nn/modules/loss.py:536: UserWarning: Using a target size (torch.Size([])) that is different to the input size (torch.Size([2])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+/Users/gbg141/Documents/Projects/TopoModelX/venv_tmx/lib/python3.11/site-packages/torch/nn/modules/loss.py:536: UserWarning: Using a target size (torch.Size([])) that is different to the input size (torch.Size([2])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
   return F.mse_loss(input, target, reduction=self.reduction)
 </pre></div></div>
 </div>
