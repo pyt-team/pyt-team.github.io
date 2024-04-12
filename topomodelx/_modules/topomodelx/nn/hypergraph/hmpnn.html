@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Apr 8, 2024, 2:38:12 PM"/>
+    <meta name="docbuild:last-update" content="Apr 12, 2024, 2:17:48 PM"/>
   </head>
   
   
@@ -358,18 +358,18 @@ document.write(`
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    in_channels : int</span>
-<span class="sd">        Dimension of input features</span>
+<span class="sd">        Dimension of input features.</span>
 <span class="sd">    hidden_channels : Tuple[int]</span>
 <span class="sd">        A tuple of hidden feature dimensions to gradually reduce node/hyperedge representations feature</span>
 <span class="sd">        dimension from in_features to the last item in the tuple.</span>
-<span class="sd">    num_classes: int</span>
-<span class="sd">        Number of classes</span>
 <span class="sd">    n_layers : int, default = 2</span>
 <span class="sd">        Number of HMPNNLayer layers.</span>
-<span class="sd">    adjacency_dropout_rate: int, default = 0.7</span>
+<span class="sd">    adjacency_dropout_rate : int, default = 0.7</span>
 <span class="sd">        Adjacency dropout rate.</span>
 <span class="sd">    regular_dropout_rate : int, default = 0.5</span>
 <span class="sd">        Regular dropout rate applied on features.</span>
+<span class="sd">    **kwargs : optional</span>
+<span class="sd">        Additional arguments for the inner layers.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -386,6 +386,7 @@ document.write(`
         <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">adjacency_dropout_rate</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
         <span class="n">regular_dropout_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -398,6 +399,7 @@ document.write(`
                     <span class="n">hidden_channels</span><span class="p">,</span>
                     <span class="n">adjacency_dropout</span><span class="o">=</span><span class="n">adjacency_dropout_rate</span><span class="p">,</span>
                     <span class="n">updating_dropout</span><span class="o">=</span><span class="n">regular_dropout_rate</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">)</span>
             <span class="p">]</span>
@@ -414,7 +416,7 @@ document.write(`
 <span class="sd">            Node features.</span>
 <span class="sd">        x_1 : torch.Tensor, shape = (n_hyperedges, in_features)</span>
 <span class="sd">            Hyperedge features.</span>
-<span class="sd">        incidence_1: torch.sparse.Tensor, shape = (n_nodes, n_hyperedges)</span>
+<span class="sd">        incidence_1 : torch.sparse.Tensor, shape = (n_nodes, n_hyperedges)</span>
 <span class="sd">            Incidence matrix (B1).</span>
 
 <span class="sd">        Returns</span>

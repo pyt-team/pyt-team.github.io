@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Apr 8, 2024, 2:38:12 PM"/>
+    <meta name="docbuild:last-update" content="Apr 12, 2024, 2:17:48 PM"/>
   </head>
   
   
@@ -413,6 +413,8 @@ document.write(`
 <span class="sd">        Initialization method.</span>
 <span class="sd">    device : str, default=&quot;cpu&quot;</span>
 <span class="sd">        Device name to train layer on.</span>
+<span class="sd">    **kwargs : optional</span>
+<span class="sd">        Additional arguments for the layer modules.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -439,6 +441,7 @@ document.write(`
             <span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xavier_normal&quot;</span>
         <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
         <span class="n">device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;cpu&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">initialization</span><span class="o">=</span><span class="n">initialization</span><span class="p">,</span>
@@ -551,6 +554,18 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">nodes_per_edge</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get nodes per edge.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            e : int</span>
+<span class="sd">                Edge index.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Nodes per edge.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">messages</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">index_select</span><span class="p">(</span>
                     <span class="nb">input</span><span class="o">=</span><span class="n">incidence</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([</span><span class="n">e</span><span class="p">])</span>
@@ -564,6 +579,18 @@ document.write(`
             <span class="k">return</span> <span class="n">messages</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">messages</span><span class="p">))[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">]]</span>
 
         <span class="k">def</span> <span class="nf">edges_per_node</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+<span class="w">            </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get edges per node.</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            v : int</span>
+<span class="sd">                Node index.</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            torch.Tensor</span>
+<span class="sd">                Edges per node.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">index_select</span><span class="p">(</span>
                     <span class="nb">input</span><span class="o">=</span><span class="n">incidence</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">([</span><span class="n">v</span><span class="p">])</span>

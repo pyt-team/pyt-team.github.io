@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Apr 8, 2024, 2:38:12 PM"/>
+    <meta name="docbuild:last-update" content="Apr 12, 2024, 2:17:48 PM"/>
   </head>
   
   
@@ -362,8 +362,10 @@ document.write(`
 <span class="sd">        Dimension of the hidden features.</span>
 <span class="sd">    n_layers : int, default = 2</span>
 <span class="sd">        Amount of message passing layers.</span>
-<span class="sd">    layer_drop: float, default = 0.2</span>
+<span class="sd">    layer_drop : float, default = 0.2</span>
 <span class="sd">        Dropout rate for the hidden features.</span>
+<span class="sd">    **kwargs : optional</span>
+<span class="sd">        Additional arguments for the inner layers.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -378,6 +380,7 @@ document.write(`
         <span class="n">hidden_channels</span><span class="p">,</span>
         <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">layer_drop</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -385,6 +388,7 @@ document.write(`
             <span class="n">HyperGATLayer</span><span class="p">(</span>
                 <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">hidden_channels</span><span class="p">,</span>
                 <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">)</span>
         <span class="p">)</span>
@@ -397,8 +401,8 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_1 : torch.Tensor, shape = (n_edges, channels_edge)</span>
-<span class="sd">            Edge features.</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, channels_nodes)</span>
+<span class="sd">            Node features.</span>
 <span class="sd">        incidence_1 : torch.Tensor, shape = (n_nodes, n_edges)</span>
 <span class="sd">            Boundary matrix of rank 1.</span>
 

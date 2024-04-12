@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Apr 8, 2024, 2:38:12 PM"/>
+    <meta name="docbuild:last-update" content="Apr 12, 2024, 2:17:48 PM"/>
   </head>
   
   
@@ -366,8 +366,10 @@ document.write(`
 <span class="sd">        Aggregator function for hyperedges.</span>
 <span class="sd">    v_aggr : Literal[&quot;sum&quot;, &quot;mean&quot;,], default=&quot;mean&quot;</span>
 <span class="sd">        Aggregator function for nodes.</span>
-<span class="sd">    use_norm : boolean</span>
+<span class="sd">    use_norm : bool</span>
 <span class="sd">        Whether to apply row normalization after every layer.</span>
+<span class="sd">    **kwargs : optional</span>
+<span class="sd">        Additional arguments for the layer modules.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -384,6 +386,13 @@ document.write(`
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_validate_aggr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggr</span><span class="p">):</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Validate aggregator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        aggr : str</span>
+<span class="sd">            Aggregator function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">aggr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span>
             <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
             <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
@@ -405,6 +414,7 @@ document.write(`
             <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
         <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
         <span class="n">use_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">in_channels</span>

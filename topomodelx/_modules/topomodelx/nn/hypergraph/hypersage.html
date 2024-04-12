@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Apr 8, 2024, 2:38:12 PM"/>
+    <meta name="docbuild:last-update" content="Apr 12, 2024, 2:17:48 PM"/>
   </head>
   
   
@@ -360,10 +360,12 @@ document.write(`
 <span class="sd">        Dimension of the input features.</span>
 <span class="sd">    hidden_channels : int</span>
 <span class="sd">        Dimension of the hidden features.</span>
-<span class="sd">    n_layer : int, default = 2</span>
+<span class="sd">    n_layers : int, default = 2</span>
 <span class="sd">        Amount of message passing layers.</span>
 <span class="sd">    alpha : int, default = -1</span>
-<span class="sd">        Max number of nodes in a neighborhood to consider. If -1 it considers all the nodes.ù</span>
+<span class="sd">        Max number of nodes in a neighborhood to consider. If -1 it considers all the nodes.</span>
+<span class="sd">    **kwargs : optional</span>
+<span class="sd">        Additional arguments for the inner layers.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -387,14 +389,14 @@ document.write(`
 
 <div class="viewcode-block" id="HyperSAGE.forward">
 <a class="viewcode-back" href="../../../../api/nn/hypergraph/hypersage.html#topomodelx.nn.hypergraph.hypersage.HyperSAGE.forward">[docs]</a>
-    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward computation through layers, then linear layer, then global max pooling.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x : torch.Tensor, shape = (n_nodes, features_nodes)</span>
+<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, features_nodes)</span>
 <span class="sd">            Edge features.</span>
-<span class="sd">        incidence : torch.Tensor, shape = (n_nodes, n_edges)</span>
+<span class="sd">        incidence_1 : torch.Tensor, shape = (n_nodes, n_edges)</span>
 <span class="sd">            Boundary matrix of rank 1.</span>
 
 <span class="sd">        Returns</span>
@@ -403,7 +405,7 @@ document.write(`
 <span class="sd">            Label assigned to whole complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence</span><span class="p">)</span>
+            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">x_0</span></div>
 </div>
