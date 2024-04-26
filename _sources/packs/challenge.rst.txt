@@ -1,0 +1,343 @@
+ICML Challenge 2024
+===================
+
+Welcome to the ICML 2024 Beyond the Graph Domain Challenge, hosted by
+the Geometry-grounded Representation Learning and Generative Modeling
+(GRaM) Workshop at ICML.
+
+*Organizers, reviewers and contributors:* Nina Miolane, Guillermo
+Bernárdez, Lev Telyatnikov, Marco Montagna, Federica Baccini, ...
+
+Motivation
+----------
+
+The field of Topological Deep Learning (TDL) aims to extend Graph Neural
+Networks (GNN) by naturally processing higher-order interactions, going
+beyond the pairwise relations and local neighborhoods defined by graph
+representations. By leveraging (algebraic) topology concepts to encode
+multi-element relationships (e.g. simplicial, cell and combinatorial
+complexes), TDL methods allow for a more expressive representation of
+the complex relational structure at the core of the data.
+
+Despite its recent emergence, TDL is already postulated to become a
+relevant tool in many research areas and applications, from complex
+physical systems and signal processing to molecular analysis or social
+interactions, to name a few. However, the availability of datasets with
+higher-order information is still limited, and there is not yet a clear
+understanding on how to infer these multi-element structures and
+relationships from point-clouds and graph-based data –which represent
+the vast majority of existing datasets.
+
+The main purpose of this challenge is precisely to foster new research
+and knowledge about effective ’lifting’ mappings between different
+topological domains and data structures, allowing to expand the current
+scope and impact of TDL to a much broader range of contexts and
+scenarios.
+
+Description of the Challenge
+----------------------------
+
+We propose participants to design and implement lifting mappings between
+different data structures and topological domains (point-clouds, graphs,
+hypergraphs, simplicial/cell/combinatorial complexes), potentially
+bridging the gap between TDL and all kinds of existing datasets.
+
+In particular, both already proposed liftings from the literature and
+original approaches are allowed. In the case of submissions with novel
+liftings, we remark that participants will keep all the credit for their
+implementations, and neither the challenge nor its related reward
+outcomes will prevent them from publishing their independent works.
+
+Moreover, aligned with the primary goal of broadening the footprint and
+usage of TDL, the submission of liftings from point-clouds/graphs to
+higher-order topological domains is encouraged. However, this is not a
+requirement: the challenge also welcomes transformations between any
+other pair of topological structures (e.g., from hypergraph to
+simplicial domain).
+
+In order to ensure consistency and compositionality, implementations
+need to be compatible with the ``BaseTransform`` class of
+``torch_geometric``, and should leverage NetworkX/TopoNetX/ TopoEmbedX
+libraries when dealing with graph/higher-order datasets. Each submission
+takes the form of a Pull Request to ‘icml2024_lifting_challenge’
+containing the necessary code for implementing a lifting map. More
+details are provided in subsequent sections below.
+
+**Note:** We invite participants to review this webpage regularly, as
+more details might be added to answer relevant questions and doubts
+raised to the organizers.
+
+Reward Outcomes
+---------------
+
+-  Every submission respecting the submission requirements will be
+   included in a white paper summarizing the findings of the challenge,
+   published in PMLR through the Geometry-grounded Representation
+   Learning and Generative Modeling (GRaM) at ICML 2024. All
+   participants with qualifying submissions will have the opportunity to
+   co-author this publication.
+
+-  Winning participants will also have the opportunity to co-author an
+   in-depth study on lifting, focusing on assessing different liftings
+   across topological domains. This study is expected to be submitted to
+   the Journal of Data-centric Machine Learning Research (DMLR).
+
+-  Winner submissions will receive special recognition at the ICML GRaM
+   workshop.
+
+**Note:** By law, US researchers are not allowed to co-author papers
+with scholars from some countries and institutions. Unfortunately,
+affected participants wouldn’t be eligible for the publication-based
+awards, even in the case of winning the competition.
+
+Deadline
+--------
+
+The final Pull Request submission date and time must take place before
+July 12th, 2024. Participants are welcome to modify their Pull Request
+until this time.
+
+Guidelines
+----------
+
+Everyone can participate and participation is free –only principal
+PyT-Team developers are excluded. It is sufficient to:
+
+-  Send a Pull Request;
+
+-  Respect Submission Requirements (see below).
+
+Teams are accepted, and there is no restriction on the number of team
+members and number of submissions. An acceptable Pull Request
+automatically subscribes a participant/team to the challenge.
+
+We encourage participants to start submitting their Pull Request early
+on, as this helps addressing potential issues with the code. Moreover,
+earlier Pull Requests will be given priority consideration in the case
+of multiple submissions of similar quality implementing the same
+lifting.
+
+A Pull Request should contain no more than one lifting. However, there
+is no restriction on the number of submissions (Pull Requests) per
+participant/team.
+
+To assist participants during the challenge, we’d be happy to schedule a
+call to brainstorm and define the pipeline for both novel and existing
+lifting submissions.
+
+Submission Requirements
+-----------------------
+
+The submission must implement a valid lifting transformation between any
+pair of the following data structures: point-cloud/graph, hypergraph,
+simplicial complex, cell complex, and combinatorial complex. For a
+lifting to be valid, participants must implement a mapping between the
+topological structures of the considered domains –topology lifting–, and
+optionally a procedure to define the features over the resulting
+topology –feature lifting.
+
+All submitted code must comply with TopoBenchmarkX’s GitHub Action
+workflow, successfully passing all tests, linting, and formatting (i.e.
+Black, isort, flake8). Moreover, to ensure consistency, we ask
+participants to implement TopoNetX’s classes to manage
+simplicial/cell/combinatorial complexes whenever these topological
+domains are the target –i.e., destination– of the lifting.
+
+**Remark:** We encourage the use of TopoNetX, TopoEmbedX and NetworkX
+libraries.
+
+Topology Lifting (Required)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Submissions can implement already proposed liftings from the literature,
+as well as novel approaches. In the case of original liftings, we note
+that neither the challenge nor its related publications will prevent
+participants from publishing their own work: they will keep all the
+credit for their implementations.
+
+For a lifting from a certain source domain ``src`` (e.g. graph) to a
+topological destination ``dst`` (e.g. simplicial), the submission
+consists of a Pull Request to the ICML Challenge repo that contains the
+following files:
+
+#. ``{id lifting}.py``
+
+   -  Stored in the directory
+      ``modules/transforms/liftings/{src}2{dst}/``
+
+   -  | Defines a class ``{Id lifting}Lifting`` that implements a
+        ``lift_topology()`` method that performs the specific
+        ``{src}2{dst}`` topological lifting considered (e.g.
+      | ``SimplicialCliqueLifting`` as a ``graph2simplicial``
+        transform). It may also implement other auxiliary functions, and
+        can override parent methods if required.
+
+   -  | This class must inherit from ``{Src}2{Dst}Lifting`` abstract
+        class (e.g.
+      | ``Graph2SimplicialLifting``), which we provide for every pair
+        {``src``,\ ``dst``} within the corresponding directory. When
+        justified, this and other abstract parent classes can be
+        modified.
+
+   | **Note:** We provide several lifting examples for
+     ``graph2simplicial``, ``graph2cell`` and
+   | ``graph2hypergraph``.
+
+#. ``{id lifting}.ipynb``
+
+   -  Stored in the directory ``tutorials/{src}2{dst}/``
+
+   -  Contains the following steps:
+
+      #. Dataset Loading
+
+         -  Implements the pipeline to load a dataset from the ``src``
+            domain.
+
+         -  This pipeline is provided for graph-based datasets. For any
+            other *src*, participants are allowed to transform graph
+            datasets into the corresponding domain through our provided
+            lifting mappings –or just dropping their connectivity to get
+            point-clouds.
+
+         -  *(Bonus)* Designing a loader for a new dataset (ones that
+            are not already provided in the tutorials) will be
+            positively taken into consideration in the final evaluation.
+
+      #. Pre-processing the Dataset
+
+         -  Applies the lifting transform to the dataset.
+
+         -  | Needs to be done through the ``PreProcessor``, which we
+              provide in
+            | ``modules/io/preprocessor.py``.
+
+      #. Training a Model over the Lifted Dataset
+
+         -  Creates a Neural Network model that operates over the
+            ``dst`` domain, leveraging TopoModelX for higher order
+            topologies or torch_geometric for graphs.
+
+         -  Trains and evaluates the model on the lifted dataset.
+
+   **Note:** Several examples are provided in ``tutorials/``.
+
+#. ``test_{id lifting}.py``
+
+   -  Stored in the directory ``tests/transforms/liftings/{src}2{dst}/``
+
+   -  Contains one class, ``Test{Id lifting}``, which contains unit
+      tests for all of the methods contained in the
+      ``{Id lifting}Lifting`` class.
+
+   -  Please use pytest (not unittest).
+
+   **Note:** We provide several examples in the corresponding
+   directories.
+
+Feature Lifting (Optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some TDL models require well-defined features on higher-order structures
+(e.g. 2-cells, or hyperedges), so in its more general formulation
+liftings also need to produce an initial signal for every topological
+element of the ``dst`` domain. In particular, in all our examples we
+make use of a straightformard ``ConcatenationLifting`` transform to that
+end, which gets the desired structural features by sequentially
+projecting the original signals via incidence matrices.
+
+Participants are more than welcome to implement new feature liftings
+mappings, which can be added to the ``feature_liftings.py`` file at the
+``modules/transforms/feature_liftings/`` directory. However, we remark
+this is optional, and it will only be regarded as a bonus.
+
+**Note:** Please, reach out if you want to implement a feature lifting
+and have any doubts about it. We also provide some data manipulations
+transforms that could be useful when defining more complex data
+pipelines.
+
+Evaluation (Tentative, still subject to changes)
+------------------------------------------------
+
+Award Categories
+~~~~~~~~~~~~~~~~
+
+Given the lack of an exhaustive analysis about different types of
+lifting procedures, there is not any particular requirement for
+submitted liftings –apart from a high-quality code implementation. To
+promote and guide diversity in submissions, we propose the following
+general, non-mutually exclusive award categories:
+
+-  Best implementation of a existing lifting from the literature
+
+-  Best novel design of a connectivity-based lifting
+
+-  Best novel design of a signal-based lifting
+
+-  Best implementation of a deterministic lifting (existing or novel)
+
+-  Best implementation of a non-deterministic lifting (existing or
+   novel)
+
+Additionally, we reserve the right to award some honorable mentions
+considering some aspects like originality, theoretical robustness,
+loading interesting datasets, implementing new feature liftings, etc.
+
+More details are needed. Maybe add a Taxonomy section below and refer
+here to it?
+
+Evaluation Procedure
+~~~~~~~~~~~~~~~~~~~~
+
+The Condorcet method will be used to rank the submissions and decide on
+the winners in each category. The evaluation criteria will be:
+
+-  Does the submission implement the chosen lifting correctly? Is it
+   reasonable and well-defined?
+
+-  How readable/clean is the implementation? How well does the
+   submission respect the submission requirements?
+
+-  Is the submission well-written? Do the docstrings clearly explain the
+   methods? Are the unit tests robust?
+
+Note that these criteria do not reward final model performance, nor the
+complexity of the method. Rather, the goal is to implement well-written
+and accurate liftings that will unlock further experimental evidence and
+insights in this field.
+
+Selected PyT-Team maintainers and collaborators, as well as each team
+whose submission(s) respect(s) the guidelines, will vote once on Google
+Form to express their preference for the best submission in each
+category. Note that each team gets only one vote/domain, even if there
+are several participants in the team.
+
+A link to a Google Form will be provided to record the votes. While the
+form will ask for an email address to identify the voter, voters’
+identities will remain secret–only the final ranking will be shared.
+
+Questions
+---------
+
+Feel free to contact us through GitHub issues on this repository, or
+through the Geometry and Topology in Machine Learning slack.
+Alternatively, you can contact Guillermo Bernardez at
+guillermo.bernardez@upc.edu, lev.telyatnikov@uniroma1.it,
+marco.montagna@uniroma1.it
+
+Related References (Uncompleted)
+--------------------------------
+
+We can share some related references that propose topological liftings:
+
+-  Ferri, Massimo, et al.. “Simplicial complexes from graphs towards
+   graph persistence”. In: arXiv preprint arXiv:1805.10716 (2018).
+
+-  Hajij, Mustafa, et al. "Topological deep learning: Going beyond graph
+   data." arXiv preprint arXiv:2206.00606 (2022).
+
+-  Battiloro, Claudio, et al. "From Latent Graph to Latent Topology
+   Inference: Differentiable Cell Complex Module." ICML 2023.
+
+-  Austin R. Benson, David F. Gleich. "Higher-order Network Analysis
+   Takes Off, Fueled by Classical Ideas and New Data"
