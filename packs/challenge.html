@@ -48,7 +48,7 @@
     <link rel="prev" title="TopoEmbedX (TEX)" href="index_tex.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 1, 2024, 10:09:39 PM"/>
+    <meta name="docbuild:last-update" content="May 1, 2024, 10:25:18 PM"/>
   </head>
   
   
@@ -577,19 +577,17 @@ liftings and data transforms.</p>
 <li><p>Dataset Loading</p>
 <ul class="simple">
 <li><p>Implements the pipeline to load a dataset from the <code class="docutils literal notranslate"><span class="pre">src</span></code>
-domain.</p></li>
+domain. Since the challenge repository doesn’t allow storing
+large files, loaders must download datasets from external
+sources into the <code class="docutils literal notranslate"><span class="pre">datasets/</span></code> folder.</p></li>
 <li><p>This pipeline is provided for several graph-based datasets.
-For any other <code class="docutils literal notranslate"><span class="pre">src</span></code>, participants are allowed to transform
-graph datasets into the corresponding domain through our
-provided lifting mappings –or just dropping their
-connectivity to get point-clouds.</p></li>
+For any other <code class="docutils literal notranslate"><span class="pre">src</span></code> domain, participants are allowed to
+transform graph datasets into the corresponding domain
+through our provided lifting mappings –or just dropping
+their connectivity to get point-clouds.</p></li>
 <li><p><em>(Bonus)</em> Designing a loader for a new dataset (ones that
 are not already provided in the tutorials) will be
-positively taken into consideration in the final evaluation.
-The challenge repository doesn’t allow storing large files;
-please, make sure to git-ignore them and include code for
-downloading the dataset from external sources into the
-<code class="docutils literal notranslate"><span class="pre">datasets/</span></code> folder.</p></li>
+positively taken into consideration in the final evaluation.</p></li>
 </ul>
 </li>
 <li><p>Pre-processing the Dataset</p>
@@ -635,9 +633,9 @@ directories.</p>
 (e.g. 2-cells, or hyperedges); therefore, in their more general
 formulation, liftings also need to produce initial features for every
 topological element of the <code class="docutils literal notranslate"><span class="pre">dst</span></code> domain. In particular, in all our
-examples we make use of a straightforward <code class="docutils literal notranslate"><span class="pre">ConcatenationLifting</span></code>
-transform to that end, which gets the desired structural features by
-sequentially projecting the original signals via incidence matrices.</p>
+examples we make use of a straightforward <code class="docutils literal notranslate"><span class="pre">SumProjection</span></code> transform to
+that end, which gets the desired structural features by sequentially
+projecting the original signals via incidence matrices.</p>
 <p>Participants are more than welcome to implement new feature liftings
 mappings, which can be added to the <code class="docutils literal notranslate"><span class="pre">feature_liftings.py</span></code> file at the
 <code class="docutils literal notranslate"><span class="pre">modules/transforms/feature_liftings/</span></code> directory. However, we remark
@@ -648,8 +646,8 @@ provide some data manipulations transforms that could be useful when
 defining more complex data pipelines.</p>
 </section>
 </section>
-<section id="evaluation-tentative-still-subject-to-changes">
-<h1>Evaluation (Tentative, still subject to changes)<a class="headerlink" href="#evaluation-tentative-still-subject-to-changes" title="Link to this heading">#</a></h1>
+<section id="evaluation">
+<h1>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h1>
 <section id="award-categories">
 <h2>Award Categories<a class="headerlink" href="#award-categories" title="Link to this heading">#</a></h2>
 <p>Given the lack of an exhaustive analysis about different types of
@@ -660,11 +658,11 @@ submissions, we propose the following general, non-mutually exclusive
 award categories:</p>
 <ul class="simple">
 <li><p>Best implementation of a existing lifting from the literature.</p></li>
-<li><p>Best novel design of connectivity-based lifting (i.e., leveraging
-only the relational information present in the source domain).</p></li>
-<li><p>Best novel design of a signal-based lifting (i.e. leveraging the
-original features of the source domain to infer the target topology;
-if available, connectivity can also be used).</p></li>
+<li><p>Best novel lifting design that only leverages the relational
+information of the source domain (i.e. connectivity-based lifting).</p></li>
+<li><p>Best novel lifting design that leverages the original features of the
+source domain to infer the target topology (i.e. feature-based
+lifting). If available, connectivity can also be simultaneously used.</p></li>
 <li><p>Best implementation of a deterministic lifting (existing or novel).</p></li>
 <li><p>Best implementation of a non-deterministic lifting (existing or
 novel).</p></li>
@@ -711,12 +709,18 @@ Alternatively, you can contact us via mail at any of these accounts:
 <a class="reference external" href="mailto:guillermo&#46;bernardez&#37;&#52;&#48;upc&#46;edu">guillermo<span>&#46;</span>bernardez<span>&#64;</span>upc<span>&#46;</span>edu</a>, <a class="reference external" href="mailto:lev&#46;telyatnikov&#37;&#52;&#48;uniroma1&#46;it">lev<span>&#46;</span>telyatnikov<span>&#64;</span>uniroma1<span>&#46;</span>it</a>,
 <a class="reference external" href="mailto:marco&#46;montagna&#37;&#52;&#48;uniroma1&#46;it">marco<span>&#46;</span>montagna<span>&#64;</span>uniroma1<span>&#46;</span>it</a>, <a class="reference external" href="mailto:federica&#46;baccini&#37;&#52;&#48;uniroma1&#46;it">federica<span>&#46;</span>baccini<span>&#64;</span>uniroma1<span>&#46;</span>it</a>.</p>
 </section>
-<section id="related-references-updated-just-double-check-for-typos-and-or-missing-material">
-<span id="reference-list"></span><h1>Related References (Updated, just double check for typos and/or missing material)<a class="headerlink" href="#related-references-updated-just-double-check-for-typos-and-or-missing-material" title="Link to this heading">#</a></h1>
+<section id="related-references">
+<span id="reference-list"></span><h1>Related References<a class="headerlink" href="#related-references" title="Link to this heading">#</a></h1>
 <p>As a support to participants, in this section we share some related
 references that propose topological liftings or might help defining
 novel ones.</p>
 <ol class="arabic simple">
+<li><p>Papillon, M., Sanborn, S., Hajij, M., &amp; Miolane, N. (2023).
+Architectures of Topological Deep Learning: A Survey on Topological
+Neural Networks. <em>arXiv preprint arXiv:2304.10031</em>.</p></li>
+<li><p>Hajij, M., Zamzmi, G., Papamarkou, T., Miolane, N., Guzmán-Sáenz, A.,
+Ramamurthy, K. N., et al. (2022). Topological deep learning: Going
+beyond graph data. <em>arXiv preprint arXiv:2206.00606</em>.</p></li>
 <li><p>Baccini, F., Geraci, F., &amp; Bianconi, G. (2022). Weighted simplicial
 complexes and their representation power of higher-order network data
 and topology. <em>Physical Review E, 106</em>(3), 034319.</p></li>
@@ -846,13 +850,13 @@ responsible for checking eligibility.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-lifting-optional">Feature Lifting (Optional)</a></li>
 </ul>
 </li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-tentative-still-subject-to-changes">Evaluation (Tentative, still subject to changes)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation">Evaluation</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#award-categories">Award Categories</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-procedure">Evaluation Procedure</a></li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#questions">Questions</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#related-references-updated-just-double-check-for-typos-and-or-missing-material">Related References (Updated, just double check for typos and/or missing material)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#related-references">Related References</a></li>
 </ul>
 
   </nav></div>

@@ -237,21 +237,19 @@ following files:
       #. Dataset Loading
 
          -  Implements the pipeline to load a dataset from the ``src``
-            domain.
+            domain. Since the challenge repository doesn’t allow storing
+            large files, loaders must download datasets from external
+            sources into the ``datasets/`` folder.
 
          -  This pipeline is provided for several graph-based datasets.
-            For any other ``src``, participants are allowed to transform
-            graph datasets into the corresponding domain through our
-            provided lifting mappings –or just dropping their
-            connectivity to get point-clouds.
+            For any other ``src`` domain, participants are allowed to
+            transform graph datasets into the corresponding domain
+            through our provided lifting mappings –or just dropping
+            their connectivity to get point-clouds.
 
          -  *(Bonus)* Designing a loader for a new dataset (ones that
             are not already provided in the tutorials) will be
             positively taken into consideration in the final evaluation.
-            The challenge repository doesn’t allow storing large files;
-            please, make sure to git-ignore them and include code for
-            downloading the dataset from external sources into the
-            ``datasets/`` folder.
 
       #. Pre-processing the Dataset
 
@@ -291,9 +289,9 @@ Some TDL models require well-defined features on higher-order structures
 (e.g. 2-cells, or hyperedges); therefore, in their more general
 formulation, liftings also need to produce initial features for every
 topological element of the ``dst`` domain. In particular, in all our
-examples we make use of a straightforward ``ConcatenationLifting``
-transform to that end, which gets the desired structural features by
-sequentially projecting the original signals via incidence matrices.
+examples we make use of a straightforward ``SumProjection`` transform to
+that end, which gets the desired structural features by sequentially
+projecting the original signals via incidence matrices.
 
 Participants are more than welcome to implement new feature liftings
 mappings, which can be added to the ``feature_liftings.py`` file at the
@@ -305,8 +303,8 @@ to implement a new feature lifting and/or a novel data loader. We also
 provide some data manipulations transforms that could be useful when
 defining more complex data pipelines.
 
-Evaluation (Tentative, still subject to changes)
-------------------------------------------------
+Evaluation
+----------
 
 Award Categories
 ~~~~~~~~~~~~~~~~
@@ -320,12 +318,12 @@ award categories:
 
 -  Best implementation of a existing lifting from the literature.
 
--  Best novel design of connectivity-based lifting (i.e., leveraging
-   only the relational information present in the source domain).
+-  Best novel lifting design that only leverages the relational
+   information of the source domain (i.e. connectivity-based lifting).
 
--  Best novel design of a signal-based lifting (i.e. leveraging the
-   original features of the source domain to infer the target topology;
-   if available, connectivity can also be used).
+-  Best novel lifting design that leverages the original features of the
+   source domain to infer the target topology (i.e. feature-based
+   lifting). If available, connectivity can also be simultaneously used.
 
 -  Best implementation of a deterministic lifting (existing or novel).
 
@@ -381,12 +379,20 @@ marco.montagna@uniroma1.it, federica.baccini@uniroma1.it.
 
 .. _reference_list:
 
-Related References (Updated, just double check for typos and/or missing material)
----------------------------------------------------------------------------------
+Related References
+------------------
 
 As a support to participants, in this section we share some related
 references that propose topological liftings or might help defining
 novel ones.
+
+#. Papillon, M., Sanborn, S., Hajij, M., & Miolane, N. (2023).
+   Architectures of Topological Deep Learning: A Survey on Topological
+   Neural Networks. *arXiv preprint arXiv:2304.10031*.
+
+#. Hajij, M., Zamzmi, G., Papamarkou, T., Miolane, N., Guzmán-Sáenz, A.,
+   Ramamurthy, K. N., et al. (2022). Topological deep learning: Going
+   beyond graph data. *arXiv preprint arXiv:2206.00606*.
 
 #. Baccini, F., Geraci, F., & Bianconi, G. (2022). Weighted simplicial
    complexes and their representation power of higher-order network data
