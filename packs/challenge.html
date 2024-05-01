@@ -48,7 +48,7 @@
     <link rel="prev" title="TopoEmbedX (TEX)" href="index_tex.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Apr 26, 2024, 3:50:14 AM"/>
+    <meta name="docbuild:last-update" content="May 1, 2024, 9:40:12 PM"/>
   </head>
   
   
@@ -359,45 +359,82 @@ document.write(`
                   
   <section id="icml-challenge-2024">
 <h1>ICML Challenge 2024<a class="headerlink" href="#icml-challenge-2024" title="Link to this heading">#</a></h1>
-<p>Welcome to the ICML 2024 Beyond the Graph Domain Challenge, hosted by
-the Geometry-grounded Representation Learning and Generative Modeling
-(GRaM) Workshop at ICML.</p>
-<p><em>Organizers, reviewers and contributors:</em> Nina Miolane, Guillermo
-Bernárdez, Lev Telyatnikov, Marco Montagna, Federica Baccini, …</p>
+<div class="center docutils container">
+<p><strong>ICML Topological Deep Learning Challenge 2024: Beyond the Graph
+Domain</strong></p>
+</div>
+<p>Welcome to the ICML Topological Deep Learning Challenge 2024: <em>Beyond
+the Graph Domain</em>, hosted by the Geometry-grounded Representation
+Learning and Generative Modeling (GRaM) Workshop at ICML.</p>
+<p><em>Organizers:</em> Guillermo Bernárdez, Lev Telyatnikov, Marco Montagna,
+Mathilde Papillon, Miquel Ferriol, Federica Baccini, Nina Miolane.</p>
+</section>
 <section id="motivation">
-<h2>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h2>
+<h1>Motivation<a class="headerlink" href="#motivation" title="Link to this heading">#</a></h1>
 <p>The field of Topological Deep Learning (TDL) aims to extend Graph Neural
-Networks (GNN) by naturally processing higher-order interactions, going
-beyond the pairwise relations and local neighborhoods defined by graph
-representations. By leveraging (algebraic) topology concepts to encode
-multi-element relationships (e.g. simplicial, cell and combinatorial
-complexes), TDL methods allow for a more expressive representation of
-the complex relational structure at the core of the data.</p>
+Networks (GNN) by naturally processing relations between more than two
+elements, ubiquitous in any realistic complex system (social connections
+within a community, molecular structures and reactions, n-body
+interactions,…). More specifically, TDL methods allow to go beyond
+graphs’ pairwise connections –and local neighborhoods– by encoding
+higher-order relationships through algebraic topology concepts;
+<a class="reference internal" href="#fig-domains"><span class="std std-numref">Fig. 1</span></a> illustrates the standard <em>topological domains</em> used
+to that end. For those interested in knowing more details about these
+domains, we highly recommend the work of <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al.,
+2023.</a></p>
+<figure class="align-default" id="fig-domains">
+<img alt="../_images/domain_categories_with_relations.png" src="../_images/domain_categories_with_relations.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Domains of Topological Deep Learning. Adopted from <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al.,
+2023.</a></span><a class="headerlink" href="#fig-domains" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 <p>Despite its recent emergence, TDL is already postulated to become a
 relevant tool in many research areas and applications, from complex
 physical systems and signal processing to molecular analysis or social
-interactions, to name a few. However, the availability of datasets with
-higher-order information is still limited, and there is not yet a clear
-understanding on how to infer these multi-element structures and
-relationships from point-clouds and graph-based data –which represent
-the vast majority of existing datasets.</p>
+interactions, to name a few. However, a current limiting factor is that
+most existing datasets are presently stored as point clouds or graphs,
+i.e. the traditional discrete domains (<a class="reference internal" href="#fig-domains"><span class="std std-numref">Fig. 1</span></a>). While
+researchers have introduced various mechanisms for extracting
+higher-order elements, it remains unclear how to optimize the process
+given a specific dataset and task.</p>
 <p>The main purpose of this challenge is precisely to foster new research
-and knowledge about effective ’lifting’ mappings between different
-topological domains and data structures, allowing to expand the current
-scope and impact of TDL to a much broader range of contexts and
-scenarios.</p>
+and knowledge about effective mappings between different topological
+domains and data structures, helping to expand the current scope and
+impact of TDL to a much broader range of contexts and scenarios.</p>
+<p><strong>Remark:</strong> This process of mapping a data structure to different
+topological domains is called “topological lifting”, or just “lifting”
+to abbreviate; <a class="reference internal" href="#fig-lifting"><span class="std std-numref">Fig. 2</span></a> shows some visual examples. The
+“topological lifting” transfers data from the original domain where the
+signal (node/edge features) exists to the new domain where new objects
+can exist, such as simplicial/cell complexes. Therefore, it’s crucial to
+also derive and provide descriptors for these introduced objects, and
+this process is known as “feature lifting”.</p>
+<figure class="align-default" id="fig-lifting">
+<img alt="../_images/lifting_maps.png" src="../_images/lifting_maps.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Examples of liftings: (a) A graph is lifted to a hypergraph by adding
+hyperedges that connect groups of nodes. (b) A graph can be lifted to
+a cellular complex by adding faces of any shape. (c) Hyperedges can
+be added to a cellular complex to lift the structure to a
+combinatorial complex. Figure adopted from <a class="reference external" href="https://arxiv.org/abs/2206.00606">Hajij et al.
+2023.</a></span><a class="headerlink" href="#fig-lifting" title="Link to this image">#</a></p>
+</figcaption>
+</figure>
 </section>
 <section id="description-of-the-challenge">
-<h2>Description of the Challenge<a class="headerlink" href="#description-of-the-challenge" title="Link to this heading">#</a></h2>
-<p>We propose participants to design and implement lifting mappings between
-different data structures and topological domains (point-clouds, graphs,
-hypergraphs, simplicial/cell/combinatorial complexes), potentially
-bridging the gap between TDL and all kinds of existing datasets.</p>
-<p>In particular, both already proposed liftings from the literature and
-original approaches are allowed. In the case of submissions with novel
-liftings, we remark that participants will keep all the credit for their
-implementations, and neither the challenge nor its related reward
-outcomes will prevent them from publishing their independent works.</p>
+<h1>Description of the Challenge<a class="headerlink" href="#description-of-the-challenge" title="Link to this heading">#</a></h1>
+<p>We propose that participants design and implement lifting mappings
+between different data structures and topological domains (point-clouds,
+graphs, hypergraphs, simplicial/cell/combinatorial complexes), to bridge
+the gap the gap between TDL and all kinds of existing datasets.</p>
+<p>In particular, participants can either implement already proposed
+liftings from the literature (see Related References section below), or
+design original approaches; both options are equally allowed. In the
+case of submissions with novel liftings, we emphasize that participants
+will keep all the credit for their implementations, and neither the
+challenge nor its related reward outcomes will prevent them from
+publishing their independent works.</p>
 <p>Moreover, aligned with the primary goal of broadening the footprint and
 usage of TDL, the submission of liftings from point-clouds/graphs to
 higher-order topological domains is encouraged. However, this is not a
@@ -408,51 +445,47 @@ simplicial domain).</p>
 need to be compatible with the <code class="docutils literal notranslate"><span class="pre">BaseTransform</span></code> class of
 <code class="docutils literal notranslate"><span class="pre">torch_geometric</span></code>, and should leverage NetworkX/TopoNetX/ TopoEmbedX
 libraries when dealing with graph/higher-order datasets. Each submission
-takes the form of a Pull Request to ‘icml2024_lifting_challenge’
+takes the form of a Pull Request to <code class="docutils literal notranslate"><span class="pre">challenge-icml-2024</span></code> repo
 containing the necessary code for implementing a lifting map. More
 details are provided in subsequent sections below.</p>
 <p><strong>Note:</strong> We invite participants to review this webpage regularly, as
 more details might be added to answer relevant questions and doubts
 raised to the organizers.</p>
 </section>
-<section id="reward-outcomes">
-<h2>Reward Outcomes<a class="headerlink" href="#reward-outcomes" title="Link to this heading">#</a></h2>
+<section id="reward-outcomes-1">
+<h1>Reward Outcomes <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a><a class="headerlink" href="#reward-outcomes-1" title="Link to this heading">#</a></h1>
 <ul class="simple">
 <li><p>Every submission respecting the submission requirements will be
 included in a white paper summarizing the findings of the challenge,
-published in PMLR through the Geometry-grounded Representation
-Learning and Generative Modeling (GRaM) at ICML 2024. All
+published in PMLR through the GRaM Workshop at ICML 2024. All
 participants with qualifying submissions will have the opportunity to
 co-author this publication.</p></li>
-<li><p>Winning participants will also have the opportunity to co-author an
-in-depth study on lifting, focusing on assessing different liftings
-across topological domains. This study is expected to be submitted to
-the Journal of Data-centric Machine Learning Research (DMLR).</p></li>
-<li><p>Winner submissions will receive special recognition at the ICML GRaM
-workshop.</p></li>
+<li><p>Winning participants will also have the opportunity to co-author a
+paper with an in-depth study on lifting procedures, focusing on
+assessing different transformations across topological domains. This
+work will be submitted to the Journal of Data-centric Machine
+Learning Research (DMLR).</p></li>
+<li><p>Winner submissions will receive special recognition at ICML 2024 GRaM
+Workshop, where the Award Ceremony will take place.</p></li>
 </ul>
-<p><strong>Note:</strong> By law, US researchers are not allowed to co-author papers
-with scholars from some countries and institutions. Unfortunately,
-affected participants wouldn’t be eligible for the publication-based
-awards, even in the case of winning the competition.</p>
 </section>
 <section id="deadline">
-<h2>Deadline<a class="headerlink" href="#deadline" title="Link to this heading">#</a></h2>
-<p>The final Pull Request submission date and time must take place before
-July 12th, 2024. Participants are welcome to modify their Pull Request
-until this time.</p>
+<h1>Deadline<a class="headerlink" href="#deadline" title="Link to this heading">#</a></h1>
+<p>The final submission deadline is <strong>July 12th, 2024 (AoE)</strong>. Participants
+are welcome to modify their Pull Request until this time.</p>
 </section>
 <section id="guidelines">
-<h2>Guidelines<a class="headerlink" href="#guidelines" title="Link to this heading">#</a></h2>
+<h1>Guidelines<a class="headerlink" href="#guidelines" title="Link to this heading">#</a></h1>
 <p>Everyone can participate and participation is free –only principal
 PyT-Team developers are excluded. It is sufficient to:</p>
 <ul class="simple">
-<li><p>Send a Pull Request;</p></li>
+<li><p>Send a valid Pull Request (i.e. passing all tests) before the
+deadline.</p></li>
 <li><p>Respect Submission Requirements (see below).</p></li>
 </ul>
 <p>Teams are accepted, and there is no restriction on the number of team
-members and number of submissions. An acceptable Pull Request
-automatically subscribes a participant/team to the challenge.</p>
+members. An acceptable Pull Request automatically subscribes a
+participant/team to the challenge.</p>
 <p>We encourage participants to start submitting their Pull Request early
 on, as this helps addressing potential issues with the code. Moreover,
 earlier Pull Requests will be given priority consideration in the case
@@ -461,40 +494,37 @@ lifting.</p>
 <p>A Pull Request should contain no more than one lifting. However, there
 is no restriction on the number of submissions (Pull Requests) per
 participant/team.</p>
-<p>To assist participants during the challenge, we’d be happy to schedule a
-call to brainstorm and define the pipeline for both novel and existing
-lifting submissions.</p>
 </section>
 <section id="submission-requirements">
-<h2>Submission Requirements<a class="headerlink" href="#submission-requirements" title="Link to this heading">#</a></h2>
+<h1>Submission Requirements<a class="headerlink" href="#submission-requirements" title="Link to this heading">#</a></h1>
 <p>The submission must implement a valid lifting transformation between any
 pair of the following data structures: point-cloud/graph, hypergraph,
 simplicial complex, cell complex, and combinatorial complex. For a
 lifting to be valid, participants must implement a mapping between the
-topological structures of the considered domains –topology lifting–, and
-optionally a procedure to define the features over the resulting
-topology –feature lifting.</p>
-<p>All submitted code must comply with TopoBenchmarkX’s GitHub Action
-workflow, successfully passing all tests, linting, and formatting (i.e.
-Black, isort, flake8). Moreover, to ensure consistency, we ask
-participants to implement TopoNetX’s classes to manage
-simplicial/cell/combinatorial complexes whenever these topological
-domains are the target –i.e., destination– of the lifting.</p>
-<p><strong>Remark:</strong> We encourage the use of TopoNetX, TopoEmbedX and NetworkX
-libraries.</p>
+topological structures of the considered domains –<em>topology lifting</em>.
+Participants may optionally implement a procedure to define the features
+over the resulting topology –<em>feature lifting</em>.</p>
+<p>All submitted code must comply with the challenge’s GitHub Action
+workflow, successfully passing all tests, linting, and formatting (i.e.,
+ruff). Moreover, to ensure consistency, we ask participants to use
+TopoNetX’s classes to manage simplicial/cell/combinatorial complexes
+whenever these topological domains are the target –i.e., destination– of
+the lifting.</p>
+<p><strong>Remark:</strong> We highly encourage the use of TopoNetX, TopoEmbedX and
+NetworkX libraries.</p>
 <section id="topology-lifting-required">
-<h3>Topology Lifting (Required)<a class="headerlink" href="#topology-lifting-required" title="Link to this heading">#</a></h3>
+<h2>Topology Lifting (Required)<a class="headerlink" href="#topology-lifting-required" title="Link to this heading">#</a></h2>
 <p>Submissions can implement already proposed liftings from the literature,
 as well as novel approaches. In the case of original liftings, we note
 that neither the challenge nor its related publications will prevent
 participants from publishing their own work: they will keep all the
 credit for their implementations.</p>
 <p>For a lifting from a certain source domain <code class="docutils literal notranslate"><span class="pre">src</span></code> (e.g. graph) to a
-topological destination <code class="docutils literal notranslate"><span class="pre">dst</span></code> (e.g. simplicial), the submission
-consists of a Pull Request to the ICML Challenge repo that contains the
+topological destination <code class="docutils literal notranslate"><span class="pre">dst</span></code> (e.g. simplicial), a submission consists
+of a Pull Request to the ICML Challenge repository that contains the
 following files:</p>
 <ol class="arabic">
-<li><p><code class="docutils literal notranslate"><span class="pre">{id</span> <span class="pre">lifting}.py</span></code></p>
+<li><p><code class="docutils literal notranslate"><span class="pre">{id</span> <span class="pre">lifting}_lifting.py</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">clique_lifting.py</span></code>)</p>
 <ul>
 <li><p>Stored in the directory
 <code class="docutils literal notranslate"><span class="pre">modules/transforms/liftings/{src}2{dst}/</span></code></p></li>
@@ -516,6 +546,13 @@ justified, this and other abstract parent classes can be
 modified.</div>
 </div>
 </li>
+<li><p>The implemented lifting –and in general, any implemented
+data/feature transformation– must be added to <code class="docutils literal notranslate"><span class="pre">TRANSFORMS</span></code>
+dictionary in <code class="docutils literal notranslate"><span class="pre">data_transform.py</span></code> file, located at
+<code class="docutils literal notranslate"><span class="pre">modules/transforms/</span></code> directory. The keys of ‘TRANSFORMS’
+dictionary correspond to ‘transform_name’ field in corresponding
+.yaml files while the values refers to corresponding class that
+implements the logic of the transform.</p></li>
 </ul>
 <div class="line-block">
 <div class="line"><strong>Note:</strong> We provide several lifting examples for
@@ -523,7 +560,16 @@ modified.</div>
 <div class="line"><code class="docutils literal notranslate"><span class="pre">graph2hypergraph</span></code>.</div>
 </div>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">{id</span> <span class="pre">lifting}.ipynb</span></code></p>
+<li><p><code class="docutils literal notranslate"><span class="pre">{id</span> <span class="pre">lifting}_lifting.yaml</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">clique_lifting.yaml</span></code>)</p>
+<ul class="simple">
+<li><p>Stored in the directory
+<code class="docutils literal notranslate"><span class="pre">configs/transforms/liftings/{src}2{dst}/</span></code></p></li>
+<li><p>Defines the default parameters of the implemented transform.</p></li>
+</ul>
+<p><strong>Note:</strong> You can find config examples for all our implemented
+liftings and data transforms.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{id</span> <span class="pre">lifting}_lifting.ipynb</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">clique_lifting.py</span></code>)</p>
 <ul>
 <li><p>Stored in the directory <code class="docutils literal notranslate"><span class="pre">tutorials/{src}2{dst}/</span></code></p></li>
 <li><p>Contains the following steps:</p>
@@ -532,14 +578,18 @@ modified.</div>
 <ul class="simple">
 <li><p>Implements the pipeline to load a dataset from the <code class="docutils literal notranslate"><span class="pre">src</span></code>
 domain.</p></li>
-<li><p>This pipeline is provided for graph-based datasets. For any
-other <em>src</em>, participants are allowed to transform graph
-datasets into the corresponding domain through our provided
-lifting mappings –or just dropping their connectivity to get
-point-clouds.</p></li>
+<li><p>This pipeline is provided for several graph-based datasets.
+For any other <code class="docutils literal notranslate"><span class="pre">src</span></code>, participants are allowed to transform
+graph datasets into the corresponding domain through our
+provided lifting mappings –or just dropping their
+connectivity to get point-clouds.</p></li>
 <li><p><em>(Bonus)</em> Designing a loader for a new dataset (ones that
 are not already provided in the tutorials) will be
-positively taken into consideration in the final evaluation.</p></li>
+positively taken into consideration in the final evaluation.
+The challenge repository doesn’t allow storing large files;
+please, make sure to git-ignore them and include code for
+downloading the dataset from external sources into the
+<code class="docutils literal notranslate"><span class="pre">datasets/</span></code> folder.</p></li>
 </ul>
 </li>
 <li><p>Pre-processing the Dataset</p>
@@ -548,17 +598,17 @@ positively taken into consideration in the final evaluation.</p></li>
 <li><div class="line-block">
 <div class="line">Needs to be done through the <code class="docutils literal notranslate"><span class="pre">PreProcessor</span></code>, which we
 provide in</div>
-<div class="line"><code class="docutils literal notranslate"><span class="pre">modules/io/preprocessor.py</span></code>.</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">modules/io/preprocess/preprocessor.py</span></code>.</div>
 </div>
 </li>
 </ul>
 </li>
-<li><p>Training a Model over the Lifted Dataset</p>
+<li><p>Running a Model over the Lifted Dataset</p>
 <ul class="simple">
 <li><p>Creates a Neural Network model that operates over the
 <code class="docutils literal notranslate"><span class="pre">dst</span></code> domain, leveraging TopoModelX for higher order
 topologies or torch_geometric for graphs.</p></li>
-<li><p>Trains and evaluates the model on the lifted dataset.</p></li>
+<li><p>Runs the model on the lifted dataset.</p></li>
 </ul>
 </li>
 </ol>
@@ -566,7 +616,7 @@ topologies or torch_geometric for graphs.</p></li>
 </ul>
 <p><strong>Note:</strong> Several examples are provided in <code class="docutils literal notranslate"><span class="pre">tutorials/</span></code>.</p>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">test_{id</span> <span class="pre">lifting}.py</span></code></p>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_{id</span> <span class="pre">lifting}.py</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">test_cycle_lifting.py</span></code>)</p>
 <ul class="simple">
 <li><p>Stored in the directory <code class="docutils literal notranslate"><span class="pre">tests/transforms/liftings/{src}2{dst}/</span></code></p></li>
 <li><p>Contains one class, <code class="docutils literal notranslate"><span class="pre">Test{Id</span> <span class="pre">lifting}</span></code>, which contains unit
@@ -580,54 +630,59 @@ directories.</p>
 </ol>
 </section>
 <section id="feature-lifting-optional">
-<h3>Feature Lifting (Optional)<a class="headerlink" href="#feature-lifting-optional" title="Link to this heading">#</a></h3>
+<h2>Feature Lifting (Optional)<a class="headerlink" href="#feature-lifting-optional" title="Link to this heading">#</a></h2>
 <p>Some TDL models require well-defined features on higher-order structures
-(e.g. 2-cells, or hyperedges), so in its more general formulation
-liftings also need to produce an initial signal for every topological
-element of the <code class="docutils literal notranslate"><span class="pre">dst</span></code> domain. In particular, in all our examples we
-make use of a straightformard <code class="docutils literal notranslate"><span class="pre">ConcatenationLifting</span></code> transform to that
-end, which gets the desired structural features by sequentially
-projecting the original signals via incidence matrices.</p>
+(e.g. 2-cells, or hyperedges); therefore, in their more general
+formulation, liftings also need to produce initial features for every
+topological element of the <code class="docutils literal notranslate"><span class="pre">dst</span></code> domain. In particular, in all our
+examples we make use of a straightforward <code class="docutils literal notranslate"><span class="pre">ConcatenationLifting</span></code>
+transform to that end, which gets the desired structural features by
+sequentially projecting the original signals via incidence matrices.</p>
 <p>Participants are more than welcome to implement new feature liftings
 mappings, which can be added to the <code class="docutils literal notranslate"><span class="pre">feature_liftings.py</span></code> file at the
 <code class="docutils literal notranslate"><span class="pre">modules/transforms/feature_liftings/</span></code> directory. However, we remark
 this is optional, and it will only be regarded as a bonus.</p>
-<p><strong>Note:</strong> Please, reach out if you want to implement a feature lifting
-and have any doubts about it. We also provide some data manipulations
-transforms that could be useful when defining more complex data
-pipelines.</p>
+<p><strong>Note:</strong> Please, reach out if you want to know more details about how
+to implement a new feature lifting and/or a novel data loader. We also
+provide some data manipulations transforms that could be useful when
+defining more complex data pipelines.</p>
 </section>
 </section>
 <section id="evaluation-tentative-still-subject-to-changes">
-<h2>Evaluation (Tentative, still subject to changes)<a class="headerlink" href="#evaluation-tentative-still-subject-to-changes" title="Link to this heading">#</a></h2>
+<h1>Evaluation (Tentative, still subject to changes)<a class="headerlink" href="#evaluation-tentative-still-subject-to-changes" title="Link to this heading">#</a></h1>
 <section id="award-categories">
-<h3>Award Categories<a class="headerlink" href="#award-categories" title="Link to this heading">#</a></h3>
+<h2>Award Categories<a class="headerlink" href="#award-categories" title="Link to this heading">#</a></h2>
 <p>Given the lack of an exhaustive analysis about different types of
-lifting procedures, there is not any particular requirement for
-submitted liftings –apart from a high-quality code implementation. To
-promote and guide diversity in submissions, we propose the following
-general, non-mutually exclusive award categories:</p>
+procedures to infer the topological structure within TDL, there is not
+any particular requirement for submitted liftings –apart from a
+high-quality code implementation. To promote and guide diversity in
+submissions, we propose the following general, non-mutually exclusive
+award categories:</p>
 <ul class="simple">
-<li><p>Best implementation of a existing lifting from the literature</p></li>
-<li><p>Best novel design of a connectivity-based lifting</p></li>
-<li><p>Best novel design of a signal-based lifting</p></li>
-<li><p>Best implementation of a deterministic lifting (existing or novel)</p></li>
+<li><p>Best implementation of a existing lifting from the literature.</p></li>
+<li><p>Best novel design of connectivity-based lifting (i.e., leveraging
+only the relational information present in the source domain).</p></li>
+<li><p>Best novel design of a signal-based lifting (i.e. leveraging the
+original features of the source domain to infer the target topology;
+if available, connectivity can also be used).</p></li>
+<li><p>Best implementation of a deterministic lifting (existing or novel).</p></li>
 <li><p>Best implementation of a non-deterministic lifting (existing or
-novel)</p></li>
+novel).</p></li>
 </ul>
-<p>Additionally, we reserve the right to award some honorable mentions
-considering some aspects like originality, theoretical robustness,
-loading interesting datasets, implementing new feature liftings, etc.</p>
-<p>More details are needed. Maybe add a Taxonomy section below and refer
-here to it?</p>
+<p>We encourage participants to tag and categorize their Pull Requests with
+these and other possible taxonomies. In fact, we might reconsider some
+categories based on participants feedback and submissions. Additionally,
+we reserve the right to award some honorable mentions considering some
+aspects like originality, theoretical robustness, loading interesting
+datasets, implementing new feature liftings, etc.</p>
 </section>
 <section id="evaluation-procedure">
-<h3>Evaluation Procedure<a class="headerlink" href="#evaluation-procedure" title="Link to this heading">#</a></h3>
+<h2>Evaluation Procedure<a class="headerlink" href="#evaluation-procedure" title="Link to this heading">#</a></h2>
 <p>The Condorcet method will be used to rank the submissions and decide on
 the winners in each category. The evaluation criteria will be:</p>
 <ul class="simple">
-<li><p>Does the submission implement the chosen lifting correctly? Is it
-reasonable and well-defined?</p></li>
+<li><p>Does the submission implement the lifting correctly? Is it reasonable
+and well-defined?</p></li>
 <li><p>How readable/clean is the implementation? How well does the
 submission respect the submission requirements?</p></li>
 <li><p>Is the submission well-written? Do the docstrings clearly explain the
@@ -648,27 +703,90 @@ identities will remain secret–only the final ranking will be shared.</p>
 </section>
 </section>
 <section id="questions">
-<h2>Questions<a class="headerlink" href="#questions" title="Link to this heading">#</a></h2>
+<h1>Questions<a class="headerlink" href="#questions" title="Link to this heading">#</a></h1>
 <p>Feel free to contact us through GitHub issues on this repository, or
-through the Geometry and Topology in Machine Learning slack.
-Alternatively, you can contact Guillermo Bernardez at
+through the <a class="reference external" href="https://tda-in-ml.slack.com/join/shared_invite/enQtOTIyMTIyNTYxMTM2LTA2YmQyZjVjNjgxZWYzMDUyODY5MjlhMGE3ZTI1MzE4NjI2OTY0MmUyMmQ3NGE0MTNmMzNiMTViMjM2MzE4OTc#/">Geometry and Topology in Machine Learning
+slack</a>.
+Alternatively, you can contact us via mail at any of these accounts:
 <a class="reference external" href="mailto:guillermo&#46;bernardez&#37;&#52;&#48;upc&#46;edu">guillermo<span>&#46;</span>bernardez<span>&#64;</span>upc<span>&#46;</span>edu</a>, <a class="reference external" href="mailto:lev&#46;telyatnikov&#37;&#52;&#48;uniroma1&#46;it">lev<span>&#46;</span>telyatnikov<span>&#64;</span>uniroma1<span>&#46;</span>it</a>,
-<a class="reference external" href="mailto:marco&#46;montagna&#37;&#52;&#48;uniroma1&#46;it">marco<span>&#46;</span>montagna<span>&#64;</span>uniroma1<span>&#46;</span>it</a></p>
+<a class="reference external" href="mailto:marco&#46;montagna&#37;&#52;&#48;uniroma1&#46;it">marco<span>&#46;</span>montagna<span>&#64;</span>uniroma1<span>&#46;</span>it</a>, <a class="reference external" href="mailto:federica&#46;baccini&#37;&#52;&#48;uniroma1&#46;it">federica<span>&#46;</span>baccini<span>&#64;</span>uniroma1<span>&#46;</span>it</a>.</p>
 </section>
-<section id="related-references-uncompleted">
-<h2>Related References (Uncompleted)<a class="headerlink" href="#related-references-uncompleted" title="Link to this heading">#</a></h2>
-<p>We can share some related references that propose topological liftings:</p>
-<ul class="simple">
-<li><p>Ferri, Massimo, et al.. “Simplicial complexes from graphs towards
-graph persistence”. In: arXiv preprint arXiv:1805.10716 (2018).</p></li>
-<li><p>Hajij, Mustafa, et al. “Topological deep learning: Going beyond graph
-data.” arXiv preprint arXiv:2206.00606 (2022).</p></li>
-<li><p>Battiloro, Claudio, et al. “From Latent Graph to Latent Topology
-Inference: Differentiable Cell Complex Module.” ICML 2023.</p></li>
-<li><p>Austin R. Benson, David F. Gleich. “Higher-order Network Analysis
-Takes Off, Fueled by Classical Ideas and New Data”</p></li>
-</ul>
-</section>
+<section id="related-references-updated-just-double-check-for-typos-and-or-missing-material">
+<span id="reference-list"></span><h1>Related References (Updated, just double check for typos and/or missing material)<a class="headerlink" href="#related-references-updated-just-double-check-for-typos-and-or-missing-material" title="Link to this heading">#</a></h1>
+<p>As a support to participants, in this section we share some related
+references that propose topological liftings or might help defining
+novel ones.</p>
+<ol class="arabic simple">
+<li><p>Baccini, F., Geraci, F., &amp; Bianconi, G. (2022). Weighted simplicial
+complexes and their representation power of higher-order network data
+and topology. <em>Physical Review E, 106</em>(3), 034319.</p></li>
+<li><p>Barbarossa, S., &amp; Sardellitti, S. (2020). Topological signal
+processing over simplicial complexes. <em>IEEE Transactions on Signal
+Processing, 68</em>, 2992–3007.</p></li>
+<li><p>Battiloro, C., Spinelli, I., Telyatnikov, L., Bronstein, M.,
+Scardapane, S., &amp; Di Lorenzo, P. (2023). From latent graph to latent
+topology inference: differentiable cell complex module. <em>arXiv
+preprint arXiv:2305.16174</em>.</p></li>
+<li><p>Benson, A. R., Gleich, D. F., &amp; Higham, D. J. (2021). Higher-order
+network analysis takes off, fueled by classical ideas and new data.
+<em>arXiv preprint arXiv:2103.05031</em>.</p></li>
+<li><p>Bodnar, C., Frasca, F., Otter, N., Wang, Y., Lio, P., Montufar, G.
+F., &amp; Bronstein, M. (2021). Weisfeiler and Lehman go cellular: Cw
+networks. In <em>Advances in neural information processing systems</em>
+(Vol. 34, pp. 2625–2640).</p></li>
+<li><p>Bodnar, C., Frasca, F., Wang, Y., Otter, N., Montufar, G. F., Lio,
+P., &amp; Bronstein, M. (2021, July). Weisfeiler and Lehman go
+topological: Message passing simplicial networks. In <em>International
+Conference on Machine Learning</em> (pp. 1026-1037). PMLR.</p></li>
+<li><p>Elshakhs, Y. S., Deliparaschos, K. M., Charalambous, T., Oliva, G., &amp;
+Zolotas, A. (2024). A Comprehensive Survey on Delaunay Triangulation:
+Applications, Algorithms, and Implementations Over CPUs, GPUs, and
+FPGAs. <em>IEEE Access</em>.</p></li>
+<li><p>Ferri, M., Bergomi, D. M. G., &amp; Zu, L. (2018). Simplicial complexes
+from graphs towards graph persistence. <em>arXiv preprint
+arXiv:1805.10716</em>.</p></li>
+<li><p>Gao, Y., Zhang, Z., Lin, H., Zhao, X., Du, S., &amp; Zou, C. (2020).
+Hypergraph learning: Methods and practices. <em>IEEE Transactions on
+Pattern Analysis and Machine Intelligence, 44</em>(5), 2548–2566.</p></li>
+<li><p>Hajij, M., &amp; Istvan, K. (2021). Topological deep learning:
+Classification neural networks. <em>arXiv preprint arXiv:2102.08354</em>.</p></li>
+<li><p>Hajij, M., Zamzmi, G., Papamarkou, T., Miolane, N., Guzmán-Sáenz, A.,
+&amp; Ramamurthy, K. N. (2022). Higher-order attention networks. <em>arXiv
+preprint arXiv:2206.00606, 2</em>(3), 4.</p></li>
+<li><p>Hajij, M., Zamzmi, G., Papamarkou, T., Guzman-Saenz, A., Birdal, T.,
+&amp; Schaub, M. T. (2023). Combinatorial complexes: bridging the gap
+between cell complexes and hypergraphs. In <em>2023 57th Asilomar
+Conference on Signals, Systems, and Computers</em> (pp. 799–803). IEEE.</p></li>
+<li><p>Hoppe, J., &amp; Schaub, M. T. (2024). Representing Edge Flows on Graphs
+via Sparse Cell Complexes. In <em>Learning on Graphs Conference</em> (pp.
+1-1). PMLR.</p></li>
+<li><p>Jogl, F., Thiessen, M., &amp; Gärtner, T. (2022). Reducing learning on
+cell complexes to graphs. In <em>ICLR 2022 Workshop on Geometrical and
+Topological Representation Learning</em>.</p></li>
+<li><p>Kahle, M. (2007). The neighborhood complex of a random graph.
+<em>Journal of Combinatorial Theory, Series A, 114</em>(2), 380–387.</p></li>
+<li><p>Kahle, M., &amp; others. (2014). Topology of random simplicial complexes:
+a survey. <em>AMS Contemp. Math, 620</em>, 201–222.</p></li>
+<li><p>Kahle, M. (2016). Random simplicial complexes. <em>arXiv preprint
+arXiv:1607.07069</em>.</p></li>
+<li><p>Liu, X., &amp; Zhao, C. (2023). Eigenvector centrality in simplicial
+complexes of hypergraphs. <em>Chaos: An Interdisciplinary Journal of
+Nonlinear Science, 33</em>(9).</p></li>
+<li><p>Lucas, M., Gallo, L., Ghavasieh, A., Battiston, F., &amp; De Domenico, M.
+(2024). Functional reducibility of higher-order networks. <em>arXiv
+preprint arXiv:2404.08547</em>.</p></li>
+<li><p>Ruggeri, N., Battiston, F., &amp; De Bacco, C. (2024). Framework to
+generate hypergraphs with community structure. <em>Physical Review E,
+109</em>(3), 034309.</p></li>
+</ol>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>By law, US researchers are not allowed to co-author papers with
+scholars from some countries and institutions. Participants are
+responsible for checking eligibility.</p>
+</aside>
+</aside>
 </section>
 
 
@@ -717,24 +835,26 @@ Takes Off, Fueled by Classical Ideas and New Data”</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description-of-the-challenge">Description of the Challenge</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-outcomes">Reward Outcomes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deadline">Deadline</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#guidelines">Guidelines</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submission-requirements">Submission Requirements</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-lifting-required">Topology Lifting (Required)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-lifting-optional">Feature Lifting (Optional)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">ICML Challenge 2024</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#motivation">Motivation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#description-of-the-challenge">Description of the Challenge</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#reward-outcomes-1">Reward Outcomes </a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#deadline">Deadline</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#guidelines">Guidelines</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#submission-requirements">Submission Requirements</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topology-lifting-required">Topology Lifting (Required)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-lifting-optional">Feature Lifting (Optional)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-tentative-still-subject-to-changes">Evaluation (Tentative, still subject to changes)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#award-categories">Award Categories</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-procedure">Evaluation Procedure</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-tentative-still-subject-to-changes">Evaluation (Tentative, still subject to changes)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#award-categories">Award Categories</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-procedure">Evaluation Procedure</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#questions">Questions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-references-uncompleted">Related References (Uncompleted)</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#questions">Questions</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#related-references-updated-just-double-check-for-typos-and-or-missing-material">Related References (Updated, just double check for typos and/or missing material)</a></li>
 </ul>
+
   </nav></div>
 
   <div class="sidebar-secondary-item">
