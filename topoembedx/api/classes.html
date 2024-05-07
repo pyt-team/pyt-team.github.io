@@ -48,7 +48,7 @@
     <link rel="prev" title="API Reference" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 7, 2024, 1:07:49 AM"/>
+    <meta name="docbuild:last-update" content="May 7, 2024, 1:08:28 AM"/>
   </head>
   
   
@@ -870,8 +870,120 @@ when the input complex is a combinatorial complex.</p>
 </dd></dl>
 
 </section>
-<section id="random-walks">
-<h2>Random Walks<a class="headerlink" href="#random-walks" title="Link to this heading">#</a></h2>
+<section id="module-topoembedx.classes.random_walks">
+<span id="random-walks"></span><h2>Random Walks<a class="headerlink" href="#module-topoembedx.classes.random_walks" title="Link to this heading">#</a></h2>
+<p>Generate random walks on a graph or network.</p>
+<p>To generate node embeddings using Word2Vec, you can first use the
+random_walk function to generate random walks on your complex.
+Then, you can use the generated random walks as input to the Word2Vec
+algorithm to learn node embeddings.</p>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h3>
+<p>Here is an example of how you could use the random_walk function
+and Word2Vec to generate cell embeddings:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Import the necessary modules</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate random walks on your graph using the random_walk function</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random_walks</span> <span class="o">=</span> <span class="n">random_walk</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span> <span class="n">transition_matrix</span><span class="o">=</span><span class="n">transition_matrix</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a Word2Vec model on the generated random walks</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span><span class="n">random_walks</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use the trained model to generate node embeddings</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cell_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span>
+</pre></div>
+</div>
+<p>In the example above, <cite>nodes</cite> is a list of the nodes in your complex,
+<cite>transition_matrix</cite> is the transition matrix of your complex, and <cite>cell_embeddings</cite>
+is a dictionary that maps each node in your complex to its corresponding embedding.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="topoembedx.classes.random_walks.random_walk">
+<span class="sig-prename descclassname"><span class="pre">topoembedx.classes.random_walks.</span></span><span class="sig-name descname"><span class="pre">random_walk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_walks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transition_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">T</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/topoembedx/classes/random_walks.html#random_walk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topoembedx.classes.random_walks.random_walk" title="Link to this definition">#</a></dt>
+<dd><p>Generate random walks on a graph or network.</p>
+<p>This function generates random walks of a given length on a given complex.
+The length and number of walks can be specified, as well as the cells (states)
+and transition matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>length</strong><span class="classifier">int</span></dt><dd><p>The length of each random walk.</p>
+</dd>
+<dt><strong>num_walks</strong><span class="classifier">int</span></dt><dd><p>The number of random walks to generate.</p>
+</dd>
+<dt><strong>states</strong><span class="classifier">list</span></dt><dd><p>The nodes in the complex.</p>
+</dd>
+<dt><strong>transition_matrix</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The transition matrix of the graph or network.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list of list</dt><dd><p>The generated random walks.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transition_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="p">[</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+<span class="gp">... </span>        <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">walks</span> <span class="o">=</span> <span class="n">random_walk</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="n">states</span><span class="p">,</span> <span class="n">transition_matrix</span><span class="o">=</span><span class="n">transition_matrix</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">walks</span><span class="p">)</span>
+<span class="go">[[&#39;B&#39;, &#39;C&#39;, &#39;D&#39;], [&#39;B&#39;, &#39;C&#39;, &#39;B&#39;]]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topoembedx.classes.random_walks.transition_from_adjacency">
+<span class="sig-prename descclassname"><span class="pre">topoembedx.classes.random_walks.</span></span><span class="sig-name descname"><span class="pre">transition_from_adjacency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_loop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></span><a class="reference internal" href="../_modules/topoembedx/classes/random_walks.html#transition_from_adjacency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topoembedx.classes.random_walks.transition_from_adjacency" title="Link to this definition">#</a></dt>
+<dd><p>Generate transition matrix from an adjacency matrix.</p>
+<p>This function generates a transition matrix from an adjacency matrix
+using the following steps:</p>
+<ol class="arabic simple">
+<li><p>Add self-loop to the adjaency matrix if self_loop is set to True</p></li>
+<li><p>Compute the degree matrix</p></li>
+<li><p>Compute the transition matrix by taking the dot product of the inverse of
+the degree matrix and the adjacency matrix</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>The adjacency matrix.</p>
+</dd>
+<dt><strong>sub_sampling</strong><span class="classifier">float, default=0.1</span></dt><dd><p>The rate of subsampling.</p>
+</dd>
+<dt><strong>self_loop</strong><span class="classifier">bool, default=True</span></dt><dd><p>A flag indicating whether to add self-loop to the adjacency matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>numpy.ndarray</dt><dd><p>The transition matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transition_from_adjacency</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="go">array([[0.33333333, 0.33333333, 0.33333333, 0.        ],</span>
+<span class="go">       [0.33333333, 0.33333333, 0.33333333, 0.        ],</span>
+<span class="go">       [0.25      , 0.25      , 0.25      , 0.25      ],</span>
+<span class="go">       [0.        , 0.        , 0.5       , 0.5       ]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 </section>
 
@@ -969,7 +1081,12 @@ when the input complex is a combinatorial complex.</p>
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#random-walks">Random Walks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-topoembedx.classes.random_walks">Random Walks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topoembedx.classes.random_walks.random_walk"><code class="docutils literal notranslate"><span class="pre">random_walk()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topoembedx.classes.random_walks.transition_from_adjacency"><code class="docutils literal notranslate"><span class="pre">transition_from_adjacency()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
