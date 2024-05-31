@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 29, 2024, 2:58:00 PM"/>
+    <meta name="docbuild:last-update" content="May 31, 2024, 8:54:37 AM"/>
   </head>
   
   
@@ -913,12 +913,14 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        simplex : Collection</span>
 <span class="sd">            The simplex to be added to the simplicial complex.</span>
+
+<span class="sd">            If a `Simplex` object is given, its attributes will be copied to the</span>
+<span class="sd">            simplicial complex. `kwargs` take precedence over the attributes of the</span>
+<span class="sd">            `Simplex` object.</span>
 <span class="sd">        **kwargs : keyword arguments, optional</span>
 <span class="sd">            Additional attributes to be associated with the simplex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Special internal attributes must not be provided as user attributes</span>
-        <span class="k">if</span> <span class="s2">&quot;is_maximal&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">or</span> <span class="s2">&quot;membership&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Special attributes `is_maximal` and `membership` are reserved.&quot;</span><span class="p">)</span>
+        <span class="n">Simplex</span><span class="o">.</span><span class="n">validate_attributes</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Support some short-hand calls for adding nodes. The user does not have to</span>
         <span class="c1"># provide a single-element list but can give the node directly.</span>
@@ -929,7 +931,7 @@ document.write(`
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span>
-            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">simplex</span><span class="o">.</span><span class="n">_attributes</span><span class="p">)</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">|</span> <span class="n">kwargs</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>

@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="May 29, 2024, 2:58:00 PM"/>
+    <meta name="docbuild:last-update" content="May 31, 2024, 8:54:37 AM"/>
   </head>
   
   
@@ -382,6 +382,8 @@ document.write(`
         <span class="n">construct_tree</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_attributes</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">construct_tree</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;The `construct_tree` argument is deprecated.&quot;</span><span class="p">,</span>
@@ -425,6 +427,26 @@ document.write(`
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Simplex.validate_attributes">
+<a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplex.Simplex.validate_attributes">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">validate_attributes</span><span class="p">(</span><span class="n">attributes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the attributes of the simplex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attributes : dict</span>
+<span class="sd">            The attributes to be validated.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the attributes contain the reserved keys `is_maximal` or `membership`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;is_maximal&quot;</span> <span class="ow">in</span> <span class="n">attributes</span> <span class="ow">or</span> <span class="s2">&quot;membership&quot;</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Special attributes `is_maximal` and `membership` are reserved.&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Simplex.construct_simplex_tree">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.simplex.Simplex.construct_simplex_tree">[docs]</a>
