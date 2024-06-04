@@ -50,7 +50,7 @@
     <link rel="prev" title="Implementing your own lifting" href="tutorial_lifting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 1:47:20 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 1:54:36 PM"/>
   </head>
   
   
@@ -292,9 +292,6 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="add_new_dataset.html">Define download functions</a></li>
-
-
 <li class="toctree-l1"><a class="reference internal" href="tutorial_dataset.html">Using a new dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial_lifting.html">Implementing your own lifting</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Implementing your own model</a></li>
@@ -362,7 +359,7 @@ document.write(`
 <section id="Imports">
 <h2>Imports<a class="headerlink" href="#Imports" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lightning</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -528,7 +525,7 @@ Done!
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
@@ -544,16 +541,6 @@ Done!
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:199: Attribute &#39;backbone&#39; is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=[&#39;backbone&#39;])`.
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:199: Attribute &#39;readout&#39; is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=[&#39;readout&#39;])`.
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:199: Attribute &#39;feature_encoder&#39; is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=[&#39;feature_encoder&#39;])`.
-</pre></div></div>
-</div>
 </section>
 <section id="Training">
 <h2>Training<a class="headerlink" href="#Training" title="Link to this heading">#</a></h2>
@@ -562,7 +549,7 @@ Done!
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
 <span class="n">train_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span>
@@ -574,17 +561,15 @@ Done!
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-GPU available: True (cuda), used: True
+GPU available: True (mps), used: False
 TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
 HPU available: False, using: 0 HPUs
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/logger_connector/logger_connector.py:75: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `lightning.pytorch` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:44: attribute &#39;scheduler&#39; removed from hparams because it cannot be pickled
-You are using a CUDA device (&#39;NVIDIA GeForce RTX 3060 Laptop GPU&#39;) that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision(&#39;medium&#39; | &#39;high&#39;)` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
-Missing logger folder: /TopoBenchmarkX/tutorials/lightning_logs
-LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
-/usr/local/lib/python3.11/site-packages/torch/optim/adam.py:33: UserWarning: optimizer contains a parameter group with duplicate parameters; in future, this will cause an error; see github.com/pytorch/pytorch/issues/40967 for more information
-  super().__init__(params, defaults)
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/setup.py:187: GPU available but not used. You can set it by doing `Trainer(accelerator=&#39;gpu&#39;)`.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/logger_connector/logger_connector.py:75: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `lightning.pytorch` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:44: attribute &#39;scheduler&#39; removed from hparams because it cannot be pickled
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torch/_compile.py:24: UserWarning: optimizer contains a parameter group with duplicate parameters; in future, this will cause an error; see github.com/pytorch/pytorch/issues/40967 for more information
+  return torch._dynamo.disable(fn, recursive)(*args, **kwargs)
 
   | Name            | Type                  | Params
 ----------------------------------------------------------
@@ -597,16 +582,16 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 0         Non-trainable params
 1.0 K     Total params
 0.004     Total estimated model params size (MB)
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;val_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=19` in the `DataLoader` to improve performance.
-/usr/local/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassAccuracy was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;val_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassAccuracy was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
   warnings.warn(*args, **kwargs)  # noqa: B028
-/usr/local/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassPrecision was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassPrecision was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
   warnings.warn(*args, **kwargs)  # noqa: B028
-/usr/local/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassRecall was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassRecall was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
   warnings.warn(*args, **kwargs)  # noqa: B028
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;train_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=19` in the `DataLoader` to improve performance.
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/loops/fit_loop.py:298: The number of training batches (6) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
-`Trainer.fit` stopped: `max_epochs=100` reached.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;train_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/loops/fit_loop.py:298: The number of training batches (6) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+`Trainer.fit` stopped: `max_epochs=10` reached.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -623,14 +608,14 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-train/accuracy :     0.7573964595794678
-train/precision :     0.732909083366394
-train/recall :     0.7006579041481018
-val/loss :     0.54453045129776
+train/accuracy :     0.668639063835144
+train/precision :     0.667670726776123
+train/recall :     0.5130795836448669
+val/loss :     0.5384264588356018
 val/accuracy :     0.6842105388641357
-val/precision :     0.6029411554336548
-val/recall :     0.5448718070983887
-train/loss :     0.4429900348186493
+val/precision :     0.34210526943206787
+val/recall :     0.5
+train/loss :     0.56179279088974
 </pre></div></div>
 </div>
 </section>
@@ -649,14 +634,6 @@ train/loss :     0.4429900348186493
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 
@@ -667,7 +644,7 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;test_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=19` in the `DataLoader` to improve performance.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;test_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -678,9 +655,9 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 ┃<span style="font-weight: bold">        Test metric        </span>┃<span style="font-weight: bold">       DataLoader 0        </span>┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
 │<span style="color: #008080; text-decoration-color: #008080">       test/accuracy       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.6842105388641357     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">         test/loss         </span>│<span style="color: #800080; text-decoration-color: #800080">    0.5445306301116943     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">      test/precision       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.6029411554336548     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">        test/recall        </span>│<span style="color: #800080; text-decoration-color: #800080">    0.5448718070983887     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">         test/loss         </span>│<span style="color: #800080; text-decoration-color: #800080">    0.5384264588356018     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">      test/precision       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.34210526943206787    </span>│
+│<span style="color: #008080; text-decoration-color: #008080">        test/recall        </span>│<span style="color: #800080; text-decoration-color: #800080">            0.5            </span>│
 └───────────────────────────┴───────────────────────────┘
 </pre></div>
 </div>
