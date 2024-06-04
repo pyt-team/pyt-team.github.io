@@ -1,0 +1,975 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Define download functions &#8212; TopoBenchmarkX latest documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/add_new_dataset';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/add_new_dataset.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 1:28:52 AM"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">TopoBenchmarkX latest documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Define...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rootutils</span>
+
+<span class="n">rootutils</span><span class="o">.</span><span class="n">setup_root</span><span class="p">(</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">indicator</span><span class="o">=</span><span class="s2">&quot;.project-root&quot;</span><span class="p">,</span> <span class="n">pythonpath</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
+<span class="o">%</span><span class="n">autoreload</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<section id="Define-download-functions">
+<h1>Define download functions<a class="headerlink" href="#Define-download-functions" title="Link to this heading">#</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">parse_qs</span><span class="p">,</span> <span class="n">urlparse</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+
+<span class="c1"># Function to extract file ID from Google Drive URL</span>
+<span class="k">def</span> <span class="nf">get_file_id_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts the file ID from a Google Drive file URL.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        url (str): The Google Drive file URL.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The file ID extracted from the URL.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If the provided URL is not a valid Google Drive file URL.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">query_params</span> <span class="o">=</span> <span class="n">parse_qs</span><span class="p">(</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">query</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;id&quot;</span> <span class="ow">in</span> <span class="n">query_params</span><span class="p">:</span>  <span class="c1"># Case 1: URL format contains &#39;?id=&#39;</span>
+        <span class="n">file_id</span> <span class="o">=</span> <span class="n">query_params</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="s2">&quot;file/d/&quot;</span> <span class="ow">in</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>  <span class="c1"># Case 2: URL format contains &#39;/file/d/&#39;</span>
+        <span class="n">file_id</span> <span class="o">=</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided URL is not a valid Google Drive file URL.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">file_id</span>
+
+
+<span class="c1"># Function to download file from Google Drive</span>
+<span class="k">def</span> <span class="nf">download_file_from_drive</span><span class="p">(</span>
+    <span class="n">file_link</span><span class="p">,</span> <span class="n">path_to_save</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;tar.gz&quot;</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Downloads a file from a Google Drive link and saves it to the specified path.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        file_link (str): The Google Drive link of the file to download.</span>
+<span class="sd">        path_to_save (str): The path where the downloaded file will be saved.</span>
+<span class="sd">        dataset_name (str): The name of the dataset.</span>
+<span class="sd">        file_format (str, optional): The format of the downloaded file. Defaults to &quot;tar.gz&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        None</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_id</span> <span class="o">=</span> <span class="n">get_file_id_from_url</span><span class="p">(</span><span class="n">file_link</span><span class="p">)</span>
+
+    <span class="n">download_link</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;https://drive.google.com/uc?id=</span><span class="si">{</span><span class="n">file_id</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">download_link</span><span class="p">)</span>
+
+    <span class="n">output_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path_to_save</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">file_format</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Download complete.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed to download the file.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Define-the-data-load-function">
+<h1>Define the data load function<a class="headerlink" href="#Define-the-data-load-function" title="Link to this heading">#</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch_geometric</span>
+
+
+<span class="k">def</span> <span class="nf">load_us_county_demos</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="mi">2012</span><span class="p">):</span>
+    <span class="n">edges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/county_graph.csv&quot;</span><span class="p">)</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/county_stats_</span><span class="si">{</span><span class="n">year</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;ISO-8859-1&quot;</span><span class="p">)</span>
+
+    <span class="n">keep_cols</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;FIPS&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DEM&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;GOP&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;MedianIncome&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;MigraRate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BirthRate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;DeathRate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BachelorRate&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;UnemploymentRate&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="c1"># Drop rows with missing values</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="n">keep_cols</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+
+    <span class="c1"># Delete edges that are not present in stat df</span>
+    <span class="n">unique_fips</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;FIPS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+
+    <span class="n">src_</span> <span class="o">=</span> <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">unique_fips</span><span class="p">)</span>
+    <span class="n">dst_</span> <span class="o">=</span> <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;DST&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">unique_fips</span><span class="p">)</span>
+
+    <span class="n">edges_df</span> <span class="o">=</span> <span class="n">edges_df</span><span class="p">[</span><span class="n">src_</span> <span class="o">&amp;</span> <span class="n">dst_</span><span class="p">]</span>
+
+    <span class="c1"># Remove rows from stat df where edges_df[&#39;SRC&#39;] or edges_df[&#39;DST&#39;] are not present</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;FIPS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;FIPS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;DST&quot;</span><span class="p">])]</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Remove rows where SRC == DST</span>
+    <span class="n">edges_df</span> <span class="o">=</span> <span class="n">edges_df</span><span class="p">[</span><span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;DST&quot;</span><span class="p">]]</span>
+
+    <span class="c1"># Get torch_geometric edge_index format</span>
+    <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;DST&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Make edge_index undirected</span>
+    <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">(</span><span class="n">edge_index</span><span class="p">)</span>
+
+    <span class="c1"># Convert edge_index back to pandas DataFrame</span>
+    <span class="n">edges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">edge_index</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">,</span> <span class="s2">&quot;DST&quot;</span><span class="p">])</span>
+
+    <span class="k">del</span> <span class="n">edge_index</span>
+
+    <span class="c1"># Map stat[&#39;FIPS&#39;].unique() to [0, ..., num_nodes]</span>
+    <span class="n">fips_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">fips</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fips</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;FIPS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())}</span>
+    <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;FIPS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;FIPS&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fips_map</span><span class="p">)</span>
+
+    <span class="c1"># Map edges_df[&#39;SRC&#39;] and edges_df[&#39;DST&#39;] to [0, ..., num_nodes]</span>
+    <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fips_map</span><span class="p">)</span>
+    <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;DST&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;DST&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">fips_map</span><span class="p">)</span>
+
+    <span class="c1"># Get torch_geometric edge_index format</span>
+    <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;SRC&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">edges_df</span><span class="p">[</span><span class="s2">&quot;DST&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()])</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Remove isolated nodes (Note: this function maps the nodes to [0, ..., num_nodes] automatically)</span>
+    <span class="n">edge_index</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">remove_isolated_nodes</span><span class="p">(</span><span class="n">edge_index</span><span class="p">)</span>
+
+    <span class="c1"># Conver mask to index</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">))[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Get new values for FIPS from current index</span>
+    <span class="c1"># To understand why please print stat.iloc[[516, 517, 518, 519, 520]] for 2012 year</span>
+    <span class="c1"># Basically the FIPS values has been shifted</span>
+    <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;FIPS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Create Election variable</span>
+    <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;Election&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;DEM&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;GOP&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">stat</span><span class="p">[</span><span class="s2">&quot;DEM&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;GOP&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Drop DEM and GOP columns and FIPS</span>
+    <span class="n">stat</span> <span class="o">=</span> <span class="n">stat</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DEM&quot;</span><span class="p">,</span> <span class="s2">&quot;GOP&quot;</span><span class="p">,</span> <span class="s2">&quot;FIPS&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Prediction col</span>
+    <span class="n">y_col</span> <span class="o">=</span> <span class="s2">&quot;Election&quot;</span>  <span class="c1"># TODO: Define through config file</span>
+    <span class="n">x_col</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">stat</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="n">y_col</span><span class="p">])))</span>
+
+    <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;MedianIncome&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">stat</span><span class="p">[</span><span class="s2">&quot;MedianIncome&quot;</span><span class="p">]</span>
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="n">x_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">stat</span><span class="p">[</span><span class="n">y_col</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">edge_index</span><span class="o">=</span><span class="n">edge_index</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Define-the-dataset-class">
+<h1>Define the dataset class<a class="headerlink" href="#Define-the-dataset-class" title="Link to this heading">#</a></h1>
+<p>The dataset class inherits InMemoryDataset (torch_geometric).</p>
+<p>Next it is esential to overwrite three methods: <strong>init</strong>, download, process</p>
+<p>As well as a number of properties: raw_dir, processed_dir, raw_file_names, processed_file_names</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">from</span> <span class="nn">torch_geometric.data</span> <span class="kn">import</span> <span class="n">Data</span><span class="p">,</span> <span class="n">InMemoryDataset</span>
+<span class="kn">from</span> <span class="nn">torch_geometric.io</span> <span class="kn">import</span> <span class="n">fs</span>
+
+<span class="kn">from</span> <span class="nn">topobenchmarkx.data.load.cornel_dataset</span> <span class="kn">import</span> <span class="n">load_us_county_demos</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.data.load.download_utils</span> <span class="kn">import</span> <span class="n">download_file_from_drive</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.data.load.split_utils</span> <span class="kn">import</span> <span class="n">random_splitting</span>
+
+
+<span class="k">class</span> <span class="nc">USCountyDemosDataset</span><span class="p">(</span><span class="n">InMemoryDataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset class for US County Demographics dataset.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        root (str): Root directory where the dataset will be saved.</span>
+<span class="sd">        name (str): Name of the dataset.</span>
+<span class="sd">        parameters (DictConfig): Configuration parameters for the dataset.</span>
+<span class="sd">        transform (Optional[Callable]): A function/transform that takes in an</span>
+<span class="sd">            `torch_geometric.data.Data` object and returns a transformed version.</span>
+<span class="sd">            The transform function is applied to the loaded data before saving it.</span>
+<span class="sd">        pre_transform (Optional[Callable]): A function/transform that takes in an</span>
+<span class="sd">            `torch_geometric.data.Data` object and returns a transformed version.</span>
+<span class="sd">            The pre_transform function is applied to the data before the transform</span>
+<span class="sd">            function is applied.</span>
+<span class="sd">        pre_filter (Optional[Callable]): A function that takes in an</span>
+<span class="sd">            `torch_geometric.data.Data` object and returns a boolean value</span>
+<span class="sd">            indicating whether the data object should be included in the dataset.</span>
+<span class="sd">        force_reload (bool): If set to True, the dataset will be re-downloaded</span>
+<span class="sd">            even if it already exists on disk. (default: True)</span>
+<span class="sd">        use_node_attr (bool): If set to True, the node attributes will be included</span>
+<span class="sd">            in the dataset. (default: False)</span>
+<span class="sd">        use_edge_attr (bool): If set to True, the edge attributes will be included</span>
+<span class="sd">            in the dataset. (default: False)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        URLS (dict): Dictionary containing the URLs for downloading the dataset.</span>
+<span class="sd">        FILE_FORMAT (dict): Dictionary containing the file formats for the dataset.</span>
+<span class="sd">        RAW_FILE_NAMES (dict): Dictionary containing the raw file names for the dataset.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">URLS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;US-county-demos&quot;</span><span class="p">:</span> <span class="s2">&quot;https://drive.google.com/file/d/1FNF_LbByhYNICPNdT6tMaJI9FxuSvvLK/view?usp=sharing&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">FILE_FORMAT</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;US-county-demos&quot;</span><span class="p">:</span> <span class="s2">&quot;zip&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">RAW_FILE_NAMES</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span>
+        <span class="n">transform</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pre_transform</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pre_filter</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">force_reload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Assign the class variables that would be needed for steps 1, 2, 4, and 3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+
+        <span class="c1"># Static, do not modify</span>
+        <span class="c1"># --------------------------------------------------------</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">pre_transform</span><span class="p">,</span> <span class="n">pre_filter</span><span class="p">,</span> <span class="n">force_reload</span><span class="o">=</span><span class="n">force_reload</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Logic that should be modified while adding new dataset:</span>
+        <span class="c1"># --------------------------------------------------------</span>
+        <span class="c1"># Step 3:Load the processed data</span>
+        <span class="c1"># After the data has been downloaded from source</span>
+        <span class="c1"># Then preprocessed to obtain x,y and saved into processed folder</span>
+        <span class="c1"># We can now load the processed data from processed folder</span>
+
+        <span class="c1"># Load the processed data</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">torch_load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processed_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Map the loaded data into</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Step 4: Create the splits and upload desired fold</span>
+        <span class="n">splits</span> <span class="o">=</span> <span class="n">random_splitting</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="c1"># Assign train val test masks to the graph</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">train_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">])</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">val_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;valid&quot;</span><span class="p">])</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">test_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Assign data object to self.data, to make it be prodessed by Dataset class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;raw&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">processed_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;processed&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_file_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_2012&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">processed_file_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;data.pt&quot;</span>
+
+    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads the dataset from the specified URL and saves it to the raw directory.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: If the dataset URL is not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Step 1: Download data from the source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">URLS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FILE_FORMAT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+        <span class="n">download_file_from_drive</span><span class="p">(</span>
+            <span class="n">file_link</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">path_to_save</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">,</span>
+            <span class="n">dataset_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">file_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">file_format</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Extract the downloaded file if it is compressed</span>
+        <span class="n">fs</span><span class="o">.</span><span class="n">cp</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">,</span> <span class="n">extract</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Move the etracted files to the datasets/domain/dataset_name/raw/ directory</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">fs</span><span class="o">.</span><span class="n">ls</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)):</span>
+            <span class="n">fs</span><span class="o">.</span><span class="n">mv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">,</span> <span class="n">osp</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)))</span>
+        <span class="n">fs</span><span class="o">.</span><span class="n">rm</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Delete also f&#39;{self.raw_dir}/{self.name}.{self.file_format}&#39;</span>
+        <span class="n">fs</span><span class="o">.</span><span class="n">rm</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_format</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process the data for the dataset.</span>
+
+<span class="sd">        This method loads the US county demographics data, applies any pre-processing transformations if specified,</span>
+<span class="sd">        and saves the processed data to the appropriate location.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">load_us_county_demos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_transform</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">([</span><span class="n">data</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">processed_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+</pre></div>
+</div>
+</div>
+<section id="Heterophilic-datasets">
+<h2>Heterophilic datasets<a class="headerlink" href="#Heterophilic-datasets" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">urllib.request</span>
+
+
+<span class="k">def</span> <span class="nf">hetero_load</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;./data/hetero_data&quot;</span><span class="p">):</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.npz&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">))</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node_features&quot;</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;node_labels&quot;</span><span class="p">])</span>
+    <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;edges&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="c1"># Make edge_index undirected</span>
+    <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">(</span><span class="n">edge_index</span><span class="p">)</span>
+
+    <span class="c1"># Remove self-loops</span>
+    <span class="n">edge_index</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">remove_self_loops</span><span class="p">(</span><span class="n">edge_index</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">edge_index</span><span class="o">=</span><span class="n">edge_index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="k">def</span> <span class="nf">download_hetero_datasets</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/OpenGSL/HeterophilousDatasets/raw/main/data/&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.npz&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">path2save</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span> <span class="o">+</span> <span class="n">name</span><span class="p">,</span> <span class="n">path2save</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done!&quot;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Download failed! Make sure you have stable Internet connection and enter the right name&quot;&quot;&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">from</span> <span class="nn">torch_geometric.data</span> <span class="kn">import</span> <span class="n">InMemoryDataset</span>
+
+<span class="kn">from</span> <span class="nn">topobenchmarkx.data.load.us_county_demos</span> <span class="kn">import</span> <span class="n">load_us_county_demos</span>
+
+
+<span class="k">class</span> <span class="nc">HeteroDataset</span><span class="p">(</span><span class="n">InMemoryDataset</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dataset class for US County Demographics dataset.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        root (str): Root directory where the dataset will be saved.</span>
+<span class="sd">        name (str): Name of the dataset.</span>
+<span class="sd">        parameters (DictConfig): Configuration parameters for the dataset.</span>
+<span class="sd">        transform (Optional[Callable]): A function/transform that takes in an</span>
+<span class="sd">            `torch_geometric.data.Data` object and returns a transformed version.</span>
+<span class="sd">            The transform function is applied to the loaded data before saving it.</span>
+<span class="sd">        pre_transform (Optional[Callable]): A function/transform that takes in an</span>
+<span class="sd">            `torch_geometric.data.Data` object and returns a transformed version.</span>
+<span class="sd">            The pre_transform function is applied to the data before the transform</span>
+<span class="sd">            function is applied.</span>
+<span class="sd">        pre_filter (Optional[Callable]): A function that takes in an</span>
+<span class="sd">            `torch_geometric.data.Data` object and returns a boolean value</span>
+<span class="sd">            indicating whether the data object should be included in the dataset.</span>
+<span class="sd">        force_reload (bool): If set to True, the dataset will be re-downloaded</span>
+<span class="sd">            even if it already exists on disk. (default: True)</span>
+<span class="sd">        use_node_attr (bool): If set to True, the node attributes will be included</span>
+<span class="sd">            in the dataset. (default: False)</span>
+<span class="sd">        use_edge_attr (bool): If set to True, the edge attributes will be included</span>
+<span class="sd">            in the dataset. (default: False)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        URLS (dict): Dictionary containing the URLs for downloading the dataset.</span>
+<span class="sd">        FILE_FORMAT (dict): Dictionary containing the file formats for the dataset.</span>
+<span class="sd">        RAW_FILE_NAMES (dict): Dictionary containing the raw file names for the dataset.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">RAW_FILE_NAMES</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span>
+        <span class="n">transform</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pre_transform</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pre_filter</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">force_reload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">use_node_attr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_edge_attr</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>  <span class="c1"># .replace(&quot;_&quot;, &quot;-&quot;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">transform</span><span class="p">,</span> <span class="n">pre_transform</span><span class="p">,</span> <span class="n">pre_filter</span><span class="p">,</span> <span class="n">force_reload</span><span class="o">=</span><span class="n">force_reload</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Step 3:Load the processed data</span>
+        <span class="c1"># After the data has been downloaded from source</span>
+        <span class="c1"># Then preprocessed to obtain x,y and saved into processed folder</span>
+        <span class="c1"># We can now load the processed data from processed folder</span>
+
+        <span class="c1"># Load the processed data</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">torch_load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">processed_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Map the loaded data into</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Step 5: Create the splits and upload desired fold</span>
+        <span class="n">splits</span> <span class="o">=</span> <span class="n">random_splitting</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="c1"># Assign train val test masks to the graph</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">train_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">])</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">val_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;valid&quot;</span><span class="p">])</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">test_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">splits</span><span class="p">[</span><span class="s2">&quot;test&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Assign data object to self.data, to make it be prodessed by Dataset class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">collate</span><span class="p">([</span><span class="n">data</span><span class="p">])</span>
+
+    <span class="c1"># Do not forget to take care of properties</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;raw&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">processed_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;processed&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">processed_file_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;data.pt&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw_file_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Spefify the downloaded raw fine name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.npz&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downloads the dataset from the specified URL and saves it to the raw directory.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: If the dataset URL is not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Step 1: Download data from the source</span>
+        <span class="n">download_hetero_datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Process the data for the dataset.</span>
+
+<span class="sd">        This method loads the US county demographics data, applies any pre-processing transformations if specified,</span>
+<span class="sd">        and saves the processed data to the appropriate location.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">hetero_load</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">raw_dir</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_transform</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">([</span><span class="n">data</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">processed_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">()&quot;</span>
+
+
+<span class="n">data_dir</span> <span class="o">=</span> <span class="s2">&quot;/home/lev/projects/TopoBenchmarkX/datasets&quot;</span>
+<span class="n">data_domain</span> <span class="o">=</span> <span class="s2">&quot;graph&quot;</span>
+<span class="n">data_type</span> <span class="o">=</span> <span class="s2">&quot;heterophilic&quot;</span>
+<span class="n">data_name</span> <span class="o">=</span> <span class="s2">&quot;amazon_ratings&quot;</span>
+
+<span class="n">data_dir</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">data_domain</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;split_type&quot;</span><span class="p">:</span> <span class="s2">&quot;random&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">&quot;train_prop&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="s2">&quot;data_seed&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;data_split_dir&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;/home/lev/projects/TopoBenchmarkX/datasets/data_splits/</span><span class="si">{</span><span class="n">data_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">HeteroDataset</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="n">data_name</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">force_reload</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Define download functions</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-data-load-function">Define the data load function</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#Define-the-dataset-class">Define the dataset class</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Heterophilic-datasets">Heterophilic datasets</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/notebooks/add_new_dataset.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, PyT-Team, Inc..
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

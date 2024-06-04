@@ -1,0 +1,793 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Implementing your own lifting &#8212; TopoBenchmarkX latest documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=61a4c737" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="../_static/documentation_options.js?v=c6e86fd7"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/tutorial_lifting';</script>
+    <link rel="canonical" href="pyt-team.github.io/notebooks/tutorial_lifting.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 1:28:52 AM"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">TopoBenchmarkX latest documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <button class="sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav class="navbar-nav">
+  <ul class="bd-navbar-elements navbar-nav">
+    
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Implementing...</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Implementing-your-own-lifting">
+<h1>Implementing your own lifting<a class="headerlink" href="#Implementing-your-own-lifting" title="Link to this heading">#</a></h1>
+<p>In this tutorial we show how you can implement your own lifting and test it on a dataset.</p>
+<p>This particular example uses the MUTAG dataset. The lifting for this example is similar to the SimplicialCliqueLifting but discards the cliques that are bigger than the maximum simplices we want to consider.</p>
+<p>We test this lifting using the SCN2 model from <code class="docutils literal notranslate"><span class="pre">TopoModelX</span></code>.</p>
+<section id="Imports">
+<h2>Imports<a class="headerlink" href="#Imports" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">lightning</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch_geometric</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">OmegaConf</span>
+<span class="kn">from</span> <span class="nn">topomodelx.nn.simplicial.scn2</span> <span class="kn">import</span> <span class="n">SCN2</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+
+<span class="kn">from</span> <span class="nn">topobenchmarkx.data.load</span> <span class="kn">import</span> <span class="n">GraphLoader</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.data.preprocess</span> <span class="kn">import</span> <span class="n">PreProcessor</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.dataloader</span> <span class="kn">import</span> <span class="n">TBXDataloader</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.evaluator</span> <span class="kn">import</span> <span class="n">TBXEvaluator</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.loss</span> <span class="kn">import</span> <span class="n">TBXLoss</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.model</span> <span class="kn">import</span> <span class="n">TBXModel</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.nn.encoders</span> <span class="kn">import</span> <span class="n">AllCellFeatureEncoder</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.nn.readouts</span> <span class="kn">import</span> <span class="n">PropagateSignalDown</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.nn.wrappers.simplicial</span> <span class="kn">import</span> <span class="n">SCNWrapper</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.transforms.liftings.graph2simplicial</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Graph2SimplicialLifting</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Configurations-and-utilities">
+<h2>Configurations and utilities<a class="headerlink" href="#Configurations-and-utilities" title="Link to this heading">#</a></h2>
+<p>Configurations can be specified using yaml files or directly specified in your code like in this example. To keep the notebook clean here we already define the configuration for the lifting, which is defined later in the notebook.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loader_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;data_domain&quot;</span><span class="p">:</span> <span class="s2">&quot;graph&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_type&quot;</span><span class="p">:</span> <span class="s2">&quot;TUDataset&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_name&quot;</span><span class="p">:</span> <span class="s2">&quot;MUTAG&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;./data/MUTAG/&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">transform_config</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;clique_lifting&quot;</span><span class="p">:</span>
+    <span class="p">{</span><span class="s2">&quot;_target_&quot;</span><span class="p">:</span> <span class="s2">&quot;__main__.SimplicialCliquesLEQLifting&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;transform_name&quot;</span><span class="p">:</span> <span class="s2">&quot;SimplicialCliquesLEQLifting&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;transform_type&quot;</span><span class="p">:</span> <span class="s2">&quot;lifting&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;complex_dim&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,}</span>
+<span class="p">}</span>
+
+<span class="n">split_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;learning_setting&quot;</span><span class="p">:</span> <span class="s2">&quot;inductive&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;split_type&quot;</span><span class="p">:</span> <span class="s2">&quot;k-fold&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;data_seed&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;data_split_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;./data/MUTAG/splits/&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">in_channels</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">out_channels</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">dim_hidden</span> <span class="o">=</span> <span class="mi">128</span>
+
+<span class="n">wrapper_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;out_channels&quot;</span><span class="p">:</span> <span class="n">dim_hidden</span><span class="p">,</span>
+    <span class="s2">&quot;num_cell_dimensions&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">readout_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;readout_name&quot;</span><span class="p">:</span> <span class="s2">&quot;PropagateSignalDown&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_cell_dimensions&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;hidden_dim&quot;</span><span class="p">:</span> <span class="n">dim_hidden</span><span class="p">,</span>
+    <span class="s2">&quot;out_channels&quot;</span><span class="p">:</span> <span class="n">out_channels</span><span class="p">,</span>
+    <span class="s2">&quot;task_level&quot;</span><span class="p">:</span> <span class="s2">&quot;graph&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pooling_type&quot;</span><span class="p">:</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">loss_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="s2">&quot;loss_type&quot;</span><span class="p">:</span> <span class="s2">&quot;cross_entropy&quot;</span><span class="p">}</span>
+
+<span class="n">evaluator_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;num_classes&quot;</span><span class="p">:</span> <span class="n">out_channels</span><span class="p">,</span>
+                    <span class="s2">&quot;classification_metrics&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;precision&quot;</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">]}</span>
+
+<span class="n">loader_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">loader_config</span><span class="p">)</span>
+<span class="n">transform_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">transform_config</span><span class="p">)</span>
+<span class="n">split_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">split_config</span><span class="p">)</span>
+<span class="n">wrapper_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">wrapper_config</span><span class="p">)</span>
+<span class="n">readout_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">readout_config</span><span class="p">)</span>
+<span class="n">loss_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">loss_config</span><span class="p">)</span>
+<span class="n">evaluator_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">evaluator_config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">factory_kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="n">backbone</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SCNWrapper</span><span class="p">(</span><span class="n">backbone</span><span class="p">,</span> <span class="o">**</span><span class="n">factory_kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">factory</span>
+
+<span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="o">**</span><span class="n">factory_kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="n">optimizer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">StepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="o">**</span><span class="n">factory_kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">factory</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Defining-the-lifting">
+<h2>Defining the lifting<a class="headerlink" href="#Defining-the-lifting" title="Link to this heading">#</a></h2>
+<p>Here we define the lifting we intend on using. The <code class="docutils literal notranslate"><span class="pre">SimplicialCliquesLEQLifting</span></code> finds the cliques that have a number of nodes less or equal to the maximum simplices we want to consider and creates simplices from them. The configuration for the lifting was already defined with the other configurations.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SimplicialCliquesLEQLifting</span><span class="p">(</span><span class="n">Graph2SimplicialLifting</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Lifts graphs to simplicial complex domain by identifying the cliques as k-simplices. Only the cliques with size smaller or equal to the max complex dimension are considered.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        kwargs (optional): Additional arguments for the class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">lift_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">torch_geometric</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Lifts the topology of a graph to a simplicial complex by identifying the cliques as k-simplices. Only the cliques with size smaller or equal to the max complex dimension are considered.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (torch_geometric.data.Data): The input data to be lifted.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The lifted topology.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_graph_from_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">simplicial_complex</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="n">cliques</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">find_cliques</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+
+        <span class="n">simplices</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="o">...</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">complex_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">clique</span> <span class="ow">in</span> <span class="n">cliques</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clique</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">complex_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">complex_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">clique</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">simplices</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">set_k_simplices</span> <span class="ow">in</span> <span class="n">simplices</span><span class="p">:</span>
+            <span class="n">simplicial_complex</span><span class="o">.</span><span class="n">add_simplices_from</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">set_k_simplices</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lifted_topology</span><span class="p">(</span><span class="n">simplicial_complex</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+<br/></pre></div>
+</div>
+</div>
+</section>
+<section id="Loading-the-data">
+<h2>Loading the data<a class="headerlink" href="#Loading-the-data" title="Link to this heading">#</a></h2>
+<p>In this example we use the MUTAG dataset.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">topobenchmarkx.transforms</span> <span class="kn">import</span> <span class="n">TRANSFORMS</span>
+
+<span class="n">TRANSFORMS</span><span class="p">[</span><span class="s2">&quot;SimplicialCliquesLEQLifting&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SimplicialCliquesLEQLifting</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graph_loader</span> <span class="o">=</span> <span class="n">GraphLoader</span><span class="p">(</span><span class="n">loader_config</span><span class="p">)</span>
+
+<span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_dir</span> <span class="o">=</span> <span class="n">graph_loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+<span class="n">preprocessor</span> <span class="o">=</span> <span class="n">PreProcessor</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">dataset_dir</span><span class="p">,</span> <span class="n">transform_config</span><span class="p">)</span>
+<span class="n">dataset_train</span><span class="p">,</span> <span class="n">dataset_val</span><span class="p">,</span> <span class="n">dataset_test</span> <span class="o">=</span> <span class="n">preprocessor</span><span class="o">.</span><span class="n">load_dataset_splits</span><span class="p">(</span><span class="n">split_config</span><span class="p">)</span>
+<span class="n">datamodule</span> <span class="o">=</span> <span class="n">TBXDataloader</span><span class="p">(</span><span class="n">dataset_train</span><span class="p">,</span> <span class="n">dataset_val</span><span class="p">,</span> <span class="n">dataset_test</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Transform parameters are the same, using existing data_dir: ./data/MUTAG/MUTAG/clique_lifting/458544608
+</pre></div></div>
+</div>
+</section>
+<section id="Model-initialization">
+<h2>Model initialization<a class="headerlink" href="#Model-initialization" title="Link to this heading">#</a></h2>
+<p>We can create the backbone by instantiating the SCN2 model form TopoModelX. Then the <code class="docutils literal notranslate"><span class="pre">SCNWrapper</span></code> and the <code class="docutils literal notranslate"><span class="pre">TBXModel</span></code> take care of the rest.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">backbone</span> <span class="o">=</span> <span class="n">SCN2</span><span class="p">(</span><span class="n">in_channels_0</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">,</span><span class="n">in_channels_1</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">,</span><span class="n">in_channels_2</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">)</span>
+<span class="n">backbone_wrapper</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">wrapper_config</span><span class="p">)</span>
+
+<span class="n">readout</span> <span class="o">=</span> <span class="n">PropagateSignalDown</span><span class="p">(</span><span class="o">**</span><span class="n">readout_config</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">TBXLoss</span><span class="p">(</span><span class="o">**</span><span class="n">loss_config</span><span class="p">)</span>
+<span class="n">feature_encoder</span> <span class="o">=</span> <span class="n">AllCellFeatureEncoder</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="p">[</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">],</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">)</span>
+
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">TBXEvaluator</span><span class="p">(</span><span class="o">**</span><span class="n">evaluator_config</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span>
+<span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span><span class="p">(</span><span class="n">step_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">TBXModel</span><span class="p">(</span><span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
+                 <span class="n">backbone_wrapper</span><span class="o">=</span><span class="n">backbone_wrapper</span><span class="p">,</span>
+                 <span class="n">readout</span><span class="o">=</span><span class="n">readout</span><span class="p">,</span>
+                 <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+                 <span class="n">feature_encoder</span><span class="o">=</span><span class="n">feature_encoder</span><span class="p">,</span>
+                 <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">,</span>
+                 <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                 <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
+                 <span class="nb">compile</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:199: Attribute &#39;backbone&#39; is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=[&#39;backbone&#39;])`.
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:199: Attribute &#39;readout&#39; is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=[&#39;readout&#39;])`.
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:199: Attribute &#39;feature_encoder&#39; is an instance of `nn.Module` and is already saved during checkpointing. It is recommended to ignore them using `self.save_hyperparameters(ignore=[&#39;feature_encoder&#39;])`.
+</pre></div></div>
+</div>
+</section>
+<section id="Training">
+<h2>Training<a class="headerlink" href="#Training" title="Link to this heading">#</a></h2>
+<p>Now we can use the <code class="docutils literal notranslate"><span class="pre">lightning</span></code> trainer to train the model. We are prompted to connet a Wandb account to monitor training, but we can also obtain the final training metrics from the trainer directly.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
+<span class="n">train_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/logger_connector/logger_connector.py:75: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `lightning.pytorch` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:44: attribute &#39;backbone_wrapper&#39; removed from hparams because it cannot be pickled
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:44: attribute &#39;scheduler&#39; removed from hparams because it cannot be pickled
+You are using a CUDA device (&#39;NVIDIA GeForce RTX 3060 Laptop GPU&#39;) that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision(&#39;medium&#39; | &#39;high&#39;)` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+/usr/local/lib/python3.11/site-packages/torch/optim/adam.py:33: UserWarning: optimizer contains a parameter group with duplicate parameters; in future, this will cause an error; see github.com/pytorch/pytorch/issues/40967 for more information
+  super().__init__(params, defaults)
+
+  | Name            | Type                  | Params
+----------------------------------------------------------
+0 | feature_encoder | AllCellFeatureEncoder | 53.8 K
+1 | backbone        | SCNWrapper            | 99.1 K
+2 | readout         | PropagateSignalDown   | 258
+3 | val_acc_best    | MeanMetric            | 0
+----------------------------------------------------------
+153 K     Trainable params
+0         Non-trainable params
+153 K     Total params
+0.612     Total estimated model params size (MB)
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;val_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=19` in the `DataLoader` to improve performance.
+/usr/local/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassAccuracy was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+  warnings.warn(*args, **kwargs)  # noqa: B028
+/usr/local/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassPrecision was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+  warnings.warn(*args, **kwargs)  # noqa: B028
+/usr/local/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassRecall was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+  warnings.warn(*args, **kwargs)  # noqa: B028
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;train_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=19` in the `DataLoader` to improve performance.
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/loops/fit_loop.py:298: The number of training batches (6) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+`Trainer.fit` stopped: `max_epochs=200` reached.
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">train_metrics</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="s2">&quot;:    &quot;</span><span class="p">,</span> <span class="n">train_metrics</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+train/accuracy :     0.857988178730011
+train/precision :     0.8558597564697266
+train/recall :     0.8196271657943726
+val/loss :     0.6387380361557007
+val/accuracy :     0.7894737124443054
+val/precision :     0.7564102411270142
+val/recall :     0.7564102411270142
+train/loss :     0.3503551483154297
+</pre></div></div>
+</div>
+</section>
+<section id="Testing-the-model">
+<h2>Testing the model<a class="headerlink" href="#Testing-the-model" title="Link to this heading">#</a></h2>
+<p>Finally, we can test the model and obtain the results.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
+<span class="n">test_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/local/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;test_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=19` in the `DataLoader` to improve performance.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold">        Test metric        </span>┃<span style="font-weight: bold">       DataLoader 0        </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span style="color: #008080; text-decoration-color: #008080">       test/accuracy       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.7894737124443054     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">         test/loss         </span>│<span style="color: #800080; text-decoration-color: #800080">    0.6387377977371216     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">      test/precision       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.7564102411270142     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">        test/recall        </span>│<span style="color: #800080; text-decoration-color: #800080">    0.7564102411270142     </span>│
+└───────────────────────────┴───────────────────────────┘
+</pre></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Imports">Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Configurations-and-utilities">Configurations and utilities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Defining-the-lifting">Defining the lifting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Loading-the-data">Loading the data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Model-initialization">Model initialization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Training">Training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Testing-the-model">Testing the model</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/notebooks/tutorial_lifting.ipynb.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2022-2023, PyT-Team, Inc..
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.15.3.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
