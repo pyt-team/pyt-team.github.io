@@ -51,7 +51,7 @@
     <link rel="prev" title="Tutorials" href="../tutorials/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 2:50:59 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 2:53:27 PM"/>
   </head>
   
   
@@ -360,7 +360,7 @@ document.write(`
 <section id="Imports">
 <h2>Imports<a class="headerlink" href="#Imports" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lightning</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -385,7 +385,7 @@ document.write(`
 <h2>Configurations and utilities<a class="headerlink" href="#Configurations-and-utilities" title="Link to this heading">#</a></h2>
 <p>Configurations can be specified using yaml files or directly specified in your code like in this example.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">transform_config</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;clique_lifting&quot;</span><span class="p">:</span>
@@ -435,7 +435,7 @@ document.write(`
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">factory_kwargs</span><span class="p">):</span>
@@ -455,7 +455,7 @@ document.write(`
 <h2>Loading the data<a class="headerlink" href="#Loading-the-data" title="Link to this heading">#</a></h2>
 <p>In this example we use the ENZYMES dataset. It is a graph dataset and we use the clique lifting to transform the graphs into simplicial complexes. We invite you to check out the README of the <a class="reference external" href="https://github.com/pyt-team/TopoBenchmarkX">repository</a> to learn more about the various liftings offered.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_dir</span> <span class="o">=</span> <span class="s2">&quot;./data/ENZYMES/&quot;</span>
@@ -484,7 +484,7 @@ Done!
 <h2>Model initialization<a class="headerlink" href="#Model-initialization" title="Link to this heading">#</a></h2>
 <p>We can create the backbone by instantiating the SAN model form TopoModelX. Then the <code class="docutils literal notranslate"><span class="pre">SANWrapper</span></code> and the <code class="docutils literal notranslate"><span class="pre">TBXModel</span></code> take care of the rest.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">backbone</span> <span class="o">=</span> <span class="n">SAN</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">,</span><span class="n">hidden_channels</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">)</span>
@@ -501,7 +501,7 @@ Done!
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">TBXModel</span><span class="p">(</span><span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
@@ -521,10 +521,11 @@ Done!
 <h2>Training<a class="headerlink" href="#Training" title="Link to this heading">#</a></h2>
 <p>Now we can use the <code class="docutils literal notranslate"><span class="pre">lightning</span></code> trainer to train the model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Increase the number of epochs to get better results</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
 <span class="n">train_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span>
@@ -540,6 +541,12 @@ GPU available: True (mps), used: False
 TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
 HPU available: False, using: 0 HPUs
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/setup.py:187: GPU available but not used. You can set it by doing `Trainer(accelerator=&#39;gpu&#39;)`.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/logger_connector/logger_connector.py:75: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `lightning.pytorch` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:44: attribute &#39;backbone_wrapper&#39; removed from hparams because it cannot be pickled
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:44: attribute &#39;scheduler&#39; removed from hparams because it cannot be pickled
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torch/_compile.py:24: UserWarning: optimizer contains a parameter group with duplicate parameters; in future, this will cause an error; see github.com/pytorch/pytorch/issues/40967 for more information
+  return torch._dynamo.disable(fn, recursive)(*args, **kwargs)
 
   | Name            | Type                  | Params
 ----------------------------------------------------------
@@ -552,11 +559,20 @@ HPU available: False, using: 0 HPUs
 0         Non-trainable params
 3.8 K     Total params
 0.015     Total estimated model params size (MB)
-`Trainer.fit` stopped: `max_epochs=10` reached.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;val_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassAccuracy was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+  warnings.warn(*args, **kwargs)  # noqa: B028
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassPrecision was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+  warnings.warn(*args, **kwargs)  # noqa: B028
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassRecall was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
+  warnings.warn(*args, **kwargs)  # noqa: B028
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;train_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/loops/fit_loop.py:298: The number of training batches (17) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+`Trainer.fit` stopped: `max_epochs=5` reached.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">train_metrics</span><span class="p">:</span>
@@ -569,14 +585,14 @@ HPU available: False, using: 0 HPUs
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-train/accuracy :     0.307407408952713
-train/precision :     0.30398625135421753
-train/recall :     0.3065539598464966
-val/loss :     2.2909693717956543
-val/accuracy :     0.1666666716337204
-val/precision :     0.2816193997859955
-val/recall :     0.19531625509262085
-train/loss :     1.7063674926757812
+train/accuracy :     0.18703703582286835
+train/precision :     0.204917311668396
+train/recall :     0.18662351369857788
+val/loss :     2.2101078033447266
+val/accuracy :     0.15000000596046448
+val/precision :     0.1944444477558136
+val/recall :     0.11645299196243286
+train/loss :     2.1050922870635986
 </pre></div></div>
 </div>
 </section>
@@ -584,7 +600,7 @@ train/loss :     1.7063674926757812
 <h2>Testing the model<a class="headerlink" href="#Testing-the-model" title="Link to this heading">#</a></h2>
 <p>Finally, we can test the model and obtain the results.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
@@ -615,10 +631,10 @@ train/loss :     1.7063674926757812
 <pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 ┃<span style="font-weight: bold">        Test metric        </span>┃<span style="font-weight: bold">       DataLoader 0        </span>┃
 ┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│<span style="color: #008080; text-decoration-color: #008080">       test/accuracy       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.1666666716337204     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">         test/loss         </span>│<span style="color: #800080; text-decoration-color: #800080">    2.2909693717956543     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">      test/precision       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.2816193997859955     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">        test/recall        </span>│<span style="color: #800080; text-decoration-color: #800080">    0.19531625509262085    </span>│
+│<span style="color: #008080; text-decoration-color: #008080">       test/accuracy       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.15000000596046448    </span>│
+│<span style="color: #008080; text-decoration-color: #008080">         test/loss         </span>│<span style="color: #800080; text-decoration-color: #800080">    2.2101078033447266     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">      test/precision       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.1944444477558136     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">        test/recall        </span>│<span style="color: #800080; text-decoration-color: #800080">    0.11645299196243286    </span>│
 └───────────────────────────┴───────────────────────────┘
 </pre></div>
 </div>
