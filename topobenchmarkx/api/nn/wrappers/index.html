@@ -48,7 +48,7 @@
     <link rel="prev" title="Readouts" href="../readouts/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:22:04 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:53:33 PM"/>
   </head>
   
   
@@ -372,8 +372,383 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="wrappers">
-<h1>Wrappers<a class="headerlink" href="#wrappers" title="Link to this heading">#</a></h1>
+  <section id="module-topobenchmarkx.nn.wrappers.base">
+<span id="wrappers"></span><h1>Wrappers<a class="headerlink" href="#module-topobenchmarkx.nn.wrappers.base" title="Link to this heading">#</a></h1>
+<p>Abstract class that provides an interface to handle the network output.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.base.AbstractWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.base.</span></span><span class="sig-name descname"><span class="pre">AbstractWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/base.html#AbstractWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.base.AbstractWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Abstract class that provides an interface to handle the network output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>backbone</strong><span class="classifier">torch.nn.Module</span></dt><dd><p>Backbone model.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Additional arguments for the class. It should contain the following keys:
+- out_channels (int): Number of output channels.
+- num_cell_dimensions (int): Number of cell dimensions.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.base.AbstractWrapper.forward">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/base.html#AbstractWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.base.AbstractWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.base.AbstractWrapper.residual_connection">
+<span class="sig-name descname"><span class="pre">residual_connection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_out</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/base.html#AbstractWrapper.residual_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.base.AbstractWrapper.residual_connection" title="Link to this definition">#</a></dt>
+<dd><p>Residual connection for the model.</p>
+<p>This method sums, for the embeddings of the cells of any rank, the
+output of the model with the input embeddings and applies layer
+normalization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_out</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.cell.can_wrapper">CAN wrapper module.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.can_wrapper.CANWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.cell.can_wrapper.</span></span><span class="sig-name descname"><span class="pre">CANWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/can_wrapper.html#CANWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.can_wrapper.CANWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the CAN model.</p>
+<p>This wrapper defines the forward pass of the model. The CAN model returns
+the embeddings of the cells of rank 1. The embeddings of the cells of rank
+0 are computed as the sum of the embeddings of the cells of rank 1
+connected to them.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.can_wrapper.CANWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/can_wrapper.html#CANWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.can_wrapper.CANWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the CAN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.cell.cccn_wrapper">Wrapper for the CCCN model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.cccn_wrapper.CCCNWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.cell.cccn_wrapper.</span></span><span class="sig-name descname"><span class="pre">CCCNWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/cccn_wrapper.html#CCCNWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.cccn_wrapper.CCCNWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the CCCN model.</p>
+<p>This wrapper defines the forward pass of the model. The CCCN model returns
+the embeddings of the cells of rank 1. The embeddings of the cells of rank
+0 are computed as the sum of the embeddings of the cells of rank 1
+connected to them.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.cccn_wrapper.CCCNWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/cccn_wrapper.html#CCCNWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.cccn_wrapper.CCCNWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the CCCN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.cell.ccxn_wrapper">Wrapper for the CCXN model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.ccxn_wrapper.CCXNWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.cell.ccxn_wrapper.</span></span><span class="sig-name descname"><span class="pre">CCXNWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/ccxn_wrapper.html#CCXNWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.ccxn_wrapper.CCXNWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the CCXN model.</p>
+<p>This wrapper defines the forward pass of the model. The CCXN model returns
+the embeddings of the cells of rank 0, 1, and 2.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.ccxn_wrapper.CCXNWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/ccxn_wrapper.html#CCXNWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.ccxn_wrapper.CCXNWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the CCXN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched domain data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.cell.cwn_wrapper">Wrapper for the CWN model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.cwn_wrapper.CWNWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.cell.cwn_wrapper.</span></span><span class="sig-name descname"><span class="pre">CWNWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/cwn_wrapper.html#CWNWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.cwn_wrapper.CWNWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the CWN model.</p>
+<p>This wrapper defines the forward pass of the model. The CWN model returns
+the embeddings of the cells of rank 0, 1, and 2.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.cell.cwn_wrapper.CWNWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/cell/cwn_wrapper.html#CWNWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.cell.cwn_wrapper.CWNWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the CWN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched domain data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.graph.gnn_wrapper">Wrapper for the GNN models.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.graph.gnn_wrapper.GNNWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.graph.gnn_wrapper.</span></span><span class="sig-name descname"><span class="pre">GNNWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/graph/gnn_wrapper.html#GNNWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.graph.gnn_wrapper.GNNWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the GNN models.</p>
+<p>This wrapper defines the forward pass of the model. The GNN models return
+the embeddings of the cells of rank 0.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.graph.gnn_wrapper.GNNWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/graph/gnn_wrapper.html#GNNWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.graph.gnn_wrapper.GNNWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the GNN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper">Wrapper for the hypergraph models.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper.HypergraphWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper.</span></span><span class="sig-name descname"><span class="pre">HypergraphWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/hypergraph/hypergraph_wrapper.html#HypergraphWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper.HypergraphWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the hypergraph models.</p>
+<p>This wrapper defines the forward pass of the model. The hypergraph model
+return the embeddings of the cells of rank 0, and 1 (the hyperedges).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper.HypergraphWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/hypergraph/hypergraph_wrapper.html#HypergraphWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper.HypergraphWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the hypergraph wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.simplicial.san_wrapper">Wrapper for the SAN model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.san_wrapper.SANWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.simplicial.san_wrapper.</span></span><span class="sig-name descname"><span class="pre">SANWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/san_wrapper.html#SANWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.san_wrapper.SANWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the SAN model.</p>
+<p>This wrapper defines the forward pass of the model. The SAN model returns
+the embeddings of the cells of rank 1. The embeddings of the cells of rank
+0 are computed as the sum of the embeddings of the cells of rank 1
+connected to them.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.san_wrapper.SANWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/san_wrapper.html#SANWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.san_wrapper.SANWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the SAN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper">Wrapper for the SCCN model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper.SCCNWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper.</span></span><span class="sig-name descname"><span class="pre">SCCNWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/sccn_wrapper.html#SCCNWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper.SCCNWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the SCCN model.</p>
+<p>This wrapper defines the forward pass of the model. The SCCN model returns
+the embeddings of the cells of any rank.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper.SCCNWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/sccn_wrapper.html#SCCNWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper.SCCNWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the SCCN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper">Wrapper for the SCCNN model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper.SCCNNWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper.</span></span><span class="sig-name descname"><span class="pre">SCCNNWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/sccnn_wrapper.html#SCCNNWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper.SCCNNWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the SCCNN model.</p>
+<p>This wrapper defines the forward pass of the model. The SCCNN model returns
+the embeddings of the cells of rank 0, 1, and 2.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper.SCCNNWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/sccnn_wrapper.html#SCCNNWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper.SCCNNWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the SCCNN wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.wrappers.simplicial.scn_wrapper">Wrapper for the SCNW model.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.</span></span><span class="sig-name descname"><span class="pre">SCNWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/scn_wrapper.html#SCNWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for the SCNW model.</p>
+<p>This wrapper defines the forward pass of the model. The SCNW model returns
+the embeddings of the cells of rank 0, 1, and 2.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/scn_wrapper.html#SCNWrapper.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass for the SCNW wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper.normalize_matrix">
+<span class="sig-name descname"><span class="pre">normalize_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/wrappers/simplicial/scn_wrapper.html#SCNWrapper.normalize_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper.normalize_matrix" title="Link to this definition">#</a></dt>
+<dd><p>Normalize the input matrix.</p>
+<p>The normalization is performed using the diagonal matrix of the inverse square root of the sum of the absolute values of the rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>matrix</strong><span class="classifier">torch.sparse.FloatTensor</span></dt><dd><p>Input matrix to be normalized.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.sparse.FloatTensor</dt><dd><p>Normalized matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -413,6 +788,63 @@ document.write(`
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.base.AbstractWrapper"><code class="docutils literal notranslate"><span class="pre">AbstractWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.base.AbstractWrapper.forward"><code class="docutils literal notranslate"><span class="pre">AbstractWrapper.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.base.AbstractWrapper.residual_connection"><code class="docutils literal notranslate"><span class="pre">AbstractWrapper.residual_connection()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.can_wrapper.CANWrapper"><code class="docutils literal notranslate"><span class="pre">CANWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.can_wrapper.CANWrapper.forward"><code class="docutils literal notranslate"><span class="pre">CANWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.cccn_wrapper.CCCNWrapper"><code class="docutils literal notranslate"><span class="pre">CCCNWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.cccn_wrapper.CCCNWrapper.forward"><code class="docutils literal notranslate"><span class="pre">CCCNWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.ccxn_wrapper.CCXNWrapper"><code class="docutils literal notranslate"><span class="pre">CCXNWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.ccxn_wrapper.CCXNWrapper.forward"><code class="docutils literal notranslate"><span class="pre">CCXNWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.cwn_wrapper.CWNWrapper"><code class="docutils literal notranslate"><span class="pre">CWNWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.cell.cwn_wrapper.CWNWrapper.forward"><code class="docutils literal notranslate"><span class="pre">CWNWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.graph.gnn_wrapper.GNNWrapper"><code class="docutils literal notranslate"><span class="pre">GNNWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.graph.gnn_wrapper.GNNWrapper.forward"><code class="docutils literal notranslate"><span class="pre">GNNWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper.HypergraphWrapper"><code class="docutils literal notranslate"><span class="pre">HypergraphWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.hypergraph.hypergraph_wrapper.HypergraphWrapper.forward"><code class="docutils literal notranslate"><span class="pre">HypergraphWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.san_wrapper.SANWrapper"><code class="docutils literal notranslate"><span class="pre">SANWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.san_wrapper.SANWrapper.forward"><code class="docutils literal notranslate"><span class="pre">SANWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper.SCCNWrapper"><code class="docutils literal notranslate"><span class="pre">SCCNWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.sccn_wrapper.SCCNWrapper.forward"><code class="docutils literal notranslate"><span class="pre">SCCNWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper.SCCNNWrapper"><code class="docutils literal notranslate"><span class="pre">SCCNNWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.sccnn_wrapper.SCCNNWrapper.forward"><code class="docutils literal notranslate"><span class="pre">SCCNNWrapper.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper"><code class="docutils literal notranslate"><span class="pre">SCNWrapper</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper.forward"><code class="docutils literal notranslate"><span class="pre">SCNWrapper.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.wrappers.simplicial.scn_wrapper.SCNWrapper.normalize_matrix"><code class="docutils literal notranslate"><span class="pre">SCNWrapper.normalize_matrix()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

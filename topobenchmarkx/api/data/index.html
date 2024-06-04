@@ -48,7 +48,7 @@
     <link rel="prev" title="API Reference" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:22:04 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:53:33 PM"/>
   </head>
   
   
@@ -408,13 +408,513 @@ document.write(`
 
 </dd></dl>
 
+<p id="module-topobenchmarkx.data.load.loaders">Data loaders.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.CellComplexLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.load.loaders.</span></span><span class="sig-name descname"><span class="pre">CellComplexLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#CellComplexLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.CellComplexLoader" title="Link to this definition">#</a></dt>
+<dd><p>Loader for cell complex datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.CellComplexLoader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dataset</span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#CellComplexLoader.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.CellComplexLoader.load" title="Link to this definition">#</a></dt>
+<dd><p>Load cell complex dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>torch_geometric.data.Dataset</dt><dd><p>Dataset object containing the loaded data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.GraphLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.load.loaders.</span></span><span class="sig-name descname"><span class="pre">GraphLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#GraphLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.GraphLoader" title="Link to this definition">#</a></dt>
+<dd><p>Loader for graph datasets.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters. The parameters must contain the following keys:
+- data_dir (str): The directory where the dataset is stored.
+- data_name (str): The name of the dataset.
+- data_type (str): The type of the dataset.
+- split_type (str): The type of split to be used. It can be “fixed”, “random”, or “k-fold”.
+If split_type is “random”, the parameters must also contain the following keys:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>data_seed (int): The seed for the split.</p></li>
+<li><p>data_split_dir (str): The directory where the split is stored.</p></li>
+<li><p>train_prop (float): The proportion of the training set.</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>If split_type is “k-fold”, the parameters must also contain the following keys:</dt><dd><ul class="simple">
+<li><p>data_split_dir (str): The directory where the split is stored.</p></li>
+<li><p>k (int): The number of folds.</p></li>
+<li><p>data_seed (int): The seed for the split.</p></li>
+</ul>
+</dd>
+</dl>
+<p>The parameters can be defined in a yaml file and then loaded using <cite>omegaconf.OmegaConf.load(‘path/to/dataset/config.yaml’)</cite>.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Additional keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.GraphLoader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Dataset</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#GraphLoader.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.GraphLoader.load" title="Link to this definition">#</a></dt>
+<dd><p>Load graph dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>tuple[torch_geometric.data.Dataset, str]</dt><dd><p>Tuple containing the loaded data and the data directory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.HypergraphLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.load.loaders.</span></span><span class="sig-name descname"><span class="pre">HypergraphLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#HypergraphLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.HypergraphLoader" title="Link to this definition">#</a></dt>
+<dd><p>Loader for hypergraph datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.HypergraphLoader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dataset</span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#HypergraphLoader.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.HypergraphLoader.load" title="Link to this definition">#</a></dt>
+<dd><p>Load hypergraph dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>torch_geometric.data.Dataset</dt><dd><p>Dataset object containing the loaded data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.SimplicialLoader">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.load.loaders.</span></span><span class="sig-name descname"><span class="pre">SimplicialLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#SimplicialLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.SimplicialLoader" title="Link to this definition">#</a></dt>
+<dd><p>Loader for simplicial datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch_geometric.data.Dataset</dt><dd><p>torch_geometric.data.Dataset object containing the loaded data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.load.loaders.SimplicialLoader.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dataset</span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/load/loaders.html#SimplicialLoader.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.load.loaders.SimplicialLoader.load" title="Link to this definition">#</a></dt>
+<dd><p>Load simplicial dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>torch_geometric.data.Dataset</dt><dd><p>Dataset object containing the loaded data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="preprocess">
-<h2>Preprocess<a class="headerlink" href="#preprocess" title="Link to this heading">#</a></h2>
+<section id="module-topobenchmarkx.data.preprocess.preprocessor">
+<span id="preprocess"></span><h2>Preprocess<a class="headerlink" href="#module-topobenchmarkx.data.preprocess.preprocessor" title="Link to this heading">#</a></h2>
+<p>Preprocessor for datasets.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.preprocess.preprocessor.</span></span><span class="sig-name descname"><span class="pre">PreProcessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transforms_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/preprocess/preprocessor.html#PreProcessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor" title="Link to this definition">#</a></dt>
+<dd><p>Preprocessor for datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset</strong><span class="classifier">list</span></dt><dd><p>List of data objects.</p>
+</dd>
+<dt><strong>data_dir</strong><span class="classifier">str</span></dt><dd><p>Path to the directory containing the data.</p>
+</dd>
+<dt><strong>transforms_config</strong><span class="classifier">DictConfig, optional</span></dt><dd><p>Configuration parameters for the transforms (default: None).</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">optional</span></dt><dd><p>Optional additional arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor.instantiate_pre_transform">
+<span class="sig-name descname"><span class="pre">instantiate_pre_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transforms_config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Compose</span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/preprocess/preprocessor.html#PreProcessor.instantiate_pre_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.instantiate_pre_transform" title="Link to this definition">#</a></dt>
+<dd><p>Instantiate the pre-transforms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_dir</strong><span class="classifier">str</span></dt><dd><p>Path to the directory containing the data.</p>
+</dd>
+<dt><strong>transforms_config</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters for the transforms.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch_geometric.transforms.Compose</dt><dd><p>Pre-transform object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor.load_dataset_splits">
+<span class="sig-name descname"><span class="pre">load_dataset_splits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split_params</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.12)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../dataloader/index.html#topobenchmarkx.dataloader.dataload_dataset.DataloadDataset" title="topobenchmarkx.dataloader.dataload_dataset.DataloadDataset"><span class="pre">DataloadDataset</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../dataloader/index.html#topobenchmarkx.dataloader.dataload_dataset.DataloadDataset" title="topobenchmarkx.dataloader.dataload_dataset.DataloadDataset"><span class="pre">DataloadDataset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="../dataloader/index.html#topobenchmarkx.dataloader.dataload_dataset.DataloadDataset" title="topobenchmarkx.dataloader.dataload_dataset.DataloadDataset"><span class="pre">DataloadDataset</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/preprocess/preprocessor.html#PreProcessor.load_dataset_splits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.load_dataset_splits" title="Link to this definition">#</a></dt>
+<dd><p>Load the dataset splits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>split_params</strong><span class="classifier">dict</span></dt><dd><p>Parameters for loading the dataset splits.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>tuple</dt><dd><p>A tuple containing the train, validation, and test datasets.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/preprocess/preprocessor.html#PreProcessor.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.process" title="Link to this definition">#</a></dt>
+<dd><p>Method that processes the data.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor.processed_dir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processed_dir</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.processed_dir" title="Link to this definition">#</a></dt>
+<dd><p>Return the path to the processed directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>str</dt><dd><p>Path to the processed directory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor.processed_file_names">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">processed_file_names</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></em><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.processed_file_names" title="Link to this definition">#</a></dt>
+<dd><p>Return the name of the processed file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>str</dt><dd><p>Name of the processed file.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor.save_transform_parameters">
+<span class="sig-name descname"><span class="pre">save_transform_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/preprocess/preprocessor.html#PreProcessor.save_transform_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.save_transform_parameters" title="Link to this definition">#</a></dt>
+<dd><p>Save the transform parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.data.preprocess.preprocessor.PreProcessor.set_processed_data_dir">
+<span class="sig-name descname"><span class="pre">set_processed_data_dir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pre_transforms_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transforms_config</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/data/preprocess/preprocessor.html#PreProcessor.set_processed_data_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.set_processed_data_dir" title="Link to this definition">#</a></dt>
+<dd><p>Set the processed data directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>pre_transforms_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the pre-transforms.</p>
+</dd>
+<dt><strong>data_dir</strong><span class="classifier">str</span></dt><dd><p>Path to the directory containing the data.</p>
+</dd>
+<dt><strong>transforms_config</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters for the transforms.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="module-topobenchmarkx.data.utils.utils">
-<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-topobenchmarkx.data.utils.utils" title="Link to this heading">#</a></h2>
-<p>Data utilities.</p>
+<section id="module-topobenchmarkx.data.utils.io_utils">
+<span id="utils"></span><h2>Utils<a class="headerlink" href="#module-topobenchmarkx.data.utils.io_utils" title="Link to this heading">#</a></h2>
+<p>Data IO utilities.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.io_utils.download_file_from_drive">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.io_utils.</span></span><span class="sig-name descname"><span class="pre">download_file_from_drive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_link</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_to_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tar.gz'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/io_utils.html#download_file_from_drive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.io_utils.download_file_from_drive" title="Link to this definition">#</a></dt>
+<dd><p>Download a file from a Google Drive link and saves it to the specified path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>file_link</strong><span class="classifier">str</span></dt><dd><p>The Google Drive link of the file to download.</p>
+</dd>
+<dt><strong>path_to_save</strong><span class="classifier">str</span></dt><dd><p>The path where the downloaded file will be saved.</p>
+</dd>
+<dt><strong>dataset_name</strong><span class="classifier">str</span></dt><dd><p>The name of the dataset.</p>
+</dd>
+<dt><strong>file_format</strong><span class="classifier">str, optional</span></dt><dd><p>The format of the downloaded file. Defaults to “tar.gz”.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.io_utils.get_file_id_from_url">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.io_utils.</span></span><span class="sig-name descname"><span class="pre">get_file_id_from_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/io_utils.html#get_file_id_from_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.io_utils.get_file_id_from_url" title="Link to this definition">#</a></dt>
+<dd><p>Extract the file ID from a Google Drive file URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>url</strong><span class="classifier">str</span></dt><dd><p>The Google Drive file URL.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The file ID extracted from the URL.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ValueError</dt><dd><p>If the provided URL is not a valid Google Drive file URL.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.io_utils.load_hypergraph_pickle_dataset">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.io_utils.</span></span><span class="sig-name descname"><span class="pre">load_hypergraph_pickle_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/io_utils.html#load_hypergraph_pickle_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.io_utils.load_hypergraph_pickle_dataset" title="Link to this definition">#</a></dt>
+<dd><p>Load hypergraph datasets from pickle files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cfg</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch_geometric.data.Data</dt><dd><p>Hypergraph dataset.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.io_utils.read_us_county_demos">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.io_utils.</span></span><span class="sig-name descname"><span class="pre">read_us_county_demos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2012</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Election'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/io_utils.html#read_us_county_demos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.io_utils.read_us_county_demos" title="Link to this definition">#</a></dt>
+<dd><p>Load US County Demos dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path to the dataset.</p>
+</dd>
+<dt><strong>year</strong><span class="classifier">int, optional</span></dt><dd><p>Year to load the features (default: 2012).</p>
+</dd>
+<dt><strong>y_col</strong><span class="classifier">str, optional</span></dt><dd><p>Column to use as label. Can be one of [‘Election’, ‘MedianIncome’,
+‘MigraRate’, ‘BirthRate’, ‘DeathRate’, ‘BachelorRate’, ‘UnemploymentRate’] (default: “Election”).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch_geometric.data.Data</dt><dd><p>Data object of the graph for the US County Demos dataset.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-topobenchmarkx.data.utils.split_utils">Split utilities.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.split_utils.assing_train_val_test_mask_to_graphs">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.split_utils.</span></span><span class="sig-name descname"><span class="pre">assing_train_val_test_mask_to_graphs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/split_utils.html#assing_train_val_test_mask_to_graphs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.split_utils.assing_train_val_test_mask_to_graphs" title="Link to this definition">#</a></dt>
+<dd><p>Split the graph dataset into train, validation, and test datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset</strong><span class="classifier">torch_geometric.data.Dataset</span></dt><dd><p>Considered dataset.</p>
+</dd>
+<dt><strong>split_idx</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the train, validation, and test indices.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list:</dt><dd><p>List containing the train, validation, and test datasets.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.split_utils.k_fold_split">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.split_utils.</span></span><span class="sig-name descname"><span class="pre">k_fold_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/split_utils.html#k_fold_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.split_utils.k_fold_split" title="Link to this definition">#</a></dt>
+<dd><p>Return train and valid indices as in K-Fold Cross-Validation.</p>
+<p>If the split already exists it loads it automatically, otherwise it creates the
+split file for the subsequent runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>labels</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Label tensor.</p>
+</dd>
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the train, validation and test indices, with keys “train”, “valid”, and “test”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.split_utils.load_coauthorship_hypergraph_splits">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.split_utils.</span></span><span class="sig-name descname"><span class="pre">load_coauthorship_hypergraph_splits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/split_utils.html#load_coauthorship_hypergraph_splits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.split_utils.load_coauthorship_hypergraph_splits" title="Link to this definition">#</a></dt>
+<dd><p>Load the split generated by rand_train_test_idx function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Graph dataset.</p>
+</dd>
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+<dt><strong>train_prop</strong><span class="classifier">float</span></dt><dd><p>Proportion of training data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch_geometric.data.Data:</dt><dd><p>Graph dataset with the specified split.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.split_utils.load_inductive_splits">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.split_utils.</span></span><span class="sig-name descname"><span class="pre">load_inductive_splits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/split_utils.html#load_inductive_splits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.split_utils.load_inductive_splits" title="Link to this definition">#</a></dt>
+<dd><p>Load multiple-graph datasets with the specified split.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset</strong><span class="classifier">torch_geometric.data.Dataset</span></dt><dd><p>Graph dataset.</p>
+</dd>
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list:</dt><dd><p>List containing the train, validation, and test splits.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.split_utils.load_transductive_splits">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.split_utils.</span></span><span class="sig-name descname"><span class="pre">load_transductive_splits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/split_utils.html#load_transductive_splits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.split_utils.load_transductive_splits" title="Link to this definition">#</a></dt>
+<dd><p>Load the graph dataset with the specified split.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataset</strong><span class="classifier">torch_geometric.data.Dataset</span></dt><dd><p>Graph dataset.</p>
+</dd>
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameters.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>list:</dt><dd><p>List containing the train, validation, and test splits.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="topobenchmarkx.data.utils.split_utils.random_splitting">
+<span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.split_utils.</span></span><span class="sig-name descname"><span class="pre">random_splitting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_data_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/split_utils.html#random_splitting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.split_utils.random_splitting" title="Link to this definition">#</a></dt>
+<dd><p>Randomly splits label into train/valid/test splits.</p>
+<p>Adapted from <a class="github reference external" href="https://github.com/CUAI/Non-Homophily-Benchmarks">CUAI/Non-Homophily-Benchmarks</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>labels</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Label tensor.</p>
+</dd>
+<dt><strong>parameters</strong><span class="classifier">DictConfig</span></dt><dd><p>Configuration parameter.</p>
+</dd>
+<dt><strong>global_data_seed</strong><span class="classifier">int</span></dt><dd><p>Seed for the random number generator.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict:</dt><dd><p>Dictionary containing the train, validation and test indices with keys “train”, “valid”, and “test”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<p id="module-topobenchmarkx.data.utils.utils">Data utilities.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="topobenchmarkx.data.utils.utils.ensure_serializable">
 <span class="sig-prename descclassname"><span class="pre">topobenchmarkx.data.utils.utils.</span></span><span class="sig-name descname"><span class="pre">ensure_serializable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/data/utils/utils.html#ensure_serializable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.data.utils.utils.ensure_serializable" title="Link to this definition">#</a></dt>
@@ -603,10 +1103,48 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.base.AbstractLoader.load"><code class="docutils literal notranslate"><span class="pre">AbstractLoader.load()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.CellComplexLoader"><code class="docutils literal notranslate"><span class="pre">CellComplexLoader</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.CellComplexLoader.load"><code class="docutils literal notranslate"><span class="pre">CellComplexLoader.load()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preprocess">Preprocess</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-topobenchmarkx.data.utils.utils">Utils</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.GraphLoader"><code class="docutils literal notranslate"><span class="pre">GraphLoader</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.GraphLoader.load"><code class="docutils literal notranslate"><span class="pre">GraphLoader.load()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.HypergraphLoader"><code class="docutils literal notranslate"><span class="pre">HypergraphLoader</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.HypergraphLoader.load"><code class="docutils literal notranslate"><span class="pre">HypergraphLoader.load()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.SimplicialLoader"><code class="docutils literal notranslate"><span class="pre">SimplicialLoader</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.load.loaders.SimplicialLoader.load"><code class="docutils literal notranslate"><span class="pre">SimplicialLoader.load()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-topobenchmarkx.data.preprocess.preprocessor">Preprocess</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor"><code class="docutils literal notranslate"><span class="pre">PreProcessor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.instantiate_pre_transform"><code class="docutils literal notranslate"><span class="pre">PreProcessor.instantiate_pre_transform()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.load_dataset_splits"><code class="docutils literal notranslate"><span class="pre">PreProcessor.load_dataset_splits()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.process"><code class="docutils literal notranslate"><span class="pre">PreProcessor.process()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.processed_dir"><code class="docutils literal notranslate"><span class="pre">PreProcessor.processed_dir</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.processed_file_names"><code class="docutils literal notranslate"><span class="pre">PreProcessor.processed_file_names</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.save_transform_parameters"><code class="docutils literal notranslate"><span class="pre">PreProcessor.save_transform_parameters()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.preprocess.preprocessor.PreProcessor.set_processed_data_dir"><code class="docutils literal notranslate"><span class="pre">PreProcessor.set_processed_data_dir()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-topobenchmarkx.data.utils.io_utils">Utils</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.io_utils.download_file_from_drive"><code class="docutils literal notranslate"><span class="pre">download_file_from_drive()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.io_utils.get_file_id_from_url"><code class="docutils literal notranslate"><span class="pre">get_file_id_from_url()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.io_utils.load_hypergraph_pickle_dataset"><code class="docutils literal notranslate"><span class="pre">load_hypergraph_pickle_dataset()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.io_utils.read_us_county_demos"><code class="docutils literal notranslate"><span class="pre">read_us_county_demos()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.split_utils.assing_train_val_test_mask_to_graphs"><code class="docutils literal notranslate"><span class="pre">assing_train_val_test_mask_to_graphs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.split_utils.k_fold_split"><code class="docutils literal notranslate"><span class="pre">k_fold_split()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.split_utils.load_coauthorship_hypergraph_splits"><code class="docutils literal notranslate"><span class="pre">load_coauthorship_hypergraph_splits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.split_utils.load_inductive_splits"><code class="docutils literal notranslate"><span class="pre">load_inductive_splits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.split_utils.load_transductive_splits"><code class="docutils literal notranslate"><span class="pre">load_transductive_splits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.split_utils.random_splitting"><code class="docutils literal notranslate"><span class="pre">random_splitting()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.utils.ensure_serializable"><code class="docutils literal notranslate"><span class="pre">ensure_serializable()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.utils.generate_zero_sparse_connectivity"><code class="docutils literal notranslate"><span class="pre">generate_zero_sparse_connectivity()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.data.utils.utils.get_complex_connectivity"><code class="docutils literal notranslate"><span class="pre">get_complex_connectivity()</span></code></a></li>

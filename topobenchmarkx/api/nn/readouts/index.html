@@ -48,7 +48,7 @@
     <link rel="prev" title="Encoders" href="../encoders/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:22:04 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:53:33 PM"/>
   </head>
   
   
@@ -372,8 +372,150 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="readouts">
-<h1>Readouts<a class="headerlink" href="#readouts" title="Link to this heading">#</a></h1>
+  <section id="module-topobenchmarkx.nn.readouts.base">
+<span id="readouts"></span><h1>Readouts<a class="headerlink" href="#module-topobenchmarkx.nn.readouts.base" title="Link to this heading">#</a></h1>
+<p>Abstract base class for readout layers.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.readouts.base.</span></span><span class="sig-name descname"><span class="pre">AbstractZeroCellReadOut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hidden_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">pooling_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/readouts/base.html#AbstractZeroCellReadOut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut" title="Link to this definition">#</a></dt>
+<dd><p>Readout layer for GNNs that operates on the batch level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>hidden_dim</strong><span class="classifier">int</span></dt><dd><p>Hidden dimension of the GNN model.</p>
+</dd>
+<dt><strong>out_channels</strong><span class="classifier">int</span></dt><dd><p>Number of output channels.</p>
+</dd>
+<dt><strong>task_level</strong><span class="classifier">str</span></dt><dd><p>Task level for readout layer. Either “graph” or “node”.</p>
+</dd>
+<dt><strong>pooling_type</strong><span class="classifier">str</span></dt><dd><p>Pooling type for readout layer. Either “max”, “sum” or “mean”.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Additional arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut.compute_logits">
+<span class="sig-name descname"><span class="pre">compute_logits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/readouts/base.html#AbstractZeroCellReadOut.compute_logits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut.compute_logits" title="Link to this definition">#</a></dt>
+<dd><p>Compute logits based on the readout layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Node embeddings.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Batch index tensor.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor</dt><dd><p>Logits tensor.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut.forward">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/readouts/base.html#AbstractZeroCellReadOut.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_out</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched domain data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.readouts.identical">Readout layer that does not perform any operation on the node embeddings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.readouts.identical.NoReadOut">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.readouts.identical.</span></span><span class="sig-name descname"><span class="pre">NoReadOut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/readouts/identical.html#NoReadOut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.readouts.identical.NoReadOut" title="Link to this definition">#</a></dt>
+<dd><p>No readout layer.</p>
+<p>This readout layer does not perform any operation on the node embeddings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Additional keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.readouts.identical.NoReadOut.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/readouts/identical.html#NoReadOut.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.readouts.identical.NoReadOut.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass of the no readout layer.</p>
+<p>It returns the model output without any modification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_out</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched domain data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.nn.readouts.propagate_signal_down">Readout layer that propagates the signal from cells of a certain order to the cells of the lower order.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.readouts.propagate_signal_down.PropagateSignalDown">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.readouts.propagate_signal_down.</span></span><span class="sig-name descname"><span class="pre">PropagateSignalDown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/readouts/propagate_signal_down.html#PropagateSignalDown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.readouts.propagate_signal_down.PropagateSignalDown" title="Link to this definition">#</a></dt>
+<dd><p>Propagate signal down readout layer.</p>
+<p>This readout layer propagates the signal from cells of a certain order to the cells of the lower order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Additional keyword arguments. It should contain the following keys:
+- num_cell_dimensions (int): Highest order of cells considered by the model.
+- hidden_dim (int): Dimension of the cells representations.
+- readout_name (str): Readout name.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.readouts.propagate_signal_down.PropagateSignalDown.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/readouts/propagate_signal_down.html#PropagateSignalDown.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.readouts.propagate_signal_down.PropagateSignalDown.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass of the propagate signal down readout layer.</p>
+<p>The layer takes the embeddings of the cells of a certain order and applies a convolutional layer to them. Layer normalization is then applied to the features. The output is concatenated with the initial embeddings of the cells and the result is projected with the use of a linear layer to the dimensions of the cells of lower rank. The process is repeated until the nodes embeddings, which are the cells of rank 0, are reached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_out</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched domain data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -413,6 +555,30 @@ document.write(`
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut"><code class="docutils literal notranslate"><span class="pre">AbstractZeroCellReadOut</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut.compute_logits"><code class="docutils literal notranslate"><span class="pre">AbstractZeroCellReadOut.compute_logits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.readouts.base.AbstractZeroCellReadOut.forward"><code class="docutils literal notranslate"><span class="pre">AbstractZeroCellReadOut.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.readouts.identical.NoReadOut"><code class="docutils literal notranslate"><span class="pre">NoReadOut</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.readouts.identical.NoReadOut.forward"><code class="docutils literal notranslate"><span class="pre">NoReadOut.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.readouts.propagate_signal_down.PropagateSignalDown"><code class="docutils literal notranslate"><span class="pre">PropagateSignalDown</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.readouts.propagate_signal_down.PropagateSignalDown.forward"><code class="docutils literal notranslate"><span class="pre">PropagateSignalDown.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

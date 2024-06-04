@@ -48,7 +48,7 @@
     <link rel="prev" title="Evaluator" href="../evaluator/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:22:04 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:53:33 PM"/>
   </head>
   
   
@@ -372,6 +372,68 @@ document.write(`
   <section id="loss">
 <h1>Loss<a class="headerlink" href="#loss" title="Link to this heading">#</a></h1>
 <p>This module implements custom Python classes to compute losses in <cite>TopoBenchmarkX</cite>.</p>
+<p id="module-topobenchmarkx.loss.base">Abstract class for the loss class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.loss.base.AbstractLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.loss.base.</span></span><span class="sig-name descname"><span class="pre">AbstractLoss</span></span><a class="reference internal" href="../../_modules/topobenchmarkx/loss/base.html#AbstractLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.loss.base.AbstractLoss" title="Link to this definition">#</a></dt>
+<dd><p>Abstract class for the loss class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.loss.base.AbstractLoss.forward">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/loss/base.html#AbstractLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.loss.base.AbstractLoss.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_out</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched domain data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p id="module-topobenchmarkx.loss.loss">Loss module for the topobenchmarkx package.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.loss.loss.TBXLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.loss.loss.</span></span><span class="sig-name descname"><span class="pre">TBXLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">task</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/loss/loss.html#TBXLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.loss.loss.TBXLoss" title="Link to this definition">#</a></dt>
+<dd><p>Defines the default model loss for the given task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>task</strong><span class="classifier">str</span></dt><dd><p>Task type, either “classification” or “regression”.</p>
+</dd>
+<dt><strong>loss_type</strong><span class="classifier">str, optional</span></dt><dd><p>Loss type, either “cross_entropy”, “mse”, or “mae” (default: None).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.loss.loss.TBXLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/loss/loss.html#TBXLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.loss.loss.TBXLoss.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass of the loss function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_out</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched domain data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the model output with the loss.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -411,6 +473,25 @@ document.write(`
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.loss.base.AbstractLoss"><code class="docutils literal notranslate"><span class="pre">AbstractLoss</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.loss.base.AbstractLoss.forward"><code class="docutils literal notranslate"><span class="pre">AbstractLoss.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.loss.loss.TBXLoss"><code class="docutils literal notranslate"><span class="pre">TBXLoss</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.loss.loss.TBXLoss.forward"><code class="docutils literal notranslate"><span class="pre">TBXLoss.forward()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 

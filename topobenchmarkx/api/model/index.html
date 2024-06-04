@@ -48,7 +48,7 @@
     <link rel="prev" title="Loss" href="../loss/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:22:04 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:53:33 PM"/>
   </head>
   
   
@@ -372,6 +372,258 @@ document.write(`
   <section id="model">
 <h1>Model<a class="headerlink" href="#model" title="Link to this heading">#</a></h1>
 <p>This module implements custom Python classes to represent models leveraging pytorch-lightning within <cite>TopoBenchmarkX</cite>.</p>
+<p id="module-topobenchmarkx.model.model">This module defines the <cite>TBXModel</cite> class.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.model.model.</span></span><span class="sig-name descname"><span class="pre">TBXModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">backbone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backbone_wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">readout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_encoder</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evaluator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel" title="Link to this definition">#</a></dt>
+<dd><p>A <cite>LightningModule</cite> to define a network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>backbone</strong><span class="classifier">torch.nn.Module</span></dt><dd><p>The backbone model to train.</p>
+</dd>
+<dt><strong>backbone_wrapper</strong><span class="classifier">torch.nn.Module</span></dt><dd><p>The backbone wrapper class.</p>
+</dd>
+<dt><strong>readout</strong><span class="classifier">torch.nn.Module</span></dt><dd><p>The readout class.</p>
+</dd>
+<dt><strong>loss</strong><span class="classifier">torch.nn.Module</span></dt><dd><p>The loss class.</p>
+</dd>
+<dt><strong>feature_encoder</strong><span class="classifier">torch.nn.Module, optional</span></dt><dd><p>The feature encoder (default: None).</p>
+</dd>
+<dt><strong>evaluator</strong><span class="classifier">Any, optional</span></dt><dd><p>The evaluator class (default: None).</p>
+</dd>
+<dt><strong>optimizer</strong><span class="classifier">Any, optional</span></dt><dd><p>The optimizer class (default: None).</p>
+</dd>
+<dt><strong>scheduler</strong><span class="classifier">Any, optional</span></dt><dd><p>The scheduler class (default: None).</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">Any</span></dt><dd><p>Additional keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.configure_optimizers">
+<span class="sig-name descname"><span class="pre">configure_optimizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.configure_optimizers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.configure_optimizers" title="Link to this definition">#</a></dt>
+<dd><p>Configure optimizers and learning-rate schedulers.</p>
+<p>Choose what optimizers and learning-rate schedulers to use in your
+optimization. Normally you’d need one. But in the case of GANs or
+similar you might have multiple.</p>
+<p class="rubric">Examples</p>
+<p><a class="reference external" href="https://lightning.ai/docs/pytorch/latest/common/lightning_module.html#configure-optimizers">https://lightning.ai/docs/pytorch/latest/common/lightning_module.html#configure-optimizers</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>dict:</dt><dd><p>A dict containing the configured optimizers and learning-rate schedulers to be used for training.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.forward" title="Link to this definition">#</a></dt>
+<dd><p>Perform a forward pass through the model <cite>self.backbone</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.log_metrics">
+<span class="sig-name descname"><span class="pre">log_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.log_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.log_metrics" title="Link to this definition">#</a></dt>
+<dd><p>Log metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mode</strong><span class="classifier">str, optional</span></dt><dd><p>The mode of the model, either “train”, “val”, or “test” (default: None).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.model_step">
+<span class="sig-name descname"><span class="pre">model_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.model_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.model_step" title="Link to this definition">#</a></dt>
+<dd><p>Perform a single model step on a batch of data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the model output and the loss.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.on_test_epoch_end">
+<span class="sig-name descname"><span class="pre">on_test_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.on_test_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.on_test_epoch_end" title="Link to this definition">#</a></dt>
+<dd><p>Lightning hook that is called when a test epoch ends.</p>
+<p>This hook is used to log the test metrics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.on_test_epoch_start">
+<span class="sig-name descname"><span class="pre">on_test_epoch_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.on_test_epoch_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.on_test_epoch_start" title="Link to this definition">#</a></dt>
+<dd><p>Lightning hook that is called when a test epoch begins.</p>
+<p>This hook is used to reset the test metrics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.on_train_epoch_end">
+<span class="sig-name descname"><span class="pre">on_train_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.on_train_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.on_train_epoch_end" title="Link to this definition">#</a></dt>
+<dd><p>Lightning hook that is called when a train epoch ends.</p>
+<p>This hook is used to log the train metrics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.on_train_epoch_start">
+<span class="sig-name descname"><span class="pre">on_train_epoch_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.on_train_epoch_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.on_train_epoch_start" title="Link to this definition">#</a></dt>
+<dd><p>Lightning hook that is called when a train epoch begins.</p>
+<p>This hook is used to reset the train metrics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.on_val_epoch_start">
+<span class="sig-name descname"><span class="pre">on_val_epoch_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.on_val_epoch_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.on_val_epoch_start" title="Link to this definition">#</a></dt>
+<dd><p>Lightning hook that is called when a validation epoch begins.</p>
+<p>This hook is used to reset the validation metrics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.on_validation_epoch_end">
+<span class="sig-name descname"><span class="pre">on_validation_epoch_end</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.on_validation_epoch_end"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.on_validation_epoch_end" title="Link to this definition">#</a></dt>
+<dd><p>Lightning hook that is called when a validation epoch ends.</p>
+<p>This hook is used to log the validation metrics.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.on_validation_epoch_start">
+<span class="sig-name descname"><span class="pre">on_validation_epoch_start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.on_validation_epoch_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.on_validation_epoch_start" title="Link to this definition">#</a></dt>
+<dd><p>Hook called when a validation epoch begins.</p>
+<p>According pytorch lightning documentation this hook is called at the
+beginning of the validation epoch.</p>
+<p><a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#hooks">https://lightning.ai/docs/pytorch/stable/common/lightning_module.html#hooks</a></p>
+<p>Note that the validation step is within the train epoch. Hence here we have to log the train metrics
+before we reset the evaluator to start the validation loop.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.process_outputs">
+<span class="sig-name descname"><span class="pre">process_outputs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><span class="pre">dict</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.process_outputs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.process_outputs" title="Link to this definition">#</a></dt>
+<dd><p>Handle model outputs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>model_out</strong><span class="classifier">dict</span></dt><dd><p>Dictionary containing the model output.</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dict</dt><dd><p>Dictionary containing the updated model output.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.setup" title="Link to this definition">#</a></dt>
+<dd><p>Hook to call torch.compile.</p>
+<p>Lightning hook that is called at the beginning of fit (train +
+validate), validate, test, or predict.</p>
+<p>This is a good hook when you need to build models dynamically or adjust
+something about them. This hook is called on every process when using
+DDP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>stage</strong><span class="classifier">str</span></dt><dd><p>Either “fit”, “validate”, “test”, or “predict”.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.test_step">
+<span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.test_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.test_step" title="Link to this definition">#</a></dt>
+<dd><p>Perform a single test step on a batch of data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+<dt><strong>batch_idx</strong><span class="classifier">int</span></dt><dd><p>The index of the current batch.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.training_step">
+<span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.training_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.training_step" title="Link to this definition">#</a></dt>
+<dd><p>Perform a single training step on a batch of data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+<dt><strong>batch_idx</strong><span class="classifier">int</span></dt><dd><p>The index of the current batch.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor</dt><dd><p>A tensor of losses between model predictions and targets.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.model.model.TBXModel.validation_step">
+<span class="sig-name descname"><span class="pre">validation_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/model/model.html#TBXModel.validation_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.model.model.TBXModel.validation_step" title="Link to this definition">#</a></dt>
+<dd><p>Perform a single validation step on a batch of data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>batch</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Batch object containing the batched data.</p>
+</dd>
+<dt><strong>batch_idx</strong><span class="classifier">int</span></dt><dd><p>The index of the current batch.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -411,6 +663,36 @@ document.write(`
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel"><code class="docutils literal notranslate"><span class="pre">TBXModel</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.configure_optimizers"><code class="docutils literal notranslate"><span class="pre">TBXModel.configure_optimizers()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.forward"><code class="docutils literal notranslate"><span class="pre">TBXModel.forward()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.log_metrics"><code class="docutils literal notranslate"><span class="pre">TBXModel.log_metrics()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.model_step"><code class="docutils literal notranslate"><span class="pre">TBXModel.model_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.on_test_epoch_end"><code class="docutils literal notranslate"><span class="pre">TBXModel.on_test_epoch_end()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.on_test_epoch_start"><code class="docutils literal notranslate"><span class="pre">TBXModel.on_test_epoch_start()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.on_train_epoch_end"><code class="docutils literal notranslate"><span class="pre">TBXModel.on_train_epoch_end()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.on_train_epoch_start"><code class="docutils literal notranslate"><span class="pre">TBXModel.on_train_epoch_start()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.on_val_epoch_start"><code class="docutils literal notranslate"><span class="pre">TBXModel.on_val_epoch_start()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.on_validation_epoch_end"><code class="docutils literal notranslate"><span class="pre">TBXModel.on_validation_epoch_end()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.on_validation_epoch_start"><code class="docutils literal notranslate"><span class="pre">TBXModel.on_validation_epoch_start()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.process_outputs"><code class="docutils literal notranslate"><span class="pre">TBXModel.process_outputs()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.setup"><code class="docutils literal notranslate"><span class="pre">TBXModel.setup()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.test_step"><code class="docutils literal notranslate"><span class="pre">TBXModel.test_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.training_step"><code class="docutils literal notranslate"><span class="pre">TBXModel.training_step()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.model.model.TBXModel.validation_step"><code class="docutils literal notranslate"><span class="pre">TBXModel.validation_step()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
 
   <div class="sidebar-secondary-item">
 
