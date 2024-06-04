@@ -48,7 +48,7 @@
     <link rel="prev" title="Backbones" href="../backbones/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 4, 2024, 5:57:35 PM"/>
+    <meta name="docbuild:last-update" content="Jun 4, 2024, 6:44:14 PM"/>
   </head>
   
   
@@ -308,7 +308,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="../../transforms/data_manipulations/index.html">Data Manipulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../transforms/feature_liftings/index.html">Feature Liftings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../transforms/liftings/index.html">Liftings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../transforms/data_transforms/index.html">Data Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../transforms/data_transform/index.html">Data Transform</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../utils/index.html">Utils</a></li>
@@ -395,6 +395,96 @@ document.write(`
 
 </dd></dl>
 
+<p id="module-topobenchmarkx.nn.encoders.all_cell_encoder">Class to apply BaseEncoder to the features of higher order structures.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.encoders.all_cell_encoder.AllCellFeatureEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.encoders.all_cell_encoder.</span></span><span class="sig-name descname"><span class="pre">AllCellFeatureEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj_dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_dimensions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/encoders/all_cell_encoder.html#AllCellFeatureEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.encoders.all_cell_encoder.AllCellFeatureEncoder" title="Link to this definition">#</a></dt>
+<dd><p>Encoder class to apply BaseEncoder.</p>
+<p>The BaseEncoder is applied to the features of higher order
+structures. The class creates a BaseEncoder for each dimension specified in
+selected_dimensions. Then during the forward pass, the BaseEncoders are
+applied to the features of the corresponding dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>in_channels</strong><span class="classifier">list[int]</span></dt><dd><p>Input dimensions for the features.</p>
+</dd>
+<dt><strong>out_channels</strong><span class="classifier">list[int]</span></dt><dd><p>Output dimensions for the features.</p>
+</dd>
+<dt><strong>proj_dropout</strong><span class="classifier">float, optional</span></dt><dd><p>Dropout for the BaseEncoders (default: 0).</p>
+</dd>
+<dt><strong>selected_dimensions</strong><span class="classifier">list[int], optional</span></dt><dd><p>List of indexes to apply the BaseEncoders to (default: None).</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Additional keyword arguments.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.encoders.all_cell_encoder.AllCellFeatureEncoder.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Data</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Data</span></span></span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/encoders/all_cell_encoder.html#AllCellFeatureEncoder.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.encoders.all_cell_encoder.AllCellFeatureEncoder.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass.</p>
+<p>The method applies the BaseEncoders to the features of the selected_dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">torch_geometric.data.Data</span></dt><dd><p>Input data object which should contain x_{i} features for each i in the selected_dimensions.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch_geometric.data.Data</dt><dd><p>Output data object with updated x_{i} features.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.encoders.all_cell_encoder.BaseEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.nn.encoders.all_cell_encoder.</span></span><span class="sig-name descname"><span class="pre">BaseEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/encoders/all_cell_encoder.html#BaseEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.encoders.all_cell_encoder.BaseEncoder" title="Link to this definition">#</a></dt>
+<dd><p>Base encoder class used by AllCellFeatureEncoder.</p>
+<p>This class uses two linear layers with GraphNorm, Relu activation function, and dropout between the two layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>in_channels</strong><span class="classifier">int</span></dt><dd><p>Dimension of input features.</p>
+</dd>
+<dt><strong>out_channels</strong><span class="classifier">int</span></dt><dd><p>Dimensions of output features.</p>
+</dd>
+<dt><strong>dropout</strong><span class="classifier">float, optional</span></dt><dd><p>Percentage of channels to discard between the two linear layers (default: 0).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="topobenchmarkx.nn.encoders.all_cell_encoder.BaseEncoder.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="../../../_modules/topobenchmarkx/nn/encoders/all_cell_encoder.html#BaseEncoder.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.nn.encoders.all_cell_encoder.BaseEncoder.forward" title="Link to this definition">#</a></dt>
+<dd><p>Forward pass of the encoder.</p>
+<p>It applies two linear layers with GraphNorm, Relu activation function, and dropout between the two layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">torch.Tensor</span></dt><dd><p>Input tensor of dimensions [N, in_channels].</p>
+</dd>
+<dt><strong>batch</strong><span class="classifier">torch.Tensor</span></dt><dd><p>The batch vector which assigns each element to a specific example.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>torch.Tensor</dt><dd><p>Output tensor of shape [N, out_channels].</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -445,6 +535,14 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.encoders.base.AbstractFeatureEncoder"><code class="docutils literal notranslate"><span class="pre">AbstractFeatureEncoder</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.encoders.base.AbstractFeatureEncoder.forward"><code class="docutils literal notranslate"><span class="pre">AbstractFeatureEncoder.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.encoders.all_cell_encoder.AllCellFeatureEncoder"><code class="docutils literal notranslate"><span class="pre">AllCellFeatureEncoder</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.encoders.all_cell_encoder.AllCellFeatureEncoder.forward"><code class="docutils literal notranslate"><span class="pre">AllCellFeatureEncoder.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.encoders.all_cell_encoder.BaseEncoder"><code class="docutils literal notranslate"><span class="pre">BaseEncoder</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#topobenchmarkx.nn.encoders.all_cell_encoder.BaseEncoder.forward"><code class="docutils literal notranslate"><span class="pre">BaseEncoder.forward()</span></code></a></li>
 </ul>
 </li>
 </ul>
