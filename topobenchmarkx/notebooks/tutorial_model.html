@@ -50,7 +50,7 @@
     <link rel="prev" title="Implementing your own lifting" href="tutorial_lifting.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 5, 2024, 8:24:37 PM"/>
+    <meta name="docbuild:last-update" content="Jun 6, 2024, 3:19:34 PM"/>
   </head>
   
   
@@ -354,12 +354,22 @@ document.write(`
                   
   <section id="Implementing-your-own-model">
 <h1>Implementing your own model<a class="headerlink" href="#Implementing-your-own-model" title="Link to this heading">#</a></h1>
-<p>In this tutorial we show how you can implement your own model and test it on a dataset.</p>
-<p>This particular example uses the MUTAG dataset, uses an hypergraph lifting to create hypergraphs, and defines a model to work on them. We train the model using the appropriate training and validation datasets, and finally test it on the test dataset.</p>
-<section id="Imports">
-<h2>Imports<a class="headerlink" href="#Imports" title="Link to this heading">#</a></h2>
+<p>In this tutorial we show how to implement your own model and test it on a dataset.</p>
+<p>This particular example uses the MUTAG dataset, uses an hypergraph lifting to create hypergraphs, and defines a model to work on them.</p>
+<p>We train the model using the appropriate training and validation datasets, and finally test it on the test dataset.</p>
+<section id="Table-of-contents">
+<h2>Table of contents<a class="headerlink" href="#Table-of-contents" title="Link to this heading">#</a></h2>
+<p> 1. Imports</p>
+<p> 2. Configurations and utilities</p>
+<p> 3. Loading the data</p>
+<p> 4. Backbone definition</p>
+<p> 5. Model initialization</p>
+<p> 6. Training</p>
+<p> 7. Testing the model</p>
+<section id="1.-Imports">
+<h3>1. Imports<a class="headerlink" href="#1.-Imports" title="Link to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lightning</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -378,11 +388,11 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="Configurations-and-utilities">
-<h2>Configurations and utilities<a class="headerlink" href="#Configurations-and-utilities" title="Link to this heading">#</a></h2>
+<section id="2.-Configurations-and-utilities">
+<h3>2. Configurations and utilities<a class="headerlink" href="#2.-Configurations-and-utilities" title="Link to this heading">#</a></h3>
 <p>Configurations can be specified using yaml files or directly specified in your code like in this example.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">loader_config</span> <span class="o">=</span> <span class="p">{</span>
@@ -400,13 +410,13 @@ document.write(`
 
 <span class="n">split_config</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;learning_setting&quot;</span><span class="p">:</span> <span class="s2">&quot;inductive&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;split_type&quot;</span><span class="p">:</span> <span class="s2">&quot;k-fold&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;split_type&quot;</span><span class="p">:</span> <span class="s2">&quot;random&quot;</span><span class="p">,</span>
     <span class="s2">&quot;data_seed&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="s2">&quot;data_split_dir&quot;</span><span class="p">:</span> <span class="s2">&quot;./data/MUTAG/splits/&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="s2">&quot;train_prop&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
 <span class="p">}</span>
 
-<span class="n">in_channels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+<span class="n">in_channels</span> <span class="o">=</span> <span class="mi">7</span>
 <span class="n">out_channels</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">dim_hidden</span> <span class="o">=</span> <span class="mi">16</span>
 
@@ -435,7 +445,7 @@ document.write(`
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="o">**</span><span class="n">factory_kwargs</span><span class="p">):</span>
@@ -446,11 +456,12 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="Loading-the-data">
-<h2>Loading the data<a class="headerlink" href="#Loading-the-data" title="Link to this heading">#</a></h2>
-<p>In this example we use the MUTAG dataset. It is a graph dataset and we use the k-hop lifting to transform the graphs into hypergraphs. We invite you to check out the README of the <a class="reference external" href="https://github.com/pyt-team/TopoBenchmarkX">repository</a> to learn more about the various liftings offered.</p>
+<section id="3.-Loading-the-data">
+<h3>3. Loading the data<a class="headerlink" href="#3.-Loading-the-data" title="Link to this heading">#</a></h3>
+<p>In this example we use the MUTAG dataset. It is a graph dataset and we use the k-hop lifting to transform the graphs into hypergraphs.</p>
+<p>We invite you to check out the README of the <a class="reference external" href="https://github.com/pyt-team/TopoBenchmarkX">repository</a> to learn more about the various liftings offered.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">graph_loader</span> <span class="o">=</span> <span class="n">GraphLoader</span><span class="p">(</span><span class="n">loader_config</span><span class="p">)</span>
@@ -466,21 +477,19 @@ document.write(`
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-Downloading https://www.chrsmrrs.com/graphkerneldatasets/MUTAG.zip
-Processing...
-Done!
-Processing...
-Done!
+Transform parameters are the same, using existing data_dir: ./data/MUTAG/MUTAG/khop_lifting/1116229528
 </pre></div></div>
 </div>
 </section>
-<section id="Backbone-definition">
-<h2>Backbone definition<a class="headerlink" href="#Backbone-definition" title="Link to this heading">#</a></h2>
+<section id="4.-Backbone-definition">
+<h3>4. Backbone definition<a class="headerlink" href="#4.-Backbone-definition" title="Link to this heading">#</a></h3>
 <p>To implement a new model we only need to define the forward method.</p>
+<p>With a hypergraph with <span class="math notranslate nohighlight">\(n\)</span> nodes and <span class="math notranslate nohighlight">\(m\)</span> hyperedges this model simply calculates the hyperedge features as <span class="math notranslate nohighlight">\(X_1 = B_1 \cdot X_0\)</span> where <span class="math notranslate nohighlight">\(B_1 \in \mathbb{R}^{n \times m}\)</span> is the incidence matrix, where <span class="math notranslate nohighlight">\(B_{ij}=1\)</span> if node <span class="math notranslate nohighlight">\(i\)</span> belongs to hyperedge <span class="math notranslate nohighlight">\(j\)</span> and is 0 otherwise.</p>
+<p>Then the outputs are computed as <span class="math notranslate nohighlight">\(X^{'}_0=\text{ReLU}(W_0 \cdot X_0 + B_0)\)</span> and <span class="math notranslate nohighlight">\(X^{'}_1=\text{ReLU}(W_1 \cdot X_1 + B_1)\)</span>, by simply using two linear layers with ReLU activation.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">myModel</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
@@ -496,7 +505,9 @@ Done!
         <span class="n">x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">incidence_hyperedges</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
 
         <span class="n">x_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_0</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
         <span class="n">x_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear_1</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x_1</span><span class="p">)</span>
 
         <span class="n">model_out</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="s2">&quot;batch_0&quot;</span><span class="p">:</span> <span class="n">batch</span><span class="o">.</span><span class="n">batch_0</span><span class="p">}</span>
         <span class="n">model_out</span><span class="p">[</span><span class="s2">&quot;x_0&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_0</span>
@@ -506,18 +517,19 @@ Done!
 </div>
 </div>
 </section>
-<section id="Model-initialization">
-<h2>Model initialization<a class="headerlink" href="#Model-initialization" title="Link to this heading">#</a></h2>
-<p>Now that the model is defined we can create the TBXModel, which takes care of implementing everything else that is needed to train the model. First we need to implement a few classes to specify the behaviour of the model.</p>
+<section id="5.-Model-initialization">
+<h3>5. Model initialization<a class="headerlink" href="#5.-Model-initialization" title="Link to this heading">#</a></h3>
+<p>Now that the model is defined we can create the TBXModel, which takes care of implementing everything else that is needed to train the model.</p>
+<p>First we need to implement a few classes to specify the behaviour of the model.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">backbone</span> <span class="o">=</span> <span class="n">myModel</span><span class="p">(</span><span class="n">dim_hidden</span><span class="p">)</span>
 
 <span class="n">readout</span> <span class="o">=</span> <span class="n">PropagateSignalDown</span><span class="p">(</span><span class="o">**</span><span class="n">readout_config</span><span class="p">)</span>
 <span class="n">loss</span> <span class="o">=</span> <span class="n">TBXLoss</span><span class="p">(</span><span class="o">**</span><span class="n">loss_config</span><span class="p">)</span>
-<span class="n">feature_encoder</span> <span class="o">=</span> <span class="n">AllCellFeatureEncoder</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">)</span>
+<span class="n">feature_encoder</span> <span class="o">=</span> <span class="n">AllCellFeatureEncoder</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="p">[</span><span class="n">in_channels</span><span class="p">],</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">)</span>
 
 <span class="n">evaluator</span> <span class="o">=</span> <span class="n">TBXEvaluator</span><span class="p">(</span><span class="o">**</span><span class="n">evaluator_config</span><span class="p">)</span>
 <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span>
@@ -525,8 +537,9 @@ Done!
 </pre></div>
 </div>
 </div>
+<p>Now we can instantiate the TBXModel.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">TBXModel</span><span class="p">(</span><span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
@@ -537,20 +550,21 @@ Done!
                  <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">,</span>
                  <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
                  <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
-                 <span class="nb">compile</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
+                 <span class="nb">compile</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
-<section id="Training">
-<h2>Training<a class="headerlink" href="#Training" title="Link to this heading">#</a></h2>
-<p>Now we can use the <code class="docutils literal notranslate"><span class="pre">lightning</span></code> trainer to train the model. We are prompted to connet a Wandb account to monitor training, but we can also obtain the final training metrics from the trainer directly.</p>
+<section id="6.-Training">
+<h3>6. Training<a class="headerlink" href="#6.-Training" title="Link to this heading">#</a></h3>
+<p>Now we can use the <code class="docutils literal notranslate"><span class="pre">lightning</span></code> trainer to train the model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Increase the number of epochs to get better results</span>
-<span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
+<span class="c1"># Increase the number of epochs to get better results</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log_every_n_steps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
 <span class="n">train_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span>
@@ -562,15 +576,11 @@ Done!
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-GPU available: True (mps), used: False
+GPU available: True (cuda), used: False
 TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
 HPU available: False, using: 0 HPUs
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/setup.py:187: GPU available but not used. You can set it by doing `Trainer(accelerator=&#39;gpu&#39;)`.
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/logger_connector/logger_connector.py:75: Starting from v1.9.0, `tensorboardX` has been removed as a dependency of the `lightning.pytorch` package, due to potential conflicts with other packages in the ML ecosystem. For this reason, `logger=True` will use `CSVLogger` as the default logger, unless the `tensorboard` or `tensorboardX` packages are found. Please `pip install lightning[extra]` or one of them to enable TensorBoard support by default
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/utilities/parsing.py:44: attribute &#39;scheduler&#39; removed from hparams because it cannot be pickled
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torch/_compile.py:24: UserWarning: optimizer contains a parameter group with duplicate parameters; in future, this will cause an error; see github.com/pytorch/pytorch/issues/40967 for more information
-  return torch._dynamo.disable(fn, recursive)(*args, **kwargs)
+Missing logger folder: /TopoBenchmarkX/tutorials/lightning_logs
 
   | Name            | Type                  | Params
 ----------------------------------------------------------
@@ -583,24 +593,16 @@ HPU available: False, using: 0 HPUs
 0         Non-trainable params
 1.0 K     Total params
 0.004     Total estimated model params size (MB)
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;val_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassAccuracy was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
-  warnings.warn(*args, **kwargs)  # noqa: B028
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassPrecision was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
-  warnings.warn(*args, **kwargs)  # noqa: B028
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/torchmetrics/utilities/prints.py:43: UserWarning: The ``compute`` method of metric MulticlassRecall was called before the ``update`` method which may lead to errors, as metric states have not yet been updated.
-  warnings.warn(*args, **kwargs)  # noqa: B028
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;train_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/loops/fit_loop.py:298: The number of training batches (6) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
-`Trainer.fit` stopped: `max_epochs=100` reached.
+`Trainer.fit` stopped: `max_epochs=50` reached.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">train_metrics</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="s2">&quot;:    &quot;</span><span class="p">,</span> <span class="n">train_metrics</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      Training metrics</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">26</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">train_metrics</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&lt;21s}</span><span class="s1"> </span><span class="si">{:&gt;5.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">train_metrics</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
 </pre></div>
 </div>
 </div>
@@ -609,58 +611,54 @@ HPU available: False, using: 0 HPUs
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-train/accuracy :     0.7633135914802551
-train/precision :     0.7379665374755859
-train/recall :     0.7137374877929688
-val/loss :     0.5469009876251221
-val/accuracy :     0.6842105388641357
-val/precision :     0.6029411554336548
-val/recall :     0.5448718070983887
-train/loss :     0.4337317645549774
+      Training metrics
+ --------------------------
+train/accuracy:       0.7021
+train/precision:      0.6863
+train/recall:         0.5730
+val/loss:             0.5712
+val/accuracy:         0.6596
+val/precision:        0.3370
+val/recall:           0.4844
+train/loss:           0.4969
 </pre></div></div>
 </div>
 </section>
-<section id="Testing-the-model">
-<h2>Testing the model<a class="headerlink" href="#Testing-the-model" title="Link to this heading">#</a></h2>
+<section id="7.-Testing-the-model">
+<h3>7. Testing the model<a class="headerlink" href="#7.-Testing-the-model" title="Link to this heading">#</a></h3>
 <p>Finally, we can test the model and obtain the results.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
 <span class="n">test_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+</pre></div>
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-
-</pre></div></div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      Testing metrics</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">25</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">test_metrics</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:&lt;20s}</span><span class="s1"> </span><span class="si">{:&gt;5.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="n">test_metrics</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+</pre></div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;test_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area rendered_html docutils container">
-<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃<span style="font-weight: bold">        Test metric        </span>┃<span style="font-weight: bold">       DataLoader 0        </span>┃
-┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│<span style="color: #008080; text-decoration-color: #008080">       test/accuracy       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.6842105388641357     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">         test/loss         </span>│<span style="color: #800080; text-decoration-color: #800080">    0.5469009876251221     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">      test/precision       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.6029411554336548     </span>│
-│<span style="color: #008080; text-decoration-color: #008080">        test/recall        </span>│<span style="color: #800080; text-decoration-color: #800080">    0.5448718070983887     </span>│
-└───────────────────────────┴───────────────────────────┘
-</pre></div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+      Testing metrics
+ -------------------------
+test/loss:           0.5334
+test/accuracy:       0.7021
+test/precision:      0.8409
+test/recall:         0.5882
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
@@ -670,6 +668,7 @@ train/loss :     0.4337317645549774
 </pre></div>
 </div>
 </div>
+</section>
 </section>
 </section>
 
@@ -710,13 +709,16 @@ train/loss :     0.4337317645549774
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Imports">Imports</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Configurations-and-utilities">Configurations and utilities</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Loading-the-data">Loading the data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Backbone-definition">Backbone definition</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Model-initialization">Model initialization</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Training">Training</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Testing-the-model">Testing the model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Table-of-contents">Table of contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-Imports">1. Imports</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Configurations-and-utilities">2. Configurations and utilities</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Loading-the-data">3. Loading the data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Backbone-definition">4. Backbone definition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Model-initialization">5. Model initialization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Training">6. Training</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Testing-the-model">7. Testing the model</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
