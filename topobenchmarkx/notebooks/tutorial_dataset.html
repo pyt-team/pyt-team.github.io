@@ -51,7 +51,7 @@
     <link rel="prev" title="Tutorials" href="../tutorials/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 7, 2024, 12:09:15 PM"/>
+    <meta name="docbuild:last-update" content="Jun 7, 2024, 7:38:25 PM"/>
   </head>
   
   
@@ -368,7 +368,7 @@ document.write(`
 <section id="1.-Imports">
 <h3>1. Imports<a class="headerlink" href="#1.-Imports" title="Link to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">lightning</span> <span class="k">as</span> <span class="nn">pl</span>
@@ -385,6 +385,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">topobenchmarkx.nn.encoders</span> <span class="kn">import</span> <span class="n">AllCellFeatureEncoder</span>
 <span class="kn">from</span> <span class="nn">topobenchmarkx.nn.readouts</span> <span class="kn">import</span> <span class="n">PropagateSignalDown</span>
 <span class="kn">from</span> <span class="nn">topobenchmarkx.nn.wrappers.simplicial</span> <span class="kn">import</span> <span class="n">SCNWrapper</span>
+<span class="kn">from</span> <span class="nn">topobenchmarkx.optimizer</span> <span class="kn">import</span> <span class="n">TBXOptimizer</span>
 </pre></div>
 </div>
 </div>
@@ -393,7 +394,7 @@ document.write(`
 <h3>2. Configurations and utilities<a class="headerlink" href="#2.-Configurations-and-utilities" title="Link to this heading">#</a></h3>
 <p>Configurations can be specified using yaml files or directly specified in your code like in this example.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">transform_config</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;clique_lifting&quot;</span><span class="p">:</span>
@@ -434,26 +435,27 @@ document.write(`
                     <span class="s2">&quot;num_classes&quot;</span><span class="p">:</span> <span class="n">out_channels</span><span class="p">,</span>
                     <span class="s2">&quot;classification_metrics&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;precision&quot;</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">]}</span>
 
+<span class="n">optimizer_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;optimizer_id&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;parameters&quot;</span><span class="p">:</span>
+                        <span class="p">{</span><span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span><span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="mf">0.0005</span><span class="p">}</span>
+                    <span class="p">}</span>
+
 <span class="n">transform_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">transform_config</span><span class="p">)</span>
 <span class="n">split_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">split_config</span><span class="p">)</span>
 <span class="n">readout_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">readout_config</span><span class="p">)</span>
 <span class="n">loss_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">loss_config</span><span class="p">)</span>
 <span class="n">evaluator_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">evaluator_config</span><span class="p">)</span>
+<span class="n">optimizer_config</span> <span class="o">=</span> <span class="n">OmegaConf</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">optimizer_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">**</span><span class="n">factory_kwargs</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="n">backbone</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">SCNWrapper</span><span class="p">(</span><span class="n">backbone</span><span class="p">,</span> <span class="o">**</span><span class="n">factory_kwargs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">factory</span>
-
-<span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="o">**</span><span class="n">factory_kwargs</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="n">optimizer</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">StepLR</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="o">**</span><span class="n">factory_kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">factory</span>
 </pre></div>
 </div>
@@ -463,7 +465,7 @@ document.write(`
 <h3>3. Loading the data<a class="headerlink" href="#3.-Loading-the-data" title="Link to this heading">#</a></h3>
 <p>In this example we use the ENZYMES dataset. It is a graph dataset and we use the clique lifting to transform the graphs into simplicial complexes. We invite you to check out the README of the <a class="reference external" href="https://github.com/pyt-team/TopoBenchmarkX">repository</a> to learn more about the various liftings offered.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_dir</span> <span class="o">=</span> <span class="s2">&quot;./data/ENZYMES/&quot;</span>
@@ -478,13 +480,9 @@ document.write(`
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-Downloading https://www.chrsmrrs.com/graphkerneldatasets/ENZYMES.zip
-Processing...
-Done!
-Processing...
-Done!
+Transform parameters are the same, using existing data_dir: ./data/ENZYMES/clique_lifting/3206123057
 </pre></div></div>
 </div>
 </section>
@@ -492,7 +490,7 @@ Done!
 <h3>4. Model initialization<a class="headerlink" href="#4.-Model-initialization" title="Link to this heading">#</a></h3>
 <p>We can create the backbone by instantiating the SCN2 model form TopoModelX. Then the <code class="docutils literal notranslate"><span class="pre">SCNWrapper</span></code> and the <code class="docutils literal notranslate"><span class="pre">TBXModel</span></code> take care of the rest.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">backbone</span> <span class="o">=</span> <span class="n">SCN2</span><span class="p">(</span><span class="n">in_channels_0</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">,</span> <span class="n">in_channels_1</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">,</span> <span class="n">in_channels_2</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">)</span>
@@ -503,13 +501,12 @@ Done!
 <span class="n">feature_encoder</span> <span class="o">=</span> <span class="n">AllCellFeatureEncoder</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="p">[</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">],</span> <span class="n">out_channels</span><span class="o">=</span><span class="n">dim_hidden</span><span class="p">)</span>
 
 <span class="n">evaluator</span> <span class="o">=</span> <span class="n">TBXEvaluator</span><span class="p">(</span><span class="o">**</span><span class="n">evaluator_config</span><span class="p">)</span>
-<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span>
-<span class="n">scheduler</span> <span class="o">=</span> <span class="n">scheduler</span><span class="p">(</span><span class="n">step_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">TBXOptimizer</span><span class="p">(</span><span class="o">**</span><span class="n">optimizer_config</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">TBXModel</span><span class="p">(</span><span class="n">backbone</span><span class="o">=</span><span class="n">backbone</span><span class="p">,</span>
@@ -519,7 +516,6 @@ Done!
                  <span class="n">feature_encoder</span><span class="o">=</span><span class="n">feature_encoder</span><span class="p">,</span>
                  <span class="n">evaluator</span><span class="o">=</span><span class="n">evaluator</span><span class="p">,</span>
                  <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
-                 <span class="n">scheduler</span><span class="o">=</span><span class="n">scheduler</span><span class="p">,</span>
                  <span class="nb">compile</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
 </pre></div>
 </div>
@@ -529,10 +525,10 @@ Done!
 <h3>5. Training<a class="headerlink" href="#5.-Training" title="Link to this heading">#</a></h3>
 <p>Now we can use the <code class="docutils literal notranslate"><span class="pre">lightning</span></code> trainer to train the model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [23]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#%%capture</span>
 <span class="c1"># Increase the number of epochs to get better results</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span><span class="n">max_epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">accelerator</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
@@ -546,7 +542,7 @@ Done!
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-GPU available: True (cuda), used: False
+GPU available: True (mps), used: False
 TPU available: False, using: 0 TPU cores
 IPU available: False, using: 0 IPUs
 HPU available: False, using: 0 HPUs
@@ -566,7 +562,7 @@ HPU available: False, using: 0 HPUs
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      Training metrics</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">26</span><span class="p">)</span>
@@ -582,32 +578,61 @@ HPU available: False, using: 0 HPUs
 <div class="highlight"><pre>
       Training metrics
  --------------------------
-train/accuracy:       0.2100
-train/precision:      0.2096
-train/recall:         0.2094
-val/loss:             2.2357
-val/accuracy:         0.1933
-val/precision:        0.2936
-val/recall:           0.1822
-train/loss:           2.1610
+train/accuracy:       0.1667
+train/precision:      0.1760
+train/recall:         0.1628
+val/loss:             2.1837
+val/accuracy:         0.1600
+val/precision:        0.0911
+val/recall:           0.1412
+train/loss:           2.2041
 </pre></div></div>
 </div>
 </section>
 <section id="6.-Testing-the-model">
 <h3>6. Testing the model<a class="headerlink" href="#6.-Testing-the-model" title="Link to this heading">#</a></h3>
 <p>Finally, we can test the model and obtain the results.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [21]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
-<span class="n">trainer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="p">)</span>
 <span class="n">test_metrics</span> <span class="o">=</span> <span class="n">trainer</span><span class="o">.</span><span class="n">callback_metrics</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/opt/miniconda3/envs/topox/lib/python3.11/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:441: The &#39;test_dataloader&#39; does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=13` in the `DataLoader` to improve performance.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃<span style="font-weight: bold">        Test metric        </span>┃<span style="font-weight: bold">       DataLoader 0        </span>┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│<span style="color: #008080; text-decoration-color: #008080">       test/accuracy       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.14666666090488434    </span>│
+│<span style="color: #008080; text-decoration-color: #008080">         test/loss         </span>│<span style="color: #800080; text-decoration-color: #800080">    2.2855327129364014     </span>│
+│<span style="color: #008080; text-decoration-color: #008080">      test/precision       </span>│<span style="color: #800080; text-decoration-color: #800080">    0.09630380570888519    </span>│
+│<span style="color: #008080; text-decoration-color: #008080">        test/recall        </span>│<span style="color: #800080; text-decoration-color: #800080">    0.1617494821548462     </span>│
+└───────────────────────────┴───────────────────────────┘
+</pre></div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;      Testing metrics</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">25</span><span class="p">)</span>
@@ -623,10 +648,10 @@ train/loss:           2.1610
 <div class="highlight"><pre>
       Testing metrics
  -------------------------
-test/loss:           2.1464
-test/accuracy:       0.2200
-test/precision:      0.1581
-test/recall:         0.2336
+test/loss:           2.2855
+test/accuracy:       0.1467
+test/precision:      0.0963
+test/recall:         0.1617
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
