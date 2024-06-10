@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 9, 2024, 6:51:32 PM"/>
+    <meta name="docbuild:last-update" content="Jun 10, 2024, 9:55:26 AM"/>
   </head>
   
   
@@ -350,11 +350,11 @@ document.write(`
 <span class="sd">        The task type. It can be either &quot;classification&quot; or &quot;regression&quot;.</span>
 <span class="sd">    **kwargs : dict</span>
 <span class="sd">        Additional arguments for the class. The arguments depend on the task.</span>
-<span class="sd">    In &quot;classification&quot; scenario, the following arguments are expected:</span>
-<span class="sd">    - num_classes (int): The number of classes.</span>
-<span class="sd">    - classification_metrics (list[str]): A list of classification metrics to be computed.</span>
-<span class="sd">    In &quot;regression&quot; scenario, the following arguments are expected:</span>
-<span class="sd">    - regression_metrics (list[str]): A list of regression metrics to be computed.</span>
+<span class="sd">        In &quot;classification&quot; scenario, the following arguments are expected:</span>
+<span class="sd">        - num_classes (int): The number of classes.</span>
+<span class="sd">        - metrics (list[str]): A list of classification metrics to be computed.</span>
+<span class="sd">        In &quot;regression&quot; scenario, the following arguments are expected:</span>
+<span class="sd">        - metrics (list[str]): A list of regression metrics to be computed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -368,16 +368,16 @@ document.write(`
             <span class="c1"># This setup should work correctly</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_classes&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;num_classes&quot;</span><span class="p">]}</span>
             <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;multiclass&quot;</span>
-            <span class="n">metric_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;classification_metrics&quot;</span><span class="p">]</span>
+            <span class="n">metric_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;multilabel classification&quot;</span><span class="p">:</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;num_classes&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;num_classes&quot;</span><span class="p">]}</span>
             <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;task&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;multilabel&quot;</span>
-            <span class="n">metric_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;classification_metrics&quot;</span><span class="p">]</span>
+            <span class="n">metric_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span>
 
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;regression&quot;</span><span class="p">:</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">metric_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;regression_metrics&quot;</span><span class="p">]</span>
+            <span class="n">metric_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid task </span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;task&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

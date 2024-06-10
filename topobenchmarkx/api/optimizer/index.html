@@ -48,7 +48,7 @@
     <link rel="prev" title="Wrappers" href="../nn/wrappers/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jun 9, 2024, 6:51:32 PM"/>
+    <meta name="docbuild:last-update" content="Jun 10, 2024, 9:55:26 AM"/>
   </head>
   
   
@@ -398,24 +398,25 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="topobenchmarkx.optimizer.optimizer.TBXOptimizer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">topobenchmarkx.optimizer.optimizer.</span></span><span class="sig-name descname"><span class="pre">TBXOptimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">optimizer_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/optimizer/optimizer.html#TBXOptimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.optimizer.optimizer.TBXOptimizer" title="Link to this definition">#</a></dt>
-<dd><p>Optimizer class that manage both optimizer and scheduler.</p>
+<dd><p>Optimizer class that manage both optimizer and scheduler, fully compatible with <cite>torch.optim</cite> classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>optimizer_id</strong><span class="classifier">torch.optim.Optimizer</span></dt><dd><p>Optimizer to be used.</p>
+<dt><strong>optimizer_id</strong><span class="classifier">str</span></dt><dd><p>Name of the torch optimizer class to be used.</p>
 </dd>
 <dt><strong>parameters</strong><span class="classifier">dict</span></dt><dd><p>Parameters to be passed to the optimizer.</p>
 </dd>
-<dt><strong>scheduler</strong><span class="classifier">torch.optim.lr_scheduler._LRScheduler, optional</span></dt><dd><p>Scheduler to be used. Default is None.</p>
+<dt><strong>scheduler</strong><span class="classifier">dict, optional</span></dt><dd><p>Scheduler id and parameters to be used. Default is None.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="topobenchmarkx.optimizer.optimizer.TBXOptimizer.configure_optimizer">
-<span class="sig-name descname"><span class="pre">configure_optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/topobenchmarkx/optimizer/optimizer.html#TBXOptimizer.configure_optimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.optimizer.optimizer.TBXOptimizer.configure_optimizer" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">configure_optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_parameters</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict[slice(&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">typing.Any,</span> <span class="pre">None)]</span></span></span><a class="reference internal" href="../../_modules/topobenchmarkx/optimizer/optimizer.html#TBXOptimizer.configure_optimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#topobenchmarkx.optimizer.optimizer.TBXOptimizer.configure_optimizer" title="Link to this definition">#</a></dt>
 <dd><p>Configure the optimizer and scheduler.</p>
-<p>Act as a wrapper to provide Trainer the required config dict.</p>
+<p>Act as a wrapper to provide the LightningTrainer module the required config dict
+when it calls <cite>TBXModel</cite>’s <cite>configure_optimizers()</cite> method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
