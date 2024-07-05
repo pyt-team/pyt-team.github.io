@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jul 4, 2024, 9:14:49 AM"/>
+    <meta name="docbuild:last-update" content="Jul 5, 2024, 12:00:56 PM"/>
   </head>
   
   
@@ -973,7 +973,7 @@ document.write(`
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">hyperedge_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">attr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_remove_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a hyperedge from the CHG.</span>
 
 <span class="sd">        Parameters</span>
@@ -985,24 +985,9 @@ document.write(`
 <span class="sd">        ------</span>
 <span class="sd">        KeyError</span>
 <span class="sd">            If the hyperedge is not present in the complex.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
-<span class="sd">            None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">hyperedge</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The cell </span><span class="si">{</span><span class="n">hyperedge</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">,</span> <span class="n">HyperEdge</span><span class="p">):</span>
-            <span class="n">hyperedge_</span> <span class="o">=</span> <span class="n">hyperedge</span><span class="o">.</span><span class="n">elements</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">hyperedge_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
-        <span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">hyperedge_</span><span class="p">)</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="n">hyperedge_</span><span class="p">]</span>
+        <span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)]</span>
 
     <span class="k">def</span> <span class="nf">_add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add one node as a hyperedge.</span>
