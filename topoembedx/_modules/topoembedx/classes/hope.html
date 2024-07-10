@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Jul 8, 2024, 8:40:44 AM"/>
+    <meta name="docbuild:last-update" content="Jul 10, 2024, 1:32:30 PM"/>
   </head>
   
   
@@ -433,7 +433,7 @@ document.write(`
         <span class="n">topk_eigvec</span> <span class="o">=</span> <span class="n">eigvec</span><span class="p">[:,</span> <span class="n">topk_indices</span><span class="p">]</span>
 
         <span class="c1"># Randomly flip signs of the eigenvectors</span>
-        <span class="n">rand_sign</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">max_freqs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span>
+        <span class="n">rand_sign</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">max_freqs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span>
         <span class="n">pos_enc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">rand_sign</span><span class="p">,</span> <span class="n">topk_eigvec</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">n_nodes</span> <span class="o">&lt;=</span> <span class="n">n_eigvecs</span><span class="p">:</span>
@@ -456,7 +456,7 @@ document.write(`
         <span class="bp">self</span><span class="p">,</span>
         <span class="nb">complex</span><span class="p">:</span> <span class="n">tnx</span><span class="o">.</span><span class="n">Complex</span><span class="p">,</span>
         <span class="n">neighborhood_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;adj&quot;</span><span class="p">,</span> <span class="s2">&quot;coadj&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;adj&quot;</span><span class="p">,</span>
-        <span class="n">neighborhood_dim</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;to_rank&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">},</span>
+        <span class="n">neighborhood_dim</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit a Higher Order Geometric Laplacian EigenMaps model.</span>
 
@@ -527,7 +527,7 @@ document.write(`
 <span class="sd">            Embedding.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">get_dict</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ind</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding</span><span class="p">))</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ind</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_embedding</span></div>
 </div>
 
