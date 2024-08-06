@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Aug 6, 2024, 12:54:12 PM"/>
+    <meta name="docbuild:last-update" content="Aug 6, 2024, 2:59:57 PM"/>
   </head>
   
   
@@ -341,7 +341,6 @@ document.write(`
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sparse</span>
-<span class="kn">import</span> <span class="nn">spharapy.spharabasis</span> <span class="k">as</span> <span class="nn">sb</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">diags</span>
 
 <span class="kn">from</span> <span class="nn">toponetx.classes</span> <span class="kn">import</span> <span class="n">CombinatorialComplex</span>
@@ -504,11 +503,21 @@ document.write(`
 <span class="sd">    k_eigenvals : numpy.ndarray</span>
 <span class="sd">        First k Eigenvalues associated with the hodge laplacian matrix.</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        If package `spharapy` is not installed.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; SC = tnx.datasets.stanford_bunny(&quot;simplicial&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; eigenvectors, eigenvalues = tnx.laplacian_beltrami_eigenvectors(SC)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">spharapy.spharabasis</span> <span class="k">as</span> <span class="nn">sb</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Package `spharapy` is required for this function.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
     <span class="n">mesh</span> <span class="o">=</span> <span class="n">SC</span><span class="o">.</span><span class="n">to_spharapy</span><span class="p">()</span>
     <span class="n">sphara_basis</span> <span class="o">=</span> <span class="n">sb</span><span class="o">.</span><span class="n">SpharaBasis</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
     <span class="n">eigenvectors</span><span class="p">,</span> <span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">sphara_basis</span><span class="o">.</span><span class="n">basis</span><span class="p">()</span>
