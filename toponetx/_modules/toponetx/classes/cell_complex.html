@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Aug 6, 2024, 2:59:57 PM"/>
+    <meta name="docbuild:last-update" content="Aug 14, 2024, 12:28:23 PM"/>
   </head>
   
   
@@ -804,37 +804,6 @@ document.write(`
                         <span class="n">all_inserted_cells</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">equiv_classes</span>
 
-    <span class="k">def</span> <span class="nf">_remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove homotopic cells from the cell complex.</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; CC = tnx.CellComplex()</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 3, 4), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell((2, 3, 4, 1), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 3, 4), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 3, 6), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell((3, 4, 1, 2), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell((4, 3, 2, 1), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell((1, 2, 7, 3), rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; c1 = tnx.Cell((1, 2, 3, 4, 5))</span>
-<span class="sd">        &gt;&gt;&gt; CC.add_cell(c1, rank=2)</span>
-<span class="sd">        &gt;&gt;&gt; CC._remove_equivalent_cells()</span>
-<span class="sd">        &gt;&gt;&gt; CC</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">equiv_classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_equivalence_class</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">equiv_classes</span><span class="p">:</span>
-                <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete_cell</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">d_c</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d_c</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                            <span class="k">break</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-
 <div class="viewcode-block" id="CellComplex.degree">
 <a class="viewcode-back" href="../../../api/classes.html#toponetx.classes.cell_complex.CellComplex.degree">[docs]</a>
     <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -1549,7 +1518,7 @@ document.write(`
 <span class="sd">        ...     (1, 2, 3, 4): {&quot;color&quot;: &quot;red&quot;, &quot;attr2&quot;: 1},</span>
 <span class="sd">        ...     (1, 2, 4): {&quot;color&quot;: &quot;blue&quot;, &quot;attr2&quot;: 3},</span>
 <span class="sd">        ... }</span>
-<span class="sd">        &gt;&gt;&gt; CC.set_cell_attributes(d)</span>
+<span class="sd">        &gt;&gt;&gt; CC.set_cell_attributes(d, rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CC.cells[(1, 2, 3, 4)][0][&quot;color&quot;]</span>
 <span class="sd">        &#39;red&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1786,9 +1755,19 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 8], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; print(CC.cells)</span>
 <span class="sd">        &gt;&gt;&gt; CC.remove_equivalent_cells()</span>
-<span class="sd">        &gt;&gt;&gt; print(CC.cells)  # observe homotopic cells have been removed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_equivalent_cells</span><span class="p">()</span></div>
+        <span class="n">equiv_classes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell_equivalence_class</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">equiv_classes</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_delete_cell</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">d_c</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d_c</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="k">break</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_cell</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="CellComplex.is_insertable_cycle">
@@ -2281,8 +2260,6 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([3, 4, 5], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; index, L1_up = CC.up_laplacian_matrix(1, index=True)</span>
-<span class="sd">        &gt;&gt;&gt; print(index)</span>
-<span class="sd">        &gt;&gt;&gt; print(L1_up)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Weighted Laplacian is not supported in this version.&quot;</span><span class="p">)</span>
