@@ -45,7 +45,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 16, 2024, 7:01:15 AM"/>
+    <meta name="docbuild:last-update" content="Oct 16, 2024, 7:34:46 AM"/>
   </head>
   
   
@@ -353,15 +353,16 @@ document.write(`
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class Cell2Vec.</span>
 
 <span class="sd">    Cell2Vec is a class that extends the Node2Vec class.</span>
-<span class="sd">    It provides additional functionality for generating node embeddings for simplicial, cell, combinatorial,</span>
-<span class="sd">    or dynamic combinatorial complexes. The Cell2Vec class takes as input a simplicial, cell, combinatorial,</span>
-<span class="sd">    or dynamic combinatorial complex, and uses the adjacency matrix or coadjacency matrix of the complex to</span>
-<span class="sd">    create a graph object using the networkx library. The Cell2Vec class then uses this graph object to generate</span>
-<span class="sd">    node embeddings using the Node2Vec algorithm. The Cell2Vec class allows users to specify the type of adjacency</span>
-<span class="sd">    or coadjacency matrix to use for the graph (e.g. &quot;adj&quot; for adjacency matrix or &quot;coadj&quot; for coadjacency matrix),</span>
-<span class="sd">    as well as the dimensions of the neighborhood to use for the matrix (e.g. the &quot;adj&quot; and &quot;coadj&quot; values for the matrix).</span>
-<span class="sd">    Additionally, users can specify the dimensions of the node embeddings to generate, the length and number of</span>
-<span class="sd">    random walks to use for the node2vec algorithm, and the number of workers to use for parallelization.</span>
+<span class="sd">    It provides additional functionality for generating node embeddings for simplicial,</span>
+<span class="sd">    cell, combinatorial, or dynamic combinatorial complexes. The Cell2Vec class takes</span>
+<span class="sd">    as input a simplicial, cell, combinatorial, or dynamic combinatorial complex, and</span>
+<span class="sd">    uses the adjacency matrix or coadjacency matrix of the complex to create a graph</span>
+<span class="sd">    object using the networkx library. The Cell2Vec class then uses this graph object</span>
+<span class="sd">    to generate node embeddings using the Node2Vec algorithm. The Cell2Vec class allows</span>
+<span class="sd">    users to specify the type of adjacency or coadjacency matrix to use for the graph</span>
+<span class="sd">    (e.g. &quot;adj&quot; for adjacency matrix or &quot;coadj&quot; for coadjacency matrix), as well as the</span>
+<span class="sd">    dimensions of the neighborhood to use for the matrix (e.g. the &quot;adj&quot; and &quot;coadj&quot;</span>
+<span class="sd">    values for the matrix).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -381,6 +382,10 @@ document.write(`
 <span class="sd">        Matrix power order.</span>
 <span class="sd">    epochs : int, default=1</span>
 <span class="sd">        Number of epochs.</span>
+<span class="sd">    use_hierarchical_softmax : bool, default=True</span>
+<span class="sd">        Whether to use hierarchical softmax or negative sampling to train the model.</span>
+<span class="sd">    number_of_negative_samples : int, default=5</span>
+<span class="sd">        Number of negative nodes to sample (usually between 5-20). If set to 0, no negative sampling is used.</span>
 <span class="sd">    learning_rate : float, default=0.05</span>
 <span class="sd">        HogWild! learning rate.</span>
 <span class="sd">    min_count : int, optional</span>
@@ -391,6 +396,38 @@ document.write(`
 
     <span class="n">A</span><span class="p">:</span> <span class="n">csr_matrix</span>
     <span class="n">ind</span><span class="p">:</span> <span class="nb">list</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">walk_number</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">walk_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
+        <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">q</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">dimensions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">128</span><span class="p">,</span>
+        <span class="n">workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">window_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">use_hierarchical_softmax</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">number_of_negative_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">walk_number</span><span class="p">,</span>
+            <span class="n">walk_length</span><span class="p">,</span>
+            <span class="n">p</span><span class="p">,</span>
+            <span class="n">q</span><span class="p">,</span>
+            <span class="n">dimensions</span><span class="p">,</span>
+            <span class="n">workers</span><span class="p">,</span>
+            <span class="n">window_size</span><span class="p">,</span>
+            <span class="n">epochs</span><span class="p">,</span>
+            <span class="n">use_hierarchical_softmax</span><span class="p">,</span>
+            <span class="n">number_of_negative_samples</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="p">,</span>
+            <span class="n">min_count</span><span class="p">,</span>
+            <span class="n">seed</span><span class="p">,</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Cell2Vec.fit">
 <a class="viewcode-back" href="../../../api/classes.html#topoembedx.classes.cell2vec.Cell2Vec.fit">[docs]</a>
