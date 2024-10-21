@@ -1300,7 +1300,10 @@ document.write(`
                 <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">i</span><span class="p">)</span>
                 <span class="n">face</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">({</span><span class="n">left_out</span><span class="p">})</span>
                 <span class="n">idx_faces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">simplex_dict_d_minus_1</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">face</span><span class="p">))])</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_dict_d</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">rank</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_dict_d</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Error in computing the incidence matrix.&quot;</span><span class="p">)</span>
+
         <span class="n">boundary</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span>
             <span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="n">idx_faces</span><span class="p">,</span> <span class="n">idx_simplices</span><span class="p">)),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
@@ -1763,8 +1766,7 @@ document.write(`
 <span class="sd">        G : networkx.Graph</span>
 <span class="sd">            A networkx graph instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_simplices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">))</span>
-
+        <span class="n">_simplices</span> <span class="o">=</span> <span class="p">[[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_simplices_from</span><span class="p">(</span><span class="n">_simplices</span><span class="p">)</span></div>
 
 
