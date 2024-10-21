@@ -29,6 +29,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=d2d258e8" />
     <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=2aa19091" />
   
@@ -40,18 +41,20 @@
     <script src="../../_static/documentation_options.js?v=c6e86fd7"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=5ae071a5"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/simplicial/sccn_train';</script>
-    <link rel="canonical" href="pyt-team.github.io/notebooks/simplicial/sccn_train.html" />
+    <link rel="canonical" href="https://pyt-team.github.io/topomodelx/notebooks/simplicial/sccn_train.html" />
+    <link rel="icon" href="../../_static/favicon-48.png"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Train a SCCNN" href="sccnn_train.html" />
     <link rel="prev" title="Train a Simplicial Complex Autoencoder (SCA) with Coadjacency Message Passing Scheme (CMPS)" href="sca_cmps_train.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-    <meta name="docbuild:last-update" content="Oct 21, 2024, 8:31:43 AM"/>
   </head>
   
   
@@ -201,6 +204,22 @@ document.write(`
 `);
 </script></div>
       
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyt-team/TopoModelX" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
     </div>
     
   </div>
@@ -298,6 +317,22 @@ document.write(`
   </button>
 `);
 </script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/pyt-team/TopoModelX" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
         
       </div>
     
@@ -490,7 +525,7 @@ document.write(`
 <p>🟦 <span class="math notranslate nohighlight">\(\quad h_x^{t+1,(r)} = \sigma(m_x^{(r)})\)</span></p>
 <p>Where the notations are defined in <a class="reference external" href="https://arxiv.org/abs/2304.10031">Papillon et al : Architectures of Topological Deep Learning: A Survey of Topological Neural Networks (2023)</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -514,7 +549,7 @@ document.write(`
 <p>We must first lift our graph dataset into the simplicial complex domain.</p>
 <p>Since our task will be node classification, we must retrieve an input signal on the nodes. The signal will have shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times\)</span> in_channels, where in_channels is the dimension of each cell’s feature. The feature dimension is <code class="docutils literal notranslate"><span class="pre">feat_dim</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">karate_club</span><span class="p">(</span><span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">,</span> <span class="n">feat_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -537,7 +572,7 @@ Simplicial Complex with shape (34, 78, 45, 11, 2) and dimension 4
 <p>We define incidence and adjacency matrices up to the max rank and put them in dictionaries indexed by the rank, as is expected by the <code class="docutils literal notranslate"><span class="pre">SCCNLayer</span></code>. The form of tha adjacency and incidence matrices could be chosen arbitrarily, here we follow the original formulation by Yang et al. quite closely and select the adjacencies as r-Hodge Laplacians <span class="math notranslate nohighlight">\(H_r\)</span>, summed with <span class="math notranslate nohighlight">\(2I\)</span> (or just <span class="math notranslate nohighlight">\(I\)</span> for <span class="math notranslate nohighlight">\(r\in\{0, r_\mathrm{max}\}\)</span>) to allow cells to pass messages to themselves. The incidence
 matrices are the usual boundary matrices <span class="math notranslate nohighlight">\(B_r\)</span>. One could additionally weight/normalize these matrices as suggested by Yang et al., but we refrain from doing this for simplicity.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">max_rank</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># There are features up to tetrahedron order in the dataset</span>
@@ -545,7 +580,7 @@ matrices are the usual boundary matrices <span class="math notranslate nohighlig
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sparse_to_torch</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
@@ -609,7 +644,7 @@ The incidence matrix B3 has shape: torch.Size([45, 11]).
 <h2>Import signal<a class="headerlink" href="#Import-signal" title="Link to this heading">#</a></h2>
 <p>We import the features at each rank.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_simplex_attributes</span><span class="p">(</span><span class="s2">&quot;node_feat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
@@ -619,7 +654,7 @@ The incidence matrix B3 has shape: torch.Size([45, 11]).
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> nodes with features of dimension </span><span class="si">{</span><span class="n">x_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
@@ -636,7 +671,7 @@ There are 34 nodes with features of dimension 2.
 </div>
 <p>Load edge features.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_simplex_attributes</span><span class="p">(</span><span class="s2">&quot;edge_feat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
@@ -645,7 +680,7 @@ There are 34 nodes with features of dimension 2.
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> edges with features of dimension </span><span class="si">{</span><span class="n">x_1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
@@ -662,7 +697,7 @@ There are 78 edges with features of dimension 2.
 </div>
 <p>Similarly for face features:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [48]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_simplex_attributes</span><span class="p">(</span><span class="s2">&quot;face_feat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
@@ -671,7 +706,7 @@ There are 78 edges with features of dimension 2.
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [49]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;There are </span><span class="si">{</span><span class="n">x_2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> faces with features of dimension </span><span class="si">{</span><span class="n">x_2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
@@ -688,7 +723,7 @@ There are 45 faces with features of dimension 2.
 </div>
 <p>Higher order features:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [50]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">x_3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">get_simplex_attributes</span><span class="p">(</span><span class="s2">&quot;tetrahedron_feat&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
@@ -697,7 +732,7 @@ There are 45 faces with features of dimension 2.
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [51]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
@@ -716,7 +751,7 @@ There are 11 tetrahedrons with features of dimension 2.
 </div>
 <p>The features are organized in a dictionary keeping track of their rank, similar to the adjacencies/incidences earlier.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [52]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">features</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;rank_0&quot;</span><span class="p">:</span> <span class="n">x_0</span><span class="p">,</span> <span class="s2">&quot;rank_1&quot;</span><span class="p">:</span> <span class="n">x_1</span><span class="p">,</span> <span class="s2">&quot;rank_2&quot;</span><span class="p">:</span> <span class="n">x_2</span><span class="p">,</span> <span class="s2">&quot;rank_3&quot;</span><span class="p">:</span> <span class="n">x_3</span><span class="p">}</span>
@@ -729,7 +764,7 @@ There are 11 tetrahedrons with features of dimension 2.
 <p>We retrieve the labels associated to the nodes of each input simplex. In the KarateClub dataset, two social groups emerge. So we assign binary labels to the nodes indicating of which group they are a part.</p>
 <p>We keep the last four nodes’ true labels for the purpose of testing.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [53]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -789,7 +824,7 @@ There are 11 tetrahedrons with features of dimension 2.
 <h1>Create the Neural Network<a class="headerlink" href="#Create-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>Using the SAN class, we create our neural network with stacked layers. Given the considered dataset and task (Karate Club, node classification), a linear layer at the end produces an output with shape <span class="math notranslate nohighlight">\(n_\text{nodes} \times 2\)</span>, so we can compare with our binary labels.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [54]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -813,7 +848,7 @@ There are 11 tetrahedrons with features of dimension 2.
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [55]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">n_layers</span> <span class="o">=</span> <span class="mi">2</span>
@@ -835,7 +870,7 @@ There are 11 tetrahedrons with features of dimension 2.
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>The following cell performs the training, looping over the network for a low number of epochs. Test accuracy is more arbitrary between runs, likely due to the small dataset set size.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [57]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">test_interval</span> <span class="o">=</span> <span class="mi">10</span>
@@ -995,7 +1030,7 @@ Test_acc: 0.7500
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span> In [ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
@@ -1066,9 +1101,16 @@ Test_acc: 0.7500
 
   <div class="sidebar-secondary-item">
 
-  <div class="tocsection sourcelink">
-    <a href="../../_sources/notebooks/simplicial/sccn_train.ipynb.txt">
-      <i class="fa-solid fa-file-lines"></i> Show Source
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/pyt-team/TopoModelX/edit/main/docs/notebooks/simplicial/sccn_train.ipynb">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
     </a>
   </div>
 </div>
