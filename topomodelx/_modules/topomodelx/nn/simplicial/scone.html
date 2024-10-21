@@ -384,14 +384,15 @@ document.write(`
                   
   <h1>Source code for topomodelx.nn.simplicial.scone</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Neural network implementation of classification using SCoNe.&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">toponetx</span> <span class="k">as</span> <span class="nn">tnx</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">Delaunay</span><span class="p">,</span> <span class="n">distance</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.simplicial_complex</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data.dataset</span> <span class="kn">import</span> <span class="n">Dataset</span>
 
@@ -402,7 +403,7 @@ document.write(`
 <a class="viewcode-back" href="../../../../api/nn/simplicial/scone.html#topomodelx.nn.simplicial.scone.generate_complex">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_complex</span><span class="p">(</span>
     <span class="n">N</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">tnx</span><span class="o">.</span><span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a simplicial complex as described.</span>
 
 <span class="sd">    Generate a simplicial complex of dimension 2 as follows:</span>
@@ -445,7 +446,7 @@ document.write(`
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
             <span class="n">simplices</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx_dict</span><span class="p">[</span><span class="n">simplices</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]]</span>
 
-    <span class="n">sc</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">simplices</span><span class="p">)</span>
+    <span class="n">sc</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">simplices</span><span class="p">)</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">indices_included</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">sc</span><span class="p">,</span> <span class="n">coords</span></div>
 
@@ -454,7 +455,7 @@ document.write(`
 <div class="viewcode-block" id="generate_trajectories">
 <a class="viewcode-back" href="../../../../api/nn/simplicial/scone.html#topomodelx.nn.simplicial.scone.generate_trajectories">[docs]</a>
 <span class="k">def</span> <span class="nf">generate_trajectories</span><span class="p">(</span>
-    <span class="n">sc</span><span class="p">:</span> <span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
+    <span class="n">sc</span><span class="p">:</span> <span class="n">tnx</span><span class="o">.</span><span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">coords</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">n_max</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate trajectories from nodes in the lower left corner to the upper right corner connected through a node in the middle.&quot;&quot;&quot;</span>
     <span class="c1"># Get indices for start points in the lower left corner, mid points in the center region and end points in the upper right corner.</span>
@@ -491,7 +492,9 @@ document.write(`
 <span class="k">class</span> <span class="nc">TrajectoriesDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a dataset of trajectories.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">:</span> <span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">:</span> <span class="n">tnx</span><span class="o">.</span><span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">trajectories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sc</span> <span class="o">=</span> <span class="n">sc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adjacency</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
