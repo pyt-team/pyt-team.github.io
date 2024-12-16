@@ -347,7 +347,6 @@
 <span></span><span class="sd">&quot;&quot;&quot;Various examples of named meshes represented as complexes.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">zipfile</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">overload</span>
 
@@ -356,31 +355,20 @@
 
 <span class="kn">from</span> <span class="nn">toponetx.classes.cell_complex</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.simplicial_complex</span> <span class="kn">import</span> <span class="n">SimplicialComplex</span>
+<span class="kn">from</span> <span class="nn">toponetx.readwrite.atomlist</span> <span class="kn">import</span> <span class="n">load_from_atomlist</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;coseg&quot;</span><span class="p">,</span> <span class="s2">&quot;shrec_16&quot;</span><span class="p">,</span> <span class="s2">&quot;stanford_bunny&quot;</span><span class="p">]</span>
 
 <span class="n">DIR</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
 <span class="n">SHREC_DS_MAP</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;full&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;shrec&quot;</span><span class="p">,</span> <span class="s2">&quot;https://github.com/mhajij/shrec_16/raw/main/shrec.zip&quot;</span><span class="p">),</span>
-    <span class="s2">&quot;small&quot;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s2">&quot;small_shrec&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;https://github.com/mhajij/shrec_16/raw/main/small_shrec.zip&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
+    <span class="s2">&quot;full&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/pyt-team/topological-datasets/raw/aa3ec28b1166f7713e872011df1ff9e1136d92ae/resources/shrec16_full.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;small&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/pyt-team/topological-datasets/raw/aa3ec28b1166f7713e872011df1ff9e1136d92ae/resources/shrec16_small.zip&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">COSEG_DS_MAP</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;alien&quot;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s2">&quot;coseg_alien&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;https://github.com/mhajij/shrec_16/raw/main/coseg_alien.zip&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="s2">&quot;chair&quot;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s2">&quot;coseg_chairs&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;https://github.com/mhajij/shrec_16/raw/main/coseg_chairs.zip&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="s2">&quot;vase&quot;</span><span class="p">:</span> <span class="p">(</span>
-        <span class="s2">&quot;coseg_vases&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;https://github.com/mhajij/shrec_16/raw/main/coseg_vases.zip&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
+    <span class="s2">&quot;alien&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/pyt-team/topological-datasets/raw/aa3ec28b1166f7713e872011df1ff9e1136d92ae/resources/coseg_alien.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;chair&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/pyt-team/topological-datasets/raw/aa3ec28b1166f7713e872011df1ff9e1136d92ae/resources/coseg_chair.zip&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;vase&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/pyt-team/topological-datasets/raw/aa3ec28b1166f7713e872011df1ff9e1136d92ae/resources/coseg_vase.zip&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -489,29 +477,52 @@
 <span class="sd">    &gt;&gt;&gt; testing_face_feat = shrec_testing[&quot;face_feat&quot;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">size</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SHREC_DS_MAP</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;size must be &#39;full&#39; or &#39;small&#39; got </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-    <span class="n">ds_name</span><span class="p">,</span> <span class="n">url</span> <span class="o">=</span> <span class="n">SHREC_DS_MAP</span><span class="p">[</span><span class="n">size</span><span class="p">]</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Parameter `size` must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">SHREC_DS_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">SHREC_DS_MAP</span><span class="p">[</span><span class="n">size</span><span class="p">]</span>
 
-    <span class="n">training</span> <span class="o">=</span> <span class="n">DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ds_name</span><span class="si">}</span><span class="s2">_training.npz&quot;</span>
-    <span class="n">testing</span> <span class="o">=</span> <span class="n">DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ds_name</span><span class="si">}</span><span class="s2">_testing.npz&quot;</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">training</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">testing</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;downloading shrec 16 </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> dataset...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">cache_file</span> <span class="o">=</span> <span class="n">DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;shrec_</span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2">.zip&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">))</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
-            <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">DIR</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done!&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">training</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">testing</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading shrec 16 </span><span class="si">{</span><span class="n">size</span><span class="si">}</span><span class="s2"> dataset...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">shrec_training</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">training</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">shrec_testing</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">testing</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done!&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">shrec_training</span><span class="p">,</span> <span class="n">shrec_testing</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
+        <span class="n">train_complexes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">test_complexes</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Files couldn&#39;t be found in folder </span><span class="si">{</span><span class="n">DIR</span><span class="si">}</span><span class="s2">, fail to load the dataset.&quot;</span>
-    <span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">zip_ref</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.atomlist&quot;</span><span class="p">):</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">SC</span> <span class="o">=</span> <span class="n">load_from_atomlist</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="n">train_complexes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">SC</span><span class="p">))</span>
+                <span class="k">if</span> <span class="s2">&quot;test&quot;</span> <span class="ow">in</span> <span class="n">file</span><span class="p">:</span>
+                    <span class="n">test_complexes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">SC</span><span class="p">))</span>
+
+        <span class="c1"># `zip_ref.namelist` does not sort the files in the expected order</span>
+        <span class="n">train_complexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">train_complexes</span><span class="p">)]</span>
+        <span class="n">test_complexes</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">test_complexes</span><span class="p">)]</span>
+
+        <span class="n">train_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;complexes&quot;</span><span class="p">:</span> <span class="n">train_complexes</span><span class="p">,</span>
+            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;train/labels.npy&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;node_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+                <span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;train/node_feat.npy&quot;</span><span class="p">),</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">),</span>
+            <span class="s2">&quot;edge_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;train/edge_feat.npy&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;face_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;train/face_feat.npy&quot;</span><span class="p">)),</span>
+        <span class="p">}</span>
+        <span class="n">test_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;complexes&quot;</span><span class="p">:</span> <span class="n">test_complexes</span><span class="p">,</span>
+            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test/labels.npy&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;node_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test/node_feat.npy&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;edge_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test/edge_feat.npy&quot;</span><span class="p">)),</span>
+            <span class="s2">&quot;face_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test/face_feat.npy&quot;</span><span class="p">)),</span>
+        <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span></div>
 
 
 
@@ -560,27 +571,33 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">data</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">COSEG_DS_MAP</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data must be &#39;alien&#39;, &#39;vase&#39;, or &#39;chair&#39; got </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-    <span class="n">ds_name</span><span class="p">,</span> <span class="n">url</span> <span class="o">=</span> <span class="n">COSEG_DS_MAP</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">COSEG_DS_MAP</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
 
-    <span class="n">unziped_file</span> <span class="o">=</span> <span class="n">DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ds_name</span><span class="si">}</span><span class="s2">.npz&quot;</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">unziped_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;downloading </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2"> dataset...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">cache_file</span> <span class="o">=</span> <span class="n">DIR</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;coseg_</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">.zip&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">))</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
-            <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">DIR</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done!&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">cache_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">unziped_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading dataset...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">coseg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">unziped_file</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">cache_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
+        <span class="n">SCs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="n">load_from_atomlist</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">complex_type</span><span class="o">=</span><span class="s2">&quot;simplicial&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">zip_ref</span><span class="o">.</span><span class="n">namelist</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.atomlist&quot;</span><span class="p">)</span>
+        <span class="p">]</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;done!&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">coseg</span>
+        <span class="n">SCs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">SCs</span><span class="p">)]</span>
 
-    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;Files couldn&#39;t be found in folder </span><span class="si">{</span><span class="n">DIR</span><span class="si">}</span><span class="s2">, fail to load the dataset.&quot;</span>
-    <span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;complexes&quot;</span><span class="p">:</span> <span class="n">SCs</span><span class="p">,</span>
+            <span class="s2">&quot;face_label&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;face_label.npy&quot;</span><span class="p">),</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="s2">&quot;node_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;node_feat.npy&quot;</span><span class="p">),</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="s2">&quot;edge_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;edge_feat.npy&quot;</span><span class="p">),</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="s2">&quot;face_feat&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">zip_ref</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;face_feat.npy&quot;</span><span class="p">),</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="p">}</span></div>
 
 </pre></div>
 
