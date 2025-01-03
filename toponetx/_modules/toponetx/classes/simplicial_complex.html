@@ -354,9 +354,9 @@
 <span class="sd">The class also supports attaching arbitrary attributes and data to cells.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -366,6 +366,7 @@
 <span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">NodeView</span><span class="p">,</span> <span class="n">SimplexView</span>
 <span class="kn">from</span> <span class="nn">toponetx.classes.simplex</span> <span class="kn">import</span> <span class="n">Simplex</span>
+<span class="kn">from</span> <span class="nn">toponetx.classes.simplex_trie</span> <span class="kn">import</span> <span class="n">SimplexTrie</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">gudhi</span> <span class="kn">import</span> <span class="n">SimplexTree</span>
@@ -379,10 +380,14 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SimplicialComplex&quot;</span><span class="p">]</span>
 
+<span class="n">ElementType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+    <span class="s2">&quot;ElementType&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">Hashable</span>
+<span class="p">)</span>  <span class="c1"># TODO: Also bound to SupportsLessThanT but that is not accessible?</span>
+
 
 <div class="viewcode-block" id="SimplicialComplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex">[docs]</a>
-<span class="k">class</span> <span class="nc">SimplicialComplex</span><span class="p">(</span><span class="n">Complex</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SimplicialComplex</span><span class="p">(</span><span class="n">Complex</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a simplicial complex.</span>
 
 <span class="sd">    Class for construction boundary operators, Hodge Laplacians,</span>
@@ -460,18 +465,18 @@
 <span class="sd">    4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">_simplex_trie</span><span class="p">:</span> <span class="n">SimplexTrie</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]</span>
+
 <div class="viewcode-block" id="SimplicialComplex.__init__">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span> <span class="o">=</span> <span class="n">SimplexView</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span> <span class="o">=</span> <span class="n">SimplexTrie</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplices</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">):</span>
-            <span class="n">_simplices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">simplex</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">simplices</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span>
-                <span class="n">data</span><span class="o">=</span><span class="kc">True</span>
-            <span class="p">):</span>  <span class="c1"># `simplices` is a networkx graph</span>
+            <span class="n">_simplices</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">simplex</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">simplices</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="n">_simplices</span><span class="p">[(</span><span class="n">simplex</span><span class="p">,)]</span> <span class="o">=</span> <span class="n">data</span>
             <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">simplices</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="n">_simplices</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)]</span> <span class="o">=</span> <span class="n">data</span>
@@ -490,38 +495,44 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shape of simplicial complex.</span>
-
-<span class="sd">        (number of simplices[i], for i in range(0,dim(Sc))  )</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shape of simplicial complex, i.e., the number of simplices for each dimension.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tuple of ints</span>
 <span class="sd">            This gives the number of cells in each rank.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([[0, 1], [1, 2, 3], [2, 3, 4]])</span>
+<span class="sd">        &gt;&gt;&gt; SC.shape</span>
+<span class="sd">        (5, 5, 2)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Dimension of the simplicial complex.</span>
-
-<span class="sd">        This is the highest dimension of any simplex in the complex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Maximal dimension of the simplices in this complex.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        int</span>
 <span class="sd">            The dimension of the simplicial complex.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; SC = SimplicialComplex([[0, 1], [1, 2, 3], [2, 3, 4]])</span>
+<span class="sd">        &gt;&gt;&gt; SC.dim</span>
+<span class="sd">        2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">max_dim</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
     <span class="nd">@property</span>
     <span class="nd">@deprecated</span><span class="p">(</span>
-        <span class="s2">&quot;`SimplicialComplex.maxdim` is deprecated and will be removed in the future, use `SimplicialComplex.max_dim` instead.&quot;</span>
+        <span class="s2">&quot;`SimplicialComplex.maxdim` is deprecated and will be removed in the future, use `SimplicialComplex.dim` instead.&quot;</span>
     <span class="p">)</span>
     <span class="k">def</span> <span class="nf">maxdim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Maximum dimension of the simplicial complex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Maximum dimension of the simplicial complex.</span>
 
 <span class="sd">        This is the highest dimension of any simplex in the complex.</span>
 
@@ -530,10 +541,10 @@
 <span class="sd">        int</span>
 <span class="sd">            The maximum dimension of the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">max_dim</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeView</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of nodes in the simplicial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -541,7 +552,13 @@
 <span class="sd">        NodeView</span>
 <span class="sd">            A NodeView object representing the nodes of the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">NodeView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">,</span> <span class="n">cell_type</span><span class="o">=</span><span class="n">Simplex</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">NodeView</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="nb">frozenset</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">elements</span><span class="p">):</span> <span class="n">node</span><span class="o">.</span><span class="n">attributes</span>
+                <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="p">},</span>
+            <span class="n">Simplex</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplexView</span><span class="p">:</span>
@@ -552,12 +569,12 @@
 <span class="sd">        SimplexView</span>
 <span class="sd">            A SimplexView object representing the set of all simplices in the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span>
+        <span class="k">return</span> <span class="n">SimplexView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SimplicialComplex.is_maximal">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.is_maximal">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_maximal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if simplex is maximal.</span>
+    <span class="k">def</span> <span class="nf">is_maximal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if simplex is maximal, i.e., not a face of any other simplex in the complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -583,16 +600,14 @@
 <span class="sd">        &gt;&gt;&gt; SC.is_maximal([1, 2])</span>
 <span class="sd">        False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">simplex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simplex </span><span class="si">{</span><span class="n">simplex</span><span class="si">}</span><span class="s2"> is not in the simplicial complex.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">simplex</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">is_maximal</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.get_maximal_simplices_of_simplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_maximal_simplices_of_simplex">[docs]</a>
     <span class="k">def</span> <span class="nf">get_maximal_simplices_of_simplex</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get maximal simplices of simplex.</span>
 
 <span class="sd">        Parameters</span>
@@ -602,16 +617,20 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        set of frozensets</span>
+<span class="sd">        set of Simplex</span>
 <span class="sd">            Set of maximal simplices of the given simplex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">simplex</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">simplex</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">cofaces</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">is_maximal</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span>
+        <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.skeleton">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.skeleton">[docs]</a>
-    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute skeleton.</span>
+    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the rank-skeleton of the simplicial complex containing simplices of given rank.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -620,14 +639,10 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        list of tuples</span>
+<span class="sd">        list of Simplex</span>
 <span class="sd">            Simplices of rank `rank` in the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">rank</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input must be a postive integer, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2"> exceeds max dim&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">simplex</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">))</span></div>
 
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -659,14 +674,14 @@
 <span class="sd">        int</span>
 <span class="sd">            Number of vertices in the complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the data associated with the given simplex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        atom : Any</span>
+<span class="sd">        simplex : Any</span>
 <span class="sd">            The simplex to retrieve.</span>
 
 <span class="sd">        Returns</span>
@@ -679,15 +694,22 @@
 <span class="sd">        KeyError</span>
 <span class="sd">            If the simplex is not present in the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">simplex</span> <span class="o">=</span> <span class="p">(</span><span class="n">simplex</span><span class="p">,)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">))]</span><span class="o">.</span><span class="n">attributes</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all simplices (faces) of the simplicial complex.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Iterator[frozenset[Hashable]]</span>
 <span class="sd">            An iterator over all simplices in the simplicial complex.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        KeyError</span>
+<span class="sd">            If the simplex is not present in the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">)</span>
 
@@ -704,62 +726,9 @@
 <span class="sd">        bool</span>
 <span class="sd">            Returns `True` if this simplicial complex contains the atom, else `False`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span>
-
-    <span class="k">def</span> <span class="nf">_update_faces_dict_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the faces dictionary length based on the input simplex.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        simplex : tuple[int, ...]</span>
-<span class="sd">            The simplex to update the faces dictionary length.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">):</span>
-            <span class="n">diff</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">diff</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
-
-    <span class="k">def</span> <span class="nf">_update_faces_dict_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face</span><span class="p">,</span> <span class="n">simplex</span><span class="p">,</span> <span class="n">maximal_faces</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update faces dictionary entry.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        face : iterable</span>
-<span class="sd">            Typically a list, tuple, set, or a Simplex representing a face.</span>
-<span class="sd">        simplex : iterable</span>
-<span class="sd">            Typically a list, tuple, set, or a Simplex representing the input simplex.</span>
-<span class="sd">        maximal_faces : iterable</span>
-<span class="sd">            The maximal faces are the the faces that cannot be extended by adding another node.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        The input `face` is a face of the input `simplex`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">face</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">face</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;is_maximal&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                    <span class="s2">&quot;membership&quot;</span><span class="p">:</span> <span class="nb">set</span><span class="p">(),</span>
-                <span class="p">}</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;is_maximal&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                    <span class="s2">&quot;membership&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">simplex</span><span class="p">},</span>
-                <span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]:</span>
-                    <span class="n">maximal_faces</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">face</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># make sure all children of previous maximal simplices do not have that membership anymore</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">face</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span>
-                        <span class="n">maximal_faces</span>
-                    <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">atom</span><span class="p">,)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">atom</span><span class="p">))</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span>
 
 <div class="viewcode-block" id="SimplicialComplex.get_boundaries">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_boundaries">[docs]</a>
@@ -827,42 +796,22 @@
 <span class="sd">        &gt;&gt;&gt; SC.add_simplex((1, 2, 3, 4, 5))</span>
 <span class="sd">        &gt;&gt;&gt; SC.remove_maximal_simplex((1, 2, 3, 4, 5))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
-                <span class="n">simplex_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">simplex_</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span>
-        <span class="k">if</span> <span class="n">simplex_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_maximal</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">simplex_</span><span class="p">]</span>
-                <span class="n">faces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_boundaries</span><span class="p">([</span><span class="n">simplex_</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">faces</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">):</span>
-                        <span class="k">continue</span>
-
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="p">{</span>
-                        <span class="n">simplex_</span>
-                    <span class="p">}</span>
-                    <span class="k">if</span> <span class="p">(</span>
-                        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;membership&quot;</span><span class="p">])</span>
-                        <span class="o">==</span> <span class="mi">0</span>
-                        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-                    <span class="p">):</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s2">&quot;is_maximal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-                <span class="k">if</span> <span class="p">(</span>
-                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span>
-                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">max_dim</span>
-                <span class="p">):</span>
-                    <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">max_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Only maximal simplices can be deleted, input simplex is not maximal&quot;</span>
-                <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">simplex_</span> <span class="o">=</span> <span class="p">(</span><span class="n">simplex</span><span class="p">,)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+            <span class="n">simplex_</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;simplex is not a part of the simplicial complex&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;`simplex` must be Hashable or Iterable.&quot;</span><span class="p">)</span>
+
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Simplex </span><span class="si">{</span><span class="n">simplex_</span><span class="si">}</span><span class="s2"> is not a part of the simplicial complex.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simplex </span><span class="si">{</span><span class="n">simplex_</span><span class="si">}</span><span class="s2"> is not maximal.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">remove_simplex</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.remove_nodes">
@@ -884,14 +833,8 @@
 <span class="sd">        &gt;&gt;&gt; SC.simplices</span>
 <span class="sd">        SimplexView([(2,), (3,), (4,), (2, 3), (3, 4)])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">removed_simplices</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">node</span> <span class="ow">in</span> <span class="n">simplex</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_set</span><span class="p">):</span>
-                <span class="n">removed_simplices</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-
-        <span class="c1"># Delete the simplices from largest to smallest. This way they are maximal when they are deleted.</span>
-        <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">removed_simplices</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">remove_maximal_simplex</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_set</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">remove_simplex</span><span class="p">((</span><span class="n">node</span><span class="p">,))</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.add_node">
@@ -921,7 +864,9 @@
 
 <div class="viewcode-block" id="SimplicialComplex.add_simplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.add_simplex">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Collection</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">add_simplex</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]</span> <span class="o">|</span> <span class="n">ElementType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add simplex to simplicial complex.</span>
 
 <span class="sd">        In case sub-simplices are missing, they are added without attributes to the</span>
@@ -950,34 +895,20 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">simplex</span> <span class="o">=</span> <span class="p">[</span><span class="n">simplex</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
-            <span class="n">elements</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span>
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">|</span> <span class="n">kwargs</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
-            <span class="n">elements</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a simplex cannot contain duplicate nodes&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Input simplex must be a collection or a `Simplex` object, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Input simplex must be Iterable or Simplex, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1"># if the simplex is already part of this complex, update its attributes</span>
-        <span class="k">if</span> <span class="n">elements</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">elements</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="n">Simplex</span><span class="p">):</span>
+            <span class="n">simplex_</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="n">simplex</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">|</span> <span class="n">kwargs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">simplex_</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex_</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a simplex cannot contain duplicate nodes&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_faces_dict_length</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">max_dim</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">max_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-
-        <span class="n">maximal_faces</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_update_faces_dict_entry</span><span class="p">(</span><span class="n">face</span><span class="p">,</span> <span class="n">elements</span><span class="p">,</span> <span class="n">maximal_faces</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="n">elements</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex_</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.add_simplices_from">
@@ -990,6 +921,28 @@
 <span class="sd">        simplices : iterable</span>
 <span class="sd">            Iterable of simplices to be added to the simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># for simplex in simplices:</span>
+        <span class="c1">#     if isinstance(simplex, Hashable) and not isinstance(simplex, Iterable):</span>
+        <span class="c1">#         simplex = [simplex]</span>
+        <span class="c1">#     if isinstance(simplex, str):</span>
+        <span class="c1">#         simplex = [simplex]</span>
+        <span class="c1">#</span>
+        <span class="c1">#     if not isinstance(simplex, Iterable) and not isinstance(simplex, Simplex):</span>
+        <span class="c1">#         raise TypeError(</span>
+        <span class="c1">#             f&quot;Input simplex must be Iterable or Simplex, got {type(simplex)} instead.&quot;</span>
+        <span class="c1">#         )</span>
+        <span class="c1">#</span>
+        <span class="c1">#     if isinstance(simplex, Simplex):</span>
+        <span class="c1">#         simplex_ = simplex.elements</span>
+        <span class="c1">#         attr = simplex._properties</span>
+        <span class="c1">#     else:</span>
+        <span class="c1">#         simplex_ = frozenset(simplex)</span>
+        <span class="c1">#         if len(simplex_) != len(simplex):</span>
+        <span class="c1">#             raise ValueError(&quot;a simplex cannot contain duplicate nodes&quot;)</span>
+        <span class="c1">#         attr = {}</span>
+        <span class="c1">#</span>
+        <span class="c1">#     self._simplex_trie.insert_raw(sorted(simplex_), **attr)</span>
+        <span class="c1"># self._simplex_trie.restore_simplex_property()</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">simplices</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_simplex</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
 
@@ -997,50 +950,50 @@
 <div class="viewcode-block" id="SimplicialComplex.get_cofaces">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_cofaces">[docs]</a>
     <span class="k">def</span> <span class="nf">get_cofaces</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">],</span> <span class="n">codimension</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">]:</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">],</span> <span class="n">codimension</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cofaces of simplex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        simplex : list, tuple or simplex</span>
-<span class="sd">            The simplex to get the cofaces of.</span>
+<span class="sd">        simplex : Iterable of AtomType</span>
+<span class="sd">            The simplex for which to compute the cofaces.</span>
 <span class="sd">        codimension : int</span>
-<span class="sd">            The codimension. If codimension = 0, all cofaces are returned.</span>
+<span class="sd">            The codimension of the returned cofaces. If zero, all cofaces are returned.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list of tuples</span>
 <span class="sd">            The cofaces of the given simplex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">entire_tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_boundaries</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">get_maximal_simplices_of_simplex</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="n">simplex</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">))</span>
+        <span class="c1"># TODO: This can be optimized inside the simplex trie.</span>
+        <span class="n">cofaces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">cofaces</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span>
-            <span class="n">i</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">entire_tree</span>
-            <span class="k">if</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">codimension</span>
+            <span class="n">coface</span><span class="o">.</span><span class="n">simplex</span>
+            <span class="k">for</span> <span class="n">coface</span> <span class="ow">in</span> <span class="n">cofaces</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coface</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">simplex</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">codimension</span>
         <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.get_star">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_star">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_star</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_star</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get star.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        simplex : list, tuple or simplex</span>
-<span class="sd">            The simplex represented by a list of its nodes.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list[frozenset]</span>
-<span class="sd">            The star of the given simplex.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        This function is equivalent to ``get_cofaces(simplex, 0)``.</span>
+<span class="sd">        This function is equivalent to calling `get_cofaces(simplex, 0)`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        simplex : Iterable of AtomType</span>
+<span class="sd">            The simplex for which to compute the star.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of tuples</span>
+<span class="sd">            The star of the given simplex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cofaces</span><span class="p">(</span><span class="n">simplex</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
@@ -1108,7 +1061,7 @@
 <div class="viewcode-block" id="SimplicialComplex.get_node_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_node_attributes">[docs]</a>
     <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from combinatorial complex.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1130,14 +1083,18 @@
 <span class="sd">        &gt;&gt;&gt; SC.get_node_attributes(&quot;color&quot;)</span>
 <span class="sd">        {1: &#39;red&#39;, 2: &#39;blue&#39;, 3: &#39;black&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="bp">self</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">n</span><span class="p">]}</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">label</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">attributes</span>
+        <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.get_simplex_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_simplex_attributes">[docs]</a>
     <span class="k">def</span> <span class="nf">get_simplex_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ElementType</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from simplical complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1161,16 +1118,18 @@
 <span class="sd">        &gt;&gt;&gt; d = {(1, 2): &quot;red&quot;, (2, 3): &quot;blue&quot;, (3, 4): &quot;black&quot;}</span>
 <span class="sd">        &gt;&gt;&gt; SC.set_simplex_attributes(d, name=&quot;color&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; SC.get_simplex_attributes(&quot;color&quot;)</span>
-<span class="sd">        {frozenset({1, 2}): &#39;red&#39;, frozenset({2, 3}): &#39;blue&#39;, frozenset({3, 4}): &#39;black&#39;}</span>
+<span class="sd">        {(1, 2): &#39;red&#39;, (2, 3): &#39;blue&#39;, (3, 4): &#39;black&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span>
-                <span class="n">n</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
                 <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span>
                 <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
             <span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="n">n</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
+            <span class="n">n</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
         <span class="p">}</span></div>
 
 
@@ -1255,24 +1214,25 @@
                 <span class="sa">f</span><span class="s2">&quot;Rank cannot be larger than the dimension of the complex, got </span><span class="si">{</span><span class="n">rank</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
+        <span class="c1"># TODO: Get rid of this special case...</span>
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">boundary</span> <span class="o">=</span> <span class="n">dok_matrix</span><span class="p">(</span>
-                <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span>
-            <span class="p">)</span>
-            <span class="n">boundary</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_set</span><span class="o">.</span><span class="n">faces_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">boundary</span> <span class="o">=</span> <span class="n">dok_matrix</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">rank</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">boundary</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">rank</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
 
             <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
                 <span class="n">simplex_dict_d</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">simplex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+                    <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
                 <span class="p">}</span>
                 <span class="k">return</span> <span class="p">{},</span> <span class="n">simplex_dict_d</span><span class="p">,</span> <span class="n">boundary</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">boundary</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
-
         <span class="n">idx_simplices</span><span class="p">,</span> <span class="n">idx_faces</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
 
-        <span class="n">simplex_dict_d</span> <span class="o">=</span> <span class="p">{</span><span class="n">simplex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">))}</span>
+        <span class="n">simplex_dict_d</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">)):</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">))</span>
+        <span class="p">}</span>
         <span class="n">simplex_dict_d_minus_1</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">simplex</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">)):</span> <span class="n">i</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
         <span class="p">}</span>
         <span class="k">for</span> <span class="n">simplex</span><span class="p">,</span> <span class="n">idx_simplex</span> <span class="ow">in</span> <span class="n">simplex_dict_d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">left_out</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">simplex</span><span class="p">))):</span>
@@ -1293,22 +1253,11 @@
             <span class="p">),</span>
         <span class="p">)</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">signed</span><span class="p">:</span>
+            <span class="n">boundary</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">boundary</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">signed</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">(</span>
-                    <span class="n">simplex_dict_d_minus_1</span><span class="p">,</span>
-                    <span class="n">simplex_dict_d</span><span class="p">,</span>
-                    <span class="n">boundary</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">return</span> <span class="p">(</span>
-                <span class="n">simplex_dict_d_minus_1</span><span class="p">,</span>
-                <span class="n">simplex_dict_d</span><span class="p">,</span>
-                <span class="nb">abs</span><span class="p">(</span><span class="n">boundary</span><span class="p">),</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">signed</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">boundary</span>
-        <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">boundary</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">simplex_dict_d_minus_1</span><span class="p">,</span> <span class="n">simplex_dict_d</span><span class="p">,</span> <span class="n">boundary</span>
+        <span class="k">return</span> <span class="n">boundary</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.coincidence_matrix">
@@ -1782,7 +1731,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.restrict_to_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.restrict_to_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex[ElementType]&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a new simplicial complex by restricting the simplices.</span>
 
 <span class="sd">        The simplices are restricted to the nodes referenced by node_set.</span>
@@ -1799,10 +1748,7 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; c1 = tnx.Simplex((1, 2, 3))</span>
-<span class="sd">        &gt;&gt;&gt; c2 = tnx.Simplex((1, 2, 4))</span>
-<span class="sd">        &gt;&gt;&gt; c3 = tnx.Simplex((1, 2, 5))</span>
-<span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex([c1, c2, c3])</span>
+<span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex([(1, 2, 3), (1, 2, 4), (1, 2, 5)])</span>
 <span class="sd">        &gt;&gt;&gt; new_complex = SC.restrict_to_nodes([1, 2, 3, 4])</span>
 <span class="sd">        &gt;&gt;&gt; new_complex.simplices</span>
 <span class="sd">        SimplexView([(1,), (2,), (3,), (4,), (1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (1, 2, 3), (1, 2, 4)])</span>
@@ -1821,7 +1767,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.get_all_maximal_simplices">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_all_maximal_simplices">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_all_maximal_simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_all_maximal_simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all maximal simplices of this simplicial complex.</span>
 
 <span class="sd">        A simplex is maximal if it is not a face of any other simplex in the complex.</span>
@@ -1837,7 +1783,10 @@
 <span class="sd">        &gt;&gt;&gt; SC.get_all_maximal_simplices()</span>
 <span class="sd">        [(2, 5), (1, 2, 3), (1, 2, 4)]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplices</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_maximal</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span></div>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="p">:</span>
+            <span class="n">simplex</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">simplex</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_maximal</span><span class="p">(</span><span class="n">simplex</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">simplex</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.from_spharpy">
@@ -2066,10 +2015,9 @@
                 <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
             <span class="p">)</span>
         <span class="p">)</span>
+        <span class="n">faces</span> <span class="o">=</span> <span class="p">[</span><span class="n">simplex</span><span class="o">.</span><span class="n">elements</span> <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">()]</span>
 
-        <span class="k">return</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span><span class="p">(</span>
-            <span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">faces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">(),</span> <span class="n">process</span><span class="o">=</span><span class="kc">False</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span><span class="p">(</span><span class="n">faces</span><span class="o">=</span><span class="n">faces</span><span class="p">,</span> <span class="n">vertices</span><span class="o">=</span><span class="n">vertices</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.to_spharapy">
@@ -2120,8 +2068,9 @@
                 <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_node_attributes</span><span class="p">(</span><span class="n">vertex_position_name</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
             <span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
         <span class="p">)</span>
+        <span class="n">triangles</span> <span class="o">=</span> <span class="p">[</span><span class="n">simplex</span><span class="o">.</span><span class="n">elements</span> <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">()]</span>
 
-        <span class="k">return</span> <span class="n">tm</span><span class="o">.</span><span class="n">TriMesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">(),</span> <span class="n">vertices</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">tm</span><span class="o">.</span><span class="n">TriMesh</span><span class="p">(</span><span class="n">triangles</span><span class="p">,</span> <span class="n">vertices</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.laplace_beltrami_operator">
@@ -2197,12 +2146,7 @@
 <span class="sd">        -----</span>
 <span class="sd">        A simplicial complex is connected iff its 1-skeleton is connected.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edge</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
-            <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">node</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph_skeleton</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.simplicial_closure_of_hypergraph">
@@ -2254,7 +2198,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">toponetx.classes.cell_complex</span> <span class="kn">import</span> <span class="n">CellComplex</span>
 
-        <span class="k">return</span> <span class="n">CellComplex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="n">CellComplex</span><span class="p">(</span>
+            <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span> <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">()</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.to_hypergraph">
@@ -2326,7 +2272,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
-            <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">**</span><span class="bp">self</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;node&quot;</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">node</span><span class="p">)),</span> <span class="o">**</span><span class="bp">self</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="o">*</span><span class="n">edge</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="p">[</span><span class="n">edge</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">G</span></div>
