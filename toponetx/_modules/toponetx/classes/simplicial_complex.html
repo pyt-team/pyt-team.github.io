@@ -1789,10 +1789,10 @@
                 <span class="k">yield</span> <span class="n">simplex</span></div>
 
 
-<div class="viewcode-block" id="SimplicialComplex.from_spharpy">
-<a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_spharpy">[docs]</a>
+<div class="viewcode-block" id="SimplicialComplex.from_spharapy">
+<a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_spharapy">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_spharpy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_spharapy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from sharpy.</span>
 
 <span class="sd">        Parameters</span>
@@ -1814,7 +1814,7 @@
 <span class="sd">        ...     [[0, 1, 2]], [[1.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 3.0]]</span>
 <span class="sd">        ... )</span>
 
-<span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex.from_spharpy(mesh)</span>
+<span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex.from_spharapy(mesh)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">vertlist</span><span class="p">)</span>
         <span class="n">SC</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">trilist</span><span class="p">)</span>
@@ -1830,6 +1830,26 @@
             <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">SC</span></div>
+
+
+<div class="viewcode-block" id="SimplicialComplex.from_spharpy">
+<a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_spharpy">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;`SimplicialComplex.from_spharpy` is deprecated and will be removed in the future, use `SimplicialComplex.from_spharapy` instead.&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">from_spharpy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from sharpy.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mesh : spharapy.trimesh.TriMesh</span>
+<span class="sd">            The input spharapy object.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        SimplicialComplex</span>
+<span class="sd">            The resulting SimplicialComplex.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_spharapy</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimplicialComplex.to_hasse_graph">
@@ -2023,7 +2043,7 @@
 <div class="viewcode-block" id="SimplicialComplex.to_spharapy">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.to_spharapy">[docs]</a>
     <span class="k">def</span> <span class="nf">to_spharapy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex_position_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;position&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to sharapy.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to spharapy.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -2046,7 +2066,7 @@
 <span class="sd">        &gt;&gt;&gt; import spharapy.spharabasis as sb</span>
 <span class="sd">        &gt;&gt;&gt; import spharapy.datasets as sd</span>
 <span class="sd">        &gt;&gt;&gt; mesh = tm.TriMesh([[0, 1, 2]], [[0, 0, 0], [0, 0, 1], [0, 1, 0]])</span>
-<span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex.from_spharpy(mesh)</span>
+<span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex.from_spharapy(mesh)</span>
 <span class="sd">        &gt;&gt;&gt; mesh2 = SC.to_spharapy()</span>
 <span class="sd">        &gt;&gt;&gt; mesh2.vertlist == mesh.vertlist</span>
 <span class="sd">        &gt;&gt;&gt; mesh2.trilist == mesh.trilist</span>
