@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
   
@@ -354,27 +354,27 @@
 <span class="sd">The class also supports attaching arbitrary attributes and data to cells.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span>
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">dok_matrix</span>
-<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Self</span><span class="p">,</span> <span class="n">deprecated</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">dok_matrix</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span><span class="p">,</span> <span class="n">deprecated</span>
 
-<span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">NodeView</span><span class="p">,</span> <span class="n">SimplexView</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.simplex</span> <span class="kn">import</span> <span class="n">Simplex</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.simplex_trie</span> <span class="kn">import</span> <span class="n">SimplexTrie</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.complex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Complex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.reportviews</span><span class="w"> </span><span class="kn">import</span> <span class="n">NodeView</span><span class="p">,</span> <span class="n">SimplexView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.simplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simplex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.simplex_trie</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimplexTrie</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">gudhi</span> <span class="kn">import</span> <span class="n">SimplexTree</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">gudhi</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimplexTree</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">SimplexTree</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">hypernetx</span> <span class="kn">import</span> <span class="n">Hypergraph</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">hypernetx</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hypergraph</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">Hypergraph</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -387,7 +387,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex">[docs]</a>
-<span class="k">class</span> <span class="nc">SimplicialComplex</span><span class="p">(</span><span class="n">Complex</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimplicialComplex</span><span class="p">(</span><span class="n">Complex</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a simplicial complex.</span>
 
 <span class="sd">    Class for construction boundary operators, Hodge Laplacians,</span>
@@ -469,7 +469,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.__init__">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span> <span class="o">=</span> <span class="n">SimplexTrie</span><span class="p">()</span>
@@ -494,7 +494,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shape of simplicial complex, i.e., the number of simplices for each dimension.</span>
 
 <span class="sd">        Returns</span>
@@ -511,7 +511,7 @@
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Maximal dimension of the simplices in this complex.</span>
 
 <span class="sd">        Returns</span>
@@ -531,7 +531,7 @@
     <span class="nd">@deprecated</span><span class="p">(</span>
         <span class="s2">&quot;`SimplicialComplex.maxdim` is deprecated and will be removed in the future, use `SimplicialComplex.dim` instead.&quot;</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">maxdim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxdim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Maximum dimension of the simplicial complex.</span>
 
 <span class="sd">        This is the highest dimension of any simplex in the complex.</span>
@@ -544,7 +544,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeView</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of nodes in the simplicial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -561,7 +561,7 @@
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplexView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplexView</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set of all simplices in the simplicial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -573,7 +573,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.is_maximal">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.is_maximal">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_maximal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_maximal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if simplex is maximal, i.e., not a face of any other simplex in the complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -605,7 +605,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.get_maximal_simplices_of_simplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_maximal_simplices_of_simplex">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_maximal_simplices_of_simplex</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_maximal_simplices_of_simplex</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get maximal simplices of simplex.</span>
@@ -629,7 +629,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.skeleton">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.skeleton">[docs]</a>
-    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the rank-skeleton of the simplicial complex containing simplices of given rank.</span>
 
 <span class="sd">        Parameters</span>
@@ -645,7 +645,7 @@
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">simplex</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="n">rank</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a detailed string representation of the simplicial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -656,7 +656,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Simplicial Complex with shape </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> and dimension </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a string representation of the simplicial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -666,7 +666,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;SimplicialComplex()&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute number of simplices.</span>
 
 <span class="sd">        Returns</span>
@@ -676,7 +676,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the data associated with the given simplex.</span>
 
 <span class="sd">        Parameters</span>
@@ -698,7 +698,7 @@
             <span class="n">simplex</span> <span class="o">=</span> <span class="p">(</span><span class="n">simplex</span><span class="p">,)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simplex_trie</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">simplex</span><span class="p">))]</span><span class="o">.</span><span class="n">attributes</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all simplices (faces) of the simplicial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -713,7 +713,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">simplices</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether this simplicial complex contains the given atom.</span>
 
 <span class="sd">        Parameters</span>
@@ -733,7 +733,7 @@
 <div class="viewcode-block" id="SimplicialComplex.get_boundaries">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_boundaries">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_boundaries</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_boundaries</span><span class="p">(</span>
         <span class="n">simplices</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">min_dim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_dim</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get boundaries of the given simplices.</span>
@@ -774,7 +774,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.remove_maximal_simplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.remove_maximal_simplex">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_maximal_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_maximal_simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove maximal simplex from simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -816,7 +816,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.remove_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.remove_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the given nodes from the simplicial complex.</span>
 
 <span class="sd">        Any simplices that become invalid due to the removal of nodes are also removed.</span>
@@ -839,7 +839,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.add_node">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.add_node">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add node to simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -864,7 +864,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.add_simplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.add_simplex">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_simplex</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_simplex</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]</span> <span class="o">|</span> <span class="n">ElementType</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add simplex to simplicial complex.</span>
@@ -913,7 +913,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.add_simplices_from">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.add_simplices_from">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_simplices_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplices</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_simplices_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplices</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add simplices from iterable to simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -949,7 +949,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.get_cofaces">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_cofaces">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cofaces</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cofaces</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">],</span> <span class="n">codimension</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cofaces of simplex.</span>
@@ -978,7 +978,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.get_star">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_star">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_star</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_star</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simplex</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ElementType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get star.</span>
 
 <span class="sd">        Notes</span>
@@ -1000,7 +1000,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.set_simplex_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.set_simplex_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_simplex_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_simplex_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set simplex attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1060,7 +1060,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.get_node_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_node_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1092,7 +1092,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.get_simplex_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_simplex_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_simplex_attributes</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_simplex_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">ElementType</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from simplical complex.</span>
@@ -1136,7 +1136,7 @@
 <div class="viewcode-block" id="SimplicialComplex.get_edges_from_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_edges_from_matrix">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_edges_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_edges_from_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get edges from matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1166,7 +1166,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.incidence_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.incidence_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">csr_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">csr_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute incidence matrix of the simplicial complex.</span>
@@ -1262,7 +1262,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.coincidence_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.coincidence_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">coincidence_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">coincidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute coincidence matrix of the simplicial complex.</span>
@@ -1301,7 +1301,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.hodge_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.hodge_laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">hodge_laplacian_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hodge_laplacian_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute hodge-laplacian matrix for the simplicial complex.</span>
@@ -1372,7 +1372,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.dirac_operator_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.dirac_operator_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">dirac_operator_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dirac_operator_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1407,7 +1407,7 @@
 <span class="sd">        &gt;&gt;&gt; SC.add_simplex([3, 4, 8])</span>
 <span class="sd">        &gt;&gt;&gt; SC.dirac_operator_matrix()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">bmat</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">bmat</span>
 
         <span class="n">index_set</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">incidence</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1447,7 +1447,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.normalized_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.normalized_laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">normalized_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">normalized_laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the normalized hodge Laplacian matrix of simplicial complex .</span>
 
 <span class="sd">        The normalized hodge Laplacian is the matrix</span>
@@ -1476,7 +1476,7 @@
 <span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex([[1, 2, 3], [2, 3, 5], [0, 1]])</span>
 <span class="sd">        &gt;&gt;&gt; SC.normalized_laplacian_matrix(1)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
 
         <span class="n">L_hodge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hodge_laplacian_matrix</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">L_hodge</span><span class="o">.</span><span class="n">shape</span>
@@ -1494,7 +1494,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.up_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.up_laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">up_laplacian_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">up_laplacian_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1550,7 +1550,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.down_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.down_laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">down_laplacian_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">down_laplacian_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the down Laplacian matrix of the simplicial complex.</span>
@@ -1594,7 +1594,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.adjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.adjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">adjacency_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the adjacency matrix of the simplicial complex.</span>
@@ -1645,7 +1645,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.coadjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.coadjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">coadjacency_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coadjacency matrix of the simplicial complex.</span>
@@ -1687,7 +1687,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.add_elements_from_nx_graph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.add_elements_from_nx_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_elements_from_nx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_elements_from_nx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add elements from a networkx graph to this simplicial complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1701,7 +1701,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.restrict_to_simplices">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.restrict_to_simplices">[docs]</a>
-    <span class="k">def</span> <span class="nf">restrict_to_simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restrict_to_simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a simplicial complex using a subset of the simplices.</span>
 
 <span class="sd">        Parameters</span>
@@ -1731,7 +1731,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.restrict_to_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.restrict_to_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex[ElementType]&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SimplicialComplex[ElementType]&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a new simplicial complex by restricting the simplices.</span>
 
 <span class="sd">        The simplices are restricted to the nodes referenced by node_set.</span>
@@ -1767,7 +1767,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.get_all_maximal_simplices">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.get_all_maximal_simplices">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_all_maximal_simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_maximal_simplices</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Simplex</span><span class="p">[</span><span class="n">ElementType</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all maximal simplices of this simplicial complex.</span>
 
 <span class="sd">        A simplex is maximal if it is not a face of any other simplex in the complex.</span>
@@ -1792,7 +1792,7 @@
 <div class="viewcode-block" id="SimplicialComplex.from_spharapy">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_spharapy">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_spharapy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_spharapy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from sharpy.</span>
 
 <span class="sd">        Parameters</span>
@@ -1836,7 +1836,7 @@
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_spharpy">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="nd">@deprecated</span><span class="p">(</span><span class="s2">&quot;`SimplicialComplex.from_spharpy` is deprecated and will be removed in the future, use `SimplicialComplex.from_spharapy` instead.&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">from_spharpy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_spharpy</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from sharpy.</span>
 
 <span class="sd">        Parameters</span>
@@ -1854,7 +1854,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.to_hasse_graph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.to_hasse_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_hasse_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_hasse_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the hasse graph corresponding to this simplicial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -1882,7 +1882,7 @@
 <div class="viewcode-block" id="SimplicialComplex.from_gudhi">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_gudhi">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_gudhi</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tree</span><span class="p">:</span> <span class="n">SimplexTree</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_gudhi</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">tree</span><span class="p">:</span> <span class="n">SimplexTree</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from gudhi.</span>
 
 <span class="sd">        Parameters</span>
@@ -1911,7 +1911,7 @@
 <div class="viewcode-block" id="SimplicialComplex.from_trimesh">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_trimesh">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_trimesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_trimesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from trimesh.</span>
 
 <span class="sd">        Parameters</span>
@@ -1958,7 +1958,7 @@
 <div class="viewcode-block" id="SimplicialComplex.load_mesh">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.load_mesh">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a mesh.</span>
 
 <span class="sd">        Parameters</span>
@@ -1982,7 +1982,7 @@
 <span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex.load_mesh(&quot;C:/temp/stanford-bunny.obj&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; SC.nodes</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">trimesh</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">trimesh</span>
 
         <span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load_mesh</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="n">process</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_trimesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
@@ -1990,7 +1990,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.is_triangular_mesh">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.is_triangular_mesh">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_triangular_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_triangular_mesh</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the simplicial complex is a triangular mesh.</span>
 
 <span class="sd">        Returns</span>
@@ -2008,7 +2008,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.to_trimesh">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.to_trimesh">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_trimesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex_position_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;position&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_trimesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex_position_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;position&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert simplicial complex to trimesh object.</span>
 
 <span class="sd">        Parameters</span>
@@ -2021,7 +2021,7 @@
 <span class="sd">        trimesh.Trimesh</span>
 <span class="sd">            The trimesh object corresponding to this simplicial complex.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">trimesh</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">trimesh</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_triangular_mesh</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -2042,7 +2042,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.to_spharapy">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.to_spharapy">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_spharapy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex_position_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;position&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_spharapy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertex_position_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;position&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to spharapy.</span>
 
 <span class="sd">        Parameters</span>
@@ -2072,11 +2072,11 @@
 <span class="sd">        &gt;&gt;&gt; mesh2.trilist == mesh.trilist</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">spharapy.trimesh</span> <span class="k">as</span> <span class="nn">tm</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">spharapy.trimesh</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tm</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s2">&quot;Package `spharapy` is required for this function.&quot;</span>
-            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_triangular_mesh</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
@@ -2095,7 +2095,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.laplace_beltrami_operator">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.laplace_beltrami_operator">[docs]</a>
-    <span class="k">def</span> <span class="nf">laplace_beltrami_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;inv_euclidean&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">laplace_beltrami_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;inv_euclidean&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute a laplacian matrix for a triangular mesh.</span>
 
 <span class="sd">        The method creates a laplacian matrix for a triangular</span>
@@ -2127,7 +2127,7 @@
 <div class="viewcode-block" id="SimplicialComplex.from_nx">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.from_nx">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_nx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_nx</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert from netwrokx graph.</span>
 
 <span class="sd">        Parameters</span>
@@ -2154,7 +2154,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.is_connected">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.is_connected">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the simplicial complex is connected.</span>
 
 <span class="sd">        Returns</span>
@@ -2172,7 +2172,7 @@
 <div class="viewcode-block" id="SimplicialComplex.simplicial_closure_of_hypergraph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.simplicial_closure_of_hypergraph">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">simplicial_closure_of_hypergraph</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">simplicial_closure_of_hypergraph</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the simplicial complex closure of a hypergraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -2200,7 +2200,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.to_cell_complex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.to_cell_complex">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_cell_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_cell_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a simplicial complex to a cell complex.</span>
 
 <span class="sd">        Returns</span>
@@ -2216,7 +2216,7 @@
 <span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex([c1, c2, c3])</span>
 <span class="sd">        &gt;&gt;&gt; SC.to_cell_complex()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">toponetx.classes.cell_complex</span> <span class="kn">import</span> <span class="n">CellComplex</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.cell_complex</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellComplex</span>
 
         <span class="k">return</span> <span class="n">CellComplex</span><span class="p">(</span>
             <span class="n">simplex</span><span class="o">.</span><span class="n">elements</span> <span class="k">for</span> <span class="n">simplex</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_maximal_simplices</span><span class="p">()</span>
@@ -2225,7 +2225,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.to_hypergraph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.to_hypergraph">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hypergraph</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hypergraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a simplicial complex to a hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -2252,7 +2252,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.to_combinatorial_complex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.to_combinatorial_complex">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_combinatorial_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_combinatorial_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a simplicial complex to a combinatorial complex.</span>
 
 <span class="sd">        Returns</span>
@@ -2268,7 +2268,7 @@
 <span class="sd">        &gt;&gt;&gt; SC = tnx.SimplicialComplex([c1, c2, c3])</span>
 <span class="sd">        &gt;&gt;&gt; CCC = SC.to_combinatorial_complex()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">toponetx.classes.combinatorial_complex</span> <span class="kn">import</span> <span class="n">CombinatorialComplex</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.combinatorial_complex</span><span class="w"> </span><span class="kn">import</span> <span class="n">CombinatorialComplex</span>
 
         <span class="n">CCC</span> <span class="o">=</span> <span class="n">CombinatorialComplex</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">rank</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -2279,7 +2279,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.graph_skeleton">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.graph_skeleton">[docs]</a>
-    <span class="k">def</span> <span class="nf">graph_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">graph_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the graph-skeleton of this simplicial complex.</span>
 
 <span class="sd">        The graph-skeleton consists of the 0 and 1-simplices (i.e., nodes and edges)</span>
@@ -2301,7 +2301,7 @@
 
 <div class="viewcode-block" id="SimplicialComplex.clone">
 <a class="viewcode-back" href="../../../api/generated/toponetx.SimplicialComplex.html#toponetx.SimplicialComplex.clone">[docs]</a>
-    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of the simplicial complex.</span>
 
 <span class="sd">        The clone method by default returns an independent shallow copy of the</span>

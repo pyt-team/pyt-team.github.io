@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
   
@@ -351,22 +351,22 @@
   <h1>Source code for toponetx.classes.colored_hypergraph</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Creation and manipulation of a Colored Hypergraph.&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span>
-<span class="kn">import</span> <span class="nn">trimesh</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_array</span><span class="p">,</span> <span class="n">diags</span>
-<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Self</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">trimesh</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_array</span><span class="p">,</span> <span class="n">diags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span>
 
-<span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.hyperedge</span> <span class="kn">import</span> <span class="n">HyperEdge</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">ColoredHyperEdgeView</span><span class="p">,</span> <span class="n">NodeView</span>
-<span class="kn">from</span> <span class="nn">toponetx.utils.structure</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.complex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Complex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.hyperedge</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyperEdge</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.reportviews</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColoredHyperEdgeView</span><span class="p">,</span> <span class="n">NodeView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.utils.structure</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">compute_set_incidence</span><span class="p">,</span>
     <span class="n">incidence_to_adjacency</span><span class="p">,</span>
     <span class="n">sparse_array_to_neighborhood_dict</span><span class="p">,</span>
@@ -377,7 +377,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph">[docs]</a>
-<span class="k">class</span> <span class="nc">ColoredHyperGraph</span><span class="p">(</span><span class="n">Complex</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ColoredHyperGraph</span><span class="p">(</span><span class="n">Complex</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for ColoredHyperGraph Complex.</span>
 
 <span class="sd">    A Colored Hypergraph (CHG) is a triplet CHG = (S, X, c) where:</span>
@@ -436,7 +436,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.__init__">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cells</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">ranks</span><span class="p">:</span> <span class="n">Collection</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -475,7 +475,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cells</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Object associated with self._cells.</span>
 
 <span class="sd">        Returns</span>
@@ -486,7 +486,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Object associated with self.elements.</span>
 
 <span class="sd">        Returns</span>
@@ -501,7 +501,7 @@
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">incidence_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incidence_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict keyed by cell uids with values the uids of nodes in each cell.</span>
 
 <span class="sd">        Returns</span>
@@ -512,7 +512,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shape.</span>
 
 <span class="sd">        This is:</span>
@@ -527,7 +527,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.skeleton">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.skeleton">[docs]</a>
-    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return skeleton.</span>
 
 <span class="sd">        Parameters</span>
@@ -544,7 +544,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ranks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ranks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the sorted list of ranks in the colored hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -555,7 +555,7 @@
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">allranks</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the dimension of the colored hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -568,7 +568,7 @@
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">allranks</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">__shortstr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__shortstr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the short string generic representation of the colored hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -578,7 +578,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;CHG&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a detailed string representation of the colored hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -588,7 +588,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Colored Hypergraph with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes and hyperedges with colors </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ranks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> and sizes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="si">}</span><span class="s2"> &quot;</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a string representation of the colored hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -598,7 +598,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;ColoredHyperGraph()&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of nodes in the colored hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -608,7 +608,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over the nodes.</span>
 
 <span class="sd">        Returns</span>
@@ -624,7 +624,7 @@
             <span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether this colored hypergraph contains the given atom.</span>
 
 <span class="sd">        Parameters</span>
@@ -639,7 +639,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the user-defined attributes associated with the given atom.</span>
 
 <span class="sd">        Writing to the returned dictionary will update the user-defined attributes</span>
@@ -664,7 +664,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.size">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.size">[docs]</a>
-    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in the colored hypergraph that belong to a specific cell.</span>
 
 <span class="sd">        Parameters</span>
@@ -689,7 +689,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.number_of_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.number_of_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">number_of_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number_of_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in node_set belonging to the CHG.</span>
 
 <span class="sd">        Parameters</span>
@@ -709,7 +709,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.number_of_cells">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.number_of_cells">[docs]</a>
-    <span class="k">def</span> <span class="nf">number_of_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number_of_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of cells in the colored hypergraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -730,7 +730,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.order">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.order">[docs]</a>
-    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in the CHG.</span>
 
 <span class="sd">        Returns</span>
@@ -743,7 +743,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.degree">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.degree">[docs]</a>
-    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of cells of certain rank (or all ranks) that contain node.</span>
 
 <span class="sd">        Parameters</span>
@@ -797,7 +797,7 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a node from the ColoredHyperGraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -829,7 +829,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.remove_node">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.remove_node">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a node from the ColoredHyperGraph.</span>
 
 <span class="sd">        This method removes a node from the cells and deletes any reference in the nodes of the CHG.</span>
@@ -850,7 +850,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.remove_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.remove_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove nodes from cells.</span>
 
 <span class="sd">        This also deletes references in colored hypergraph nodes.</span>
@@ -874,7 +874,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_remove_node_helper</span><span class="p">(</span><span class="n">copy_set</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_remove_node_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_node_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove node from cells.</span>
 
 <span class="sd">        This function assumes that the node is present in the CHG.</span>
@@ -902,7 +902,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="p">{}:</span>
                 <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_add_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add hyperedge.</span>
 
 <span class="sd">        Parameters</span>
@@ -972,7 +972,7 @@
         <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">hyperedge_set</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">hyperedge_set</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">attr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_remove_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a hyperedge from the CHG.</span>
 
 <span class="sd">        Parameters</span>
@@ -988,7 +988,7 @@
         <span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">get_rank</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_set</span><span class="o">.</span><span class="n">hyperedge_dict</span><span class="p">[</span><span class="n">rank</span><span class="p">][</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">hyperedge</span><span class="p">)]</span>
 
-    <span class="k">def</span> <span class="nf">_add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add one node as a hyperedge.</span>
 
 <span class="sd">        Parameters</span>
@@ -1010,7 +1010,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.add_node">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.add_node">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a node.</span>
 
 <span class="sd">        Parameters</span>
@@ -1030,7 +1030,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.set_node_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.set_node_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set node attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1059,7 +1059,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.set_cell_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.set_cell_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set cell attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1118,7 +1118,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.get_node_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.get_node_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1156,7 +1156,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.get_cell_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.get_cell_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cell_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get cell attributes from the colored hypergraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1199,7 +1199,7 @@
         <span class="p">}</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_add_nodes_of_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_nodes_of_hyperedge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add nodes of a hyperedge to the CHG.</span>
 
 <span class="sd">        Parameters</span>
@@ -1221,7 +1221,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.new_hyperedge_key">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.new_hyperedge_key">[docs]</a>
-    <span class="k">def</span> <span class="nf">new_hyperedge_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">,</span> <span class="n">rank</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_hyperedge_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge</span><span class="p">,</span> <span class="n">rank</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new key for the given hyperedge.</span>
 
 <span class="sd">        Notes</span>
@@ -1254,7 +1254,7 @@
         <span class="k">return</span> <span class="n">key</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_add_hyperedge_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_hyperedge_helper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hyperedge_</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add hyperedge to the ColoredHyperGraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1290,7 +1290,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.add_cell">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.add_cell">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single cell to Colored Hypergraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1322,7 +1322,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.add_cells_from">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.add_cells_from">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_cells_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">ranks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cells_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">ranks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add cells to Colored Hypergraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1354,7 +1354,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.remove_cell">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.remove_cell">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a single cell from the ColoredHyperGraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1378,7 +1378,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.get_incidence_structure_dict">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.get_incidence_structure_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_incidence_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the incidence structure dictionary for cells of rank i and j.</span>
 
 <span class="sd">        Parameters</span>
@@ -1402,7 +1402,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.get_adjacency_structure_dict">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.get_adjacency_structure_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_adjacency_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_adjacency_structure_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the adjacency structure dictionary for cells of rank i and j.</span>
 
 <span class="sd">        Parameters</span>
@@ -1426,7 +1426,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.remove_cells">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.remove_cells">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove cells from this colored hypergraph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1440,7 +1440,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.incidence_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.incidence_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">to_rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -1487,7 +1487,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.node_to_all_cell_incidence_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.node_to_all_cell_incidence_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">node_to_all_cell_incidence_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">node_to_all_cell_incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Nodes/all cells incidence matrix for the indexed by nodes X cells.</span>
@@ -1520,7 +1520,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.all_ranks_incidence_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.all_ranks_incidence_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_ranks_incidence_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_ranks_incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">,</span>
         <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1567,7 +1567,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.adjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.adjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">adjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sparse weighted s-adjacency matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1611,7 +1611,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.all_cell_to_node_coadjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.all_cell_to_node_coadjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_cell_to_node_coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_cell_to_node_coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the cell co-adjacency matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1637,7 +1637,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.node_to_all_cell_adjacnecy_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.node_to_all_cell_adjacnecy_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the node/all cell adjacency matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1663,7 +1663,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.coadjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.coadjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">coadjacency_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">via_rank</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the coadjacency matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1698,7 +1698,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.degree_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.degree_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">degree_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">degree_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the node-degree matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1732,7 +1732,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">laplacian_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute Laplacian matrix.</span>
 
 <span class="sd">        Parameters</span>
@@ -1783,7 +1783,7 @@
 <div class="viewcode-block" id="ColoredHyperGraph.from_trimesh">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.from_trimesh">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_trimesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">:</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_trimesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">:</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">Trimesh</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Import from a trimesh.</span>
 
 <span class="sd">        Parameters</span>
@@ -1807,7 +1807,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.restrict_to_cells">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.restrict_to_cells">[docs]</a>
-    <span class="k">def</span> <span class="nf">restrict_to_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restrict_to_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a Colored Hypergraph using a subset of the cells.</span>
 
 <span class="sd">        Parameters</span>
@@ -1834,7 +1834,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.restrict_to_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.restrict_to_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict to a set of nodes.</span>
 
 <span class="sd">        Constructs a new Colored Hypergraph by restricting the</span>
@@ -1864,7 +1864,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.from_networkx_graph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.from_networkx_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">from_networkx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_networkx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a Colored Hypergraph from a networkx graph.</span>
 
 <span class="sd">        Parameters</span>
@@ -1897,7 +1897,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.singletons">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.singletons">[docs]</a>
-    <span class="k">def</span> <span class="nf">singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of singleton cell.</span>
 
 <span class="sd">        A singleton cell is a cell of</span>
@@ -1920,7 +1920,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.remove_singletons">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.remove_singletons">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct new CHG with singleton cells removed.</span>
 
 <span class="sd">        Returns</span>
@@ -1934,7 +1934,7 @@
 
 <div class="viewcode-block" id="ColoredHyperGraph.clone">
 <a class="viewcode-back" href="../../../api/generated/toponetx.ColoredHyperGraph.html#toponetx.ColoredHyperGraph.clone">[docs]</a>
-    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a copy of the simplex.</span>
 
 <span class="sd">        The clone method by default returns an independent shallow copy of the simplex</span>

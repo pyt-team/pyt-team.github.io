@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
   
@@ -351,13 +351,13 @@
   <h1>Source code for toponetx.readwrite.atomlist</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Read and write complexes as a list of their atoms.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">overload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">overload</span>
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
-<span class="kn">from</span> <span class="nn">toponetx.classes</span> <span class="kn">import</span> <span class="n">CellComplex</span><span class="p">,</span> <span class="n">SimplicialComplex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellComplex</span><span class="p">,</span> <span class="n">SimplicialComplex</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;generate_atomlist&quot;</span><span class="p">,</span>
@@ -367,7 +367,7 @@
 <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_atomlist_line</span><span class="p">(</span><span class="n">atom</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">attributes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_atomlist_line</span><span class="p">(</span><span class="n">atom</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">attributes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct a single line of an atom list.</span>
 
 <span class="sd">    Parameters</span>
@@ -390,7 +390,7 @@
     <span class="k">return</span> <span class="n">line</span>
 
 
-<span class="k">def</span> <span class="nf">_generate_atomlist_simplicial</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_atomlist_simplicial</span><span class="p">(</span>
     <span class="n">domain</span><span class="p">:</span> <span class="n">SimplicialComplex</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an atom list from a simplicial complex.</span>
@@ -419,7 +419,7 @@
         <span class="k">yield</span> <span class="n">_atomlist_line</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_generate_atomlist_cell</span><span class="p">(</span><span class="n">domain</span><span class="p">:</span> <span class="n">CellComplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_atomlist_cell</span><span class="p">(</span><span class="n">domain</span><span class="p">:</span> <span class="n">CellComplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an atom list from a cell complex.</span>
 
 <span class="sd">    The list of atoms is truncated to only contain maximal cells and cells with user-defined attributes. All</span>
@@ -457,7 +457,7 @@
 
 <div class="viewcode-block" id="generate_atomlist">
 <a class="viewcode-back" href="../../../api/readwrite.html#toponetx.readwrite.atomlist.generate_atomlist">[docs]</a>
-<span class="k">def</span> <span class="nf">generate_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_atomlist</span><span class="p">(</span>
     <span class="n">domain</span><span class="p">:</span> <span class="n">CellComplex</span> <span class="o">|</span> <span class="n">SimplicialComplex</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate an atom list from a complex.</span>
@@ -506,7 +506,7 @@
 <div class="viewcode-block" id="write_atomlist">
 <a class="viewcode-back" href="../../../api/readwrite.html#toponetx.readwrite.atomlist.write_atomlist">[docs]</a>
 <span class="nd">@nx</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">write_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_atomlist</span><span class="p">(</span>
     <span class="n">domain</span><span class="p">:</span> <span class="n">CellComplex</span> <span class="o">|</span> <span class="n">SimplicialComplex</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write an atom list to a file.</span>
@@ -536,14 +536,14 @@
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">load_from_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_from_atomlist</span><span class="p">(</span>
     <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">complex_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span> <span class="n">nodetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellComplex</span><span class="p">:</span>  <span class="c1"># numpydoc ignore=GL08</span>
     <span class="k">pass</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">load_from_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_from_atomlist</span><span class="p">(</span>
     <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">complex_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;simplicial&quot;</span><span class="p">],</span> <span class="n">nodetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplicialComplex</span><span class="p">:</span>  <span class="c1"># numpydoc ignore=GL08</span>
     <span class="k">pass</span>
@@ -552,7 +552,7 @@
 <div class="viewcode-block" id="load_from_atomlist">
 <a class="viewcode-back" href="../../../api/readwrite.html#toponetx.readwrite.atomlist.load_from_atomlist">[docs]</a>
 <span class="nd">@nx</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">open_file</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">load_from_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_from_atomlist</span><span class="p">(</span>
     <span class="n">path</span><span class="p">,</span> <span class="n">complex_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;simplicial&quot;</span><span class="p">],</span> <span class="n">nodetype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellComplex</span> <span class="o">|</span> <span class="n">SimplicialComplex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load a complex from an atom list.</span>
@@ -586,14 +586,14 @@
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">parse_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_atomlist</span><span class="p">(</span>
     <span class="n">lines</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">complex_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">],</span> <span class="n">nodetype</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellComplex</span><span class="p">:</span>  <span class="c1"># numpydoc ignore=GL08</span>
     <span class="k">pass</span>
 
 
 <span class="nd">@overload</span>
-<span class="k">def</span> <span class="nf">parse_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_atomlist</span><span class="p">(</span>
     <span class="n">lines</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">complex_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;simplicial&quot;</span><span class="p">],</span> <span class="n">nodetype</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SimplicialComplex</span><span class="p">:</span>  <span class="c1"># numpydoc ignore=GL08</span>
     <span class="k">pass</span>
@@ -601,7 +601,7 @@
 
 <div class="viewcode-block" id="parse_atomlist">
 <a class="viewcode-back" href="../../../api/readwrite.html#toponetx.readwrite.atomlist.parse_atomlist">[docs]</a>
-<span class="k">def</span> <span class="nf">parse_atomlist</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_atomlist</span><span class="p">(</span>
     <span class="n">lines</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">complex_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;cell&quot;</span><span class="p">,</span> <span class="s2">&quot;simplicial&quot;</span><span class="p">],</span> <span class="n">nodetype</span><span class="o">=</span><span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellComplex</span> <span class="o">|</span> <span class="n">SimplicialComplex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse an atom list.</span>
@@ -625,7 +625,7 @@
 <span class="sd">    ValueError</span>
 <span class="sd">        If the complex type is unknown.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">ast</span> <span class="kn">import</span> <span class="n">literal_eval</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ast</span><span class="w"> </span><span class="kn">import</span> <span class="n">literal_eval</span>
 
     <span class="n">domain</span><span class="p">:</span> <span class="n">CellComplex</span> <span class="o">|</span> <span class="n">SimplicialComplex</span>
     <span class="k">if</span> <span class="n">complex_type</span> <span class="o">==</span> <span class="s2">&quot;cell&quot;</span><span class="p">:</span>

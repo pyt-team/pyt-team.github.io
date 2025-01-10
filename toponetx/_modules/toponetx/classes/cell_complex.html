@@ -29,7 +29,7 @@
   <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sg_gallery.css?v=d2d258e8" />
   
@@ -356,35 +356,35 @@
 <span class="sd">A cell complex is abbreviated in CC.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">zip_longest</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">zip_longest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span>
-<span class="kn">from</span> <span class="nn">networkx</span> <span class="kn">import</span> <span class="n">Graph</span>
-<span class="kn">from</span> <span class="nn">networkx.classes.reportviews</span> <span class="kn">import</span> <span class="n">EdgeView</span><span class="p">,</span> <span class="n">NodeView</span>
-<span class="kn">from</span> <span class="nn">networkx.utils</span> <span class="kn">import</span> <span class="n">pairwise</span>
-<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Self</span><span class="p">,</span> <span class="n">deprecated</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">networkx.classes.reportviews</span><span class="w"> </span><span class="kn">import</span> <span class="n">EdgeView</span><span class="p">,</span> <span class="n">NodeView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">networkx.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Self</span><span class="p">,</span> <span class="n">deprecated</span>
 
-<span class="kn">from</span> <span class="nn">toponetx.classes.cell</span> <span class="kn">import</span> <span class="n">Cell</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.combinatorial_complex</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.cell</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.combinatorial_complex</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ColoredHyperGraph</span><span class="p">,</span>
     <span class="n">CombinatorialComplex</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.complex</span> <span class="kn">import</span> <span class="n">Complex</span>
-<span class="kn">from</span> <span class="nn">toponetx.classes.reportviews</span> <span class="kn">import</span> <span class="n">CellView</span>
-<span class="kn">from</span> <span class="nn">toponetx.utils</span> <span class="kn">import</span> <span class="n">incidence_to_adjacency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.complex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Complex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.reportviews</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">incidence_to_adjacency</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CellComplex&quot;</span><span class="p">]</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">hypernetx</span> <span class="kn">import</span> <span class="n">Hypergraph</span>
-    <span class="kn">from</span> <span class="nn">hypernetx.classes.entity</span> <span class="kn">import</span> <span class="n">Entity</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">hypernetx</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hypergraph</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">hypernetx.classes.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">Hypergraph</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">Entity</span> <span class="o">=</span> <span class="kc">None</span>
@@ -392,7 +392,7 @@
 
 <div class="viewcode-block" id="CellComplex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex">[docs]</a>
-<span class="k">class</span> <span class="nc">CellComplex</span><span class="p">(</span><span class="n">Complex</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CellComplex</span><span class="p">(</span><span class="n">Complex</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class representing a cell complex.</span>
 
 <span class="sd">    A cell complex is a mathematical structure that is built up from simple building blocks called cells.</span>
@@ -487,7 +487,7 @@
 
 <div class="viewcode-block" id="CellComplex.__init__">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">regular</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">regular</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_regular</span> <span class="o">=</span> <span class="n">regular</span>
@@ -518,7 +518,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CellView</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return cells.</span>
 
 <span class="sd">        Returns</span>
@@ -529,7 +529,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EdgeView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">edges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EdgeView</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return edges.</span>
 
 <span class="sd">        Returns</span>
@@ -540,7 +540,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">edges</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeView</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NodeView</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return nodes.</span>
 
 <span class="sd">        Returns</span>
@@ -554,7 +554,7 @@
     <span class="nd">@deprecated</span><span class="p">(</span>
         <span class="s2">&quot;`CellComplex.maxdim` is deprecated and will be removed in the future, use `CellComplex.dim` instead.&quot;</span>
     <span class="p">)</span>
-    <span class="k">def</span> <span class="nf">maxdim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxdim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return maximum dimension.</span>
 
 <span class="sd">        Returns</span>
@@ -565,7 +565,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return maximum dimension.</span>
 
 <span class="sd">        Returns</span>
@@ -582,7 +582,7 @@
         <span class="k">return</span> <span class="mi">2</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shape.</span>
 
 <span class="sd">        Returns</span>
@@ -595,7 +595,7 @@
 
 <div class="viewcode-block" id="CellComplex.skeleton">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.skeleton">[docs]</a>
-    <span class="k">def</span> <span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute skeleton.</span>
 
 <span class="sd">        Parameters</span>
@@ -623,7 +623,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_regular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_regular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the regularity condition.</span>
 
 <span class="sd">        Returns</span>
@@ -644,7 +644,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">is_regular</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return detailed string representation.</span>
 
 <span class="sd">        Returns</span>
@@ -654,7 +654,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Cell Complex with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span><span class="si">}</span><span class="s2"> edges and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">)</span><span class="si">}</span><span class="s2"> 2-cells &quot;</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation.</span>
 
 <span class="sd">        Returns</span>
@@ -664,7 +664,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s2">&quot;CellComplex()&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return number of nodes.</span>
 
 <span class="sd">        Returns</span>
@@ -674,7 +674,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over the nodes.</span>
 
 <span class="sd">        Returns</span>
@@ -688,7 +688,7 @@
             <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">),</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return boolean indicating if item is in self.nodes, self.edges or self.cells.</span>
 
 <span class="sd">        Parameters</span>
@@ -708,7 +708,7 @@
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the user-defined attributes associated with the given cell.</span>
 
 <span class="sd">        Writing to the returned dictionary will update the user-defined attributes</span>
@@ -736,7 +736,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cells</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_insert_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert cell.</span>
 
 <span class="sd">        Parameters</span>
@@ -763,7 +763,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input must be list, tuple or Cell type&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_delete_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_delete_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete cell.</span>
 
 <span class="sd">        Parameters</span>
@@ -785,7 +785,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cell </span><span class="si">{</span><span class="n">cell</span><span class="si">}</span><span class="s2"> is not in the complex&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_cell_equivalence_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Cell</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">Cell</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cell_equivalence_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Cell</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="n">Cell</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the equivalence classes of cells in the cell complex.</span>
 
 <span class="sd">        Returns</span>
@@ -824,7 +824,7 @@
 
 <div class="viewcode-block" id="CellComplex.degree">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.degree">[docs]</a>
-    <span class="k">def</span> <span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">degree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of cells of certain rank that contain node.</span>
 
 <span class="sd">        Parameters</span>
@@ -848,7 +848,7 @@
 
 <div class="viewcode-block" id="CellComplex.size">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.size">[docs]</a>
-    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span>
         <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -883,7 +883,7 @@
 
 <div class="viewcode-block" id="CellComplex.number_of_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.number_of_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">number_of_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number_of_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute number of nodes in node_set belonging to cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -903,7 +903,7 @@
 
 <div class="viewcode-block" id="CellComplex.number_of_edges">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.number_of_edges">[docs]</a>
-    <span class="k">def</span> <span class="nf">number_of_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number_of_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute number of edges in edge_set belonging to cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -929,7 +929,7 @@
 
 <div class="viewcode-block" id="CellComplex.number_of_cells">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.number_of_cells">[docs]</a>
-    <span class="k">def</span> <span class="nf">number_of_cells</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">number_of_cells</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of cells in cell_set belonging to cell complex.</span>
@@ -952,7 +952,7 @@
 
 <div class="viewcode-block" id="CellComplex.order">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.order">[docs]</a>
-    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the number of nodes in the cell complex.</span>
 
 <span class="sd">        Returns</span>
@@ -965,7 +965,7 @@
 
 <div class="viewcode-block" id="CellComplex.neighbors">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.neighbors">[docs]</a>
-    <span class="k">def</span> <span class="nf">neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return nodes in cell complex which share s cell(s) with node.</span>
 
 <span class="sd">        Parameters</span>
@@ -991,7 +991,7 @@
 
 <div class="viewcode-block" id="CellComplex.cell_neighbors">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.cell_neighbors">[docs]</a>
-    <span class="k">def</span> <span class="nf">cell_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cell_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the neighboring cells of the given cell.</span>
 
 <span class="sd">        Parameters</span>
@@ -1011,7 +1011,7 @@
 
 <div class="viewcode-block" id="CellComplex.remove_node">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.remove_node">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the given node from the cell complex.</span>
 
 <span class="sd">        This method removes the given node from the cell complex, along with any</span>
@@ -1039,7 +1039,7 @@
 
 <div class="viewcode-block" id="CellComplex.remove_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.remove_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove nodes from cells.</span>
 
 <span class="sd">        This also deletes references in cell complex nodes.</span>
@@ -1055,7 +1055,7 @@
 
 <div class="viewcode-block" id="CellComplex.add_node">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.add_node">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a single node to cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1068,7 +1068,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_nodes_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate new nodes when cells added to cell complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1081,7 +1081,7 @@
 
 <div class="viewcode-block" id="CellComplex.add_edge">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.add_edge">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">v_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">v_of_edge</span><span class="p">:</span> <span class="n">Hashable</span><span class="p">,</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add edge.</span>
 
 <span class="sd">        Parameters</span>
@@ -1098,7 +1098,7 @@
 
 <div class="viewcode-block" id="CellComplex.add_edges_from">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.add_edges_from">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ebunch_to_add</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_edges_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ebunch_to_add</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">],</span> <span class="o">**</span><span class="n">attr</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add edges.</span>
 
 <span class="sd">        Parameters</span>
@@ -1113,7 +1113,7 @@
 
 <div class="viewcode-block" id="CellComplex.add_cell">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.add_cell">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_cell</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cell</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1199,7 +1199,7 @@
 
 <div class="viewcode-block" id="CellComplex.add_cells_from">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.add_cells_from">[docs]</a>
-    <span class="k">def</span> <span class="nf">add_cells_from</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_cells_from</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cell_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">],</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1226,7 +1226,7 @@
 
 <div class="viewcode-block" id="CellComplex.remove_cell">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.remove_cell">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a single cell from Cell Complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1248,7 +1248,7 @@
 
 <div class="viewcode-block" id="CellComplex.remove_cells">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.remove_cells">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove cells from a cell complex that are in cell_set.</span>
 
 <span class="sd">        Parameters</span>
@@ -1262,7 +1262,7 @@
 
 <div class="viewcode-block" id="CellComplex.clear">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.clear">[docs]</a>
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all cells from a cell complex.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">remove_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
@@ -1270,7 +1270,7 @@
 
 <div class="viewcode-block" id="CellComplex.set_filtration">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.set_filtration">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_filtration</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_filtration</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
         <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -1322,7 +1322,7 @@
 
 <div class="viewcode-block" id="CellComplex.get_filtration">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.get_filtration">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_filtration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_filtration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get filtration.</span>
 
 <span class="sd">        Parameters</span>
@@ -1358,7 +1358,7 @@
 
 <div class="viewcode-block" id="CellComplex.set_node_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.set_node_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_node_attributes</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_node_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1389,7 +1389,7 @@
 
 <div class="viewcode-block" id="CellComplex.get_node_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.get_node_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_node_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1417,7 +1417,7 @@
 
 <div class="viewcode-block" id="CellComplex.set_edge_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.set_edge_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_edge_attributes</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_edge_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1451,7 +1451,7 @@
 
 <div class="viewcode-block" id="CellComplex.get_edge_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.get_edge_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_edge_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_edge_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get edge attributes.</span>
 
 <span class="sd">        Parameters</span>
@@ -1482,7 +1482,7 @@
 
 <div class="viewcode-block" id="CellComplex.set_cell_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.set_cell_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_cell_attributes</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_cell_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span>
         <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Hashable</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
@@ -1592,7 +1592,7 @@
 
 <div class="viewcode-block" id="CellComplex.get_cell_attributes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.get_cell_attributes">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cell_attributes</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cell_attributes</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get node attributes from graph.</span>
@@ -1647,7 +1647,7 @@
 
 <div class="viewcode-block" id="CellComplex.set_cell_data">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.set_cell_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">attr_value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set data for a specific cell in the complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1693,7 +1693,7 @@
 
 <div class="viewcode-block" id="CellComplex.get_cell_data">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.get_cell_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cell_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve data associated with a specific cell in the complex.</span>
 
 <span class="sd">        Parameters</span>
@@ -1750,7 +1750,7 @@
 
 <div class="viewcode-block" id="CellComplex.remove_equivalent_cells">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.remove_equivalent_cells">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_equivalent_cells</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove equivalent cells.</span>
 
 <span class="sd">        Remove cells from the cell complex which are homotopic.</span>
@@ -1788,7 +1788,7 @@
 
 <div class="viewcode-block" id="CellComplex.is_insertable_cycle">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.is_insertable_cycle">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_insertable_cycle</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_insertable_cycle</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cell</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">,</span>
         <span class="n">check_skeleton</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1839,7 +1839,7 @@
 
 <div class="viewcode-block" id="CellComplex.node_to_all_cell_incidence_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.node_to_all_cell_incidence_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">node_to_all_cell_incidence_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">node_to_all_cell_incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Nodes/all cells incidence matrix for the indexed by nodes X cells.</span>
@@ -1880,7 +1880,7 @@
 
 <div class="viewcode-block" id="CellComplex.node_to_all_cell_adjacnecy_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.node_to_all_cell_adjacnecy_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">node_to_all_cell_adjacnecy_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute s-adjacency matrix between nodes with respect to 2-cells.</span>
@@ -1940,7 +1940,7 @@
 
 <div class="viewcode-block" id="CellComplex.all_cell_to_node_coadjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.all_cell_to_node_coadjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">all_cell_to_node_coadjacency_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">all_cell_to_node_coadjacency_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return coadjecency matrix of cells with respect to nodes.</span>
@@ -1990,7 +1990,7 @@
 
 <div class="viewcode-block" id="CellComplex.incidence_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.incidence_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">incidence_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">incidence_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -2142,7 +2142,7 @@
 
 <div class="viewcode-block" id="CellComplex.hodge_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.hodge_laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">hodge_laplacian_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hodge_laplacian_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -2234,7 +2234,7 @@
 
 <div class="viewcode-block" id="CellComplex.up_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.up_laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">up_laplacian_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">up_laplacian_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -2299,7 +2299,7 @@
 
 <div class="viewcode-block" id="CellComplex.down_laplacian_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.down_laplacian_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">down_laplacian_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">down_laplacian_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -2358,7 +2358,7 @@
 
 <div class="viewcode-block" id="CellComplex.adjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.adjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">adjacency_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">adjacency_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2404,7 +2404,7 @@
 
 <div class="viewcode-block" id="CellComplex.coadjacency_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.coadjacency_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">coadjacency_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">coadjacency_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2444,7 +2444,7 @@
 
 <div class="viewcode-block" id="CellComplex.dirac_operator_matrix">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.dirac_operator_matrix">[docs]</a>
-    <span class="k">def</span> <span class="nf">dirac_operator_matrix</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dirac_operator_matrix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">signed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -2478,7 +2478,7 @@
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([1, 2, 3, 4], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CC.dirac_operator_matrix()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">bmat</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">bmat</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">index0</span><span class="p">,</span> <span class="n">B0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span> <span class="n">B1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_matrix</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2503,7 +2503,7 @@
 
 <div class="viewcode-block" id="CellComplex.restrict_to_cells">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.restrict_to_cells">[docs]</a>
-    <span class="k">def</span> <span class="nf">restrict_to_cells</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restrict_to_cells</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">cell_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Cell</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">keep_edges</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -2576,7 +2576,7 @@
 
 <div class="viewcode-block" id="CellComplex.restrict_to_nodes">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.restrict_to_nodes">[docs]</a>
-    <span class="k">def</span> <span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restrict_to_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_set</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict cell complex to nodes.</span>
 
 <span class="sd">        This constructs a new cell complex by restricting the cells in the cell complex to</span>
@@ -2613,7 +2613,7 @@
 
 <div class="viewcode-block" id="CellComplex.to_combinatorial_complex">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.to_combinatorial_complex">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_combinatorial_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_combinatorial_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this cell complex to a combinatorial complex.</span>
 
 <span class="sd">        A cell complex is a type of combinatorial complex.</span>
@@ -2648,7 +2648,7 @@
 
 <div class="viewcode-block" id="CellComplex.to_colored_hypergraph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.to_colored_hypergraph">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_colored_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_colored_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to colored hypergraph.</span>
 
 <span class="sd">        A cell complex is a type of combinatorial complex.</span>
@@ -2683,7 +2683,7 @@
 
 <div class="viewcode-block" id="CellComplex.to_hypergraph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.to_hypergraph">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this cell complex to a hypergraph.</span>
 
 <span class="sd">        Returns</span>
@@ -2699,7 +2699,7 @@
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([5, 6, 7, 8], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CC.to_hypergraph()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">hypernetx.classes.entity</span> <span class="kn">import</span> <span class="n">EntitySet</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">hypernetx.classes.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntitySet</span>
 
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">cells</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
@@ -2726,7 +2726,7 @@
 
 <div class="viewcode-block" id="CellComplex.is_connected">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.is_connected">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_connected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine if cell complex is s-connected.</span>
 
 <span class="sd">        Returns</span>
@@ -2739,7 +2739,7 @@
 
 <div class="viewcode-block" id="CellComplex.singletons">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.singletons">[docs]</a>
-    <span class="k">def</span> <span class="nf">singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of singleton cell.</span>
 
 <span class="sd">        A singleton cell is a node of degree 0.</span>
@@ -2765,7 +2765,7 @@
 
 <div class="viewcode-block" id="CellComplex.clone">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.clone">[docs]</a>
-    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a clone of the CellComplex.</span>
 
 <span class="sd">        Returns</span>
@@ -2791,7 +2791,7 @@
 
 <div class="viewcode-block" id="CellComplex.euler_characterisitics">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.euler_characterisitics">[docs]</a>
-    <span class="k">def</span> <span class="nf">euler_characterisitics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">euler_characterisitics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the euler characteristics of the cell complex.</span>
 
 <span class="sd">        Returns</span>
@@ -2804,7 +2804,7 @@
 
 <div class="viewcode-block" id="CellComplex.remove_singletons">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.remove_singletons">[docs]</a>
-    <span class="k">def</span> <span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_singletons</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove singleton nodes (see `CellComplex.singletons()`).&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">singletons</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="o">.</span><span class="n">remove_node</span><span class="p">(</span><span class="n">node</span><span class="p">)</span></div>
@@ -2812,7 +2812,7 @@
 
 <div class="viewcode-block" id="CellComplex.get_linegraph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.get_linegraph">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_linegraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_linegraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cells</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create line graph of self.</span>
 
 <span class="sd">        If cells=True (default), the cells will be the vertices of the line graph.</span>
@@ -2857,7 +2857,7 @@
 
 <div class="viewcode-block" id="CellComplex.to_hasse_graph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.to_hasse_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_hasse_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_hasse_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create Hasse graph of self.</span>
 
 <span class="sd">        Returns</span>
@@ -2891,7 +2891,7 @@
 
 <div class="viewcode-block" id="CellComplex.from_networkx_graph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.from_networkx_graph">[docs]</a>
-    <span class="k">def</span> <span class="nf">from_networkx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_networkx_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add edges and nodes from a graph G to self.</span>
 
 <span class="sd">        Parameters</span>
@@ -2916,7 +2916,7 @@
 <div class="viewcode-block" id="CellComplex.from_trimesh">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.from_trimesh">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_trimesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_trimesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">mesh</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert from trimesh object.</span>
 
 <span class="sd">        Parameters</span>
@@ -2962,7 +2962,7 @@
 <div class="viewcode-block" id="CellComplex.load_mesh">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.load_mesh">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_mesh</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a mesh.</span>
 
 <span class="sd">        Parameters</span>
@@ -2985,7 +2985,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; CC = tnx.CellComplex.load_mesh(&quot;bunny.obj&quot;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">trimesh</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">trimesh</span>
 
         <span class="n">mesh</span> <span class="o">=</span> <span class="n">trimesh</span><span class="o">.</span><span class="n">load_mesh</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="n">process</span><span class="o">=</span><span class="n">process</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_trimesh</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span></div>
