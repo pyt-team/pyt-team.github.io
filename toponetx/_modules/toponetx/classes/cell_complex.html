@@ -384,10 +384,8 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">hypernetx</span><span class="w"> </span><span class="kn">import</span> <span class="n">Hypergraph</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">hypernetx.classes.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">Hypergraph</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">Entity</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="CellComplex">
@@ -2684,12 +2682,17 @@
 <div class="viewcode-block" id="CellComplex.to_hypergraph">
 <a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.to_hypergraph">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_hypergraph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this cell complex to a hypergraph.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this cell complex to a `hypernetx` hypergraph.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Hypergraph</span>
-<span class="sd">            The hyergraph corresponding to this cell complex.</span>
+<span class="sd">            The hypergraph corresponding to this cell complex.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If `hypernetx` is not installed.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2699,28 +2702,24 @@
 <span class="sd">        &gt;&gt;&gt; CC.add_cell([5, 6, 7, 8], rank=2)</span>
 <span class="sd">        &gt;&gt;&gt; CC.to_hypergraph()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">hypernetx.classes.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntitySet</span>
-
-        <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">cells</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-            <span class="n">Entity</span><span class="p">(</span>
-                <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">)),</span>
-                <span class="n">elements</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="k">if</span> <span class="n">Hypergraph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot transform cell complex to hypergraph, `hypernetx` is not installed.&quot;</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span>
-        <span class="p">)</span>
-        <span class="n">cells</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-            <span class="n">Entity</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="p">)),</span> <span class="n">elements</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span>
-        <span class="p">)</span>
-        <span class="n">E</span> <span class="o">=</span> <span class="n">EntitySet</span><span class="p">(</span><span class="s2">&quot;CX_to_HG&quot;</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="n">cells</span><span class="p">)</span>
-        <span class="n">HG</span> <span class="o">=</span> <span class="n">Hypergraph</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
-        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">Entity</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">elements</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
-        <span class="p">]</span>
-        <span class="n">HG</span><span class="o">.</span><span class="n">_add_nodes_from</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+
+        <span class="n">edges</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">edge_properties</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="n">edges</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">edge</span><span class="p">))]</span> <span class="o">=</span> <span class="n">edge</span>
+            <span class="n">edge_properties</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">edge</span><span class="p">))]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="n">edges</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="p">))]</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span>
+            <span class="n">edge_properties</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">cell</span><span class="p">))]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">HG</span> <span class="o">=</span> <span class="n">Hypergraph</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">edge_properties</span><span class="o">=</span><span class="n">edge_properties</span><span class="p">)</span>
+        <span class="n">HG</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([(</span><span class="n">node</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell_data</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">])</span>
+
         <span class="k">return</span> <span class="n">HG</span></div>
 
 
