@@ -605,6 +605,27 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only dimensions 0,1, and 2 are supported.&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="CellComplex.graph_skeleton">
+<a class="viewcode-back" href="../../../api/generated/toponetx.CellComplex.html#toponetx.CellComplex.graph_skeleton">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">graph_skeleton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the graph-skeleton of this cell complex.</span>
+
+<span class="sd">        The graph-skeleton consists of the 0- and 1-cells (i.e., nodes and edges)</span>
+<span class="sd">        of the cell complex.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nx.Graph</span>
+<span class="sd">            The graph-skeleton of this cell complex.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">skeleton</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="p">[(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">G</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_regular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the regularity condition.</span>
