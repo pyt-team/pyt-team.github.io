@@ -357,6 +357,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">deprecated</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.algorithms.spectrum</span><span class="w"> </span><span class="kn">import</span> <span class="n">hodge_laplacian_eigenvectors</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.cell_complex</span><span class="w"> </span><span class="kn">import</span> <span class="n">CellComplex</span>
@@ -507,6 +508,10 @@
 
 <div class="viewcode-block" id="coauthorship">
 <a class="viewcode-back" href="../../../api/datasets.html#toponetx.datasets.graph.coauthorship">[docs]</a>
+<span class="nd">@deprecated</span><span class="p">(</span>
+    <span class="s2">&quot;coauthorship is deprecated since version 0.3.0 and will be removed in a future version. &quot;</span>
+    <span class="s2">&quot;The dataset is available in AHORN under &#39;semantic-scholar-coauth-sample&#39;.&quot;</span>
+<span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">coauthorship</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">SimplicialComplex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load the coauthorship network as a simplicial complex.</span>
 
@@ -552,13 +557,13 @@
     <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coauthorship</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">simplices</span> <span class="o">+=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">coauthorship</span><span class="p">[</span><span class="n">dim</span><span class="p">]]</span>
 
-    <span class="n">sc</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">simplices</span><span class="p">)</span>
+    <span class="n">SC</span> <span class="o">=</span> <span class="n">SimplicialComplex</span><span class="p">(</span><span class="n">simplices</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coauthorship</span><span class="p">)):</span>
         <span class="n">dic</span> <span class="o">=</span> <span class="p">{</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">k</span><span class="p">)):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">coauthorship</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="n">sc</span><span class="o">.</span><span class="n">set_simplex_attributes</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;citations&quot;</span><span class="p">)</span>
+        <span class="n">SC</span><span class="o">.</span><span class="n">set_simplex_attributes</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;citations&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">sc</span></div>
+    <span class="k">return</span> <span class="n">SC</span></div>
 
 </pre></div>
 
