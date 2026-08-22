@@ -368,7 +368,7 @@
                 <article class="bd-article">
                   
   <h1>Source code for toponetx.classes.cell</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Cell class.&quot;&quot;&quot;</span>
+<span></span><span class="sd">"""Cell class."""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">deque</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Hashable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
@@ -377,13 +377,13 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">toponetx.classes.complex</span><span class="w"> </span><span class="kn">import</span> <span class="n">Atom</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Cell&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Cell"</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Cell">
 <a class="viewcode-back" href="../../../api/generated/toponetx.Cell.html#toponetx.Cell">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Cell</span><span class="p">(</span><span class="n">Atom</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">Hashable</span><span class="p">]]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a 2D cell.</span>
+<span class="w">    </span><span class="sd">"""Class representing a 2D cell.</span>
 
 <span class="sd">    A 2D cell is an elementary building block used to build a 2D cell complex, whether regular or non-regular.</span>
 
@@ -414,19 +414,19 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; cell1 = tnx.Cell((1, 2, 3))</span>
 <span class="sd">    &gt;&gt;&gt; cell2 = tnx.Cell((1, 2, 4, 5), weight=1)</span>
-<span class="sd">    &gt;&gt;&gt; cell3 = tnx.Cell((&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; cell3 = tnx.Cell(("a", "b", "c"))</span>
 <span class="sd">    &gt;&gt;&gt; # create geometric cell:</span>
 <span class="sd">    &gt;&gt;&gt; v0 = (0, 0)</span>
 <span class="sd">    &gt;&gt;&gt; v1 = (1, 0)</span>
 <span class="sd">    &gt;&gt;&gt; v2 = (1, 1)</span>
 <span class="sd">    &gt;&gt;&gt; v3 = (0, 1)</span>
 <span class="sd">    # create the cell with the vertices and edges</span>
-<span class="sd">    &gt;&gt;&gt; cell = tnx.Cell([v0, v1, v2, v3], type=&quot;square&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; cell[&quot;type&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; cell = tnx.Cell([v0, v1, v2, v3], type="square")</span>
+<span class="sd">    &gt;&gt;&gt; cell["type"]</span>
 <span class="sd">    &gt;&gt;&gt; list(cell.boundary)</span>
 <span class="sd">    [((0, 0), (1, 0)), ((1, 0), (1, 1)), ((1, 1), (0, 1)),</span>
 <span class="sd">    ((0, 1), (0, 0))]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="Cell.__init__">
 <a class="viewcode-back" href="../../../api/generated/toponetx.Cell.html#toponetx.Cell.__init__">[docs]</a>
@@ -440,7 +440,7 @@
         <span class="p">)</span>  <span class="c1"># list of edges defines the boundary of the 2d cell</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;cell must contain at least 2 edges, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">"cell must contain at least 2 edges, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">"</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">regular</span><span class="p">:</span>
@@ -448,32 +448,32 @@
             <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_adjdict</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> is repeated multiple times in the input cell. &quot;</span>
-                        <span class="s2">&quot;Input cell violates the cell complex regularity condition.&quot;</span>
+                        <span class="sa">f</span><span class="s2">"Node </span><span class="si">{</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> is repeated multiple times in the input cell. "</span>
+                        <span class="s2">"Input cell violates the cell complex regularity condition."</span>
                     <span class="p">)</span>
                 <span class="n">_adjdict</span><span class="p">[</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;self loops are not permitted, got </span><span class="si">{</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2"> as an edge in the cell&#39;s boundary&quot;</span>
+                        <span class="sa">f</span><span class="s2">"self loops are not permitted, got </span><span class="si">{</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2"> as an edge in the cell's boundary"</span>
                     <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Cell.clone">
 <a class="viewcode-back" href="../../../api/generated/toponetx.Cell.html#toponetx.Cell.clone">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clone the Cell with all attributes.</span>
+<span class="w">        </span><span class="sd">"""Clone the Cell with all attributes.</span>
 
 <span class="sd">        The clone method by default returns an independent shallow copy of the cell and</span>
 <span class="sd">        attributes. That is, if an attribute is a container, that container is shared</span>
-<span class="sd">        by the original and the copy. Use Python&#39;s `copy.deepcopy` for new containers.</span>
+<span class="sd">        by the original and the copy. Use Python's `copy.deepcopy` for new containers.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Cell</span>
 <span class="sd">            A copy of this cell.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regular</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="p">)</span></div>
 
 
@@ -481,7 +481,7 @@
 <a class="viewcode-back" href="../../../api/generated/toponetx.Cell.html#toponetx.Cell.is_valid_cell">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_valid_cell</span><span class="p">(</span><span class="n">elements</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">regular</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a 2D cell defined by a list of elements is valid.</span>
+<span class="w">        </span><span class="sd">"""Check if a 2D cell defined by a list of elements is valid.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -494,7 +494,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
 <span class="sd">            True if the cell is valid, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">_boundary</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
             <span class="n">zip_longest</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">elements</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
         <span class="p">)</span>  <span class="c1"># list of edges define the boundary of the 2d cell</span>
@@ -517,13 +517,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_regular</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a cell is regular.</span>
+<span class="w">        </span><span class="sd">"""Check if a cell is regular.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
 <span class="sd">            True if the Cell is regular, and False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_regular</span><span class="p">:</span>  <span class="c1"># condition enforced</span>
             <span class="k">return</span> <span class="kc">True</span>
 
@@ -538,7 +538,7 @@
 <div class="viewcode-block" id="Cell.sign">
 <a class="viewcode-back" href="../../../api/generated/toponetx.Cell.html#toponetx.Cell.sign">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Literal</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute the sign of the given edge with respect to this cell.</span>
+<span class="w">        </span><span class="sd">"""Compute the sign of the given edge with respect to this cell.</span>
 
 <span class="sd">        This takes an edge as input and computes the sign of the edge with respect to the cell.</span>
 
@@ -566,9 +566,9 @@
 <span class="sd">            If the input edge is not valid.</span>
 <span class="sd">        TypeError</span>
 <span class="sd">            If the input edge is not iterable.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">edge</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The input </span><span class="si">{</span><span class="n">edge</span><span class="si">}</span><span class="s2"> must be iterable.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The input </span><span class="si">{</span><span class="n">edge</span><span class="si">}</span><span class="s2"> must be iterable."</span><span class="p">)</span>
 
         <span class="n">edge</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -576,24 +576,24 @@
                 <span class="k">return</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">edge</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ihe input </span><span class="si">{</span><span class="n">edge</span><span class="si">}</span><span class="s2"> is not in the boundary of the cell.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ihe input </span><span class="si">{</span><span class="n">edge</span><span class="si">}</span><span class="s2"> is not in the boundary of the cell."</span><span class="p">)</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The input </span><span class="si">{</span><span class="n">edge</span><span class="si">}</span><span class="s2"> is not a valid edge.&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The input </span><span class="si">{</span><span class="n">edge</span><span class="si">}</span><span class="s2"> is not a valid edge."</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of regular cell.</span>
+<span class="w">        </span><span class="sd">"""Return string representation of regular cell.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            The string representation of the regular cell.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Cell(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Cell(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">)"</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">boundary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Boundary.</span>
+<span class="w">        </span><span class="sd">"""Boundary.</span>
 
 <span class="sd">        A 2d cell is characterized by its boundary edges.</span>
 
@@ -606,19 +606,19 @@
 <span class="sd">        --------</span>
 <span class="sd">        For a cell [1,2,3,4,5], the boundary is the edges that define that cell :</span>
 <span class="sd">            (1,2), (2,3), (3,4), (4,5) and (5,1).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_boundary</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Cell.reverse">
 <a class="viewcode-back" href="../../../api/generated/toponetx.Cell.html#toponetx.Cell.reverse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reverse the sequence of nodes that defines the cell.</span>
+<span class="w">        </span><span class="sd">"""Reverse the sequence of nodes that defines the cell.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        Cell</span>
 <span class="sd">            New cell with the new reversed elements.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">Cell</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">regular</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_regular</span><span class="p">,</span>
@@ -629,7 +629,7 @@
 <div class="viewcode-block" id="Cell.is_homotopic_to">
 <a class="viewcode-back" href="../../../api/generated/toponetx.Cell.html#toponetx.Cell.is_homotopic_to">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_homotopic_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if self is homotopic to input cell.</span>
+<span class="w">        </span><span class="sd">"""Check if self is homotopic to input cell.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -640,7 +640,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        bool</span>
 <span class="sd">            Return True is self is homotopic to input cell and False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">Cell</span><span class="o">.</span><span class="n">_are_homotopic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="ow">or</span> <span class="n">Cell</span><span class="o">.</span><span class="n">_are_homotopic</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">(),</span> <span class="n">cell</span>
         <span class="p">)</span></div>
@@ -648,7 +648,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_are_homotopic</span><span class="p">(</span><span class="n">cell1</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if cell1 is homotopic to input cell.</span>
+<span class="w">        </span><span class="sd">"""Check if cell1 is homotopic to input cell.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -667,18 +667,18 @@
 <span class="sd">        in a 2d-cell complex, two 2d-cells are homotopic iff one</span>
 <span class="sd">            of them can be obtaine from the other by a cylic rotation</span>
 <span class="sd">            of the boundary verties defining the 2d cells.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">seq</span> <span class="o">=</span> <span class="n">cell</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
             <span class="n">seq</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;fInput </span><span class="si">{cell}</span><span class="s2"> must be a tuple/list of nodes defining a cell or Cell&quot;</span>
+                <span class="s2">"fInput </span><span class="si">{cell}</span><span class="s2"> must be a tuple/list of nodes defining a cell or Cell"</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell1</span><span class="p">,</span> <span class="n">Cell</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;first argument cell must be a cell&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"first argument cell must be a cell"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -698,14 +698,14 @@
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of regular cell.</span>
+<span class="w">        </span><span class="sd">"""Return string representation of regular cell.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            Returns string representation of regular cell.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Nodes set:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">, boundary edges:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="si">}</span><span class="s2">, attrs:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="si">}</span><span class="s2">&quot;</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Nodes set:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="si">}</span><span class="s2">, boundary edges:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">boundary</span><span class="si">}</span><span class="s2">, attrs:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span><span class="si">}</span><span class="s2">"</span></div>
 
 </pre></div>
 
