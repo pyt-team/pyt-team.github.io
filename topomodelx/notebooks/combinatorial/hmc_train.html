@@ -470,7 +470,7 @@ implementation, attention matrices are computed using the LeakyReLU activation f
 <section id="Set-up">
 <h1>Set-up<a class="headerlink" href="#Set-up" title="Link to this heading">#</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -484,7 +484,7 @@ implementation, attention matrices are computed using the LeakyReLU activation f
 </div>
 <p>If GPU’s are available, we will make use of them. Otherwise, this will run on CPU.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cuda"</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">"cpu"</span><span class="p">)</span>
@@ -507,7 +507,7 @@ cpu
 <h2>Import data<a class="headerlink" href="#Import-data" title="Link to this heading">#</a></h2>
 <p>We first create a class for the SHREC 2016 dataset. This class will be used to load the data and create the necessary neighborhood matrices for each combinatorial complex in the dataset.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SHRECDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
@@ -631,7 +631,7 @@ cpu
 </div>
 <p>We load the data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shrec_training</span><span class="p">,</span> <span class="n">shrec_testing</span> <span class="o">=</span> <span class="n">tnx</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">shrec_16</span><span class="p">()</span>
@@ -650,7 +650,7 @@ done!
 </div>
 <p>Creating the train dataset and dataloader.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">training_dataset</span> <span class="o">=</span> <span class="n">SHRECDataset</span><span class="p">(</span><span class="n">shrec_training</span><span class="p">)</span>
@@ -660,7 +660,7 @@ done!
 </div>
 <p>Creating the train dataset and dataloader.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">testing_dataset</span> <span class="o">=</span> <span class="n">SHRECDataset</span><span class="p">(</span><span class="n">shrec_testing</span><span class="p">)</span>
@@ -679,7 +679,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 <h1>Train the Neural Network<a class="headerlink" href="#Train-the-Neural-Network" title="Link to this heading">#</a></h1>
 <p>We create the trainer class. The model is trained using the Adam optimizer and the Cross Entropy Loss function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Trainer</span><span class="p">:</span>
@@ -854,7 +854,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </div>
 <p>We generate our Network, combining HOAN model with the appropriate readout for the considered task</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -912,7 +912,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </div>
 <p>We define the parameters for the model. We use softmax activation for the attention layers. Moreover, we use relu activation for the update and the aggregation steps. We set the negative slope parameter for the Leaky ReLU activation to 0.2. We only use one higher order attention layer as it already achieves almost perfect test accuracy, although more layers could be added.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">in_channels</span> <span class="o">=</span> <span class="n">training_dataset</span><span class="o">.</span><span class="n">channels_dim</span><span class="p">()</span>
@@ -933,7 +933,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span>
@@ -941,8 +941,7 @@ effectively maps the nodal, edge, and face features of the meshes into a shared 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
@@ -982,7 +981,7 @@ Network(
 </div>
 <p>We train the HoanMeshClassifier using low amount of epochs: we keep training minimal for the purpose of rapid testing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">trainer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">num_epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">test_interval</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1017,7 +1016,7 @@ Test_acc: 0.3250
 </div>
 <p>Letting the model train for longer, we can see that the model achieves an outstanding performance on both the training and testing sets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># trainer.train(num_epochs=30, test_interval=10)</span>
