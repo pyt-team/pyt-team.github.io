@@ -397,6 +397,41 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">topomodelx.utils.scatter</span><span class="w"> </span><span class="kn">import</span> <span class="n">scatter_add</span><span class="p">,</span> <span class="n">scatter_sum</span>
 
 
+<div class="viewcode-block" id="sanitize_neighborhood">
+<a class="viewcode-back" href="../../../../api/nn/cell/can_layer.html#topomodelx.nn.cell.can_layer.sanitize_neighborhood">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sanitize_neighborhood</span><span class="p">(</span><span class="n">neighborhood</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">"""Return a coalesced neighborhood matrix without explicit zero entries.</span>
+
+<span class="sd">    The number of stored entries of the returned tensor equals its number of</span>
+<span class="sd">    true non-zero entries, so that iterating over stored entries (e.g. via</span>
+<span class="sd">    ``indices()``) corresponds to actual neighborhood relations. This matters</span>
+<span class="sd">    because sparse matrices built with ``toponetx.utils.sparse.from_sparse``</span>
+<span class="sd">    preserve explicit zeros that other construction paths (e.g. dense casting)</span>
+<span class="sd">    drop.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    neighborhood : torch.Tensor</span>
+<span class="sd">        Sparse neighborhood matrix, possibly uncoalesced and with explicit</span>
+<span class="sd">        zero entries.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    torch.Tensor</span>
+<span class="sd">        Coalesced sparse neighborhood matrix without explicit zeros.</span>
+<span class="sd">    """</span>
+    <span class="n">neighborhood</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="n">values</span> <span class="o">!=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">keep</span><span class="o">.</span><span class="n">all</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="n">neighborhood</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">indices</span><span class="p">()[:,</span> <span class="n">keep</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse_coo_tensor</span><span class="p">(</span>
+        <span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">neighborhood</span><span class="o">.</span><span class="n">device</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span></div>
+
+
+
 <div class="viewcode-block" id="softmax">
 <a class="viewcode-back" href="../../../../api/nn/cell/can_layer.html#topomodelx.nn.cell.can_layer.softmax">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">softmax</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">num_cells</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
@@ -562,6 +597,7 @@
 <span class="sd">            Edge signal.</span>
 <span class="sd">        """</span>
         <span class="c1"># Extract source and target nodes from the graph's edge index</span>
+        <span class="n">adjacency_0</span> <span class="o">=</span> <span class="n">sanitize_neighborhood</span><span class="p">(</span><span class="n">adjacency_0</span><span class="p">)</span>
         <span class="n">source</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">adjacency_0</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>  <span class="c1"># (num_edges,)</span>
 
         <span class="c1"># Extract the node signal of the source and target nodes</span>
@@ -964,6 +1000,8 @@
 <span class="sd">        torch.Tensor, shape = (n_k_cells, channels)</span>
 <span class="sd">            Output features on the r-cell of the cell complex.</span>
 <span class="sd">        """</span>
+        <span class="n">neighborhood</span> <span class="o">=</span> <span class="n">sanitize_neighborhood</span><span class="p">(</span><span class="n">neighborhood</span><span class="p">)</span>
+
         <span class="c1"># If there are no non-zero values in the neighborhood, then the neighborhood is empty. -&gt; return zero tensor</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
@@ -1177,6 +1215,8 @@
 <span class="sd">        torch.Tensor, shape = (n_k_cells, channels)</span>
 <span class="sd">            Output features on the r-cell of the cell complex.</span>
 <span class="sd">        """</span>
+        <span class="n">neighborhood</span> <span class="o">=</span> <span class="n">sanitize_neighborhood</span><span class="p">(</span><span class="n">neighborhood</span><span class="p">)</span>
+
         <span class="c1"># If there are no non-zero values in the neighborhood, then the neighborhood is empty. -&gt; return zero tensor</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
