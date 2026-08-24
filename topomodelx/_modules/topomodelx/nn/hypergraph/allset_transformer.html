@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>topomodelx.nn.hypergraph.hypersage &#8212; TopoModelX latest documentation</title>
+    <title>topomodelx.nn.hypergraph.allset_transformer &#8212; TopoModelX latest documentation</title>
   
   
   
@@ -45,9 +45,9 @@
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../../_static/copybutton.js?v=5ae071a5"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/topomodelx/nn/hypergraph/hypersage';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/topomodelx/nn/hypergraph/allset_transformer';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="canonical" href="https://pyt-team.github.io/topomodelx/_modules/topomodelx/nn/hypergraph/hypersage.html" />
+    <link rel="canonical" href="https://pyt-team.github.io/topomodelx/_modules/topomodelx/nn/hypergraph/allset_transformer.html" />
     <link rel="icon" href="../../../../_static/favicon-48.png"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -364,7 +364,7 @@
     
     <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">topomodelx.nn.hypergraph.hypersage</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">topomodelx.nn.hypergraph.allset_transformer</span></li>
   </ul>
 </nav>
 </div>
@@ -381,18 +381,20 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for topomodelx.nn.hypergraph.hypersage</h1><div class="highlight"><pre>
-<span></span><span class="sd">"""HyperSAGE Layer."""</span>
+  <h1>Source code for topomodelx.nn.hypergraph.allset_transformer</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""Allset transformer class."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">topomodelx.nn.hypergraph.hypersage_layer</span><span class="w"> </span><span class="kn">import</span> <span class="n">HyperSAGELayer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">topomodelx.nn.hypergraph.allset_transformer_layer</span><span class="w"> </span><span class="kn">import</span> <span class="n">AllSetTransformerLayer</span>
 
 
-<div class="viewcode-block" id="HyperSAGE">
-<a class="viewcode-back" href="../../../../api/nn/hypergraph/hypersage.html#topomodelx.nn.hypergraph.hypersage.HyperSAGE">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">HyperSAGE</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Neural network implementation of HyperSAGE [1]_ for hypergraph classification.</span>
+<div class="viewcode-block" id="AllSetTransformer">
+<a class="viewcode-back" href="../../../../api/nn/hypergraph/allset_transformer.html#topomodelx.nn.hypergraph.allset_transformer.AllSetTransformer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AllSetTransformer</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""AllSet Neural Network Module.</span>
+
+<span class="sd">    A module that combines multiple AllSet layers [1]_ to form a neural network.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -400,54 +402,75 @@
 <span class="sd">        Dimension of the input features.</span>
 <span class="sd">    hidden_channels : int</span>
 <span class="sd">        Dimension of the hidden features.</span>
-<span class="sd">    n_layers : int, default = 2</span>
-<span class="sd">        Amount of message passing layers.</span>
-<span class="sd">    alpha : int, default = -1</span>
-<span class="sd">        Max number of nodes in a neighborhood to consider. If -1 it considers all the nodes.</span>
+<span class="sd">    n_layers : int, default: 2</span>
+<span class="sd">        Number of AllSet layers in the network.</span>
+<span class="sd">    heads : int, default: 4</span>
+<span class="sd">        Number of attention heads.</span>
+<span class="sd">    dropout : float, default: 0.2</span>
+<span class="sd">        Dropout probability.</span>
+<span class="sd">    mlp_num_layers : int, default: 2</span>
+<span class="sd">        Number of layers in the MLP.</span>
+<span class="sd">    mlp_dropout : float, default: 0.2</span>
+<span class="sd">        Dropout probability in the MLP.</span>
 <span class="sd">    **kwargs : optional</span>
 <span class="sd">        Additional arguments for the inner layers.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [1] Arya, Gupta, Rudinac and Worring.</span>
-<span class="sd">        HyperSAGE: Generalizing inductive representation learning on hypergraphs (2020).</span>
-<span class="sd">        https://arxiv.org/abs/2010.04558</span>
+<span class="sd">    .. [1] Chien, Pan, Peng and Milenkovic.</span>
+<span class="sd">        You are AllSet: a multiset function framework for hypergraph neural networks.</span>
+<span class="sd">        ICLR 2022.</span>
+<span class="sd">        https://arxiv.org/abs/2106.13264</span>
 <span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">in_channels</span><span class="p">,</span>
+        <span class="n">hidden_channels</span><span class="p">,</span>
+        <span class="n">n_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">heads</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+        <span class="n">dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">mlp_num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">mlp_dropout</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
-            <span class="n">HyperSAGELayer</span><span class="p">(</span>
+            <span class="n">AllSetTransformerLayer</span><span class="p">(</span>
                 <span class="n">in_channels</span><span class="o">=</span><span class="n">in_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">hidden_channels</span><span class="p">,</span>
-                <span class="n">out_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
-                <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
+                <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden_channels</span><span class="p">,</span>
+                <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span>
+                <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span>
+                <span class="n">mlp_num_layers</span><span class="o">=</span><span class="n">mlp_num_layers</span><span class="p">,</span>
+                <span class="n">mlp_dropout</span><span class="o">=</span><span class="n">mlp_dropout</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_layers</span><span class="p">)</span>
         <span class="p">)</span>
 
-<div class="viewcode-block" id="HyperSAGE.forward">
-<a class="viewcode-back" href="../../../../api/nn/hypergraph/hypersage.html#topomodelx.nn.hypergraph.hypersage.HyperSAGE.forward">[docs]</a>
+<div class="viewcode-block" id="AllSetTransformer.forward">
+<a class="viewcode-back" href="../../../../api/nn/hypergraph/allset_transformer.html#topomodelx.nn.hypergraph.allset_transformer.AllSetTransformer.forward">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Forward computation through layers, then linear layer, then global max pooling.</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        Forward computation.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        x_0 : torch.Tensor, shape = (n_nodes, features_nodes)</span>
-<span class="sd">            Edge features.</span>
-<span class="sd">        incidence_1 : torch.Tensor, shape = (n_nodes, n_edges)</span>
-<span class="sd">            Boundary matrix of rank 1.</span>
+<span class="sd">        x_0 : torch.Tensor</span>
+<span class="sd">            Input features.</span>
+<span class="sd">        incidence_1 : torch.Tensor</span>
+<span class="sd">            Edge list (of size (2, |E|)).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        torch.Tensor, shape = (1)</span>
-<span class="sd">            Label assigned to whole complex.</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Output prediction.</span>
 <span class="sd">        """</span>
         <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="n">x_0</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">incidence_1</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">x_0</span></div>
+        <span class="k">return</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span></div>
 </div>
 
 </pre></div>
