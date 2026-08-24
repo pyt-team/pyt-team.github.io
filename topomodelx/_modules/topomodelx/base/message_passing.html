@@ -582,10 +582,16 @@
 <span class="sd">        Tensor, shape = (...,  n_target_cells, out_channels)</span>
 <span class="sd">            Output features on target cells.</span>
 <span class="sd">            Each target cell aggregates messages from several source cells.</span>
+<span class="sd">            Target cells with an empty neighborhood receive zero features.</span>
 <span class="sd">            Assumes that all target cells have the same rank s.</span>
 <span class="sd">        """</span>
         <span class="n">aggr</span> <span class="o">=</span> <span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aggr_func</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">aggr</span><span class="p">(</span><span class="n">x_message</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">aggr</span><span class="p">(</span>
+            <span class="n">x_message</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="n">dim_size</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"n_target_cells"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MessagePassing.forward">
@@ -659,6 +665,7 @@
 <span class="sd">        """</span>
         <span class="n">neighborhood</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_index_j</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_target_cells</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">neighborhood_values</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
 
         <span class="n">x_message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">x_source</span><span class="o">=</span><span class="n">x_source</span><span class="p">,</span> <span class="n">x_target</span><span class="o">=</span><span class="n">x_target</span><span class="p">)</span>
