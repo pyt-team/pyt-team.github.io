@@ -977,7 +977,7 @@
         <span class="n">alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">att_activation</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
 
         <span class="c1"># Normalize the attention coefficients</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span> <span class="n">x_source</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_target_cells</span><span class="p">)</span>
 
         <span class="c1"># Apply dropout</span>
         <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span></div>
@@ -1023,6 +1023,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">source_index_j</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>  <span class="c1"># (|n_k_cells|, 1), (|n_k_cells|, 1)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_target_cells</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># compute message passing step</span>
         <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">x_source</span><span class="p">)</span>  <span class="c1"># (|n_k_cells|, H, C)</span>
@@ -1192,7 +1193,7 @@
         <span class="p">)</span>  <span class="c1"># (|n_k_cells|, H)</span>
 
         <span class="c1"># Normalize the attention coefficients</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span> <span class="n">x_source</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_target_cells</span><span class="p">)</span>
 
         <span class="c1"># Apply dropout</span>
         <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span></div>
@@ -1238,6 +1239,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">target_index_i</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">source_index_j</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>  <span class="c1"># (|n_k_cells|, 1), (|n_k_cells|, 1)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_target_cells</span> <span class="o">=</span> <span class="n">neighborhood</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># compute message passing step</span>
         <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="p">(</span><span class="n">x_source</span><span class="p">)</span>  <span class="c1"># (|n_k_cells|, H, C)</span>
